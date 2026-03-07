@@ -1,0 +1,19 @@
+[project]
+name = "tim-class-pass"
+version = "0.1.0"
+description = "A Python project for Tim Class Pass"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.scripts]
+tim-class-pass = "tim_class_pass.main:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+]
