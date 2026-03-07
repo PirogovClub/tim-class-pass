@@ -2,6 +2,8 @@
 description: How to run the Multimodal YouTube Video Transcript Enrichment Pipeline
 ---
 
+// turbo-all
+
 # Multimodal Transcript Enrichment Workflow (Dense Mode)
 
 The pipeline captures **1 frame per second** for the entire video, has the agent analyze each frame with a full description + delta, then produces a polished enriched VTT and a `video_commentary.md` screenplay.
