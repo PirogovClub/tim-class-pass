@@ -20,5 +20,5 @@ build/
 .coverage
 htmlcov/
 .mypy_cache/
-.ruff_cache/
+.ruff_cache/data/
 data/
