@@ -4,7 +4,15 @@ version = "0.1.0"
 description = "A Python project for Tim Class Pass"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "ffmpeg-python>=0.2.0",
+    "google-genai>=1.66.0",
+    "openai>=2.26.0",
+    "pendulum>=3.2.0",
+    "pydantic>=2.12.5",
+    "python-dotenv>=1.2.2",
+    "yt-dlp>=2026.3.3",
+]
 
 [project.scripts]
 tim-class-pass = "tim_class_pass.main:main"
