@@ -63,25 +63,30 @@ def _analyze_frame_openai(frame_path: str, prompt_text: str) -> dict:
     return _parse_json_from_response(text)
 
 
-def _analyze_frame_gemini(frame_path: str, prompt_text: str) -> dict:
-    from google import genai
+def _analyze_frame_gemini(frame_path: str, prompt_text: str, video_id: str | None = None) -> dict:
+    import gemini_client
     from google.genai import types
-    client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
     with open(frame_path, "rb") as f:
         image_bytes = f.read()
-    response = client.models.generate_content(
-        model=os.getenv("MODEL_NAME", os.getenv("MODEL_IMAGES", "gemini-1.5-pro")),
+    response = gemini_client.generate_with_retry(
+        model=gemini_client.get_model_for_step("images", video_id),
         contents=[
             types.Content(
                 role="user",
                 parts=[
-                    types.Part.from_text(prompt_text),
+                    types.Part.from_text(text=prompt_text),
                     types.Part.from_bytes(data=image_bytes, mime_type="image/jpeg"),
                 ],
             )
         ],
+        config=types.GenerateContentConfig(
+            response_mime_type="application/json",
+            temperature=0.3,
+        ),
     )
     text = (response.text or "").strip()
+    if not text:
+        raise ValueError("Gemini returned empty response for frame analysis")
     return _parse_json_from_response(text)
 
 PRODUCTION_PROMPT = """You are analyzing sequential screenshots from a trading education video for building a structured trading knowledge base.
@@ -188,13 +193,76 @@ def get_batch_prompt(batch_entries: list[tuple[str, str]], video_dir: str, previ
     ]
     return "\n".join(lines)
 
-def run_analysis(video_id: str, batch_size: int = 10, agent: str = "ide"):
+
+def get_batch_prompt_independent(batch_entries: list[tuple[str, str]], video_dir: str) -> str:
+    """
+    Same as get_batch_prompt but without previous_state (Option B: independent batches).
+    Use for parallel batch tasks so each subagent gets the same "how to review" prompt.
+    """
+    lines = [
+        PRODUCTION_PROMPT,
+        "",
+        "Frames to analyze (review each independently; no previous frame context):",
+    ]
+    for key, path in batch_entries:
+        abs_path = os.path.abspath(path)
+        lines.append(f"  Frame {key}: {abs_path}")
+    lines += [
+        "",
+        "Save your response as a JSON object to the response file.",
+        "Keys are the frame numbers (e.g. \"000001\").",
+        "Values are the structured extraction JSON for each frame.",
+        "",
+        "Example:",
+        '{',
+        '  "000001": { "frame_timestamp": "00:00:01", "material_change": true, "change_summary": [...], ... },',
+        '  "000002": { "frame_timestamp": "00:00:02", "material_change": false }',
+        '}',
+        "",
+        "NOTE: Per-frame .json files will be automatically written to frames_dense/ alongside each .jpg.",
+    ]
+    return "\n".join(lines)
+
+
+def run_analysis(
+    video_id: str,
+    batch_size: int = 10,
+    agent: str = "ide",
+    parallel_batches: bool = False,
+    merge_only: bool = False,
+):
     agent = _normalize_agent(agent)
     video_dir = os.path.join("data", video_id)
     index_file = os.path.join(video_dir, "dense_index.json")
     analysis_file = os.path.join(video_dir, "dense_analysis.json")
     batches_dir = os.path.join(video_dir, "batches")
     os.makedirs(batches_dir, exist_ok=True)
+
+    # ── Merge-only mode (Option B): merge all batch response files, then return ──
+    if merge_only:
+        import glob
+        pattern = os.path.join(batches_dir, "dense_batch_response_*.json")
+        response_files = sorted(glob.glob(pattern))
+        if not response_files:
+            print("Merge-only: No dense_batch_response_*.json files found.")
+            return
+        analysis = {}
+        for path in response_files:
+            with open(path, "r", encoding="utf-8") as f:
+                batch_result = json.load(f)
+            analysis.update(batch_result)
+        # Sort and write dense_analysis.json
+        analysis = dict(sorted(analysis.items(), key=lambda x: x[0]))
+        with open(analysis_file, "w", encoding="utf-8") as f:
+            json.dump(analysis, f, indent=2, ensure_ascii=False)
+        # Write per-frame .json files
+        frames_dir = os.path.join(video_dir, "frames_dense")
+        for key, entry in analysis.items():
+            json_path = os.path.join(frames_dir, f"frame_{key}.json")
+            with open(json_path, "w", encoding="utf-8") as f:
+                json.dump(entry, f, indent=2, ensure_ascii=False)
+        print(f"Merge-only: Merged {len(response_files)} batch files into {analysis_file} ({len(analysis)} frames).")
+        return
 
     if not os.path.exists(index_file):
         print(f"Error: {index_file} not found. Run dense_capturer.py first.")
@@ -203,6 +271,37 @@ def run_analysis(video_id: str, batch_size: int = 10, agent: str = "ide"):
     with open(index_file, "r", encoding="utf-8") as f:
         index = json.load(f)
 
+    all_keys = sorted(index.keys())
+
+    # ── Option B: generate all batch task files + manifest, exit 10 once ──
+    if parallel_batches and agent == "ide":
+        tasks = []
+        for i in range(0, len(all_keys), batch_size):
+            batch_keys = all_keys[i : i + batch_size]
+            batch_entries = [(k, os.path.join(video_dir, index[k])) for k in batch_keys]
+            batch_start = batch_keys[0]
+            batch_end = batch_keys[-1]
+            batch_label = f"{batch_start}-{batch_end}"
+            response_file = os.path.join(batches_dir, f"dense_batch_response_{batch_label}.json")
+            prompt_content = get_batch_prompt_independent(batch_entries, video_dir)
+            frame_paths = [os.path.abspath(p) for _, p in batch_entries]
+            task_file = os.path.join(batches_dir, f"task_{batch_label}.json")
+            task_data = {
+                "prompt_content": prompt_content,
+                "frame_paths": frame_paths,
+                "response_file": os.path.abspath(response_file),
+                "batch_label": batch_label,
+            }
+            with open(task_file, "w", encoding="utf-8") as f:
+                json.dump(task_data, f, indent=2, ensure_ascii=False)
+            tasks.append({"task_file": os.path.abspath(task_file), "response_file": os.path.abspath(response_file)})
+        manifest = {"task_files": tasks, "merge_after": True}
+        manifest_path = os.path.join(batches_dir, "manifest.json")
+        with open(manifest_path, "w", encoding="utf-8") as f:
+            json.dump(manifest, f, indent=2)
+        print(f"Option B: Generated {len(tasks)} batch task files and {manifest_path}. Spawn subagents, then re-run with --merge-only.")
+        sys.exit(AGENT_NEEDS_ANALYSIS)
+
     # Load existing analysis (partial progress)
     if os.path.exists(analysis_file):
         with open(analysis_file, "r", encoding="utf-8") as f:
@@ -210,7 +309,6 @@ def run_analysis(video_id: str, batch_size: int = 10, agent: str = "ide"):
     else:
         analysis = {}
 
-    all_keys = sorted(index.keys())
     remaining_keys = [k for k in all_keys if k not in analysis]
 
     if not remaining_keys:
@@ -246,23 +344,38 @@ def run_analysis(video_id: str, batch_size: int = 10, agent: str = "ide"):
 
     if not os.path.exists(response_file):
         if agent == "ide":
+            # State file for orchestrator/subagent: prompt and response paths, frame_paths, prompt_content
+            state_file = os.path.join(batches_dir, "last_agent_task.json")
+            frame_paths_abs = [os.path.abspath(os.path.join(video_dir, index[k])) for k in batch_keys]
+            state = {
+                "prompt_file": os.path.abspath(prompt_file),
+                "response_file": os.path.abspath(response_file),
+                "type": "batch",
+                "frame_paths": frame_paths_abs,
+                "prompt_content": prompt_text,
+            }
+            with open(state_file, "w", encoding="utf-8") as f:
+                json.dump(state, f, indent=2, ensure_ascii=False)
             print(f"IDE: Batch prompt written to: {prompt_file}")
             print(f"IDE: Agent must write response to: {response_file}")
-            print(f"IDE: Previous frame description provided for delta context.")
+            print(f"IDE: State written to: {state_file}")
             sys.exit(AGENT_NEEDS_ANALYSIS)
         # OpenAI or Gemini: call vision API per frame and write response file
+        done_after = len(analysis) + len(batch_keys)
+        print(f"Processing batch (frames {batch_start}-{batch_end}) [{done_after}/{len(all_keys)} total]")
         batch_result = {}
         prev_state = previous_state
-        for key, path in batch_entries:
+        for idx, (key, path) in enumerate(batch_entries):
             if not os.path.exists(path):
                 print(f"Warning: Frame {path} not found, skipping.")
                 continue
+            print(f"  Analyzing frame {key} ({idx + 1}/{len(batch_entries)})...")
             prompt = _single_frame_prompt(key, path, prev_state)
             try:
                 if agent == "openai":
                     entry = _analyze_frame_openai(path, prompt)
                 else:
-                    entry = _analyze_frame_gemini(path, prompt)
+                    entry = _analyze_frame_gemini(path, prompt, video_id)
                 batch_result[key] = entry
                 prev_state = json.dumps(entry, ensure_ascii=False)
             except Exception as e:
@@ -309,5 +422,13 @@ if __name__ == "__main__":
         choices=["openai", "gemini", "ide", "antigravity"],
         help="Agent: ide (IDE as AI agent), openai, gemini (default: ide)",
     )
+    parser.add_argument("--parallel", action="store_true", help="Option B: generate all batch task files + manifest, exit 10")
+    parser.add_argument("--merge-only", action="store_true", help="Merge all dense_batch_response_*.json into dense_analysis.json and exit")
     args = parser.parse_args()
-    run_analysis(args.video_id, args.batch_size, agent=args.agent)
+    run_analysis(
+        args.video_id,
+        args.batch_size,
+        agent=args.agent,
+        parallel_batches=args.parallel,
+        merge_only=args.merge_only,
+    )

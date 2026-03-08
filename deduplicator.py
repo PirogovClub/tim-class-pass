@@ -35,20 +35,27 @@ def _dedup_openai(prompt_text: str) -> dict:
     return _parse_json_from_response(text)
 
 
-def _dedup_gemini(prompt_text: str) -> dict:
-    from google import genai
+def _dedup_gemini(prompt_text: str, video_id: str | None = None) -> dict:
+    import gemini_client
     from google.genai import types
-    client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
-    response = client.models.generate_content(
-        model=os.getenv("MODEL_NAME", os.getenv("MODEL_DEDUP", "gemini-1.5-pro")),
-        contents=[
-            types.Content(
-                role="user",
-                parts=[types.Part.from_text(prompt_text + "\n\nReturn only a JSON object. Keys are HH:MM:SS timestamps, values are polished description strings.")],
-            )
-        ],
+    model = gemini_client.get_model_for_step("dedup", video_id)
+    contents = [
+        types.Content(
+            role="user",
+            parts=[types.Part.from_text(text=prompt_text + "\n\nReturn only a JSON object. Keys are HH:MM:SS timestamps, values are polished description strings.")],
+        )
+    ]
+    config = types.GenerateContentConfig(
+        response_mime_type="application/json",
+        temperature=0.2,
     )
-    text = (response.text or "{}").strip()
+    if os.getenv("GEMINI_STREAMING"):
+        text = gemini_client.generate_with_retry_stream(model=model, contents=contents, config=config).strip()
+    else:
+        response = gemini_client.generate_with_retry(model=model, contents=contents, config=config)
+        text = (response.text or "{}").strip()
+    if not text:
+        return {}
     return _parse_json_from_response(text)
 
 def group_scenes(analysis: dict) -> list[dict]:
@@ -231,15 +238,26 @@ def run_deduplicator(video_id: str, agent: str = "ide", vtt_file_override: str |
 
     if not os.path.exists(response_file):
         if agent == "ide":
+            # State file for orchestrator/subagent: prompt and response paths, prompt_content
+            state_file = os.path.join(batches_dir, "last_agent_task.json")
+            state = {
+                "prompt_file": os.path.abspath(prompt_file),
+                "response_file": os.path.abspath(response_file),
+                "type": "dedup",
+                "prompt_content": prompt_text,
+            }
+            with open(state_file, "w", encoding="utf-8") as f:
+                json.dump(state, f, indent=2, ensure_ascii=False)
             print(f"IDE: Dedup prompt written to: {prompt_file}")
             print(f"IDE: Agent must write polished scene descriptions to: {response_file}")
+            print(f"IDE: State written to: {state_file}")
             sys.exit(AGENT_NEEDS_ANALYSIS)
         # OpenAI or Gemini: call text API and write response
         try:
             if agent == "openai":
                 scene_map = _dedup_openai(prompt_text)
             else:
-                scene_map = _dedup_gemini(prompt_text)
+                scene_map = _dedup_gemini(prompt_text, video_id)
             with open(response_file, "w", encoding="utf-8") as f:
                 json.dump(scene_map, f, indent=2, ensure_ascii=False)
             print(f"API: Wrote dedup response to {response_file}")

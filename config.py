@@ -52,8 +52,14 @@ def get_config_for_video(video_id: str) -> dict:
         "agent_images": os.getenv("AGENT_IMAGES") or os.getenv("AGENT") or DEFAULT_AGENT,
         "agent_dedup": os.getenv("AGENT_DEDUP") or os.getenv("AGENT") or DEFAULT_AGENT,
         "batch_size": DEFAULT_BATCH_SIZE,
+        "parallel_batches": False,
         "video_file": None,
         "vtt_file": None,
+        "model_name": os.getenv("MODEL_NAME"),
+        "model_images": os.getenv("MODEL_IMAGES") or os.getenv("MODEL_NAME"),
+        "model_dedup": os.getenv("MODEL_DEDUP") or os.getenv("MODEL_NAME"),
+        "model_gaps": os.getenv("MODEL_GAPS") or os.getenv("MODEL_NAME"),
+        "model_vlm": os.getenv("MODEL_VLM") or os.getenv("MODEL_NAME"),
     }
     batch_env = os.getenv("BATCH_SIZE")
     if batch_env is not None:
@@ -61,6 +67,8 @@ def get_config_for_video(video_id: str) -> dict:
             result["batch_size"] = int(batch_env)
         except ValueError:
             pass
+    _model_keys = ("model_name", "model_images", "model_dedup", "model_gaps", "model_vlm")
+    _override_keys = ("video_file", "vtt_file", "agent_images", "agent_dedup", "batch_size", "parallel_batches", *_model_keys)
     for key, value in yaml_default.items():
         if value is not None:
             if key == "batch_size" and isinstance(value, str):
@@ -70,7 +78,7 @@ def get_config_for_video(video_id: str) -> dict:
                     value = result["batch_size"]
             result[key] = value
     for key, value in video_overrides.items():
-        if value is not None and key in ("video_file", "vtt_file", "agent_images", "agent_dedup", "batch_size"):
+        if value is not None and key in _override_keys:
             if key == "batch_size" and isinstance(value, str):
                 try:
                     value = int(value)

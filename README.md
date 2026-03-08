@@ -150,6 +150,10 @@ videos:
 
 **Precedence:** CLI > pipeline.yml (per-folder in `videos` then `default`) > env > built-in default.
 
+### Gemini usage
+
+When the agent is **gemini** (Step 2/3 via `--agent gemini` or `AGENT_IMAGES`/`AGENT_DEDUP` in pipeline.yml or env), or when running **gap_detector.py** / **vlm_translator.py** with `--provider gemini`, set `GEMINI_API_KEY` in `.env`. Model selection uses **pipeline.yml** first (optional `model_name`, `model_images`, `model_dedup`, `model_gaps`, `model_vlm` under `default` or `videos`), then env (`MODEL_NAME`, `MODEL_IMAGES`, etc.), then step defaults. The central client, retries, and key validation live in **gemini_client.py**. For details and improvement notes see [docs/gemini_api_usage_report.md](docs/gemini_api_usage_report.md).
+
 ### CLI Reference
 
 | Flag | Default | Description |

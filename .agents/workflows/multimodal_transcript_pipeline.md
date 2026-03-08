@@ -38,6 +38,8 @@ uv run main.py --video_id VIDEO_ID --batch-size 10
 
 **Agents:** Step 2 (frame analysis) and Step 3 (dedup) can use different agents. Set per-video in `pipeline.yml`, or override with `--agent-images` / `--agent-dedup` / `--agent`. Choices: `ide` (IDE as AI agent — pipeline writes prompts, you fill responses, re-run), `openai`, `gemini`. With `openai` or `gemini` for both steps the pipeline runs to completion without exit 10.
 
+**When using gemini:** Set `GEMINI_API_KEY` in `.env`. Model is chosen from `pipeline.yml` (optional `model_name`, `model_images`, `model_dedup`) or env (`MODEL_NAME`, `MODEL_IMAGES`, etc.). See README “Gemini usage” and `skills/gemini_usage/SKILL.md`.
+
 When using **ide** for either step, the pipeline exits with **code 10** each time agent input is required. Re-run the command after completing each agent step.
 
 ---
