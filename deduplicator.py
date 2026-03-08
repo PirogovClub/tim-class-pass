@@ -1,32 +1,75 @@
 import os
 import sys
 import json
+import re
 import glob
 import argparse
 import pendulum
 
 AGENT_NEEDS_ANALYSIS = 10
 
+
+def _normalize_agent(agent: str) -> str:
+    if agent == "antigravity":
+        return "ide"
+    return agent
+
+
+def _parse_json_from_response(text: str) -> dict:
+    text = text.strip()
+    match = re.search(r"```(?:json)?\s*([\s\S]*?)```", text)
+    if match:
+        text = match.group(1).strip()
+    return json.loads(text)
+
+
+def _dedup_openai(prompt_text: str) -> dict:
+    from openai import OpenAI
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    response = client.chat.completions.create(
+        model=os.getenv("MODEL_NAME", os.getenv("MODEL_DEDUP", "gpt-4o")),
+        messages=[{"role": "user", "content": prompt_text + "\n\nReturn only a JSON object. Keys are HH:MM:SS timestamps, values are polished description strings."}],
+        max_tokens=4000,
+    )
+    text = response.choices[0].message.content or "{}"
+    return _parse_json_from_response(text)
+
+
+def _dedup_gemini(prompt_text: str) -> dict:
+    from google import genai
+    from google.genai import types
+    client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+    response = client.models.generate_content(
+        model=os.getenv("MODEL_NAME", os.getenv("MODEL_DEDUP", "gemini-1.5-pro")),
+        contents=[
+            types.Content(
+                role="user",
+                parts=[types.Part.from_text(prompt_text + "\n\nReturn only a JSON object. Keys are HH:MM:SS timestamps, values are polished description strings.")],
+            )
+        ],
+    )
+    text = (response.text or "{}").strip()
+    return _parse_json_from_response(text)
+
 def group_scenes(analysis: dict) -> list[dict]:
     """
-    Groups consecutive frames into scenes based on delta.
-    Returns a list of scene dicts: {start_key, end_key, frames, scene_type, deltas}
+    Groups consecutive frames into scenes based on material_change.
+    Returns a list of scene dicts: {start_key, end_key, frames, scene_type, change_summaries}
     """
     scenes = []
     current_scene = None
 
     for key in sorted(analysis.keys()):
         entry = analysis[key]
-        delta = entry.get("delta", "No change").strip()
-        is_change = not (delta.lower() == "no change")
+        is_change = entry.get("material_change", True)  # default True for backwards compat
 
         if current_scene is None:
             current_scene = {
                 "start_key": key,
                 "end_key": key,
                 "frames": [key],
-                "deltas": [delta],
-                "first_description": entry.get("description", "")
+                "change_summaries": [entry.get("change_summary", [])],
+                "first_entry": entry
             }
         elif is_change:
             # Close current scene and start new one
@@ -35,13 +78,13 @@ def group_scenes(analysis: dict) -> list[dict]:
                 "start_key": key,
                 "end_key": key,
                 "frames": [key],
-                "deltas": [delta],
-                "first_description": entry.get("description", "")
+                "change_summaries": [entry.get("change_summary", [])],
+                "first_entry": entry
             }
         else:
             current_scene["end_key"] = key
             current_scene["frames"].append(key)
-            current_scene["deltas"].append(delta)
+            current_scene["change_summaries"].append(entry.get("change_summary", []))
 
     if current_scene:
         scenes.append(current_scene)
@@ -89,11 +132,18 @@ def stitch_vtt(vtt_file: str, scene_map: dict[str, str]) -> str:
 
     return "".join(result)
 
-def run_deduplicator(video_id: str):
+def run_deduplicator(video_id: str, agent: str = "ide", vtt_file_override: str | None = None):
+    """
+    vtt_file_override: optional filename (e.g. from pipeline.yml) relative to data/<video_id>/.
+    If None, process all non-enriched .vtt in the folder.
+    """
+    agent = _normalize_agent(agent)
     video_dir = os.path.join("data", video_id)
     analysis_file = os.path.join(video_dir, "dense_analysis.json")
-    prompt_file = os.path.join(video_dir, "dedup_prompt.txt")
-    response_file = os.path.join(video_dir, "dedup_response.json")
+    batches_dir = os.path.join(video_dir, "batches")
+    os.makedirs(batches_dir, exist_ok=True)
+    prompt_file = os.path.join(batches_dir, "dedup_prompt.txt")
+    response_file = os.path.join(batches_dir, "dedup_response.json")
 
     if not os.path.exists(analysis_file):
         print(f"Error: {analysis_file} not found. Run dense_analyzer first.")
@@ -105,20 +155,47 @@ def run_deduplicator(video_id: str):
     scenes = group_scenes(analysis)
     print(f"Found {len(scenes)} scenes from {len(analysis)} frames.")
 
+    # Build a text summary from the structured first_entry
+    def summarize_entry(entry: dict) -> str:
+        """Build a human-readable summary from a structured frame entry."""
+        parts = []
+        vis_type = entry.get("visual_representation_type")
+        if vis_type:
+            parts.append(f"Type: {vis_type}")
+        state = entry.get("current_state", {})
+        if state.get("symbol"):
+            parts.append(f"Symbol: {state['symbol']}")
+        if state.get("timeframe"):
+            parts.append(f"TF: {state['timeframe']}")
+        if state.get("platform"):
+            parts.append(f"Platform: {state['platform']}")
+        facts = state.get("visual_facts", [])
+        if facts:
+            parts.append(f"Facts: {'; '.join(facts)}")
+        interp = state.get("trading_relevant_interpretation", [])
+        if interp:
+            parts.append(f"Interpretation: {'; '.join(interp)}")
+        # Fallback for legacy format
+        if not parts:
+            desc = entry.get("description", "")
+            if desc:
+                parts.append(desc)
+        return " | ".join(parts) if parts else "(no structured data)"
+
     # Write prompt for agent
     prompt_lines = [
         "You are producing a polished visual description of a video.",
         "Below are the video's scenes grouped by visual change.",
         "For each scene, you will be given:",
         "  - The start timestamp (HH:MM:SS)",
-        "  - The full description of the first frame of the scene",
-        "  - All the deltas (what changed second by second within the scene)",
+        "  - A structured summary of the first frame of the scene",
+        "  - All the change summaries within the scene",
         "",
         "Your tasks:",
         "1. Write a single polished paragraph describing what is visually happening in each scene.",
-        "   Merge all deltas into a natural narrative. Do not list deltas mechanically.",
-        "2. For scenes with 'No change' deltas (static scenes), a single sentence suffices.",
-        "3. For 'Scene change' scenes, note clearly what the new scene contains.",
+        "   Merge all changes into a natural narrative. Do not list changes mechanically.",
+        "2. For scenes with no changes (static scenes), a single sentence suffices.",
+        "3. For scene-change scenes, note clearly what the new scene contains.",
         "",
         "Format your response as JSON:",
         '{ "HH:MM:SS": "polished description paragraph", ... }',
@@ -129,33 +206,62 @@ def run_deduplicator(video_id: str):
     for scene in scenes:
         ts = key_to_timestamp(scene["start_key"])
         end_ts = key_to_timestamp(scene["end_key"])
-        meaningful_deltas = [d for d in scene["deltas"] if d.lower() not in ("no change", "scene start")]
+        first_summary = summarize_entry(scene["first_entry"])
+        # Flatten change_summaries (list of lists) into meaningful items
+        all_changes = []
+        for cs_list in scene["change_summaries"]:
+            if isinstance(cs_list, list):
+                all_changes.extend(cs_list)
+            elif isinstance(cs_list, str) and cs_list:
+                all_changes.append(cs_list)
+        meaningful_changes = [c for c in all_changes if c]
         prompt_lines += [
             f"\n[{ts} --> {end_ts}]",
-            f"First frame description: {scene['first_description']}",
-            f"Deltas within scene ({len(meaningful_deltas)} changes):"
+            f"First frame: {first_summary}",
+            f"Changes within scene ({len(meaningful_changes)}):"
         ]
-        for d in meaningful_deltas[:20]:  # cap to avoid huge prompts
-            prompt_lines.append(f"  - {d}")
-        if len(meaningful_deltas) > 20:
-            prompt_lines.append(f"  ... and {len(meaningful_deltas) - 20} more changes")
+        for c in meaningful_changes[:20]:  # cap to avoid huge prompts
+            prompt_lines.append(f"  - {c}")
+        if len(meaningful_changes) > 20:
+            prompt_lines.append(f"  ... and {len(meaningful_changes) - 20} more changes")
 
+    prompt_text = "\n".join(prompt_lines)
     with open(prompt_file, "w", encoding="utf-8") as f:
-        f.write("\n".join(prompt_lines))
+        f.write(prompt_text)
 
     if not os.path.exists(response_file):
-        print(f"ANTIGRAVITY: Dedup prompt written to: {prompt_file}")
-        print(f"ANTIGRAVITY: Agent must write polished scene descriptions to: {response_file}")
-        sys.exit(AGENT_NEEDS_ANALYSIS)
+        if agent == "ide":
+            print(f"IDE: Dedup prompt written to: {prompt_file}")
+            print(f"IDE: Agent must write polished scene descriptions to: {response_file}")
+            sys.exit(AGENT_NEEDS_ANALYSIS)
+        # OpenAI or Gemini: call text API and write response
+        try:
+            if agent == "openai":
+                scene_map = _dedup_openai(prompt_text)
+            else:
+                scene_map = _dedup_gemini(prompt_text)
+            with open(response_file, "w", encoding="utf-8") as f:
+                json.dump(scene_map, f, indent=2, ensure_ascii=False)
+            print(f"API: Wrote dedup response to {response_file}")
+        except Exception as e:
+            print(f"Error calling dedup API: {e}")
+            raise
 
     with open(response_file, "r", encoding="utf-8") as f:
         scene_map = json.load(f)  # { "HH:MM:SS": "description", ... }
 
     print(f"Loaded {len(scene_map)} polished scene descriptions.")
 
-    # Find original VTT
-    vtt_files = glob.glob(os.path.join(video_dir, "*.vtt"))
-    vtt_files = [v for v in vtt_files if "_enriched" not in v and "_final" not in v]
+    # Resolve VTT file(s): pipeline.yml override (single file) or all non-enriched .vtt
+    if vtt_file_override:
+        single = os.path.join(video_dir, vtt_file_override)
+        if not os.path.isfile(single):
+            print(f"Error: vtt_file from config not found: {single}")
+            sys.exit(1)
+        vtt_files = [single]
+    else:
+        vtt_files = glob.glob(os.path.join(video_dir, "*.vtt"))
+        vtt_files = [v for v in vtt_files if "_enriched" not in v and "_final" not in v]
 
     for vtt_file in vtt_files:
         enriched_content = stitch_vtt(vtt_file, scene_map)
@@ -173,7 +279,8 @@ def run_deduplicator(video_id: str):
     for i, scene in enumerate(scenes):
         ts = key_to_timestamp(scene["start_key"])
         end_ts = key_to_timestamp(scene["end_key"])
-        description = scene_map.get(ts, scene["first_description"])
+        first_summary = summarize_entry(scene["first_entry"])
+        description = scene_map.get(ts, first_summary)
         duration_s = int(scene["end_key"]) - int(scene["start_key"]) + 1
         commentary_lines.append(f"## [{ts}] Scene {i+1} ({duration_s}s)")
         commentary_lines.append(f"{description}\n")
@@ -185,5 +292,12 @@ def run_deduplicator(video_id: str):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Deduplicate and polish dense analysis into final outputs")
     parser.add_argument("video_id", help="Video ID in data/")
+    parser.add_argument("--vtt-file", default=None, help="VTT filename in data/<video_id>/ (from pipeline.yml)")
+    parser.add_argument(
+        "--agent",
+        default=os.getenv("AGENT_DEDUP", os.getenv("AGENT", "ide")),
+        choices=["openai", "gemini", "ide", "antigravity"],
+        help="Agent: ide (IDE as AI agent), openai, gemini (default: ide)",
+    )
     args = parser.parse_args()
-    run_deduplicator(args.video_id)
+    run_deduplicator(args.video_id, agent=args.agent, vtt_file_override=args.vtt_file)

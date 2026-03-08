@@ -17,6 +17,9 @@ This skill provides guidelines for specialized subagents (e.g., browser-based te
 - Use `pytest` for all project testing.
 - When creating web components (if applicable), use Vanilla CSS as per project preference.
 
+## Domain Skills
+- **Trading Visual Extraction** — When analyzing video frames from trading education content, you MUST use the structured JSON schema defined in `skills/trading_visual_extraction/SKILL.md`. Do not use free-text description+delta format.
+
 ## Communication
 - Clearly report summarizing findings before finishing a task.
 - Be proactive but follow the user's intent as defined in previous context.

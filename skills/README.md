@@ -4,6 +4,7 @@ This directory contains instructions and guidelines for AI agents and subagents.
 
 ## Available Skills
 
+- **`trading_visual_extraction/`**: Authoritative JSON schema and production prompt for analyzing trading education video frames (used in Step 2 of the pipeline). See also `docs/trading_visual_extraction_spec.md`.
 - **`subagent_guidelines/`**: General instructions for specialized subagents working on this codebase.
 
 ## Adding a New Skill

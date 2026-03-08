@@ -18,14 +18,9 @@ Enriches a YouTube video's spoken transcript with rich **visual descriptions** g
 cp .env.template .env
 ```
 
-Edit `.env`:
-```env
-LLM_PROVIDER=antigravity   # antigravity | openai | gemini
-OPENAI_API_KEY=sk-...      # if using openai
-GOOGLE_API_KEY=...         # if using gemini
-```
+Edit `.env` (see `.env.template`). Optionally use **pipeline.yml** in the project root for project-wide agents (see [Project config](#project-config-pipelineyml) below).
 
-> **Antigravity mode** means the AI agent (you are reading this) performs all visual analysis directly using its `view_file` tool — no external API calls needed.
+> **ide** (IDE as AI agent) means any AI-driven IDE (e.g. Cursor) performs analysis: the pipeline writes prompt files and exits; you fill the response files and re-run — no external API calls needed.
 
 ---
 
@@ -56,21 +51,13 @@ YouTube URL / existing video_id
 The pipeline writes a prompt file and exits (code 10) after each batch:
 
 ```
-dense_batch_prompt_000001-000010.txt  ← agent reads this
-dense_batch_response_000001-000010.json  ← agent writes this
+dense_batch_prompt_000001-000010.txt  ← agent reads this (in batches/ subfolder)
+dense_batch_response_000001-000010.json  ← agent writes this (in batches/ subfolder)
 ```
 
-The prompt lists 10 frame paths. The agent opens each `.jpg`, writes a full description + delta, saves the JSON, then re-runs the pipeline. The pipeline merges the response and continues to the next batch.
+The prompt lists 10 frame paths. The agent opens each `.jpg`, writes a structured JSON extraction (using the schema from `skills/trading_visual_extraction/SKILL.md`), saves the JSON, then re-runs the pipeline. The pipeline merges the response and continues to the next batch.
 
-Each `frames_dense/frame_NNNNNN.txt` looks like:
-```
-[Description]
-MetaTrader 4 EUR/USD Daily chart. Downtrend from 1.2370 to 1.1580.
-Red horizontal levels at 1.1862, 1.1960, 1.2270.
-
-[Delta]
-Added: New red horizontal line at 1.1960
-```
+Each `frames_dense/frame_NNNNNN.json` contains the structured extraction output (see `docs/trading_visual_extraction_spec.md` for the full schema).
 
 ### Step 3 Detail — Deduplication
 
@@ -88,14 +75,15 @@ data/<video_id>/
 ├── *.vtt                              # Original spoken transcript
 ├── frames_dense/
 │   ├── frame_000001.jpg               # 1fps extracted frames
-│   ├── frame_000001.txt               # Per-frame description + delta
+│   ├── frame_000001.json              # Per-frame structured extraction
 │   └── ...
 ├── dense_index.json                   # Second → frame path index
-├── dense_batch_prompt_NNN-MMM.txt     # Batch prompt (agent input)
-├── dense_batch_response_NNN-MMM.json  # Batch response (agent output)
 ├── dense_analysis.json                # Full merged analysis
-├── dedup_prompt.txt                   # Scene grouping prompt
-├── dedup_response.json                # Polished scene descriptions
+├── batches/                           # Pipeline intermediate files
+│   ├── dense_batch_prompt_NNN-MMM.txt   # Batch prompt (agent input)
+│   ├── dense_batch_response_NNN-MMM.json # Batch response (agent output)
+│   ├── dedup_prompt.txt                 # Scene grouping prompt
+│   └── dedup_response.json              # Polished scene descriptions
 ├── *_enriched.vtt                     # ✅ FINAL: spoken + visual, timed
 └── video_commentary.md                # ✅ FINAL: visual-only screenplay
 ```
@@ -140,14 +128,38 @@ uv run main.py --video_id VIDEO_ID --batch-size 10
 uv run main.py --video_id VIDEO_ID --recapture --batch-size 10
 ```
 
+### Project config (pipeline.yml)
+
+One config per project in `pipeline.yml` (project root). You choose which folder to process when you run: `uv run main.py --video_id <folder>`.
+
+Optional **video_file** and **vtt_file**: filenames inside `data/<folder>/`. If set, the pipeline uses that video and that VTT instead of "first .mp4" / "all .vtt". You can set them in `default` (project-wide) or per folder under `videos:`.
+
+```yaml
+default:
+  agent_images: ide
+  agent_dedup: ide
+  batch_size: 10
+  # video_file: "My Video.mp4"   # optional; else first .mp4
+  # vtt_file: "My Video.vtt"    # optional; else all non-enriched .vtt
+
+videos:
+  "Lesson 2. Levels part 1":
+    video_file: "Lesson 2. Levels part 1.mp4"
+    vtt_file: "Lesson 2. Levels part 1.vtt"
+```
+
+**Precedence:** CLI > pipeline.yml (per-folder in `videos` then `default`) > env > built-in default.
+
 ### CLI Reference
 
 | Flag | Default | Description |
 |------|---------|-------------|
 | `--url URL` | — | YouTube URL to download and process |
 | `--video_id ID` | — | Use existing `data/<ID>/` folder (skip download) |
-| `--provider` | `antigravity` | LLM provider: `antigravity`, `openai`, `gemini` |
-| `--batch-size N` | `10` | Frames per agent batch (5–20 recommended) |
+| `--agent-images` | from config | Agent for Step 2 (frame analysis): `ide`, `openai`, `gemini` |
+| `--agent-dedup` | from config | Agent for Step 3 (dedup): `ide`, `openai`, `gemini` |
+| `--agent` | from config | Set both steps (used when step-specific flags not set) |
+| `--batch-size N` | from config | Frames per agent batch (5–20 recommended) |
 | `--recapture` | off | Force re-extract frames even if already done |
 
 ---
@@ -171,7 +183,7 @@ uv run main.py --video_id <VIDEO_ID> --batch-size 10
 ```
 
 - If downloading: use `--url` instead.
-- The pipeline will exit immediately after writing the first batch prompt.
+- The pipeline will exit immediately after writing the first batch prompt (when using ide for Step 2).
 
 ### 3. Loop until Step 2 is complete
 
@@ -192,11 +204,11 @@ For each frame in the batch:
 }
 ```
 
-### 4. Handle the deduplication step
+### 4. Handle the deduplication step (when using ide)
 
-After all 666+ frames are processed, the pipeline writes `dedup_prompt.txt`.
+After all frames are processed, the pipeline writes `dedup_prompt.txt` (when agent is ide).
 
-1. Read `dedup_prompt.txt` — it lists 50–80 scenes with all their deltas.
+1. Read `dedup_prompt.txt` — it lists scenes with all their deltas.
 2. Write `dedup_response.json` — one polished paragraph per scene timestamp.
 3. Re-run the pipeline one final time.
 

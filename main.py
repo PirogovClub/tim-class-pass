@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 
 DATA_DIR = "data"
 AGENT_NEEDS_ANALYSIS = 10
+AGENT_CHOICES = ["openai", "gemini", "ide"]
 
 
 def main():
@@ -20,16 +21,28 @@ def main():
     group.add_argument("--video_id", help="Process an existing video ID folder in data/")
 
     parser.add_argument(
-        "--provider",
-        default=os.getenv("LLM_PROVIDER", "antigravity"),
-        choices=["openai", "gemini", "antigravity"],
-        help="LLM provider (default: antigravity)"
+        "--agent-images",
+        default=None,
+        choices=AGENT_CHOICES,
+        help="Agent for frame analysis (Step 2): ide (IDE as AI agent), openai, gemini. Overrides pipeline.yml and env.",
+    )
+    parser.add_argument(
+        "--agent-dedup",
+        default=None,
+        choices=AGENT_CHOICES,
+        help="Agent for deduplication (Step 3): ide, openai, gemini. Overrides pipeline.yml and env.",
+    )
+    parser.add_argument(
+        "--agent",
+        default=None,
+        choices=AGENT_CHOICES,
+        help="Set both agent-images and agent-dedup (used when step-specific flags not set).",
     )
     parser.add_argument(
         "--batch-size",
         type=int,
-        default=10,
-        help="Number of frames per agent analysis batch (default: 10)"
+        default=None,
+        help="Frames per agent batch (default from pipeline.yml or 10). Overrides config.",
     )
     parser.add_argument(
         "--recapture",
@@ -39,9 +52,8 @@ def main():
 
     args = parser.parse_args()
 
-    logger.info("=" * 50)
-    logger.info("Transcript Enrichment Pipeline — Dense Mode")
-    logger.info(f"Provider: {args.provider} | Batch size: {args.batch_size}")
+    # video_id not known yet if --url; we'll resolve config after Step 0
+    video_id_before_download = args.video_id
     logger.info("=" * 50)
 
     os.makedirs(DATA_DIR, exist_ok=True)
@@ -63,6 +75,22 @@ def main():
 
         logger.info(f"Video ID: {video_id}")
 
+        # Resolve config: pipeline.yml (default + video) then CLI overrides
+        import config as pipeline_config
+        cfg = pipeline_config.get_config_for_video(video_id)
+        agent_images = args.agent_images if args.agent_images is not None else (args.agent if args.agent is not None else cfg["agent_images"])
+        agent_dedup = args.agent_dedup if args.agent_dedup is not None else (args.agent if args.agent is not None else cfg["agent_dedup"])
+        batch_size = args.batch_size if args.batch_size is not None else cfg["batch_size"]
+        video_file = cfg.get("video_file")
+        vtt_file = cfg.get("vtt_file")
+
+        logger.info("=" * 50)
+        logger.info("Transcript Enrichment Pipeline — Dense Mode")
+        logger.info(f"Agent (images): {agent_images} | Agent (dedup): {agent_dedup} | Batch size: {batch_size}")
+        if video_file or vtt_file:
+            logger.info(f"From pipeline.yml: video_file={video_file or 'auto'} | vtt_file={vtt_file or 'auto'}")
+        logger.info("=" * 50)
+
         # ── Step 1: Dense frame capture (skip if already done, unless --recapture) ────
         import dense_capturer
         frames_dir = os.path.join(DATA_DIR, video_id, "frames_dense")
@@ -74,7 +102,7 @@ def main():
                 logger.info("Step 1: Re-extracting frames (--recapture flag set)...")
             else:
                 logger.info("Step 1: Extracting 1 frame/second (first run)...")
-            dense_capturer.extract_dense_frames(video_id)
+            dense_capturer.extract_dense_frames(video_id, video_file_override=video_file)
         else:
             import json
             with open(index_file) as f:
@@ -86,12 +114,12 @@ def main():
         import dense_analyzer
         # Loop until all batches are done — each iteration may sys.exit(10)
         # so repeated runs of main.py progress through batches
-        dense_analyzer.run_analysis(video_id, args.batch_size)
+        dense_analyzer.run_analysis(video_id, batch_size, agent=agent_images)
 
         # ── Step 3: Deduplication + polish (agent-driven) ─────────────────
         logger.info("Step 3: Deduplicating and producing final outputs...")
         import deduplicator
-        deduplicator.run_deduplicator(video_id)
+        deduplicator.run_deduplicator(video_id, agent=agent_dedup, vtt_file_override=vtt_file)
 
         logger.info("=" * 50)
         logger.info(f"Pipeline Complete! Check data/{video_id}/")
