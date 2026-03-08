@@ -49,6 +49,16 @@ def main():
         action="store_true",
         help="Force re-extraction of frames even if frames_dense/ already exists"
     )
+    parser.add_argument(
+        "--parallel",
+        action="store_true",
+        help="Option B: Step 2 generates all batch task files + manifest, then exit 10; spawn subagents, then re-run with --merge-only",
+    )
+    parser.add_argument(
+        "--merge-only",
+        action="store_true",
+        help="Step 2 only: merge all dense_batch_response_*.json into dense_analysis.json, then run Step 3 (use after parallel subagents finished)",
+    )
 
     args = parser.parse_args()
 
@@ -84,6 +94,10 @@ def main():
         video_file = cfg.get("video_file")
         vtt_file = cfg.get("vtt_file")
 
+        if agent_images == "gemini" or agent_dedup == "gemini":
+            import gemini_client
+            gemini_client.require_gemini_key()
+
         logger.info("=" * 50)
         logger.info("Transcript Enrichment Pipeline — Dense Mode")
         logger.info(f"Agent (images): {agent_images} | Agent (dedup): {agent_dedup} | Batch size: {batch_size}")
@@ -112,9 +126,14 @@ def main():
         # ── Step 2: Dense analysis (batched, agent-driven) ────────────────
         logger.info("Step 2: Dense frame analysis (batched)...")
         import dense_analyzer
-        # Loop until all batches are done — each iteration may sys.exit(10)
-        # so repeated runs of main.py progress through batches
-        dense_analyzer.run_analysis(video_id, batch_size, agent=agent_images)
+        parallel_batches = args.parallel or cfg.get("parallel_batches") is True
+        dense_analyzer.run_analysis(
+            video_id,
+            batch_size,
+            agent=agent_images,
+            parallel_batches=parallel_batches,
+            merge_only=args.merge_only,
+        )
 
         # ── Step 3: Deduplication + polish (agent-driven) ─────────────────
         logger.info("Step 3: Deduplicating and producing final outputs...")

@@ -5,6 +5,12 @@ default:
   agent_images: ide
   agent_dedup: ide
   batch_size: 10
+  # Optional Gemini model selection (when agent is gemini). Step-specific overrides model_name.
+  # model_name: gemini-1.5-pro
+  # model_images: gemini-1.5-pro
+  # model_dedup: gemini-1.5-pro
+  # model_gaps: gemini-2.5-flash
+  # model_vlm: gemini-1.5-pro
   # video_file: "Lesson 2. Levels part 1.mp4"   # optional
   # vtt_file: "Lesson 2. Levels part 1.vtt"    # optional
 

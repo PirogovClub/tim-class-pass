@@ -62,24 +62,27 @@ def extract_gaps_openai(transcript_text: str) -> GapsResponse:
     )
     return completion.choices[0].message.parsed
 
-def extract_gaps_gemini(transcript_text: str) -> GapsResponse:
-    from google import genai
+def extract_gaps_gemini(transcript_text: str, video_id: str | None = None) -> GapsResponse:
+    import gemini_client
     from google.genai import types
-    
-    client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
-    
-    response = client.models.generate_content(
-        model=os.getenv("MODEL_NAME", "gemini-2.5-flash"),
-        contents=[
-            types.Content(role="user", parts=[types.Part.from_text(f"System: {get_system_prompt()}\n\nTranscript:\n{transcript_text}")])
-        ],
-        config=types.GenerateContentConfig(
-            response_mime_type="application/json",
-            response_schema=types.Schema.from_pydantic(GapsResponse)
-        )
+
+    model = gemini_client.get_model_for_step("gaps", video_id)
+    contents = [
+        types.Content(role="user", parts=[types.Part.from_text(text=f"System: {get_system_prompt()}\n\nTranscript:\n{transcript_text}")])
+    ]
+    config = types.GenerateContentConfig(
+        response_mime_type="application/json",
+        response_schema=types.Schema.from_pydantic(GapsResponse),
+        temperature=0.2,
     )
-    
-    return GapsResponse.model_validate_json(response.text)
+    if os.getenv("GEMINI_STREAMING"):
+        text = gemini_client.generate_with_retry_stream(model=model, contents=contents, config=config).strip()
+    else:
+        response = gemini_client.generate_with_retry(model=model, contents=contents, config=config)
+        text = (response.text or "").strip()
+    if not text:
+        raise ValueError("Gemini returned empty response for gap detection")
+    return GapsResponse.model_validate_json(text)
 
 def write_prompt_file(transcript_text: str, vtt_file: str, video_dir: str) -> tuple[str, str]:
     """Write the prompt file for agent-based processing. Returns (prompt_path, response_path)."""
@@ -96,11 +99,14 @@ def read_response_file(response_file: str) -> GapsResponse:
     return GapsResponse(**data)
 
 def process_video(video_id: str, provider: str):
+    if provider == "gemini":
+        import gemini_client
+        gemini_client.require_gemini_key()
     video_dir = os.path.join("data", video_id)
     if not os.path.exists(video_dir):
         print(f"Directory {video_dir} not found.")
         return
-        
+
     vtt_files = glob.glob(os.path.join(video_dir, "*.vtt"))
     vtt_files = [f for f in vtt_files if not f.endswith("_enriched.vtt")]
     
@@ -117,7 +123,7 @@ def process_video(video_id: str, provider: str):
         if provider == "openai":
             response = extract_gaps_openai(transcript_text)
         elif provider == "gemini":
-            response = extract_gaps_gemini(transcript_text)
+            response = extract_gaps_gemini(transcript_text, video_id=video_id)
         elif provider == "antigravity":
             # Write prompt file for agent processing then immediately read back the response
             prompt_file, response_file = write_prompt_file(transcript_text, vtt_file, video_dir)

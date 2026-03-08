@@ -39,29 +39,28 @@ def translate_openai(frame_path: str, context: str) -> str:
     )
     return response.choices[0].message.content.strip()
 
-def translate_gemini(frame_path: str, context: str) -> str:
-    from google import genai
+def translate_gemini(frame_path: str, context: str, video_id: str | None = None) -> str:
+    import gemini_client
     from google.genai import types
-    
-    client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
     prompt = get_vlm_prompt(context)
-    
     with open(frame_path, "rb") as f:
         image_bytes = f.read()
 
-    response = client.models.generate_content(
-        model=os.getenv("MODEL_NAME", "gemini-1.5-pro"),
+    response = gemini_client.generate_with_retry(
+        model=gemini_client.get_model_for_step("vlm", video_id),
         contents=[
             types.Content(
                 role="user",
                 parts=[
-                    types.Part.from_text(prompt),
+                    types.Part.from_text(text=prompt),
                     types.Part.from_bytes(data=image_bytes, mime_type="image/jpeg"),
                 ]
             )
-        ]
+        ],
+        config=types.GenerateContentConfig(temperature=0.4),
     )
-    return response.text.strip()
+    return (response.text or "").strip()
 
 def write_vlm_prompt(frame_path: str, context: str, gap_id: str, video_dir: str) -> tuple[str, str]:
     """Write the VLM prompt file for agent processing. Returns (prompt_path, response_path)."""
@@ -72,9 +71,12 @@ def write_vlm_prompt(frame_path: str, context: str, gap_id: str, video_dir: str)
     return prompt_file, response_file
 
 def run_translator(video_id: str, provider: str):
+    if provider == "gemini":
+        import gemini_client
+        gemini_client.require_gemini_key()
     video_dir = os.path.join("data", video_id)
     targets_file = os.path.join(video_dir, "targets.json")
-    
+
     if not os.path.exists(targets_file):
         print(f"Error: {targets_file} not found.")
         return
@@ -105,7 +107,7 @@ def run_translator(video_id: str, provider: str):
                     description = translate_openai(frame_path, context)
                     gap['vlm_description'] = description
                 elif provider == "gemini":
-                    description = translate_gemini(frame_path, context)
+                    description = translate_gemini(frame_path, context, video_id=video_id)
                     gap['vlm_description'] = description
                 elif provider == "antigravity":
                     prompt_file, response_file = write_vlm_prompt(frame_path, context, gap_id, video_dir)

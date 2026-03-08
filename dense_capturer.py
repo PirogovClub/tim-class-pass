@@ -58,14 +58,17 @@ def extract_dense_frames(video_id: str, video_file_override: str | None = None):
         output_pattern
     ]
     
-    result = subprocess.run(cmd, capture_output=True, text=True)
+    # Run with stderr not captured so FFmpeg progress (frame= ... fps= ...) is visible
+    result = subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=None, text=True)
     if result.returncode != 0:
-        print(f"FFmpeg error:\n{result.stderr}")
-        # Try with uv run prefix in case ffmpeg is not on PATH
+        # Re-run with capture to get error message
+        result_err = subprocess.run(cmd, capture_output=True, text=True)
+        print(f"FFmpeg error:\n{result_err.stderr or result_err.stdout or 'unknown'}")
         cmd_uv = ["uv", "run", "ffmpeg"] + cmd[1:]
-        result2 = subprocess.run(cmd_uv, capture_output=True, text=True)
+        result2 = subprocess.run(cmd_uv, stdout=subprocess.DEVNULL, stderr=None, text=True)
         if result2.returncode != 0:
-            print(f"FFmpeg (uv) error:\n{result2.stderr}")
+            result2_err = subprocess.run(cmd_uv, capture_output=True, text=True)
+            print(f"FFmpeg (uv) error:\n{result2_err.stderr or result2_err.stdout or 'unknown'}")
             sys.exit(1)
 
     # Build the index
