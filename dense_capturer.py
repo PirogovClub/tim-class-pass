@@ -5,7 +5,11 @@ import shutil
 import argparse
 import subprocess
 
-def extract_dense_frames(video_id: str):
+def extract_dense_frames(video_id: str, video_file_override: str | None = None):
+    """
+    Extract 1 fps frames. video_file_override: optional filename (e.g. from pipeline.yml)
+    relative to data/<video_id>/. If None, use first .mp4 in folder.
+    """
     video_dir = os.path.join("data", video_id)
     frames_dir = os.path.join(video_dir, "frames_dense")
     index_file = os.path.join(video_dir, "dense_index.json")
@@ -19,18 +23,30 @@ def extract_dense_frames(video_id: str):
     if os.path.exists(index_file):
         os.remove(index_file)
 
-    # Find the video file
+    # Resolve video file: pipeline.yml override or first .mp4
     video_file = None
-    for f in os.listdir(video_dir):
-        if f.endswith(".mp4") and not f.startswith("."):
-            video_file = os.path.join(video_dir, f)
-            break
+    if video_file_override:
+        candidate = os.path.join(video_dir, video_file_override)
+        if os.path.isfile(candidate):
+            video_file = candidate
+        else:
+            print(f"Error: video_file from config not found: {candidate}")
+            sys.exit(1)
+    if not video_file:
+        for f in os.listdir(video_dir):
+            if f.endswith(".mp4") and not f.startswith("."):
+                video_file = os.path.join(video_dir, f)
+                break
 
     if not video_file:
         print(f"Error: No .mp4 found in {video_dir}")
         sys.exit(1)
 
-    print(f"Extracting 1 frame/second from {video_file}...")
+    # Safe for Windows console (cp1252)
+    try:
+        print(f"Extracting 1 frame/second from {video_file}...")
+    except UnicodeEncodeError:
+        print(f"Extracting 1 frame/second from {video_id}...")
 
     # Use ffmpeg to extract 1 fps
     output_pattern = os.path.join(frames_dir, "frame_%06d.jpg")
