@@ -23,20 +23,19 @@ def _parse_json_from_response(text: str) -> dict:
     return json.loads(text)
 
 
-def _dedup_openai(prompt_text: str) -> dict:
-    from openai import OpenAI
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-    response = client.chat.completions.create(
-        model=os.getenv("MODEL_NAME", os.getenv("MODEL_DEDUP", "gpt-4o")),
-        messages=[{"role": "user", "content": prompt_text + "\n\nReturn only a JSON object. Keys are HH:MM:SS timestamps, values are polished description strings."}],
+def _dedup_openai(prompt_text: str, video_id: str | None = None) -> dict:
+    from helpers.clients import openai_client
+    text = openai_client.chat_completion(
+        [{"role": "user", "content": prompt_text + "\n\nReturn only a JSON object. Keys are HH:MM:SS timestamps, values are polished description strings."}],
+        step="dedup",
+        video_id=video_id,
         max_tokens=4000,
     )
-    text = response.choices[0].message.content or "{}"
-    return _parse_json_from_response(text)
+    return _parse_json_from_response(text or "{}")
 
 
 def _dedup_gemini(prompt_text: str, video_id: str | None = None) -> dict:
-    import gemini_client
+    from helpers.clients import gemini_client
     from google.genai import types
     model = gemini_client.get_model_for_step("dedup", video_id)
     contents = [
@@ -60,15 +59,27 @@ def _dedup_gemini(prompt_text: str, video_id: str | None = None) -> dict:
 
 def group_scenes(analysis: dict) -> list[dict]:
     """
-    Groups consecutive frames into scenes based on material_change.
-    Returns a list of scene dicts: {start_key, end_key, frames, scene_type, change_summaries}
+    Groups consecutive frames into scenes based on lesson_relevant and scene_boundary.
+    material_change is used only as a backward-compatible fallback when lesson_relevant
+    is missing (e.g. old Gemini batch files).
+    Returns a list of scene dicts: {start_key, end_key, frames, scene_type, change_summaries,
+    first_entry, first_relevant_entry}
+
+    first_entry: the first frame in the scene (may be minimal/skipped).
+    first_relevant_entry: the first lesson_relevant frame in the scene; falls back to first_entry.
+    Downstream consumers should prefer first_relevant_entry for rich summarization.
     """
     scenes = []
     current_scene = None
 
     for key in sorted(analysis.keys()):
         entry = analysis[key]
-        is_change = entry.get("material_change", True)  # default True for backwards compat
+        lesson_relevant = entry.get("lesson_relevant")
+        if lesson_relevant is None:
+            lesson_relevant = entry.get("material_change", True)
+        scene_boundary = entry.get("scene_boundary")
+        if scene_boundary is None:
+            scene_boundary = bool(lesson_relevant and entry.get("material_change", True))
 
         if current_scene is None:
             current_scene = {
@@ -76,24 +87,33 @@ def group_scenes(analysis: dict) -> list[dict]:
                 "end_key": key,
                 "frames": [key],
                 "change_summaries": [entry.get("change_summary", [])],
-                "first_entry": entry
+                "first_entry": entry,
+                "first_relevant_entry": entry if lesson_relevant else None,
             }
-        elif is_change:
-            # Close current scene and start new one
+        elif scene_boundary:
+            # Finalize previous scene: fill first_relevant_entry fallback
+            if current_scene["first_relevant_entry"] is None:
+                current_scene["first_relevant_entry"] = current_scene["first_entry"]
             scenes.append(current_scene)
             current_scene = {
                 "start_key": key,
                 "end_key": key,
                 "frames": [key],
                 "change_summaries": [entry.get("change_summary", [])],
-                "first_entry": entry
+                "first_entry": entry,
+                "first_relevant_entry": entry if lesson_relevant else None,
             }
         else:
             current_scene["end_key"] = key
             current_scene["frames"].append(key)
             current_scene["change_summaries"].append(entry.get("change_summary", []))
+            # Track first relevant entry within the scene
+            if current_scene["first_relevant_entry"] is None and lesson_relevant:
+                current_scene["first_relevant_entry"] = entry
 
     if current_scene:
+        if current_scene["first_relevant_entry"] is None:
+            current_scene["first_relevant_entry"] = current_scene["first_entry"]
         scenes.append(current_scene)
 
     return scenes
@@ -166,6 +186,8 @@ def run_deduplicator(video_id: str, agent: str = "ide", vtt_file_override: str |
     def summarize_entry(entry: dict) -> str:
         """Build a human-readable summary from a structured frame entry."""
         parts = []
+        if entry.get("explanation_summary"):
+            parts.append(f"Summary: {entry['explanation_summary']}")
         vis_type = entry.get("visual_representation_type")
         if vis_type:
             parts.append(f"Type: {vis_type}")
@@ -182,6 +204,11 @@ def run_deduplicator(video_id: str, agent: str = "ide", vtt_file_override: str |
         interp = state.get("trading_relevant_interpretation", [])
         if interp:
             parts.append(f"Interpretation: {'; '.join(interp)}")
+        extracted_facts = entry.get("extracted_facts") or {}
+        extracted_state = extracted_facts.get("current_state", {}) if isinstance(extracted_facts, dict) else {}
+        extracted_visual_facts = extracted_state.get("visual_facts", [])
+        if extracted_visual_facts and not facts:
+            parts.append(f"Facts: {'; '.join(extracted_visual_facts)}")
         # Fallback for legacy format
         if not parts:
             desc = entry.get("description", "")
@@ -213,7 +240,9 @@ def run_deduplicator(video_id: str, agent: str = "ide", vtt_file_override: str |
     for scene in scenes:
         ts = key_to_timestamp(scene["start_key"])
         end_ts = key_to_timestamp(scene["end_key"])
-        first_summary = summarize_entry(scene["first_entry"])
+        # Prefer first_relevant_entry for rich summarization; fall back to first_entry for legacy data
+        anchor_entry = scene.get("first_relevant_entry") or scene["first_entry"]
+        first_summary = summarize_entry(anchor_entry)
         # Flatten change_summaries (list of lists) into meaningful items
         all_changes = []
         for cs_list in scene["change_summaries"]:
@@ -255,7 +284,7 @@ def run_deduplicator(video_id: str, agent: str = "ide", vtt_file_override: str |
         # OpenAI or Gemini: call text API and write response
         try:
             if agent == "openai":
-                scene_map = _dedup_openai(prompt_text)
+                scene_map = _dedup_openai(prompt_text, video_id=video_id)
             else:
                 scene_map = _dedup_gemini(prompt_text, video_id)
             with open(response_file, "w", encoding="utf-8") as f:

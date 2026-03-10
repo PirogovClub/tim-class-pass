@@ -17,30 +17,19 @@ def encode_image(image_path: str) -> str:
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode('utf-8')
 
-def translate_openai(frame_path: str, context: str) -> str:
-    from openai import OpenAI
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-    
-    base64_image = encode_image(frame_path)
+def translate_openai(frame_path: str, context: str, video_id: str | None = None) -> str:
+    from helpers.clients import openai_client
     prompt = get_vlm_prompt(context)
-    
-    response = client.chat.completions.create(
-        model=os.getenv("MODEL_NAME", "gpt-4o"),
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {"type": "text", "text": prompt},
-                    {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}}
-                ]
-            }
-        ],
-        max_tokens=300
+    return openai_client.chat_completion_with_image(
+        prompt,
+        frame_path,
+        step="vlm",
+        video_id=video_id,
+        max_tokens=300,
     )
-    return response.choices[0].message.content.strip()
 
 def translate_gemini(frame_path: str, context: str, video_id: str | None = None) -> str:
-    import gemini_client
+    from helpers.clients import gemini_client
     from google.genai import types
 
     prompt = get_vlm_prompt(context)
@@ -72,7 +61,7 @@ def write_vlm_prompt(frame_path: str, context: str, gap_id: str, video_dir: str)
 
 def run_translator(video_id: str, provider: str):
     if provider == "gemini":
-        import gemini_client
+        from helpers.clients import gemini_client
         gemini_client.require_gemini_key()
     video_dir = os.path.join("data", video_id)
     targets_file = os.path.join(video_dir, "targets.json")
@@ -104,7 +93,7 @@ def run_translator(video_id: str, provider: str):
             
             try:
                 if provider == "openai":
-                    description = translate_openai(frame_path, context)
+                    description = translate_openai(frame_path, context, video_id=video_id)
                     gap['vlm_description'] = description
                 elif provider == "gemini":
                     description = translate_gemini(frame_path, context, video_id=video_id)

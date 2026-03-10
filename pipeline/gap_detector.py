@@ -48,12 +48,12 @@ IMPORTANT: Output ONLY strictly valid JSON according to this schema:
 }
 """
 
-def extract_gaps_openai(transcript_text: str) -> GapsResponse:
-    from openai import OpenAI
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-    
+def extract_gaps_openai(transcript_text: str, video_id: str | None = None) -> GapsResponse:
+    from helpers.clients import openai_client
+    client = openai_client.get_client()
+    model = openai_client.get_model_for_step("gaps", video_id)
     completion = client.beta.chat.completions.parse(
-        model=os.getenv("MODEL_NAME", "gpt-4o"),
+        model=model,
         messages=[
             {"role": "system", "content": get_system_prompt()},
             {"role": "user", "content": f"Transcript:\n{transcript_text}"}
@@ -63,7 +63,7 @@ def extract_gaps_openai(transcript_text: str) -> GapsResponse:
     return completion.choices[0].message.parsed
 
 def extract_gaps_gemini(transcript_text: str, video_id: str | None = None) -> GapsResponse:
-    import gemini_client
+    from helpers.clients import gemini_client
     from google.genai import types
 
     model = gemini_client.get_model_for_step("gaps", video_id)
@@ -100,7 +100,7 @@ def read_response_file(response_file: str) -> GapsResponse:
 
 def process_video(video_id: str, provider: str):
     if provider == "gemini":
-        import gemini_client
+        from helpers.clients import gemini_client
         gemini_client.require_gemini_key()
     video_dir = os.path.join("data", video_id)
     if not os.path.exists(video_dir):
@@ -121,7 +121,7 @@ def process_video(video_id: str, provider: str):
             transcript_text = f.read()
 
         if provider == "openai":
-            response = extract_gaps_openai(transcript_text)
+            response = extract_gaps_openai(transcript_text, video_id=video_id)
         elif provider == "gemini":
             response = extract_gaps_gemini(transcript_text, video_id=video_id)
         elif provider == "antigravity":

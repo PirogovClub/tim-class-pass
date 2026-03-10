@@ -63,11 +63,13 @@ Mark `material_change: false` for:
   "screen_type": "chart|platform|browser|slides|mixed|unknown",
   "educational_event_type": [
     "new_example_chart", "timeframe_switch", "symbol_switch",
-    "level_identification", "setup_annotation", "pattern_highlight",
-    "entry_discussion", "stop_discussion", "target_discussion",
+    "level_identification", "level_explanation", "setup_annotation", "pattern_highlight",
+    "entry_discussion", "stop_discussion", "stop_loss_placement", "target_discussion",
     "risk_reward_discussion", "atr_discussion",
     "zoom_for_context", "zoom_for_detail",
-    "rule_slide", "whiteboard_logic", "none"
+    "rule_slide", "whiteboard_logic",
+    "concept_introduction", "chart_introduction", "pattern_explanation", "trade_management",
+    "none"
   ],
   "current_state": {
     "symbol": "string|null",
@@ -84,12 +86,18 @@ Mark `material_change: false` for:
     },
     "drawn_objects": [
       {
-        "type": "horizontal_level|trendline|arrow|text_label|rectangle|circle|highlight_zone|other",
+        "type": "horizontal_level|trendline|arrow|text_label|rectangle|circle|highlight_zone|dashed_line|other",
         "value_or_location": "string|null",
         "label": "string|null"
       }
     ],
-    "visible_annotations": ["string"],
+    "visible_annotations": [
+      {
+        "text": "string",
+        "location": "string|null",
+        "language": "string|null"
+      }
+    ],
     "cursor_or_highlight": {
       "present": true,
       "location": "string|null",
@@ -98,7 +106,8 @@ Mark `material_change: false` for:
     "visual_facts": ["string"],
     "structural_pattern_visible": [
       "breakout", "retest", "false_breakout", "pullback",
-      "trend_continuation", "range", "reversal"
+      "trend_continuation", "range", "reversal",
+      "price_action_around_level", "stop_hunt", "liquidity_grab", "level_test"
     ],
     "trading_relevant_interpretation": ["string"],
     "readability": {
@@ -109,11 +118,11 @@ Mark `material_change: false` for:
   },
   "extracted_entities": {
     "setup_names": ["string"],
-    "level_values": ["string"],
+    "level_values": ["string OR {type, label, value_description}"],
     "risk_reward_values": ["string"],
     "atr_values": ["string"],
     "entry_values": ["string"],
-    "stop_values": ["string"],
+    "stop_values": ["string OR {type, label, value_description}"],
     "target_values": ["string"],
     "pattern_terms": ["string"]
   },
@@ -129,12 +138,14 @@ Mark `material_change: false` for:
 |-------|------|
 | `symbol`, `timeframe` | Only fill if clearly visible. Otherwise `null`. |
 | `visible_date_range`, `visible_price_range` | Best-effort text summary. Exactness is optional. |
-| `drawn_objects` | Capture all objects relevant to trading logic (levels, arrows, zones, labels). |
-| `visible_annotations` | Copy readable labels exactly (e.g., `"LP Long"`, `"False breakout"`). |
-| `visual_facts` | Only directly visible facts. No inferred claims. |
-| `structural_pattern_visible` | Use generic structure names, not strong claims. |
-| `trading_relevant_interpretation` | Low-inference only (e.g., `"Possible near retest example"`). |
-| `extracted_entities` | Only values actually visible on screen. |
+| `drawn_objects` | Capture all objects relevant to trading logic (levels, arrows, zones, labels). Use structured `{type, value_or_location, label}` form. |
+| `visible_annotations` | Prefer structured `{text, location, language}` form. Copy readable labels exactly. |
+| `visual_facts` | Only directly visible facts. No inferred claims. **For abstract teaching frames: write 4-6 full sentences** describing bars, levels, labels, and relative positions. |
+| `structural_pattern_visible` | Use generic structure names. For frames showing bars interacting with a level, use `price_action_around_level`. |
+| `trading_relevant_interpretation` | Low-inference only. **For abstract teaching frames: write 2-3 short bullet-style items** covering what the diagram illustrates. |
+| `extracted_entities.level_values` | Use `{type, label, value_description}` objects when no numeric values exist but labels are visible. |
+| `extracted_entities.stop_values` | Use `{type: "conceptual", label, value_description}` when stop zones are labeled without exact values. |
+| `extracted_entities` | Only values or terms actually visible on screen. Never return "N/A" — omit the field or return empty list instead. |
 | `notes` | Optional concise note, or `null`. |
 
 ---
@@ -145,13 +156,18 @@ Mark `material_change: false` for:
 |------|------------|
 | `live_chart` | Platform-based chart with market data, likely interactive |
 | `static_chart_screenshot` | Captured chart image, not clearly live |
-| `abstract_bar_diagram` | Generic bar-style market structure drawing |
-| `candlestick_sketch` | Simplified candlestick illustration |
+| `abstract_bar_diagram` | Generic bar-style drawing where bars represent schematic price vs a level. **Use when bars interact with a level, stop zone, or liquidity area without real ticker/date data.** |
+| `candlestick_sketch` | Simplified candlestick illustration focusing on candle anatomy or pattern formation, not level interaction |
 | `hand_drawn_pattern` | Freehand drawing showing structure, levels, arrows |
 | `whiteboard_explanation` | Board-based explanation with logic or steps |
 | `text_slide` | Slide with text/bullets, limited chart content |
 | `mixed_visual` | Combination of chart, notes, annotations, diagrams |
 | `unknown` | Cannot be reliably classified |
+
+### Disambiguation: `abstract_bar_diagram` vs `candlestick_sketch`
+
+- If the drawing shows **bars/candles interacting with a level, stop area, or liquidity zone** → use `abstract_bar_diagram`
+- If the drawing focuses on **candlestick anatomy, formation, or pattern shapes** (e.g. explaining what a pinbar looks like) → use `candlestick_sketch`
 
 ---
 
@@ -175,21 +191,30 @@ The screen may show any of the following:
 
 Do NOT assume every frame is a real market chart.
 
-You will receive:
-1. the current screenshot
-2. the previous extracted state (optional)
-3. the frame timestamp if available
+## Visual Representation Type — disambiguation
 
-Your task:
-1. Determine whether the current screenshot is materially different from the previous screenshot.
-2. Identify the visual representation type.
-3. Identify whether the frame is a real market example or an abstract teaching example.
-4. Choose the correct extraction mode: market_specific, structural_only, or conceptual_only.
-5. If there is a material change, extract the current trading-relevant visual state in structured JSON.
-6. Separate direct visual facts from low-inference interpretation.
-7. Do not invent exact numeric values, symbols, dates, or timeframes if they are abstract, unreadable, or unclear.
-8. Copy visible labels exactly when readable.
-9. Be concise, conservative, and factual.
+Use abstract_bar_diagram when bars/candles show schematic price movement vs a level, stop zone, or liquidity area.
+Use candlestick_sketch only when teaching candlestick anatomy or pattern formation (not level interaction).
+
+## Output density requirements
+
+For ABSTRACT TEACHING FRAMES (abstract_bar_diagram, hand_drawn_pattern, candlestick_sketch, whiteboard_explanation):
+- visual_facts: write 4-6 FULL SENTENCES about visible elements (position, color, label, level interaction).
+  Good: "A horizontal white line runs across the center labeled 'Уровень лимитного игрока'."
+  Bad: "Horizontal line."
+- trading_relevant_interpretation: write 2-3 SHORT BULLET ITEMS with low-inference trading insight.
+
+## Conceptual entities
+
+When labels identify zones without numbers:
+- level_values: { "type": "horizontal", "label": "<label>", "value_description": "conceptual price level" }
+- stop_values: { "type": "conceptual", "label": "<label>", "value_description": "area below/above level" }
+- Never return "N/A". Use [] if nothing visible.
+
+## Structural patterns for abstract diagrams
+
+Use price_action_around_level when bars interact with a level.
+Other patterns: stop_hunt, liquidity_grab, level_test, breakout, retest, false_breakout, pullback, reversal.
 
 If there is no material change, return:
 { "frame_timestamp": "<timestamp if available, else null>", "material_change": false }
@@ -200,9 +225,7 @@ Rules:
 - Separate direct visual facts from interpretation.
 - If the visual is abstract, do not force exact prices, dates, symbols, or timeframes.
 - If the visual is hand-drawn, focus on structure, arrows, levels, and labels.
-- If the visual is a real chart, capture exact values when clearly readable.
-- If text is unclear, say null or mark confidence low.
-- If only approximate reading is possible, explicitly say approx.
-- Keep wording concise and structured.
+- drawn_objects: use structured { type, value_or_location, label } objects.
+- visible_annotations: use structured { text, location, language } objects; copy ALL labels exactly.
 - Return JSON only.
 ```

@@ -139,9 +139,12 @@ A captured chart image, not clearly live.
 
 #### `abstract_bar_diagram`
 A generic bar-style market structure drawing used for explanation.
+**Use when:** bars represent schematic price movement against a level without real ticker/date data.
+**Prefer over `candlestick_sketch`** when the primary purpose is showing price interacting with a level, stop zone, or liquidity area.
 
 #### `candlestick_sketch`
 A simplified candlestick illustration rather than a real market chart.
+**Use when:** the drawing focuses on candlestick anatomy, pattern shapes, or formation structure, not level interaction.
 
 #### `hand_drawn_pattern`
 A freehand drawing showing structure, levels, arrows, or a setup.
@@ -157,6 +160,21 @@ A combination of chart, notes, annotations, and/or diagrams.
 
 #### `unknown`
 Cannot be reliably classified.
+
+---
+
+## 5b. Screen type values
+
+Use one of the following for `screen_type`:
+
+- `chart` — primary screen is a chart
+- `chart_with_instructor` — chart visible alongside instructor overlay or annotation layer
+- `chart_with_annotation` — chart with heavy annotation focus
+- `platform` — full trading platform UI
+- `browser` — browser-based content
+- `slides` — presentation slides / text-heavy
+- `mixed` — combination of chart and non-chart content
+- `unknown` — cannot be reliably classified
 
 ---
 
@@ -214,10 +232,12 @@ Use zero or more of the following:
 - `timeframe_switch`
 - `symbol_switch`
 - `level_identification`
+- `level_explanation`
 - `setup_annotation`
 - `pattern_highlight`
 - `entry_discussion`
 - `stop_discussion`
+- `stop_loss_placement`
 - `target_discussion`
 - `risk_reward_discussion`
 - `atr_discussion`
@@ -225,6 +245,10 @@ Use zero or more of the following:
 - `zoom_for_detail`
 - `rule_slide`
 - `whiteboard_logic`
+- `concept_introduction`
+- `chart_introduction`
+- `pattern_explanation`
+- `trade_management`
 - `none`
 
 These tags help convert frame-level extraction into class-level knowledge notes.
@@ -243,16 +267,18 @@ These tags help convert frame-level extraction into class-level knowledge notes.
   "visual_representation_type": "live_chart|static_chart_screenshot|abstract_bar_diagram|candlestick_sketch|hand_drawn_pattern|whiteboard_explanation|text_slide|mixed_visual|unknown",
   "example_type": "real_market_example|abstract_teaching_example|mixed|unknown",
   "extraction_mode": "market_specific|structural_only|conceptual_only",
-  "screen_type": "chart|platform|browser|slides|mixed|unknown",
+  "screen_type": "chart|chart_with_instructor|chart_with_annotation|platform|browser|slides|mixed|unknown",
   "educational_event_type": [
     "new_example_chart",
     "timeframe_switch",
     "symbol_switch",
     "level_identification",
+    "level_explanation",
     "setup_annotation",
     "pattern_highlight",
     "entry_discussion",
     "stop_discussion",
+    "stop_loss_placement",
     "target_discussion",
     "risk_reward_discussion",
     "atr_discussion",
@@ -260,13 +286,17 @@ These tags help convert frame-level extraction into class-level knowledge notes.
     "zoom_for_detail",
     "rule_slide",
     "whiteboard_logic",
+    "concept_introduction",
+    "chart_introduction",
+    "pattern_explanation",
+    "trade_management",
     "none"
   ],
   "current_state": {
     "symbol": "string|null",
     "timeframe": "string|null",
     "platform": "string|null",
-    "chart_type": "candlestick|bar|line|sketch|unknown",
+    "chart_type": "candlestick|bar|bar_diagram|line|sketch|unknown",
     "visible_date_range": "string|null",
     "visible_price_range": "string|null",
     "chart_layout": {
@@ -277,13 +307,17 @@ These tags help convert frame-level extraction into class-level knowledge notes.
     },
     "drawn_objects": [
       {
-        "type": "horizontal_level|trendline|arrow|text_label|rectangle|circle|highlight_zone|other",
+        "type": "horizontal_level|trendline|arrow|text_label|rectangle|circle|highlight_zone|dashed_line|other",
         "value_or_location": "string|null",
         "label": "string|null"
       }
     ],
     "visible_annotations": [
-      "string"
+      {
+        "text": "string",
+        "location": "string|null",
+        "language": "string|null"
+      }
     ],
     "cursor_or_highlight": {
       "present": true,
@@ -291,7 +325,7 @@ These tags help convert frame-level extraction into class-level knowledge notes.
       "target": "string|null"
     },
     "visual_facts": [
-      "string"
+      "string (full sentence; 4-6 sentences for abstract teaching frames)"
     ],
     "structural_pattern_visible": [
       "breakout",
@@ -300,10 +334,14 @@ These tags help convert frame-level extraction into class-level knowledge notes.
       "pullback",
       "trend_continuation",
       "range",
-      "reversal"
+      "reversal",
+      "price_action_around_level",
+      "stop_hunt",
+      "liquidity_grab",
+      "level_test"
     ],
     "trading_relevant_interpretation": [
-      "string"
+      "string (low-inference; 2-3 items for abstract teaching frames)"
     ],
     "readability": {
       "text_confidence": "high|medium|low",
@@ -313,11 +351,15 @@ These tags help convert frame-level extraction into class-level knowledge notes.
   },
   "extracted_entities": {
     "setup_names": ["string"],
-    "level_values": ["string"],
+    "level_values": [
+      "string OR { type: string, label: string, value_description: string }"
+    ],
     "risk_reward_values": ["string"],
     "atr_values": ["string"],
     "entry_values": ["string"],
-    "stop_values": ["string"],
+    "stop_values": [
+      "string OR { type: string, label: string, value_description: string }"
+    ],
     "target_values": ["string"],
     "pattern_terms": ["string"]
   },

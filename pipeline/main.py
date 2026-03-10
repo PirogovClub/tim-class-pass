@@ -1,0 +1,226 @@
+import sys
+import os
+import logging
+import click
+from dotenv import load_dotenv
+
+load_dotenv()
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+DATA_DIR = "data"
+AGENT_NEEDS_ANALYSIS = 10
+IMAGE_AGENT_CHOICES = ["openai", "gemini", "ide"]
+DEDUP_AGENT_CHOICES = ["openai", "gemini", "ide"]
+
+
+@click.command()
+@click.option("--url", help="YouTube video URL to download and process")
+@click.option("--video_id", help="Process an existing video ID folder in data/")
+@click.option(
+    "--agent-images",
+    type=click.Choice(IMAGE_AGENT_CHOICES),
+    default=None,
+    help="Agent for frame analysis (Step 2): ide (IDE as AI agent), openai, gemini. Overrides pipeline.yml and env.",
+)
+@click.option(
+    "--agent-dedup",
+    type=click.Choice(DEDUP_AGENT_CHOICES),
+    default=None,
+    help="Agent for deduplication (Step 3): ide, openai, gemini. Overrides pipeline.yml and env.",
+)
+@click.option(
+    "--agent",
+    type=click.Choice(IMAGE_AGENT_CHOICES),
+    default=None,
+    help="Set both agent-images and agent-dedup (used when step-specific flags not set).",
+)
+@click.option(
+    "--batch-size",
+    type=int,
+    default=None,
+    help="Frames per agent batch (default from pipeline.yml or 10). Overrides config.",
+)
+@click.option(
+    "--workers",
+    type=int,
+    default=None,
+    help="Max workers for frame extraction + structural compare (cap 8). Overrides config.",
+)
+@click.option(
+    "--recapture",
+    is_flag=True,
+    help="Force re-extraction of frames even if frames_dense/ already exists",
+)
+@click.option(
+    "--recompare",
+    is_flag=True,
+    help="Force re-run of structural compare even if structural_index.json exists",
+)
+@click.option(
+    "--parallel",
+    is_flag=True,
+    help="Option B: Step 2 generates all batch task files + manifest, then exit 10; spawn subagents, then re-run with --merge-only",
+)
+@click.option(
+    "--merge-only",
+    is_flag=True,
+    help="Step 2 only: merge all dense_batch_response_*.json into dense_analysis.json, then run Step 3 (use after parallel subagents finished)",
+)
+def main(
+    url,
+    video_id,
+    agent_images,
+    agent_dedup,
+    agent,
+    batch_size,
+    workers,
+    recapture,
+    recompare,
+    parallel,
+    merge_only,
+):
+    """Multimodal YouTube Video Transcript Enrichment Pipeline (Dense Mode)."""
+    if (url and video_id) or (not url and not video_id):
+        raise click.UsageError("Exactly one of --url or --video_id is required.")
+
+    logger.info("=" * 50)
+
+    os.makedirs(DATA_DIR, exist_ok=True)
+
+    try:
+        video_id_resolved = video_id
+
+        # ── Step 0: Download (optional) ───────────────────────────────────
+        if url:
+            from pipeline import downloader
+            logger.info("Step 0: Downloading video/transcripts...")
+            video_id_resolved = downloader.extract_video_id(url)
+            if not video_id_resolved:
+                logger.error("Failed to extract video ID.")
+                sys.exit(1)
+            if not downloader.download_video_and_transcript(url, video_id_resolved):
+                logger.error("Download failed.")
+                sys.exit(1)
+
+        logger.info(f"Video ID: {video_id_resolved}")
+
+        # Resolve config: pipeline.yml (default + video) then CLI overrides
+        from helpers import config as pipeline_config
+        cfg = pipeline_config.get_config_for_video(video_id_resolved)
+        agent_images_resolved = agent_images if agent_images is not None else (agent if agent is not None else cfg["agent_images"])
+        default_agent_for_dedup = agent if agent in DEDUP_AGENT_CHOICES else None
+        agent_dedup_resolved = agent_dedup if agent_dedup is not None else (default_agent_for_dedup if default_agent_for_dedup is not None else cfg["agent_dedup"])
+        batch_size_resolved = batch_size if batch_size is not None else cfg["batch_size"]
+        video_file = cfg.get("video_file")
+        vtt_file = cfg.get("vtt_file")
+        cfg_workers = cfg.get("workers")
+        if workers is not None:
+            requested_workers = workers
+        elif cfg_workers is not None:
+            requested_workers = cfg_workers
+        else:
+            requested_workers = None
+        default_workers = min(os.cpu_count() or 1, 8)
+        if requested_workers is None:
+            max_workers = default_workers
+        else:
+            try:
+                requested_workers = int(requested_workers)
+            except (TypeError, ValueError):
+                requested_workers = default_workers
+            if requested_workers < 1:
+                requested_workers = 1
+            max_workers = min(requested_workers, 8)
+
+        if agent_images_resolved == "gemini" or agent_dedup_resolved == "gemini":
+            from helpers.clients import gemini_client
+            gemini_client.require_gemini_key()
+
+        logger.info("=" * 50)
+        logger.info("Transcript Enrichment Pipeline — Dense Mode")
+        logger.info(f"Agent (images): {agent_images_resolved} | Agent (dedup): {agent_dedup_resolved} | Batch size: {batch_size_resolved}")
+        logger.info(f"Max workers: {max_workers}")
+        if video_file or vtt_file:
+            logger.info(f"From pipeline.yml: video_file={video_file or 'auto'} | vtt_file={vtt_file or 'auto'}")
+        logger.info("=" * 50)
+
+        # ── Step 1: Dense frame capture (skip if already done, unless --recapture) ────
+        from pipeline import dense_capturer
+        frames_dir = os.path.join(DATA_DIR, video_id_resolved, "frames_dense")
+        index_file = os.path.join(DATA_DIR, video_id_resolved, "dense_index.json")
+        already_captured = os.path.exists(index_file) and os.path.isdir(frames_dir)
+
+        if recapture or not already_captured:
+            if recapture:
+                logger.info("Step 1: Re-extracting frames (--recapture flag set)...")
+            else:
+                logger.info("Step 1: Extracting 1 frame/second (first run)...")
+            dense_capturer.extract_dense_frames(
+                video_id_resolved,
+                video_file_override=video_file,
+                max_workers=max_workers,
+            )
+        else:
+            import json
+            with open(index_file) as f:
+                n = len(json.load(f))
+            logger.info(f"Step 1: Skipped — {n} frames already extracted. Use --recapture to redo.")
+
+        # ── Step 1.5: Structural compare (SSIM pre-filter) ───────────────
+        from pipeline import structural_compare
+        logger.info("Step 1.5: Structural compare (SSIM pre-filter)...")
+        structural_compare.run_structural_compare(
+            video_id_resolved,
+            force=bool(recompare or recapture),
+            max_workers=max_workers,
+        )
+
+        # ── Step 1.6: LLM queue selection (diff threshold) ────────────────
+        from pipeline import select_llm_frames
+        logger.info("Step 1.6: Building LLM queue (diff > 14% + previous)...")
+        select_llm_frames.build_llm_queue(video_id_resolved, threshold=0.14)
+
+        # ── Step 1.7: Build LLM prompt files ──────────────────────────────
+        from pipeline import build_llm_prompts
+        logger.info("Step 1.7: Building LLM prompts...")
+        build_llm_prompts.build_llm_prompts(video_id_resolved)
+
+        # ── Step 2: Dense analysis (batched, agent-driven) ────────────────
+        logger.info("Step 2: Dense frame analysis (batched)...")
+        from pipeline import dense_analyzer
+        parallel_batches = parallel or cfg.get("parallel_batches") is True
+        dense_analyzer.run_analysis(
+            video_id_resolved,
+            batch_size_resolved,
+            agent=agent_images_resolved,
+            parallel_batches=parallel_batches,
+            merge_only=merge_only,
+        )
+
+        # ── Step 3: Deduplication + polish (agent-driven) ─────────────────
+        logger.info("Step 3: Deduplicating and producing final outputs...")
+        from pipeline import deduplicator
+        deduplicator.run_deduplicator(video_id_resolved, agent=agent_dedup_resolved, vtt_file_override=vtt_file)
+
+        logger.info("=" * 50)
+        logger.info(f"Pipeline Complete! Check data/{video_id_resolved}/")
+        logger.info(f"  • *_enriched.vtt  — Timed VTT with visual descriptions")
+        logger.info(f"  • video_commentary.md — Full non-timed visual screenplay")
+        logger.info("=" * 50)
+
+    except SystemExit as e:
+        if e.code == AGENT_NEEDS_ANALYSIS:
+            logger.info("=" * 50)
+            logger.info("Pipeline paused — agent analysis required.")
+            logger.info("Read the batch prompt file, write the response, then re-run this command.")
+            logger.info("=" * 50)
+            sys.exit(AGENT_NEEDS_ANALYSIS)
+        raise
+    except Exception as e:
+        logger.exception(f"Pipeline failed: {e}")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
