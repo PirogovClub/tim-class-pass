@@ -5,7 +5,7 @@ description: How to use the Gemini API in this project — env, pipeline config,
 
 # Gemini Usage
 
-Use this skill when configuring or running the pipeline (or gap_detector / vlm_translator) with **Gemini** as the agent or provider. All Gemini calls go through the central **`gemini_client.py`** module.
+Use this skill when configuring or running the pipeline (or pipeline/gap_detector / pipeline/vlm_translator) with **Gemini** as the agent or provider. All Gemini calls go through the central **`helpers/clients/gemini_client.py`** module.
 
 ---
 
@@ -20,9 +20,9 @@ Use this skill when configuring or running the pipeline (or gap_detector / vlm_t
 
 | Entry point | How to select Gemini | What runs |
 |-------------|----------------------|-----------|
-| **main.py** (dense pipeline) | `--agent gemini` or `--agent-images gemini` / `--agent-dedup gemini`, or set `agent_images` / `agent_dedup` in `pipeline.yml` or env | Step 2 (frame analysis) and/or Step 3 (dedup) call Gemini |
-| **gap_detector.py** | `--provider gemini` or `LLM_PROVIDER=gemini` | Transcript → visual gap list (JSON) |
-| **vlm_translator.py** | `--provider gemini` | Image + context → VLM description per gap |
+| **pipeline/main.py** (dense pipeline) | `--agent gemini` or `--agent-images gemini` / `--agent-dedup gemini`, or set `agent_images` / `agent_dedup` in `pipeline.yml` or env | Step 2 (frame analysis) and/or Step 3 (dedup) call Gemini |
+| **pipeline/gap_detector.py** | `--provider gemini` or `LLM_PROVIDER=gemini` | Transcript → visual gap list (JSON) |
+| **pipeline/vlm_translator.py** | `--provider gemini` | Image + context → VLM description per gap |
 
 ---
 
@@ -62,7 +62,7 @@ For long dedup or gap-detection runs, set **`GEMINI_STREAMING=1`** in env. Dedup
 
 ## 5. Central client (for developers)
 
-- **`gemini_client.py`** provides:
+- **`helpers/clients/gemini_client.py`** provides:
   - `get_client()` — shared Gemini client (requires `GEMINI_API_KEY`).
   - `get_model_for_step(step, video_id=None)` — model string for step `"images"` | `"dedup"` | `"gaps"` | `"vlm"`.
   - `generate_with_retry(...)` — `generate_content` with retries (429/503/500, exponential backoff).
@@ -74,5 +74,6 @@ For long dedup or gap-detection runs, set **`GEMINI_STREAMING=1`** in env. Dedup
 ## 6. More detail
 
 - **Usage report and implementation notes:** `docs/gemini_api_usage_report.md`
+- **Rate limits and quotas:** `docs/gemini_rate_limits.md` — 429 errors, free vs paid, official links, typical limits (Flash vs Pro).
 - **README:** “Gemini usage” section and CLI table
 - **Env template:** `.env.template` (model and key comments)

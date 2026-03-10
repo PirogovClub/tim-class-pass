@@ -1,0 +1,120 @@
+{
+  "frame_timestamp": "00:09:51",
+  "material_change": true,
+  "change_summary": [
+    "Initial frame, new abstract diagram presented."
+  ],
+  "visual_representation_type": "abstract_bar_diagram",
+  "example_type": "abstract_teaching_example",
+  "extraction_mode": "structural_only",
+  "screen_type": "chart_with_instructor",
+  "educational_event_type": [
+    "concept_introduction",
+    "level_explanation",
+    "stop_loss_placement"
+  ],
+  "current_state": {
+    "symbol": null,
+    "timeframe": null,
+    "platform": null,
+    "chart_type": "bar_diagram",
+    "visible_date_range": null,
+    "visible_price_range": null,
+    "chart_layout": "single_pane",
+    "drawn_objects": {
+      "horizontal_lines": [
+        {
+          "label": "Уровень лимитного игрока",
+          "style": "solid",
+          "color": "white",
+          "position_description": "central horizontal line"
+        }
+      ],
+      "shapes": [
+        {
+          "type": "rectangle",
+          "color": "red",
+          "label": "СТОПЫ",
+          "position_description": "above the central line, right side"
+        }
+      ],
+      "other_drawings": [
+        {
+          "type": "dashed_line",
+          "label": "КОРОТКИЙ СТОП",
+          "position_description": "below the central line, left side"
+        },
+        {
+          "type": "dashed_line",
+          "label": "СТОПЫ",
+          "position_description": "above the central line, right side"
+        }
+      ]
+    },
+    "visible_annotations": [
+      {
+        "text": "Уровень лимитного игрока",
+        "location": "top_center",
+        "language": "ru"
+      },
+      {
+        "text": "КОРОТКИЙ СТОП",
+        "location": "below_level_left",
+        "language": "ru"
+      },
+      {
+        "text": "СТОПЫ",
+        "location": "above_level_right",
+        "language": "ru"
+      }
+    ],
+    "cursor_or_highlight": null,
+    "visual_facts": [
+      "A horizontal white line represents a key level.",
+      "Multiple vertical bars (green and red) interact with the level.",
+      "Green bars mostly stay below the level or briefly pierce it from below.",
+      "Two red bars are shown piercing the level from below and closing below it, or failing to break above.",
+      "A dashed line labeled 'КОРОТКИЙ СТОП' (SHORT STOP) is below the level, indicating a tight stop area.",
+      "A red box labeled 'СТОПЫ' (STOPS) is above the level, with a dashed line, indicating a stop area for short positions or where stops might be hunted."
+    ],
+    "structural_pattern_visible": "price_action_around_level",
+    "trading_relevant_interpretation": [
+      "The diagram illustrates price interaction with a 'limit player's level'.",
+      "It shows potential areas for 'short stops' below the level and 'stops' above the level, possibly indicating stop hunting or liquidity zones.",
+      "The red bars might represent failed attempts to break the level or price hitting stops."
+    ],
+    "readability": "high"
+  },
+  "extracted_entities": {
+    "setup_names": [
+      "Уровень лимитного игрока"
+    ],
+    "level_values": [
+      {
+        "type": "horizontal",
+        "label": "Уровень лимитного игрока",
+        "value_description": "conceptual price level"
+      }
+    ],
+    "risk_reward_values": [],
+    "atr_values": [],
+    "entry_values": [],
+    "stop_values": [
+      {
+        "type": "conceptual",
+        "label": "КОРОТКИЙ СТОП",
+        "value_description": "area below the level"
+      },
+      {
+        "type": "conceptual",
+        "label": "СТОПЫ",
+        "value_description": "area above the level"
+      }
+    ],
+    "target_values": [],
+    "pattern_terms": [
+      "price_action_around_level"
+    ]
+  },
+  "notes": "The diagram uses simplified bar representations to illustrate price movement relative to a key level and stop placement."
+}

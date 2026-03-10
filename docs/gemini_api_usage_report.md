@@ -27,10 +27,10 @@ The sections below describe the **original** state and improvement ideas; many o
 
 | File | Function | Purpose |
 |------|----------|---------|
-| `dense_analyzer.py` | `_analyze_frame_gemini()` | Frame-by-frame image + text analysis (trading visuals) |
-| `deduplicator.py` | `_dedup_gemini()` | Text-only deduplication of scene descriptions → JSON |
-| `gap_detector.py` | `extract_gaps_gemini()` | Transcript → structured gaps (JSON with Pydantic schema) |
-| `vlm_translator.py` | `translate_gemini()` | Image + context → VLM description (visual gap translation) |
+| `pipeline/dense_analyzer.py` | `_analyze_frame_gemini()` | Frame-by-frame image + text analysis (trading visuals) |
+| `pipeline/deduplicator.py` | `_dedup_gemini()` | Text-only deduplication of scene descriptions → JSON |
+| `pipeline/gap_detector.py` | `extract_gaps_gemini()` | Transcript → structured gaps (JSON with Pydantic schema) |
+| `pipeline/vlm_translator.py` | `translate_gemini()` | Image + context → VLM description (visual gap translation) |
 
 **Configuration:** `GEMINI_API_KEY` is read from environment (`.env` / `.env.template`). No in-repo validation that the key is set when `--agent gemini` or `AGENT_IMAGES`/`AGENT_DEDUP`=gemini is used.
 
@@ -115,7 +115,7 @@ This reduces duplication, ensures one place to add retries/logging, and makes it
 
 ### 4.7 API Key and Provider Validation at Startup (low effort)
 
-- When `main.py` or any script selects `gemini` as the agent (from CLI or config):
+- When `pipeline/main.py` or any script selects `gemini` as the agent (from CLI or config):
   - Check `os.getenv("GEMINI_API_KEY")` and fail fast with a clear message if missing, instead of failing later inside a Gemini call with a generic API error.
 
 ### 4.8 Documentation and .env.template (low effort)

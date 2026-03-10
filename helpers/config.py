@@ -10,6 +10,30 @@ DEFAULT_AGENT = "ide"
 DEFAULT_BATCH_SIZE = 10
 
 
+def _parse_int(raw: str | None, default: int | None = None) -> int | None:
+    if raw is None:
+        return default
+    try:
+        return int(raw)
+    except ValueError:
+        return default
+
+
+def _parse_float(raw: str | None, default: float | None = None) -> float | None:
+    if raw is None:
+        return default
+    try:
+        return float(raw)
+    except ValueError:
+        return default
+
+
+def _parse_bool(raw: str | None, default: bool = False) -> bool:
+    if raw is None:
+        return default
+    return str(raw).strip().lower() in {"1", "true", "yes", "on"}
+
+
 def _find_project_root() -> Path | None:
     """Find directory containing pipeline.yml, walking up from cwd."""
     cwd = Path.cwd()
@@ -53,6 +77,7 @@ def get_config_for_video(video_id: str) -> dict:
         "agent_dedup": os.getenv("AGENT_DEDUP") or os.getenv("AGENT") or DEFAULT_AGENT,
         "batch_size": DEFAULT_BATCH_SIZE,
         "parallel_batches": False,
+        "workers": _parse_int(os.getenv("WORKERS") or os.getenv("MAX_WORKERS"), None),
         "video_file": None,
         "vtt_file": None,
         "model_name": os.getenv("MODEL_NAME"),
@@ -60,6 +85,8 @@ def get_config_for_video(video_id: str) -> dict:
         "model_dedup": os.getenv("MODEL_DEDUP") or os.getenv("MODEL_NAME"),
         "model_gaps": os.getenv("MODEL_GAPS") or os.getenv("MODEL_NAME"),
         "model_vlm": os.getenv("MODEL_VLM") or os.getenv("MODEL_NAME"),
+        "ssim_threshold": _parse_float(os.getenv("SSIM_THRESHOLD"), 0.95),
+        "telemetry_enabled": _parse_bool(os.getenv("TELEMETRY_ENABLED"), True),
     }
     batch_env = os.getenv("BATCH_SIZE")
     if batch_env is not None:
@@ -67,8 +94,25 @@ def get_config_for_video(video_id: str) -> dict:
             result["batch_size"] = int(batch_env)
         except ValueError:
             pass
-    _model_keys = ("model_name", "model_images", "model_dedup", "model_gaps", "model_vlm")
-    _override_keys = ("video_file", "vtt_file", "agent_images", "agent_dedup", "batch_size", "parallel_batches", *_model_keys)
+    _model_keys = (
+        "model_name",
+        "model_images",
+        "model_dedup",
+        "model_gaps",
+        "model_vlm",
+    )
+    _override_keys = (
+        "video_file",
+        "vtt_file",
+        "agent_images",
+        "agent_dedup",
+        "batch_size",
+        "parallel_batches",
+        "workers",
+        "ssim_threshold",
+        "telemetry_enabled",
+        *_model_keys,
+    )
     for key, value in yaml_default.items():
         if value is not None:
             if key == "batch_size" and isinstance(value, str):
@@ -76,6 +120,10 @@ def get_config_for_video(video_id: str) -> dict:
                     value = int(value)
                 except ValueError:
                     value = result["batch_size"]
+            if key == "ssim_threshold" and isinstance(value, str):
+                value = _parse_float(value, result["ssim_threshold"])
+            if key == "workers" and isinstance(value, str):
+                value = _parse_int(value, result["workers"])
             result[key] = value
     for key, value in video_overrides.items():
         if value is not None and key in _override_keys:
@@ -84,6 +132,10 @@ def get_config_for_video(video_id: str) -> dict:
                     value = int(value)
                 except ValueError:
                     value = result["batch_size"]
+            if key == "ssim_threshold" and isinstance(value, str):
+                value = _parse_float(value, result["ssim_threshold"])
+            if key == "workers" and isinstance(value, str):
+                value = _parse_int(value, result["workers"])
             result[key] = value
     if isinstance(result["batch_size"], str):
         try:
