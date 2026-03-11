@@ -2,7 +2,7 @@ import os
 import sys
 import json
 import re
-import argparse
+import click
 import base64
 import time
 from dotenv import load_dotenv
@@ -394,6 +394,7 @@ def run_analysis(
     agent: str = "ide",
     parallel_batches: bool = False,
     merge_only: bool = False,
+    max_batches: int | None = None,
 ):
     agent = _normalize_agent(agent)
     from helpers import config as pipeline_config
@@ -540,184 +541,201 @@ def run_analysis(
         previous_state = ""
     last_relevant_key = _last_relevant_key(analysis)
 
-    # Process next batch (llm_queue image path)
-    batch_keys = remaining_keys[:batch_size]
-    batch_entries = [(k, queue_index[k]) for k in batch_keys]
+    batches_done = 0
+    while remaining_keys and (max_batches is None or batches_done < max_batches):
+        batch_keys = remaining_keys[:batch_size]
+        batch_entries = [(k, queue_index[k]) for k in batch_keys]
 
-    batch_start = batch_keys[0]
-    batch_end = batch_keys[-1]
-    batch_label = f"{batch_start}-{batch_end}"
+        batch_start = batch_keys[0]
+        batch_end = batch_keys[-1]
+        batch_label = f"{batch_start}-{batch_end}"
 
-    prompt_file = os.path.join(batches_dir, f"dense_batch_prompt_{batch_label}.txt")
-    response_file = os.path.join(batches_dir, f"dense_batch_response_{batch_label}.json")
+        prompt_file = os.path.join(batches_dir, f"dense_batch_prompt_{batch_label}.txt")
+        response_file = os.path.join(batches_dir, f"dense_batch_response_{batch_label}.json")
 
-    # Write the prompt (for ide and for reproducibility)
-    prompt_text = get_batch_prompt(batch_entries, video_dir, previous_state)
-    with open(prompt_file, "w", encoding="utf-8") as f:
-        f.write(prompt_text)
+        prompt_text = get_batch_prompt(batch_entries, video_dir, previous_state)
+        with open(prompt_file, "w", encoding="utf-8") as f:
+            f.write(prompt_text)
 
-    print(f"Batch {batch_label}: {len(batch_keys)} frames (agent: {agent})")
+        print(f"Batch {batch_label}: {len(batch_keys)} frames (agent: {agent})")
 
-    if not os.path.exists(response_file):
+        if not os.path.exists(response_file):
+            if agent == "ide":
+                state_file = os.path.join(batches_dir, "last_agent_task.json")
+                frame_paths_abs = [os.path.abspath(path) for _, path in batch_entries]
+                state = {
+                    "prompt_file": os.path.abspath(prompt_file),
+                    "response_file": os.path.abspath(response_file),
+                    "type": "batch",
+                    "frame_paths": frame_paths_abs,
+                    "prompt_content": prompt_text,
+                }
+                with open(state_file, "w", encoding="utf-8") as f:
+                    json.dump(state, f, indent=2, ensure_ascii=False)
+                print(f"IDE: Batch prompt written to: {prompt_file}")
+                print(f"IDE: Agent must write response to: {response_file}")
+                print(f"IDE: State written to: {state_file}")
+                sys.exit(AGENT_NEEDS_ANALYSIS)
+            done_after = done_queue + len(batch_keys)
+            total_frames = len(queue_keys)
+            print(f"Processing batch (frames {batch_start}-{batch_end}) [{done_after}/{total_frames} queued]")
+            batch_result = {}
+            prev_state = previous_state
+            for idx, (key, path) in enumerate(batch_entries):
+                if not os.path.exists(path):
+                    print(f"Warning: Frame {path} not found, skipping.")
+                    continue
+                print(f"  Analyzing frame {key} ({idx + 1}/{len(batch_entries)})...")
+                prompt = _single_frame_prompt(key, path, prev_state)
+                in_flight = {}
+
+                def _make_on_event(iframe_key, ivideo_dir, ianalysis, ibatch_result, itotal_frames, itelemetry_enabled, iin_flight):
+                    def on_event(ev):
+                        kind = ev.get("kind")
+                        stage = ev.get("stage", "")
+                        provider = ev.get("provider", "")
+                        fk = ev.get("frame_key")
+                        if kind == "start":
+                            iin_flight["current_frame"] = fk
+                            iin_flight["current_stage"] = stage
+                            iin_flight["current_provider"] = provider
+                            iin_flight["last_progress_at"] = round(time.time(), 2)
+                            print(f"    [{fk}] {stage}...", flush=True)
+                        elif kind == "chunk":
+                            iin_flight["last_progress_at"] = round(time.time(), 2)
+                            iin_flight["stream_chars"] = iin_flight.get("stream_chars", 0) + len(ev.get("text_delta") or "")
+                        elif kind == "end":
+                            iin_flight.pop("current_frame", None)
+                            iin_flight.pop("current_stage", None)
+                            iin_flight.pop("current_provider", None)
+                            iin_flight.pop("stream_chars", None)
+                            iin_flight["last_progress_at"] = round(time.time(), 2)
+                            print(f"    [{fk}] {stage} done", flush=True)
+                        elif kind == "retry":
+                            print(f"    [{fk}] {stage} retry {ev.get('attempt', 1)}", flush=True)
+                        if itelemetry_enabled and iin_flight:
+                            partial = dict(ianalysis)
+                            partial.update(ibatch_result)
+                            _write_processing_status(ivideo_dir, partial, itotal_frames, in_flight=iin_flight)
+                    return on_event
+
+                on_event = _make_on_event(key, video_dir, analysis, batch_result, total_frames, telemetry_enabled, in_flight)
+                try:
+                    frame_started = time.perf_counter()
+                    structural_info = structural_index.get(key) if isinstance(structural_index, dict) else None
+                    structural_score = None
+                    compare_seconds = None
+                    is_significant = True
+
+                    if structural_info:
+                        is_significant = bool(structural_info.get("is_significant", True))
+                        if structural_info.get("score") is not None:
+                            structural_score = float(structural_info.get("score"))
+                        compare_seconds = structural_info.get("compare_seconds")
+
+                    if not is_significant:
+                        entry = minimal_no_change_frame(key)
+                        if structural_score is not None:
+                            entry["structural_score"] = structural_score
+                        entry["timings"] = {
+                            "compare_seconds": compare_seconds,
+                            "total_seconds": round(time.perf_counter() - frame_started, 4),
+                        }
+                    elif agent == "openai":
+                        entry = _analyze_frame_openai(path, prompt, video_id, on_event=on_event, frame_key=key)
+                        if structural_score is not None:
+                            entry["structural_score"] = structural_score
+                        if compare_seconds is not None:
+                            entry["timings"] = {"compare_seconds": compare_seconds}
+                    else:
+                        entry = _analyze_frame_gemini(path, prompt, video_id, on_event=on_event, frame_key=key)
+                        if structural_score is not None:
+                            entry["structural_score"] = structural_score
+                        if compare_seconds is not None:
+                            entry["timings"] = {"compare_seconds": compare_seconds}
+                    entry = ensure_material_change(entry)
+                    batch_result[key] = entry
+                    prev_state = json.dumps(entry, ensure_ascii=False)
+                    if entry.get("lesson_relevant") is True or (
+                        "lesson_relevant" not in entry and entry.get("material_change") is True
+                    ):
+                        last_relevant_key = key
+                    if telemetry_enabled:
+                        partial_analysis = dict(analysis)
+                        partial_analysis.update(batch_result)
+                        _write_processing_status(video_dir, partial_analysis, len(all_keys))
+                except Exception as e:
+                    print(f"Error analyzing frame {key}: {e}")
+                    raise
+            with open(response_file, "w", encoding="utf-8") as f:
+                json.dump(batch_result, f, indent=2, ensure_ascii=False)
+            print(f"API: Wrote batch response to {response_file}")
+
+        # Read and merge batch response
+        with open(response_file, "r", encoding="utf-8") as f:
+            batch_result = json.load(f)
+
+        analysis.update(batch_result)
+
+        # Write per-frame .json files in frames_dense/ alongside the .jpg
+        frames_dir = os.path.join(video_dir, "frames_dense")
+        for key, entry in batch_result.items():
+            json_path = os.path.join(frames_dir, f"frame_{key}.json")
+            with open(json_path, "w", encoding="utf-8") as f:
+                json.dump(entry, f, indent=2, ensure_ascii=False)
+
+        with open(analysis_file, "w", encoding="utf-8") as f:
+            json.dump(analysis, f, indent=2, ensure_ascii=False)
+        if telemetry_enabled:
+            _write_processing_status(video_dir, analysis, len(all_keys))
+
+        newly_done = len(analysis)
+        still_remaining = len(all_keys) - newly_done
+
+        print(f"Merged batch. Written {len(batch_result)} txt files. Total analyzed: {newly_done}/{len(all_keys)}")
+
+        # Update for next iteration (or exit)
+        remaining_keys = [k for k in queue_keys if k not in analysis]
+        done_queue = len(queue_keys) - len(remaining_keys)
+        if analysis:
+            last_key = sorted(analysis.keys())[-1]
+            previous_state = json.dumps(analysis[last_key], ensure_ascii=False)
+        last_relevant_key = _last_relevant_key(analysis)
+        batches_done += 1
         if agent == "ide":
-            # State file for orchestrator/subagent: prompt and response paths, frame_paths, prompt_content
-            state_file = os.path.join(batches_dir, "last_agent_task.json")
-            frame_paths_abs = [os.path.abspath(path) for _, path in batch_entries]
-            state = {
-                "prompt_file": os.path.abspath(prompt_file),
-                "response_file": os.path.abspath(response_file),
-                "type": "batch",
-                "frame_paths": frame_paths_abs,
-                "prompt_content": prompt_text,
-            }
-            with open(state_file, "w", encoding="utf-8") as f:
-                json.dump(state, f, indent=2, ensure_ascii=False)
-            print(f"IDE: Batch prompt written to: {prompt_file}")
-            print(f"IDE: Agent must write response to: {response_file}")
-            print(f"IDE: State written to: {state_file}")
-            sys.exit(AGENT_NEEDS_ANALYSIS)
-        # OpenAI or Gemini: call vision API per frame and write response file
-        done_after = done_queue + len(batch_keys)
-        total_frames = len(queue_keys)
-        print(f"Processing batch (frames {batch_start}-{batch_end}) [{done_after}/{total_frames} queued]")
-        batch_result = {}
-        prev_state = previous_state
-        for idx, (key, path) in enumerate(batch_entries):
-            if not os.path.exists(path):
-                print(f"Warning: Frame {path} not found, skipping.")
-                continue
-            print(f"  Analyzing frame {key} ({idx + 1}/{len(batch_entries)})...")
-            prompt = _single_frame_prompt(key, path, prev_state)
-            in_flight = {}
+            break  # IDE: one batch per run (human writes response, then re-run)
 
-            def _make_on_event(iframe_key, ivideo_dir, ianalysis, ibatch_result, itotal_frames, itelemetry_enabled, iin_flight):
-                def on_event(ev):
-                    kind = ev.get("kind")
-                    stage = ev.get("stage", "")
-                    provider = ev.get("provider", "")
-                    fk = ev.get("frame_key")
-                    if kind == "start":
-                        iin_flight["current_frame"] = fk
-                        iin_flight["current_stage"] = stage
-                        iin_flight["current_provider"] = provider
-                        iin_flight["last_progress_at"] = round(time.time(), 2)
-                        print(f"    [{fk}] {stage}...", flush=True)
-                    elif kind == "chunk":
-                        iin_flight["last_progress_at"] = round(time.time(), 2)
-                        iin_flight["stream_chars"] = iin_flight.get("stream_chars", 0) + len(ev.get("text_delta") or "")
-                    elif kind == "end":
-                        iin_flight.pop("current_frame", None)
-                        iin_flight.pop("current_stage", None)
-                        iin_flight.pop("current_provider", None)
-                        iin_flight.pop("stream_chars", None)
-                        iin_flight["last_progress_at"] = round(time.time(), 2)
-                        print(f"    [{fk}] {stage} done", flush=True)
-                    elif kind == "retry":
-                        print(f"    [{fk}] {stage} retry {ev.get('attempt', 1)}", flush=True)
-                    if itelemetry_enabled and iin_flight:
-                        partial = dict(ianalysis)
-                        partial.update(ibatch_result)
-                        _write_processing_status(ivideo_dir, partial, itotal_frames, in_flight=iin_flight)
-                return on_event
-
-            on_event = _make_on_event(key, video_dir, analysis, batch_result, total_frames, telemetry_enabled, in_flight)
-            try:
-                frame_started = time.perf_counter()
-                structural_info = structural_index.get(key) if isinstance(structural_index, dict) else None
-                structural_score = None
-                compare_seconds = None
-                is_significant = True
-
-                if structural_info:
-                    is_significant = bool(structural_info.get("is_significant", True))
-                    if structural_info.get("score") is not None:
-                        structural_score = float(structural_info.get("score"))
-                    compare_seconds = structural_info.get("compare_seconds")
-
-                if not is_significant:
-                    entry = minimal_no_change_frame(key)
-                    if structural_score is not None:
-                        entry["structural_score"] = structural_score
-                    entry["timings"] = {
-                        "compare_seconds": compare_seconds,
-                        "total_seconds": round(time.perf_counter() - frame_started, 4),
-                    }
-                elif agent == "openai":
-                    entry = _analyze_frame_openai(path, prompt, video_id, on_event=on_event, frame_key=key)
-                    if structural_score is not None:
-                        entry["structural_score"] = structural_score
-                    if compare_seconds is not None:
-                        entry["timings"] = {"compare_seconds": compare_seconds}
-                else:
-                    entry = _analyze_frame_gemini(path, prompt, video_id, on_event=on_event, frame_key=key)
-                    if structural_score is not None:
-                        entry["structural_score"] = structural_score
-                    if compare_seconds is not None:
-                        entry["timings"] = {"compare_seconds": compare_seconds}
-                entry = ensure_material_change(entry)
-                batch_result[key] = entry
-                prev_state = json.dumps(entry, ensure_ascii=False)
-                if entry.get("lesson_relevant") is True or (
-                    "lesson_relevant" not in entry and entry.get("material_change") is True
-                ):
-                    last_relevant_key = key
-                if telemetry_enabled:
-                    partial_analysis = dict(analysis)
-                    partial_analysis.update(batch_result)
-                    _write_processing_status(video_dir, partial_analysis, len(all_keys))
-            except Exception as e:
-                print(f"Error analyzing frame {key}: {e}")
-                raise
-        with open(response_file, "w", encoding="utf-8") as f:
-            json.dump(batch_result, f, indent=2, ensure_ascii=False)
-        print(f"API: Wrote batch response to {response_file}")
-
-    # Read and merge batch response
-    with open(response_file, "r", encoding="utf-8") as f:
-        batch_result = json.load(f)
-
-    analysis.update(batch_result)
-
-    # Write per-frame .json files in frames_dense/ alongside the .jpg
-    frames_dir = os.path.join(video_dir, "frames_dense")
-    for key, entry in batch_result.items():
-        json_path = os.path.join(frames_dir, f"frame_{key}.json")
-        with open(json_path, "w", encoding="utf-8") as f:
-            json.dump(entry, f, indent=2, ensure_ascii=False)
-
-    with open(analysis_file, "w", encoding="utf-8") as f:
-        json.dump(analysis, f, indent=2, ensure_ascii=False)
-    if telemetry_enabled:
-        _write_processing_status(video_dir, analysis, len(all_keys))
-
-    newly_done = len(analysis)
-    still_remaining = len(all_keys) - newly_done
-
-    print(f"Merged batch. Written {len(batch_result)} txt files. Total analyzed: {newly_done}/{len(all_keys)}")
-
-    if still_remaining > 0:
-        print(f"IDE: {still_remaining} frames remaining. Re-run to process next batch.")
+    # After loop: report and optionally exit
+    if remaining_keys:
+        still_remaining = len(all_keys) - len(analysis)
+        print(f"{still_remaining} frames remaining. Re-run to process next batch.")
         sys.exit(AGENT_NEEDS_ANALYSIS)
 
     print(f"Analysis complete. Saved to {analysis_file}")
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Analyze dense frames with full description + delta")
-    parser.add_argument("video_id", help="Video ID in data/")
-    parser.add_argument("--batch-size", type=int, default=10, help="Frames per agent batch (default: 10)")
-    parser.add_argument(
-        "--agent",
-        default=os.getenv("AGENT_IMAGES", os.getenv("AGENT", "ide")),
-        choices=["openai", "gemini", "ide", "antigravity"],
-        help="Agent: ide (IDE as AI agent), openai, gemini (default: ide)",
-    )
-    parser.add_argument("--parallel", action="store_true", help="Option B: generate all batch task files + manifest, exit 10")
-    parser.add_argument("--merge-only", action="store_true", help="Merge all dense_batch_response_*.json into dense_analysis.json and exit")
-    args = parser.parse_args()
+@click.command()
+@click.argument("video_id")
+@click.option("--batch-size", type=int, default=10, help="Frames per agent batch (default: 10)")
+@click.option(
+    "--agent",
+    default=os.getenv("AGENT_IMAGES", os.getenv("AGENT", "ide")),
+    type=click.Choice(["openai", "gemini", "ide", "antigravity"]),
+    help="Agent: ide (IDE as AI agent), openai, gemini (default: ide)",
+)
+@click.option("--parallel", is_flag=True, help="Option B: generate all batch task files + manifest, exit 10")
+@click.option("--merge-only", is_flag=True, help="Merge all dense_batch_response_*.json into dense_analysis.json and exit")
+@click.option("--max-batches", type=int, default=None, help="Stop after this many batches (default: none = run all)")
+def cli(video_id, batch_size, agent, parallel, merge_only, max_batches):
+    """Analyze dense frames with full description + delta."""
     run_analysis(
-        args.video_id,
-        args.batch_size,
-        agent=args.agent,
-        parallel_batches=args.parallel,
-        merge_only=args.merge_only,
+        video_id,
+        batch_size,
+        agent=agent,
+        parallel_batches=parallel,
+        merge_only=merge_only,
+        max_batches=max_batches,
     )
+
+
+if __name__ == "__main__":
+    cli()

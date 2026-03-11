@@ -43,12 +43,15 @@ CANDIDATE_MODELS = [
     "mlx-vision_strategy",           # MLX local vision task
 ]
 
+# llm_queue frame path (same lesson data dir)
+FRAME_DIR_LLM_QUEUE = ROOT / "data" / "Lesson 2. Levels part 1" / "llm_queue"
+
 GOLD_FRAMES = {
-    "000591": "frame_000591_gemini.json",
+    "000628": "frame_000591_gemini.json",  # reuse gold; no 000628-specific gold yet
 }
 
 FRAME_PATHS = {
-    "000591": str(FRAME_DIR / "frame_000591_diff_0.0530.jpg"),
+    "000628": str(FRAME_DIR_LLM_QUEUE / "frame_000628_diff_0.0951.jpg"),
 }
 
 # Exclude models that are too heavy or unreliable for benchmark (e.g. qwen 32B didn't fly)
@@ -287,6 +290,23 @@ def score_output(out: dict, gold: dict) -> dict[str, bool | str]:
     return results
 
 
+def _parse_first_json_object(text: str) -> dict:
+    """Extract and parse the first complete JSON object when response has 'Extra data' after it."""
+    text = text.strip()
+    start = text.find("{")
+    if start < 0:
+        raise json.JSONDecodeError("No JSON object found", text, 0)
+    depth = 0
+    for i in range(start, len(text)):
+        if text[i] == "{":
+            depth += 1
+        elif text[i] == "}":
+            depth -= 1
+            if depth == 0:
+                return json.loads(text[start : i + 1])
+    raise json.JSONDecodeError("Unclosed JSON object", text, start)
+
+
 def benchmark_model(
     model: str,
     frame_key: str,
@@ -373,7 +393,15 @@ def benchmark_model(
     try:
         import re
         match = re.search(r"```(?:json)?\s*([\s\S]*?)```", raw_text)
-        raw_json = json.loads(match.group(1).strip() if match else raw_text)
+        to_parse = (match.group(1).strip() if match else raw_text).strip()
+        try:
+            raw_json = json.loads(to_parse)
+        except json.JSONDecodeError as je:
+            if "Extra data" in str(je):
+                # Model returned valid JSON then more text; take first JSON object only
+                raw_json = _parse_first_json_object(to_parse)
+            else:
+                raise
     except Exception as e:
         return {"error": f"JSON parse failed: {e}", "elapsed": elapsed, "raw_text": raw_text[:500], "model": model, "prompt": prompt, "model_output": None}
 
@@ -485,6 +513,16 @@ def main() -> None:
 
     if any(m.startswith("gemini-") for m in models):
         gemini_client.require_gemini_key()
+
+    mlx_models = [m for m in models if m.startswith("mlx-")]
+    if mlx_models:
+        try:
+            health = mlx_client.health_check(host=args.host)
+            print(f"MLX server OK: {health.get('service', 'mlx')} (max_parallel={health.get('max_parallel', '?')})")
+        except Exception as e:
+            print(f"MLX health check failed: {e}")
+            print("Fix connectivity or start the MLX service, then re-run.")
+            return
 
     gold_dir = Path(args.gold_dir)
 

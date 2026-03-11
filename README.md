@@ -28,7 +28,7 @@ Edit `.env` (see `.env.template`). Optionally use **pipeline.yml** in the projec
 
 ## How the Pipeline Works
 
-The pipeline is controlled by `pipeline/main.py` and runs in order: **Step 0** (optional download) → **Step 1** (frame capture) → **Steps 1.5–1.7** (structural diff, LLM queue, prompts) → **Step 2** (batched frame analysis) → **Step 3** (deduplication and final outputs).
+The pipeline is controlled by the **tim-class-pass** CLI (Click, in `pipeline/main.py`) and runs in order: **Step 0** (optional download) → **Step 1** (frame capture) → **Steps 1.5–1.7** (structural diff, LLM queue, prompts) → **Step 2** (batched frame analysis) → **Step 3** (deduplication and final outputs).
 
 **Full step-by-step description:** [docs/pipeline.md](docs/pipeline.md).
 
@@ -36,7 +36,7 @@ The pipeline is controlled by `pipeline/main.py` and runs in order: **Step 0** (
 YouTube URL / existing video_id
         │
         ▼
-[Step 0] pipeline/downloader.py         — Download .mp4 + .vtt via yt-dlp  (skipped if --video_id)
+[Step 0] pipeline/downloader.py         — Download .mp4 + .vtt via yt-dlp (skipped if --video_id)
         │
         ▼
 [Step 1] pipeline/dense_capturer.py     — Extract 1 frame/second → frames_dense/ + dense_index.json
@@ -123,24 +123,24 @@ WEBVTT
 ### From a new YouTube URL
 
 ```bash
-uv run pipeline/main.py --url "https://www.youtube.com/watch?v=VIDEO_ID" --batch-size 10
+uv run tim-class-pass --url "https://www.youtube.com/watch?v=VIDEO_ID" --batch-size 10
 ```
 
 ### From an existing video folder (video + VTT already present)
 
 ```bash
-uv run pipeline/main.py --video_id VIDEO_ID --batch-size 10
+uv run tim-class-pass --video_id VIDEO_ID --batch-size 10
 ```
 
 ### Force re-extract frames
 
 ```bash
-uv run pipeline/main.py --video_id VIDEO_ID --recapture --batch-size 10
+uv run tim-class-pass --video_id VIDEO_ID --recapture --batch-size 10
 ```
 
 ### Project config (pipeline.yml)
 
-One config per project in `pipeline.yml` (project root). You choose which folder to process when you run: `uv run pipeline/main.py --video_id <folder>`.
+One config per project in `pipeline.yml` (project root). You choose which folder to process when you run: `uv run tim-class-pass --video_id <folder>`.
 
 Optional **video_file** and **vtt_file**: filenames inside `data/<folder>/`. If set, the pipeline uses that video and that VTT instead of "first .mp4" / "all .vtt". You can set them in `default` (project-wide) or per folder under `videos:`.
 
@@ -166,6 +166,8 @@ When the agent is **gemini** (Step 2/3 via `--agent gemini` or `AGENT_IMAGES`/`A
 
 ### CLI Reference
 
+The main entry point is **tim-class-pass** (Click). Run `uv run tim-class-pass --help` for full options.
+
 | Flag | Default | Description |
 |------|---------|-------------|
 | `--url URL` | — | YouTube URL to download and process |
@@ -174,8 +176,11 @@ When the agent is **gemini** (Step 2/3 via `--agent gemini` or `AGENT_IMAGES`/`A
 | `--agent-dedup` | from config | Agent for Step 3 (dedup): `ide`, `openai`, `gemini` |
 | `--agent` | from config | Set both steps (used when step-specific flags not set) |
 | `--batch-size N` | from config | Frames per agent batch (5–20 recommended) |
+| `--workers N` | from config | Max workers for Step 1 + 1.5 (cap 8) |
 | `--recapture` | off | Force re-extract frames even if already done |
 | `--recompare` | off | Force re-run structural compare (SSIM) even if already done |
+| `--parallel` | off | Step 2: generate batch task files + manifest, exit 10; then re-run with `--merge-only` |
+| `--merge-only` | off | Step 2: merge batch responses into dense_analysis.json, then run Step 3 |
 
 ---
 
@@ -194,10 +199,10 @@ This workflow has `// turbo-all` — all shell commands auto-run without approva
 ### 2. Run the initial pipeline command
 
 ```bash
-uv run pipeline/main.py --video_id <VIDEO_ID> --batch-size 10
+uv run tim-class-pass --video_id <VIDEO_ID> --batch-size 10
 ```
 
-- If downloading: use `--url` instead.
+- If downloading: use `--url` instead. You can also run `uv run python -m pipeline.main` with the same options.
 - The pipeline will exit immediately after writing the first batch prompt (when using ide for Step 2).
 
 ### 3. Loop until Step 2 is complete
