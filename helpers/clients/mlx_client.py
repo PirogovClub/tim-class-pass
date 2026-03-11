@@ -32,8 +32,27 @@ def _base_url(host: str | None = None) -> str:
     return (
         os.environ.get("MLX_SERVICE_BASE_URL")
         or os.environ.get("LOCAL_MLX_SERVER")
+        or os.environ.get("LOCAL_OLLAMA_SERVER")  # same host often used for MLX service
         or "http://127.0.0.1:11434"
     ).rstrip("/")
+
+
+def health_check(host: str | None = None, timeout: float = 10.0) -> dict[str, Any]:
+    """
+    GET /health on the MLX service. Returns response JSON on success.
+    Raises on connection error or non-2xx so callers can fail fast.
+    """
+    import urllib.error
+    import urllib.request
+
+    base = _base_url(host)
+    url = f"{base}/health"
+    req = urllib.request.Request(url)
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return json.loads(r.read().decode())
+    except urllib.error.URLError as e:
+        raise ConnectionError(f"MLX health check failed: {url} — {e}") from e
 
 
 def _path_on_server(local_path: str | Path) -> str:

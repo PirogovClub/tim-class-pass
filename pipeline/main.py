@@ -67,6 +67,18 @@ DEDUP_AGENT_CHOICES = ["openai", "gemini", "ide"]
     is_flag=True,
     help="Step 2 only: merge all dense_batch_response_*.json into dense_analysis.json, then run Step 3 (use after parallel subagents finished)",
 )
+@click.option(
+    "--stop-after",
+    type=int,
+    default=None,
+    help="Stop after this step (1, 2, or 3). Default: run all steps.",
+)
+@click.option(
+    "--max-batches",
+    type=int,
+    default=None,
+    help="Step 2: stop after this many batches (default: none = run all batches).",
+)
 def main(
     url,
     video_id,
@@ -79,6 +91,8 @@ def main(
     recompare,
     parallel,
     merge_only,
+    stop_after,
+    max_batches,
 ):
     """Multimodal YouTube Video Transcript Enrichment Pipeline (Dense Mode)."""
     if (url and video_id) or (not url and not video_id):
@@ -105,9 +119,17 @@ def main(
 
         logger.info(f"Video ID: {video_id_resolved}")
 
-        # Resolve config: pipeline.yml (default + video) then CLI overrides
+        # Resolve config from project folder (data/<video_id>/pipeline.yml) then CLI overrides
         from helpers import config as pipeline_config
         cfg = pipeline_config.get_config_for_video(video_id_resolved)
+
+        # Log to project folder so all work for this run is in one place
+        project_dir = os.path.join(DATA_DIR, video_id_resolved)
+        os.makedirs(project_dir, exist_ok=True)
+        log_path = os.path.join(project_dir, "pipeline.log")
+        file_handler = logging.FileHandler(log_path, encoding="utf-8")
+        file_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+        logging.getLogger().addHandler(file_handler)
         agent_images_resolved = agent_images if agent_images is not None else (agent if agent is not None else cfg["agent_images"])
         default_agent_for_dedup = agent if agent in DEDUP_AGENT_CHOICES else None
         agent_dedup_resolved = agent_dedup if agent_dedup is not None else (default_agent_for_dedup if default_agent_for_dedup is not None else cfg["agent_dedup"])
@@ -186,6 +208,12 @@ def main(
         logger.info("Step 1.7: Building LLM prompts...")
         build_llm_prompts.build_llm_prompts(video_id_resolved)
 
+        if stop_after == 1:
+            logger.info("=" * 50)
+            logger.info("Stopped after Step 1 (--stop-after 1).")
+            logger.info("=" * 50)
+            return
+
         # ── Step 2: Dense analysis (batched, agent-driven) ────────────────
         logger.info("Step 2: Dense frame analysis (batched)...")
         from pipeline import dense_analyzer
@@ -196,7 +224,14 @@ def main(
             agent=agent_images_resolved,
             parallel_batches=parallel_batches,
             merge_only=merge_only,
+            max_batches=max_batches,
         )
+
+        if stop_after == 2:
+            logger.info("=" * 50)
+            logger.info("Stopped after Step 2 (--stop-after 2).")
+            logger.info("=" * 50)
+            return
 
         # ── Step 3: Deduplication + polish (agent-driven) ─────────────────
         logger.info("Step 3: Deduplicating and producing final outputs...")

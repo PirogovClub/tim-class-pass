@@ -115,7 +115,7 @@ This reduces duplication, ensures one place to add retries/logging, and makes it
 
 ### 4.7 API Key and Provider Validation at Startup (low effort)
 
-- When `pipeline/main.py` or any script selects `gemini` as the agent (from CLI or config):
+- When the main pipeline (`tim-class-pass` / `pipeline.main`) or any script selects `gemini` as the agent (from CLI or config):
   - Check `os.getenv("GEMINI_API_KEY")` and fail fast with a clear message if missing, instead of failing later inside a Gemini call with a generic API error.
 
 ### 4.8 Documentation and .env.template (low effort)

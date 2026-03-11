@@ -1,11 +1,12 @@
 """
-Load pipeline.yml — one config per project. Folder is chosen at run time via --video_id.
-Precedence: CLI > pipeline.yml default > env > hardcoded default.
+Load pipeline.yml from the project folder (data/<video_id>/). All config and work for a run lives there.
+Precedence: CLI > data/<video_id>/pipeline.yml (default section) > env > hardcoded default.
 """
 import os
 from pathlib import Path
 
 CONFIG_FILENAME = "pipeline.yml"
+DATA_DIR = "data"
 DEFAULT_AGENT = "ide"
 DEFAULT_BATCH_SIZE = 10
 
@@ -34,21 +35,11 @@ def _parse_bool(raw: str | None, default: bool = False) -> bool:
     return str(raw).strip().lower() in {"1", "true", "yes", "on"}
 
 
-def _find_project_root() -> Path | None:
-    """Find directory containing pipeline.yml, walking up from cwd."""
-    cwd = Path.cwd()
-    for parent in [cwd, *cwd.parents]:
-        if (parent / CONFIG_FILENAME).is_file():
-            return parent
-    return None
-
-
-def load_pipeline_config() -> dict | None:
-    """Load pipeline.yml if present. Returns raw dict or None."""
-    root = _find_project_root()
-    if root is None:
+def load_pipeline_config_for_video(video_id: str) -> dict | None:
+    """Load pipeline.yml from project folder data/<video_id>/pipeline.yml. Returns raw dict or None."""
+    path = Path(DATA_DIR) / video_id / CONFIG_FILENAME
+    if not path.is_file():
         return None
-    path = root / CONFIG_FILENAME
     try:
         import yaml
         with open(path, "r", encoding="utf-8") as f:
@@ -59,19 +50,15 @@ def load_pipeline_config() -> dict | None:
 
 def get_config_for_video(video_id: str) -> dict:
     """
-    Return effective config. video_id picks the folder at run time (--video_id).
+    Return effective config from the project folder (data/<video_id>/).
+    Config file: data/<video_id>/pipeline.yml, section "default".
     Optional video_file and vtt_file: filenames relative to data/<video_id>/.
-    Per-video overrides in videos:<video_id> for video_file/vtt_file only.
-    Precedence: default (YAML) > env > hardcoded; then videos[video_id] overrides for file names.
+    Precedence: CLI > project pipeline.yml default > env > hardcoded.
     """
-    raw = load_pipeline_config()
+    raw = load_pipeline_config_for_video(video_id)
     yaml_default = {}
-    video_overrides = {}
     if raw:
-        yaml_default = dict(raw.get("default") or {})
-        videos = raw.get("videos") or {}
-        if video_id in videos:
-            video_overrides = dict(videos[video_id]) or {}
+        yaml_default = dict(raw.get("default") or raw if isinstance(raw, dict) else {})
     result = {
         "agent_images": os.getenv("AGENT_IMAGES") or os.getenv("AGENT") or DEFAULT_AGENT,
         "agent_dedup": os.getenv("AGENT_DEDUP") or os.getenv("AGENT") or DEFAULT_AGENT,
@@ -114,18 +101,6 @@ def get_config_for_video(video_id: str) -> dict:
         *_model_keys,
     )
     for key, value in yaml_default.items():
-        if value is not None:
-            if key == "batch_size" and isinstance(value, str):
-                try:
-                    value = int(value)
-                except ValueError:
-                    value = result["batch_size"]
-            if key == "ssim_threshold" and isinstance(value, str):
-                value = _parse_float(value, result["ssim_threshold"])
-            if key == "workers" and isinstance(value, str):
-                value = _parse_int(value, result["workers"])
-            result[key] = value
-    for key, value in video_overrides.items():
         if value is not None and key in _override_keys:
             if key == "batch_size" and isinstance(value, str):
                 try:

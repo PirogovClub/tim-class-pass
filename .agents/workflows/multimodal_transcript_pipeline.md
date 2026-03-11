@@ -28,12 +28,12 @@ Do **not** report "Pipeline paused — agent analysis required" and then stop. D
 
 ### From a YouTube URL:
 ```bash
-uv run pipeline/main.py --url "https://www.youtube.com/watch?v=VIDEO_ID" --batch-size 10
+uv run tim-class-pass --url "https://www.youtube.com/watch?v=VIDEO_ID" --batch-size 10
 ```
 
 ### From an existing video folder (video + VTT already present):
 ```bash
-uv run pipeline/main.py --video_id VIDEO_ID --batch-size 10
+uv run tim-class-pass --video_id VIDEO_ID --batch-size 10
 ```
 
 **Agents:** Step 2 (frame analysis) and Step 3 (dedup) can use different agents. Set per-video in `pipeline.yml`, or override with `--agent-images` / `--agent-dedup` / `--agent`. Choices: `ide` (IDE as AI agent — pipeline writes prompts, you fill responses, re-run), `openai`, `gemini`. With `openai` or `gemini` for both steps the pipeline runs to completion without exit 10.

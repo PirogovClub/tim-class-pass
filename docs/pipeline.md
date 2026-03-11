@@ -1,6 +1,6 @@
 # Full pipeline (detailed)
 
-This document describes every step of the multimodal transcript enrichment pipeline as run by `pipeline/main.py`. For the deduplicator alone, see [deduplicator.md](deduplicator.md).
+This document describes every step of the multimodal transcript enrichment pipeline as run by **tim-class-pass** (CLI in `pipeline/main.py`). For the deduplicator alone, see [deduplicator.md](deduplicator.md).
 
 ---
 
@@ -34,7 +34,7 @@ YouTube URL / existing video_id
   *_enriched.vtt  +  video_commentary.md
 ```
 
-Entry point: `uv run pipeline/main.py --url "..."` or `uv run pipeline/main.py --video_id "Folder Name"`.
+Entry point: `uv run tim-class-pass --url "..."` or `uv run tim-class-pass --video_id "Folder Name"`. (Alternative: `uv run python -m pipeline.main ...`.)
 
 ---
 
@@ -271,7 +271,7 @@ High-level flow:
 8. **Write batch prompt:** Saves the prompt to `batches/dense_batch_prompt_<start>-<end>.txt` and the response path as `batches/dense_batch_response_<start>-<end>.json`.
 9. **IDE agent:** If agent is `ide` and the response file does not exist:
    - Writes `batches/last_agent_task.json` with `prompt_file`, `response_file`, `type: "batch"`, `frame_paths`, `prompt_content`.
-   - Prints that the agent must write the response to that JSON file. Exits with code 10. The user/IDE fills the response and re-runs `pipeline/main.py`.
+   - Prints that the agent must write the response to that JSON file. Exits with code 10. The user/IDE fills the response and re-runs `tim-class-pass` (or `python -m pipeline.main`).
 10. **API agents (OpenAI, Gemini):** If the response file does not exist, for each frame in the batch:
     - Builds a single-frame prompt (with previous state for context).
     - Optionally uses `structural_index` to skip or to pass `structural_score`/`compare_seconds`; if `is_significant` is False, uses minimal no-change entry and does not call the API.
@@ -332,7 +332,9 @@ For a full step-by-step description, see **[deduplicator.md](deduplicator.md)**.
 
 ---
 
-## CLI flags (pipeline/main.py)
+## CLI flags (tim-class-pass / pipeline.main)
+
+The main CLI is implemented with **Click** in `pipeline/main.py` and invoked via the `tim-class-pass` console script.
 
 | Flag | Effect |
 |------|--------|
