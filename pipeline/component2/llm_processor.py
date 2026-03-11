@@ -179,7 +179,7 @@ def _call_gemini(chunk: LessonChunk, *, video_id: str | None = None, model: str 
         config=types.GenerateContentConfig(
             system_instruction=SYSTEM_PROMPT,
             response_mime_type="application/json",
-            response_schema=types.Schema.from_pydantic(EnrichedMarkdownChunk),
+            response_schema=EnrichedMarkdownChunk,
             temperature=0.2,
         ),
     )
