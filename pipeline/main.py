@@ -1,6 +1,7 @@
 import sys
 import os
 import logging
+from pathlib import Path
 import click
 from dotenv import load_dotenv
 
@@ -11,7 +12,6 @@ logger = logging.getLogger(__name__)
 DATA_DIR = "data"
 AGENT_NEEDS_ANALYSIS = 10
 IMAGE_AGENT_CHOICES = ["openai", "gemini", "ide"]
-DEDUP_AGENT_CHOICES = ["openai", "gemini", "ide"]
 
 
 @click.command()
@@ -24,16 +24,10 @@ DEDUP_AGENT_CHOICES = ["openai", "gemini", "ide"]
     help="Agent for frame analysis (Step 2): ide (IDE as AI agent), openai, gemini. Overrides pipeline.yml and env.",
 )
 @click.option(
-    "--agent-dedup",
-    type=click.Choice(DEDUP_AGENT_CHOICES),
-    default=None,
-    help="Agent for deduplication (Step 3): ide, openai, gemini. Overrides pipeline.yml and env.",
-)
-@click.option(
     "--agent",
     type=click.Choice(IMAGE_AGENT_CHOICES),
     default=None,
-    help="Set both agent-images and agent-dedup (used when step-specific flags not set).",
+    help="Alias for --agent-images when step-specific flag is not set.",
 )
 @click.option(
     "--batch-size",
@@ -65,7 +59,7 @@ DEDUP_AGENT_CHOICES = ["openai", "gemini", "ide"]
 @click.option(
     "--merge-only",
     is_flag=True,
-    help="Step 2 only: merge all dense_batch_response_*.json into dense_analysis.json, then run Step 3 (use after parallel subagents finished)",
+    help="Step 2 only: merge all dense_batch_response_*.json into dense_analysis.json, then continue to markdown synthesis.",
 )
 @click.option(
     "--stop-after",
@@ -83,7 +77,6 @@ def main(
     url,
     video_id,
     agent_images,
-    agent_dedup,
     agent,
     batch_size,
     workers,
@@ -131,8 +124,6 @@ def main(
         file_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
         logging.getLogger().addHandler(file_handler)
         agent_images_resolved = agent_images if agent_images is not None else (agent if agent is not None else cfg["agent_images"])
-        default_agent_for_dedup = agent if agent in DEDUP_AGENT_CHOICES else None
-        agent_dedup_resolved = agent_dedup if agent_dedup is not None else (default_agent_for_dedup if default_agent_for_dedup is not None else cfg["agent_dedup"])
         batch_size_resolved = batch_size if batch_size is not None else cfg["batch_size"]
         video_file = cfg.get("video_file")
         vtt_file = cfg.get("vtt_file")
@@ -155,13 +146,13 @@ def main(
                 requested_workers = 1
             max_workers = min(requested_workers, 8)
 
-        if agent_images_resolved == "gemini" or agent_dedup_resolved == "gemini":
+        if agent_images_resolved == "gemini":
             from helpers.clients import gemini_client
             gemini_client.require_gemini_key()
 
         logger.info("=" * 50)
         logger.info("Transcript Enrichment Pipeline — Dense Mode")
-        logger.info(f"Agent (images): {agent_images_resolved} | Agent (dedup): {agent_dedup_resolved} | Batch size: {batch_size_resolved}")
+        logger.info(f"Agent (images): {agent_images_resolved} | Batch size: {batch_size_resolved}")
         logger.info(f"Max workers: {max_workers}")
         if video_file or vtt_file:
             logger.info(f"From pipeline.yml: video_file={video_file or 'auto'} | vtt_file={vtt_file or 'auto'}")
@@ -233,21 +224,48 @@ def main(
             logger.info("=" * 50)
             return
 
-        # ── Step 3: Deduplication + polish (agent-driven) ─────────────────
-        logger.info("Step 3: Deduplicating and producing final outputs...")
-        from pipeline import deduplicator
-        deduplicator.run_deduplicator(video_id_resolved, agent=agent_dedup_resolved, vtt_file_override=vtt_file)
+        # ── Step 3: Component 2 + markdown synthesis ───────────────────────
+        from helpers.clients import gemini_client
+        gemini_client.require_gemini_key()
+        logger.info("Step 3: Running Component 2 + markdown synthesis...")
+        from pipeline.component2.main import run_component2_pipeline
+
+        video_dir = Path(DATA_DIR) / video_id_resolved
+        dense_analysis_path = video_dir / "dense_analysis.json"
+        if not dense_analysis_path.is_file():
+            raise FileNotFoundError(f"Missing dense analysis file: {dense_analysis_path}")
+
+        if vtt_file:
+            vtt_paths = [video_dir / vtt_file]
+        else:
+            vtt_paths = sorted(video_dir.glob("*.vtt"))
+        vtt_paths = [path for path in vtt_paths if path.is_file()]
+        if not vtt_paths:
+            raise FileNotFoundError(f"No VTT files found under {video_dir}")
+
+        model_component2 = cfg.get("model_component2")
+        for current_vtt_path in vtt_paths:
+            outputs = run_component2_pipeline(
+                vtt_path=current_vtt_path,
+                visuals_json_path=dense_analysis_path,
+                output_root=video_dir,
+                video_id=video_id_resolved,
+                model=model_component2,
+            )
+            logger.info(f"Generated markdown outputs for {current_vtt_path.name}")
+            logger.info(f"  • filtered_visual_events.json: {outputs['filtered_events_path']}")
+            logger.info(f"  • Markdown: {outputs['markdown_path']}")
 
         logger.info("=" * 50)
         logger.info(f"Pipeline Complete! Check data/{video_id_resolved}/")
-        logger.info(f"  • *_enriched.vtt  — Timed VTT with visual descriptions")
-        logger.info(f"  • video_commentary.md — Full non-timed visual screenplay")
+        logger.info(f"  • filtered_visual_events.json — Instructional visual events only")
+        logger.info(f"  • output_markdown/*.md — Final lesson markdown outputs")
         logger.info("=" * 50)
 
     except SystemExit as e:
         if e.code == AGENT_NEEDS_ANALYSIS:
             logger.info("=" * 50)
-            logger.info("Pipeline paused — agent analysis required.")
+            logger.info("Pipeline paused — frame analysis batch input required.")
             logger.info("Read the batch prompt file, write the response, then re-run this command.")
             logger.info("=" * 50)
             sys.exit(AGENT_NEEDS_ANALYSIS)

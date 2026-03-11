@@ -604,7 +604,7 @@ def _resolve_agent(agent: str | None, video_id: str | None) -> str:
     if agent:
         return str(agent).strip().lower()
     cfg = _get_cfg(video_id)
-    cfg_agent = cfg.get("agent_images") or cfg.get("agent") or cfg.get("agent_dedup")
+    cfg_agent = cfg.get("agent_images") or cfg.get("agent")
     env_agent = os.getenv("AGENT_IMAGES") or os.getenv("AGENT")
     return str(cfg_agent or env_agent or "gemini").strip().lower()
 

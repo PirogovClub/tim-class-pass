@@ -1,6 +1,6 @@
 ---
 name: run-pipeline
-description: Runs the multimodal transcript enrichment pipeline end-to-end without skipping steps. Use when the user asks to run the dense pipeline, process a video, analyze frames, generate enriched VTT/commentary, or run the standalone markdown synthesis pipeline after dense extraction.
+description: Runs the multimodal transcript enrichment pipeline end-to-end without skipping steps. Use when the user asks to run the main pipeline, process a video, analyze frames, or generate markdown lesson output from a transcript plus dense frame-analysis JSON.
 ---
 
 # Run Pipeline
@@ -15,11 +15,11 @@ description: Runs the multimodal transcript enrichment pipeline end-to-end witho
   - `--batch-size N` — Frames per batch in Step 2 (default from config or 10).
   - `--recapture` — Force re-extraction of frames (Step 1) and re-run 1.5–1.7.
   - `--recompare` — Force re-run of structural compare (Step 1.5).
-  - `--agent-images`, `--agent-dedup`, `--agent` — Set agent for Step 2 (ide, openai, gemini) and/or Step 3.
+  - `--agent-images`, `--agent` — Set the Step 2 agent (ide, openai, gemini).
   - `--parallel` — Step 2: generate all batch task files + manifest, then exit 10; after subagents finish, re-run with `--merge-only`.
-  - `--merge-only` — Step 2: merge all batch response files into `dense_analysis.json`, then run Step 3 (use after parallel subagents completed).
+  - `--merge-only` — Step 2: merge all batch response files into `dense_analysis.json`, then continue to Step 3.
 
-Dense-pipeline config: `data/<video_id>/pipeline.yml` (`default` section) can set `workers`, `video_file`, `vtt_file`, `agent_images`, `agent_dedup`, `batch_size`, etc.; CLI overrides.
+Main-pipeline config: `data/<video_id>/pipeline.yml` (`default` section) can set `workers`, `video_file`, `vtt_file`, `agent_images`, `batch_size`, `model_component2`, etc.; CLI overrides.
 
 ## Step order (do not skip)
 
@@ -29,25 +29,24 @@ Dense-pipeline config: `data/<video_id>/pipeline.yml` (`default` section) can se
 4. **Step 1.6** — LLM queue selection → `llm_queue/`, `manifest.json`.
 5. **Step 1.7** — Build LLM prompts → `llm_queue/*_prompt.txt`.
 6. **Step 2** — Dense analysis (batched); may exit 10 for agent input.
-7. **Step 3** — Deduplication → `*_enriched.vtt`, `video_commentary.md`; may exit 10 for dedup agent.
+7. **Step 3** — Component 2 + markdown synthesis → `filtered_visual_events.json`, `output_markdown/*.md`.
 
 Step 2 needs `llm_queue/manifest.json`; if missing, Steps 1.5–1.7 must run first.
 
 ## When the pipeline exits with code 10 (agent required)
 
-1. Read `data/<video_id>/batches/last_agent_task.json` for `prompt_file`, `response_file`, `type` ("batch" | "dedup"), and for batch: `frame_paths`, `prompt_content`.
+1. Read `data/<video_id>/batches/last_agent_task.json` for `prompt_file`, `response_file`, `type` (`"batch"`), `frame_paths`, and `prompt_content`.
 2. **Batch:** Complete the batch task (review images per prompt, write per-frame JSON to `response_file`). See `skills/trading_visual_extraction/SKILL.md` for schema.
-3. **Dedup:** Write a JSON map of scene timestamps (HH:MM:SS) to polished paragraphs to `response_file`.
-4. Re-run the same command (e.g. `uv run tim-class-pass --video_id "<id>"`).
-5. Repeat until the run completes without exit 10 and produces the final outputs.
+3. Re-run the same command (e.g. `uv run tim-class-pass --video_id "<id>"`).
+4. Repeat until the run completes without exit 10 and produces the final outputs.
 
 Option B (parallel batches): run once with `--parallel`, spawn one subagent per task from `batches/manifest.json`, then re-run with `--merge-only`.
 
 ## Monitoring and completion
 
-- Emit progress after each batch and after dedup. For long runs, use `data/<video_id>/processing_status.json` (if present) for ETA.
+- Emit progress after each batch. For long runs, use `data/<video_id>/processing_status.json` (if present) for ETA.
 - Do not stop at exit 10: perform the agent step (or delegate to a subagent) and re-run until done.
-- Task is complete only when `*_enriched.vtt` and `video_commentary.md` exist under `data/<video_id>/`.
+- Task is complete only when `filtered_visual_events.json` and at least one markdown file under `data/<video_id>/output_markdown/` exist.
 
 ## Running the markdown pipeline
 
@@ -69,6 +68,6 @@ Outputs:
 
 ## Output checklist
 
-- `data/<video_id>/*_enriched.vtt`
-- `data/<video_id>/video_commentary.md`
+- `data/<video_id>/filtered_visual_events.json`
+- `data/<video_id>/output_markdown/*.md`
 

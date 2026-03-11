@@ -1,13 +1,13 @@
 """
 Loop: run pipeline -> if exit 10 and last_agent_task is a batch, write a no-change
-response for that batch and re-run. Stops when pipeline exits 0 or when task type is "dedup".
+response for that batch and re-run. Stops when the pipeline exits 0.
 
 Usage (from project root):
   uv run python scripts/run_ide_batch_loop.py --video_id "Lesson 2. Levels part 1"
 
 Use when the remaining frames are known to have no material change (e.g. same slide).
-For dedup (Step 3), the script stops and you must write batches/dedup_response.json manually
-or run with --agent-dedup gemini.
+This helper only automates Step 2 batch responses; the current Step 3 runs automatically
+and produces markdown outputs.
 """
 import argparse
 import json
@@ -53,7 +53,7 @@ def write_no_change_batch_response(response_file: str, frame_paths: list) -> Non
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Loop pipeline with no-change batch responses until Step 2 done or dedup.")
+    parser = argparse.ArgumentParser(description="Loop pipeline with no-change batch responses until the pipeline completes.")
     parser.add_argument("--video_id", required=True, help="Video ID in data/")
     args = parser.parse_args()
     video_id = args.video_id
@@ -80,10 +80,6 @@ def main() -> int:
             return 1
         with open(last_task_path, "r", encoding="utf-8") as f:
             task = json.load(f)
-        if task.get("type") == "dedup":
-            print("Step 3 (dedup) requires agent. Write batches/dedup_response.json then re-run:")
-            print(f"  uv run main.py --video_id \"{video_id}\"", flush=True)
-            return 10
         if task.get("type") != "batch" or "response_file" not in task or "frame_paths" not in task:
             print("Unexpected last_agent_task.json structure.", flush=True)
             return 1

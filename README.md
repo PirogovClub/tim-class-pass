@@ -1,9 +1,9 @@
 # Multimodal YouTube Video Transcript Enrichment Pipeline
 
-This repo now has **two related pipelines**:
+This repo now has:
 
-1. The **dense enrichment pipeline** extracts frame-level structured analysis from a video and produces `*_enriched.vtt` plus `video_commentary.md`.
-2. The **Component 2 + Step 3 markdown pipeline** reads a raw VTT plus dense frame-analysis JSON, filters invalid visuals, and produces RAG-ready markdown.
+1. The main **`tim-class-pass` pipeline**, which extracts frame-level structured analysis and then runs the new Step 3 markdown synthesis flow.
+2. A standalone **Component 2 + Step 3 runner** for re-running markdown synthesis from an existing VTT plus `dense_analysis.json`.
 
 Primary purpose: **information extraction and structured lesson synthesis** from video + transcript + visual state.
 
@@ -39,11 +39,11 @@ The loader reads the `default` section from that file.
 
 ## Pipeline Overview
 
-### A. Dense enrichment pipeline
+### A. Main pipeline (`tim-class-pass`)
 
-The dense pipeline is controlled by the **`tim-class-pass`** CLI (Click, in `pipeline/main.py`) and runs in order:
+The main pipeline is controlled by the **`tim-class-pass`** CLI (Click, in `pipeline/main.py`) and runs in order:
 
-**Step 0** (optional download) → **Step 1** (frame capture) → **Steps 1.5–1.7** (structural diff, LLM queue, prompts) → **Step 2** (batched frame analysis) → **Step 3** (deduplication and final outputs).
+**Step 0** (optional download) → **Step 1** (frame capture) → **Steps 1.5–1.7** (structural diff, LLM queue, prompts) → **Step 2** (batched frame analysis) → **Step 3** (Component 2 + markdown synthesis).
 
 **Full step-by-step description:** [docs/pipeline.md](docs/pipeline.md).
 
@@ -69,20 +69,25 @@ YouTube URL / existing video_id
 [Step 2] pipeline/dense_analyzer.py     — Analyze queued frames in batches; writes dense_analysis.json; IDE exits with code 10 per batch
         │
         ▼
-[Step 3] pipeline/deduplicator.py       — Group frames into scenes → dedup_prompt.txt; agent writes dedup_response.json → *_enriched.vtt + video_commentary.md
+[Step 3] pipeline/component2/main.py    — Filter invalid visuals, chunk lesson, synthesize markdown → filtered_visual_events.json + output_markdown/*.md
 ```
 
 ### Step 2 — Batch analysis
 
-Step 2 uses **only** frames listed in `llm_queue/manifest.json`. Frames not in the queue are prefills (minimal JSON) so `dense_analysis.json` still has a full key set for deduplication. Queued frames are processed in batches:
+Step 2 uses **only** frames listed in `llm_queue/manifest.json`. Frames not in the queue are prefills (minimal JSON) so `dense_analysis.json` still has a full key set for downstream synthesis. Queued frames are processed in batches:
 
 - Writes `batches/dense_batch_prompt_<start>-<end>.txt` and exits (code 10) when agent is **ide**.
 - Agent writes `batches/dense_batch_response_<start>-<end>.json` (one structured JSON object per frame key).
 - After each batch, the pipeline merges into `dense_analysis.json` and writes per-frame `frames_dense/frame_<key>.json`. Schema: [docs/trading_visual_extraction_spec.md](docs/trading_visual_extraction_spec.md) / `skills/trading_visual_extraction/SKILL.md`.
 
-### Step 3 — Deduplication
+### Step 3 — Markdown synthesis
 
-Step 3 turns per-frame analysis into **scenes**, gets one polished description per scene (from the IDE or API), then stitches those into the VTT and writes the commentary. Full detail: [docs/deduplicator.md](docs/deduplicator.md).
+Step 3 runs the new Component 2 + Step 3 flow:
+
+- invalidates non-instructional frames into `filtered_visual_events.json`
+- parses the VTT and synchronizes transcript lines with filtered visual events
+- synthesizes English markdown with Gemini structured outputs
+- writes final markdown plus chunk/debug artifacts under `output_markdown/`
 
 ### B. Component 2 + Step 3 markdown pipeline
 
@@ -105,7 +110,7 @@ uv run python -m pipeline.component2.main --help
 
 ## Output Files
 
-### Dense enrichment pipeline
+### Main pipeline
 
 ```
 data/<video_id>/
@@ -123,32 +128,16 @@ data/<video_id>/
 │   └── manifest.json
 ├── dense_index.json                   # Second → frame path index
 ├── dense_analysis.json                # Full merged analysis
-├── batches/                           # Pipeline intermediate files
+├── batches/                           # Step 2 intermediate files
 │   ├── dense_batch_prompt_NNN-MMM.txt   # Batch prompt (agent input)
-│   ├── dense_batch_response_NNN-MMM.json # Batch response (agent output)
-│   ├── dedup_prompt.txt                 # Scene grouping prompt
-│   └── dedup_response.json              # Polished scene descriptions
-├── *_enriched.vtt                     # ✅ FINAL: spoken + visual, timed
-└── video_commentary.md                # ✅ FINAL: visual-only screenplay
+│   └── dense_batch_response_NNN-MMM.json # Batch response (agent output)
+├── filtered_visual_events.json        # Step 3 filtered instructional events
+├── filtered_visual_events.debug.json  # Step 3 filter report
+└── output_markdown/
+    ├── <lesson_name>.md               # ✅ FINAL: synthesized lesson markdown
+    ├── <lesson_name>.chunks.json      # Chunk debug output
+    └── <lesson_name>.llm_debug.json   # LLM result debug output
 ```
-
-### Enriched VTT Format
-
-```vtt
-WEBVTT
-
-1
-00:00:04.960 --> 00:00:09.360
-[Visual: The Gerchik&Co logo fades out as MetaTrader 4 opens...]
-Вот такой вот расклад у нас...
-
-2
-00:00:09.360 --> 00:00:12.840
-[Visual: The instructor draws a rectangle selection on the chart area.]
-Как мы видим сейчас...
-```
-
-`[Visual: ...]` blocks appear only at scene-change timestamps, not every second.
 
 ---
 
@@ -168,25 +157,25 @@ Given a VTT and dense frame-analysis JSON, the markdown pipeline writes:
 
 ## Running the Pipelines
 
-### Dense pipeline: from a new YouTube URL
+### Main pipeline: from a new YouTube URL
 
 ```bash
 uv run tim-class-pass --url "https://www.youtube.com/watch?v=VIDEO_ID" --batch-size 10
 ```
 
-### Dense pipeline: from an existing video folder
+### Main pipeline: from an existing video folder
 
 ```bash
 uv run tim-class-pass --video_id VIDEO_ID --batch-size 10
 ```
 
-### Dense pipeline: force re-extract frames
+### Main pipeline: force re-extract frames
 
 ```bash
 uv run tim-class-pass --video_id VIDEO_ID --recapture --batch-size 10
 ```
 
-### Dense pipeline: useful flow-control flags
+### Main pipeline: useful flow-control flags
 
 ```bash
 uv run tim-class-pass --video_id VIDEO_ID --stop-after 2
@@ -211,7 +200,7 @@ Optional overrides:
 - `--target-duration-seconds` to change chunk size
 - `--max-concurrency` to cap simultaneous Gemini requests
 
-### Dense pipeline config (`data/<video_id>/pipeline.yml`)
+### Main pipeline config (`data/<video_id>/pipeline.yml`)
 
 One config file per processed video folder:
 
@@ -224,11 +213,11 @@ Optional `video_file` and `vtt_file` are filenames inside `data/<video_id>/`.
 ```yaml
 default:
   agent_images: ide
-  agent_dedup: ide
   batch_size: 10
   workers: 8
   video_file: "Lesson 2. Levels part 1.mp4"
   vtt_file: "Lesson 2. Levels part 1.vtt"
+  model_component2: gemini-2.5-flash
 ```
 
 **Precedence:** CLI > `data/<video_id>/pipeline.yml` (`default`) > env > built-in default.
@@ -237,28 +226,27 @@ default:
 
 When the agent is **gemini** in the dense pipeline, or when running the markdown pipeline, set `GEMINI_API_KEY` in `.env`.
 
-- Dense pipeline model selection: `model_name`, `model_images`, `model_dedup`, `model_gaps`, `model_vlm` from `data/<video_id>/pipeline.yml`, then env.
+- Main pipeline model selection: `model_name`, `model_images`, `model_component2`, `model_gaps`, `model_vlm` from `data/<video_id>/pipeline.yml`, then env.
 - Markdown pipeline model selection: `--model`, then env (`MODEL_COMPONENT2`, `MODEL_VLM`, `MODEL_NAME`), then default `gemini-2.5-flash`.
 
 The shared Gemini transport, retries, and key validation live in `helpers/clients/gemini_client.py`. For details see [docs/gemini_api_usage_report.md](docs/gemini_api_usage_report.md).
 
 ### CLI Reference
 
-The main dense-pipeline entry point is **`tim-class-pass`** (Click). Run `uv run tim-class-pass --help` for full options.
+The main pipeline entry point is **`tim-class-pass`** (Click). Run `uv run tim-class-pass --help` for full options.
 
 | Flag | Default | Description |
 |------|---------|-------------|
 | `--url URL` | — | YouTube URL to download and process |
 | `--video_id ID` | — | Use existing `data/<ID>/` folder (skip download) |
 | `--agent-images` | from config | Agent for Step 2 (frame analysis): `ide`, `openai`, `gemini` |
-| `--agent-dedup` | from config | Agent for Step 3 (dedup): `ide`, `openai`, `gemini` |
-| `--agent` | from config | Set both steps (used when step-specific flags not set) |
+| `--agent` | from config | Alias for `--agent-images` |
 | `--batch-size N` | from config | Frames per agent batch (5–20 recommended) |
 | `--workers N` | from config | Max workers for Step 1 + 1.5 (cap 8) |
 | `--recapture` | off | Force re-extract frames even if already done |
 | `--recompare` | off | Force re-run structural compare (SSIM) even if already done |
 | `--parallel` | off | Step 2: generate batch task files + manifest, exit 10; then re-run with `--merge-only` |
-| `--merge-only` | off | Step 2: merge batch responses into dense_analysis.json, then run Step 3 |
+| `--merge-only` | off | Step 2: merge batch responses into dense_analysis.json, then continue to Step 3 |
 | `--stop-after N` | off | Stop after Step `1`, `2`, or `3` |
 | `--max-batches N` | off | Step 2 only: stop after N batches |
 
@@ -282,7 +270,7 @@ uv run python -m pipeline.component2.main --help
 
 ## Starting the Pipeline as an Agent
 
-When you (an AI agent) are asked to run the dense pipeline on a video, follow these steps:
+When you (an AI agent) are asked to run the main pipeline on a video, follow these steps:
 
 ### 1. Trigger the workflow
 
@@ -320,13 +308,9 @@ For each frame in the batch:
 }
 ```
 
-### 4. Handle the deduplication step (when using ide)
+### 4. Let Step 3 complete
 
-After all frames are processed, the pipeline writes `dedup_prompt.txt` (when agent is ide).
-
-1. Read `dedup_prompt.txt` — it lists scenes with all their deltas.
-2. Write `dedup_response.json` — one polished paragraph per scene timestamp.
-3. Re-run the pipeline one final time.
+After all batches are processed, re-run the pipeline once more. It will automatically run the invalidation filter and markdown synthesis flow.
 
 ### 5. Verify completion
 
@@ -335,17 +319,11 @@ After all frames are processed, the pipeline writes `dedup_prompt.txt` (when age
 (Get-ChildItem "data\<VIDEO_ID>\frames_dense" -Filter "*.txt").Count
 
 # Check outputs exist
-Get-ChildItem "data\<VIDEO_ID>" -Filter "*_enriched.vtt"
-Get-ChildItem "data\<VIDEO_ID>" -Filter "video_commentary.md"
+Get-ChildItem "data\<VIDEO_ID>" -Filter "filtered_visual_events.json"
+Get-ChildItem "data\<VIDEO_ID>\output_markdown" -Filter "*.md"
 ```
 
-Read the first 30 lines of `video_commentary.md` to confirm the narrative makes sense.
-
-If the user wants **markdown lesson synthesis** after dense extraction, then run the second pipeline:
-
-```bash
-uv run python -m pipeline.component2.main --vtt "data/<VIDEO_ID>/<file>.vtt" --visuals-json "data/<VIDEO_ID>/dense_analysis.json" --output-root "data/<VIDEO_ID>" --video-id "<VIDEO_ID>"
-```
+Read the first part of `output_markdown/<lesson>.md` to confirm the markdown reads coherently and the visual blockquotes are anchored sensibly.
 
 ---
 

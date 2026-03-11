@@ -30,7 +30,7 @@ def get_client():
 
 
 def get_model_for_step(step: str, video_id: str | None = None) -> str:
-    """Resolve model name. step: images, dedup, gaps, vlm. Precedence: config > MODEL_* env > default."""
+    """Resolve model name. step: images, gaps, vlm. Precedence: config > MODEL_* env > default."""
     default = "gpt-4o"
     if video_id:
         try:
@@ -42,7 +42,7 @@ def get_model_for_step(step: str, video_id: str | None = None) -> str:
                 return str(val).strip()
         except Exception:
             pass
-    step_env = {"images": "MODEL_IMAGES", "dedup": "MODEL_DEDUP", "gaps": "MODEL_GAPS", "vlm": "MODEL_VLM"}.get(step)
+    step_env = {"images": "MODEL_IMAGES", "gaps": "MODEL_GAPS", "vlm": "MODEL_VLM"}.get(step)
     val = os.getenv(step_env or "MODEL_IMAGES") or os.getenv("MODEL_NAME")
     return (val or default).strip()
 
