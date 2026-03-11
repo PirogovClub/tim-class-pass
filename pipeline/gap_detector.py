@@ -72,7 +72,7 @@ def extract_gaps_gemini(transcript_text: str, video_id: str | None = None) -> Ga
     ]
     config = types.GenerateContentConfig(
         response_mime_type="application/json",
-        response_schema=types.Schema.from_pydantic(GapsResponse),
+        response_schema=GapsResponse,
         temperature=0.2,
     )
     if os.getenv("GEMINI_STREAMING"):

@@ -9,6 +9,8 @@ import os
 import time
 from typing import Any
 
+from dotenv import load_dotenv
+
 from helpers.clients.stream_events import (
     KIND_CHUNK,
     KIND_END,
@@ -19,6 +21,8 @@ from helpers.clients.stream_events import (
 )
 
 _client: Any = None
+
+load_dotenv()
 
 GEMINI_KEY_ERROR_MSG = (
     "GEMINI_API_KEY is required when using agent=gemini. Set it in .env or environment."
