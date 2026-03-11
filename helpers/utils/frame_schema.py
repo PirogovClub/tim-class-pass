@@ -1,16 +1,16 @@
 """
 Frame JSON schema for dense_analysis.json and per-frame frame_XXXXXX.json.
 
-Semantic contract (aligned with legacy Gemini batch output):
+Semantic contract:
 - material_change: True iff the current screenshot is materially different from the previous one
   (symbol/timeframe/chart/annotations/context changed). Do NOT derive from lesson_relevant.
 - lesson_relevant: True iff the pipeline accepts this frame for scene/teaching (relevance gate).
-  Dedup uses this (and scene_boundary) for grouping; material_change stays the extraction/comparison signal.
-- scene_boundary: True iff this frame should start a new scene for dedup (e.g. new teaching moment).
+  This remains useful metadata for higher-level teaching relevance; material_change stays the extraction/comparison signal.
+- scene_boundary: Legacy relevance marker kept for backward compatibility with older analysis records.
 
 Downstream consumers:
-- deduplicator.group_scenes(): lesson_relevant, scene_boundary, change_summary, first_entry
-- deduplicator.summarize_entry(): visual_representation_type, current_state (visual_facts, trading_relevant_interpretation), description (legacy)
+- invalidation_filter.py: frame_timestamp, material_change, visual_representation_type, current_state
+- pipeline/component2/parser.py: normalized visual event fields
 - scripts/run_ide_batch_loop.write_no_change_batch_response(): frame_timestamp, material_change
 """
 
@@ -18,11 +18,11 @@ from __future__ import annotations
 
 from typing import Any
 
-# Fields that MUST be present for downstream compatibility (dedup, merge, IDE batch)
+# Fields that MUST be present for downstream compatibility (merge, IDE batch)
 REQUIRED_DEDUP_FIELDS = ("frame_timestamp", "material_change")
 REQUIRED_FOR_SUMMARIZE = ("current_state", "visual_representation_type", "change_summary")
 
-# Optional but used by dedup / scene grouping
+# Optional legacy fields retained in dense analysis records
 OPTIONAL_LEGACY_FIELDS = (
     "change_summary",
     "visual_representation_type",

@@ -2,14 +2,12 @@
 
 This document describes both runnable pipelines in this repository:
 
-1. The **dense enrichment pipeline** run by `uv run tim-class-pass`
+1. The **main pipeline** run by `uv run tim-class-pass`
 2. The **standalone Component 2 + Step 3 markdown pipeline** run by `uv run python -m pipeline.component2.main`
-
-For the deduplicator alone, see [deduplicator.md](deduplicator.md).
 
 ---
 
-## Dense enrichment pipeline overview
+## Main pipeline overview
 
 ```
 YouTube URL / existing video_id
@@ -33,17 +31,17 @@ YouTube URL / existing video_id
 [Step 2] pipeline/dense_analyzer.py
         │
         ▼
-[Step 3] pipeline/deduplicator.py
+[Step 3] pipeline/component2/main.py
         │
         ▼
-  *_enriched.vtt  +  video_commentary.md
+  filtered_visual_events.json  +  output_markdown/*.md
 ```
 
 Entry point: `uv run tim-class-pass --url "..."` or `uv run tim-class-pass --video_id "Folder Name"`. Alternative: `uv run python -m pipeline.main ...`.
 
 ---
 
-## Dense enrichment information flow (Mermaid)
+## Main pipeline information flow (Mermaid)
 
 Diagram: where each file is **generated** (arrow from step to file), where **consumed** (arrow into step), and what it **contains**.
 
@@ -120,16 +118,16 @@ flowchart TB
   F_dense_analysis --> Step3
   F_vtt --> Step3
 
-  subgraph step3 [Step 3: Deduplication]
-    Step3[pipeline/deduplicator.py]
-    F_dedup_prompt["batches/dedup_prompt.txt: scenes for agent"]
-    F_dedup_response["batches/dedup_response.json: timestamp to description"]
-    F_enriched["*_enriched.vtt: VTT with Visual blocks"]
-    F_commentary["video_commentary.md: scene narrative"]
-    Step3 --> F_dedup_prompt
-    Step3 --> F_dedup_response
-    Step3 --> F_enriched
-    Step3 --> F_commentary
+  subgraph step3 [Step 3: Markdown synthesis]
+    Step3[pipeline/component2/main.py]
+    F_filtered["filtered_visual_events.json: instructional visual events only"]
+    F_chunks["output_markdown/*.chunks.json: synchronized lesson chunks"]
+    F_markdown["output_markdown/*.md: synthesized lesson markdown"]
+    F_llm_debug["output_markdown/*.llm_debug.json: LLM chunk results"]
+    Step3 --> F_filtered
+    Step3 --> F_chunks
+    Step3 --> F_markdown
+    Step3 --> F_llm_debug
   end
 ```
 
@@ -137,7 +135,7 @@ flowchart TB
 
 - **dense_index.json** is updated in Step 1.5 (paths change to `_diff_*.jpg`); Step 1.6 and Step 2 read the updated index.
 - Step 2 **reads** `llm_queue/manifest.json` + `llm_queue/*.jpg` and **writes** `dense_batch_prompt_*.txt`, merges into **dense_analysis.json**. It also reads `batches/dense_batch_response_*.json` when re-run after the agent fills it.
-- Step 3 **reads** `dense_analysis.json` and (when agent is API) **writes** `dedup_response.json`; when agent is IDE it **reads** `dedup_response.json` after the user creates it.
+- Step 3 **reads** `dense_analysis.json` and the selected `.vtt`, writes `filtered_visual_events.json`, then writes markdown and debug artifacts under `output_markdown/`.
 - **llm_queue/\*_prompt.txt** files are generated for inspection or external use; Step 2 does not read those prompt files.
 
 ---
@@ -223,7 +221,7 @@ flowchart TB
 - `data/<video_id>/llm_queue/*.jpg` (subset of frames; filenames like `frame_000003_diff_0.6928.jpg`).  
 - `data/<video_id>/llm_queue/manifest.json`.
 
-**Note:** Step 2 **requires** `llm_queue/manifest.json` and runs **only** the queued frames. Non-queue frames get minimal entries so `dense_analysis.json` still has a full key set for deduplication.
+**Note:** Step 2 **requires** `llm_queue/manifest.json` and runs **only** the queued frames. Non-queue frames get minimal entries so `dense_analysis.json` still has a full key set for downstream filtering and synthesis.
 
 ---
 
@@ -253,7 +251,7 @@ These prompts are ready for single-frame analysis (e.g. by an external runner). 
 **Script:** `pipeline/dense_analyzer.py`  
 **Function:** `run_analysis(video_id, batch_size, agent, parallel_batches=False, merge_only=False)`  
 **Depends on:** `dense_index.json`, `llm_queue/manifest.json` (required), and optionally `structural_index.json`.  
-**Uses:** Only frames listed in `llm_queue/manifest.json` (images from `llm_queue/`). Non-queue frames are prefills for dedup.
+**Uses:** Only frames listed in `llm_queue/manifest.json` (images from `llm_queue/`). Non-queue frames are prefills for downstream synthesis.
 
 High-level flow:
 
@@ -292,30 +290,31 @@ High-level flow:
 
 ---
 
-## Step 3: Deduplication and final outputs
+## Step 3: Component 2 + markdown synthesis
 
-**Script:** `pipeline/deduplicator.py`  
-**Function:** `run_deduplicator(video_id, agent, vtt_file_override=None)`  
-**Depends on:** `dense_analysis.json` (from Step 2).
+**Script:** `pipeline/component2/main.py` and `pipeline/invalidation_filter.py`  
+**Function:** `run_component2_pipeline(...)`  
+**Depends on:** `dense_analysis.json` (from Step 2) and a `.vtt` transcript.
 
-This step groups analyzed frames into **scenes**, gets one polished description per scene (from the IDE or from an API), then produces the enriched VTT and the video commentary.
-
-For a full step-by-step description, see **[deduplicator.md](deduplicator.md)**. Summary:
+Summary:
 
 1. Load `dense_analysis.json`.
-2. Group frames into scenes using `lesson_relevant` and `scene_boundary` (or `material_change` fallback).
-3. Build a text prompt that lists each scene (time range, first-frame summary, change summaries).
-4. Write `batches/dedup_prompt.txt`. If agent is **ide** and `dedup_response.json` does not exist, write `batches/last_agent_task.json`, print instructions, exit with code 10.
-5. If agent is **openai** or **gemini** and response does not exist, call the API once to get one polished paragraph per scene start time, write `batches/dedup_response.json`.
-6. Load `batches/dedup_response.json` (map: scene start time → description).
-7. Resolve VTT file(s): use `vtt_file_override` from config if set, else all non-enriched `.vtt` in the video folder.
-8. For each VTT, **stitch:** insert `[Visual: <description>]` at the first cue whose time range contains each scene’s start time; save as `*_enriched.vtt`.
-9. Write `video_commentary.md`: one section per scene with the polished description.
+2. Run the invalidation filter:
+   - keep only entries where `material_change == true`
+   - keep only entries where `visual_representation_type != "unknown"`
+3. Write `filtered_visual_events.json` and `filtered_visual_events.debug.json`.
+4. Parse the VTT and synchronize transcript lines with filtered visual events.
+5. Create semantic `LessonChunk` objects and write `output_markdown/<lesson>.chunks.json`.
+6. Call Gemini structured outputs to synthesize translated markdown chunks.
+7. Write `output_markdown/<lesson>.llm_debug.json`.
+8. Assemble final markdown into `output_markdown/<lesson>.md`.
 
 **Outputs:**  
-- `data/<video_id>/batches/dedup_prompt.txt`, `dedup_response.json` (and, for IDE, `last_agent_task.json`).  
-- `data/<video_id>/*_enriched.vtt`.  
-- `data/<video_id>/video_commentary.md`.
+- `data/<video_id>/filtered_visual_events.json`  
+- `data/<video_id>/filtered_visual_events.debug.json`  
+- `data/<video_id>/output_markdown/<lesson>.md`  
+- `data/<video_id>/output_markdown/<lesson>.chunks.json`  
+- `data/<video_id>/output_markdown/<lesson>.llm_debug.json`
 
 ---
 
@@ -331,9 +330,12 @@ For a full step-by-step description, see **[deduplicator.md](deduplicator.md)**.
 | `data/<video_id>/llm_queue/*_prompt.txt` | 1.7 | Single-frame prompts (optional/external use). |
 | `data/<video_id>/dense_analysis.json` | 2 | Full per-frame extraction (merged). |
 | `data/<video_id>/frames_dense/frame_*.json` | 2 | Per-frame extraction JSON. |
-| `data/<video_id>/batches/dense_batch_*`, `dedup_*`, `last_agent_task.json` | 2, 3 | Batch prompts/responses and dedup state. |
-| `data/<video_id>/*_enriched.vtt` | 3 | Final VTT with `[Visual: ...]` blocks. |
-| `data/<video_id>/video_commentary.md` | 3 | Final scene-by-scene narrative. |
+| `data/<video_id>/batches/dense_batch_*`, `last_agent_task.json` | 2 | Batch prompts/responses and batch-agent state. |
+| `data/<video_id>/filtered_visual_events.json` | 3 | Filtered instructional visual events. |
+| `data/<video_id>/filtered_visual_events.debug.json` | 3 | Filter report and rejected frame reasons. |
+| `data/<video_id>/output_markdown/*.md` | 3 | Final lesson markdown. |
+| `data/<video_id>/output_markdown/*.chunks.json` | 3 | Chunk debug output. |
+| `data/<video_id>/output_markdown/*.llm_debug.json` | 3 | LLM result debug output. |
 
 ---
 
@@ -345,7 +347,7 @@ The main CLI is implemented with **Click** in `pipeline/main.py` and invoked via
 |------|--------|
 | `--url URL` | Download video and VTT first (Step 0); then run pipeline. |
 | `--video_id ID` | Use existing `data/<ID>/` (skip Step 0). |
-| `--agent-images`, `--agent-dedup`, `--agent` | Choose agent for Step 2 (ide, openai, gemini) and Step 3 (ide, openai, gemini). |
+| `--agent-images`, `--agent` | Choose agent for Step 2 (ide, openai, gemini). |
 | `--batch-size N` | Frames per batch in Step 2 (default from config or 10). |
 | `--workers N` | Max workers for Step 1 + Step 1.5 (cap 8; default `min(os.cpu_count() or 1, 8)`). |
 | `--recapture` | Force Step 1 to re-extract frames and re-run 1.5–1.7. |

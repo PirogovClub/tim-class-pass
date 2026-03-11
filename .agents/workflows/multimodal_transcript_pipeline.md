@@ -4,11 +4,9 @@ description: How to run the Multimodal YouTube Video Transcript Enrichment Pipel
 
 // turbo-all
 
-# Multimodal Transcript Enrichment Workflow (Dense Mode)
+# Multimodal Transcript Enrichment Workflow
 
-Analyzes every second of a video, generates per-frame visual descriptions, groups them into scenes, and produces an enriched `.vtt` transcript + `video_commentary.md` screenplay.
-
-If the user also wants markdown lesson synthesis, run the separate Component 2 + Step 3 pipeline after dense extraction completes.
+Analyzes every second of a video, generates per-frame visual descriptions, then runs the new Step 3 markdown synthesis flow to produce lesson markdown and debug artifacts.
 
 ---
 
@@ -17,10 +15,10 @@ If the user also wants markdown lesson synthesis, run the separate Component 2 +
 When you run this workflow, **you must not stop** after the first pipeline run (exit code 10). The pipeline exits with code 10 when it needs agent input; that is your signal to **continue**, not to report and wait.
 
 **Your obligation:** After each exit 10, immediately (in the same session):
-1. Read the prompt file that was written (batch or dedup).
-2. Perform the required agent step (view frames and write response JSON, or write dedup_response.json).
+1. Read the prompt file that was written for the batch.
+2. Perform the required batch step (view frames and write response JSON).
 3. Re-run the pipeline with the same `--video_id` (or `--url`).
-4. Repeat until the pipeline run **completes without exit 10** and produces `*_enriched.vtt` and `video_commentary.md`.
+4. Repeat until the pipeline run **completes without exit 10** and produces markdown outputs under `output_markdown/`.
 
 Do **not** report "Pipeline paused — agent analysis required" and then stop. Do **not** ask the user to fill the response files or re-run. You must do the analysis and re-run yourself, in a loop, until the workflow is finished.
 
@@ -38,11 +36,11 @@ uv run tim-class-pass --url "https://www.youtube.com/watch?v=VIDEO_ID" --batch-s
 uv run tim-class-pass --video_id VIDEO_ID --batch-size 10
 ```
 
-**Agents:** Step 2 (frame analysis) and Step 3 (dedup) can use different agents. Set per-video in `pipeline.yml`, or override with `--agent-images` / `--agent-dedup` / `--agent`. Choices: `ide` (IDE as AI agent — pipeline writes prompts, you fill responses, re-run), `openai`, `gemini`. With `openai` or `gemini` for both steps the pipeline runs to completion without exit 10.
+**Agents:** Step 2 (frame analysis) can use `ide`, `openai`, or `gemini`. Step 3 is the markdown synthesis flow and uses Gemini via the shared client. Set Step 2 per-video in `data/<video_id>/pipeline.yml`, or override with `--agent-images` / `--agent`.
 
-**When using gemini:** Set `GEMINI_API_KEY` in `.env`. Model is chosen from `pipeline.yml` (optional `model_name`, `model_images`, `model_dedup`) or env (`MODEL_NAME`, `MODEL_IMAGES`, etc.). See README “Gemini usage” and `skills/gemini_usage/SKILL.md`.
+**When using gemini:** Set `GEMINI_API_KEY` in `.env`. Model is chosen from `pipeline.yml` (optional `model_name`, `model_images`, `model_component2`) or env (`MODEL_NAME`, `MODEL_IMAGES`, etc.). See README “Gemini usage” and `skills/gemini_usage/SKILL.md`.
 
-When using **ide** for either step, the pipeline exits with **code 10** each time agent input is required. Re-run the command after completing each agent step.
+When using **ide** for Step 2, the pipeline exits with **code 10** each time batch input is required. Re-run the command after completing each batch.
 
 ---
 
@@ -120,29 +118,21 @@ The pipeline writes `dense_batch_prompt_NNN-MMM.txt` and exits.
 
 ---
 
-### STEP 3: Deduplication (runs once after all frames analyzed)
+### STEP 3: Markdown synthesis (runs automatically after all frames analyzed)
 
-The pipeline writes `batches/dedup_prompt.txt` and exits.
+Once Step 2 is complete, the pipeline:
 
-**Your job:**
-1. Read `batches/dedup_prompt.txt` — it lists ~50–80 scenes grouped by visual change.
-2. For each scene, write a single polished paragraph:
-   - Merge all deltas into a natural flowing narrative
-   - Static scenes: one sentence suffices
-   - Active scenes (drawing, annotation): describe the progression clearly
-3. Save response to `batches/dedup_response.json`:
+1. Filters `dense_analysis.json` into `filtered_visual_events.json`
+2. Parses the VTT and builds lesson chunks
+3. Calls Gemini structured outputs
+4. Writes:
+   - `filtered_visual_events.json`
+   - `filtered_visual_events.debug.json`
+   - `output_markdown/<lesson>.md`
+   - `output_markdown/<lesson>.chunks.json`
+   - `output_markdown/<lesson>.llm_debug.json`
 
-```json
-{
-  "00:00:11": "The instructor draws the first red horizontal resistance line on the EUR/USD Daily chart at approximately 1.1862, then adds two more lines at 1.2270 and 1.1960, building a complete support/resistance map across the downtrend.",
-  "00:00:55": "The MetaTrader window is minimized, leaving a blank screen — a brief transition before the next scene.",
-  "00:00:56": "MS Paint opens and the instructor begins drawing an ATR calculation diagram..."
-}
-```
-
-4. Re-run the pipeline one final time to produce outputs.
-
-**DO NOT STOP** after writing `dedup_response.json`. Re-run the pipeline in the same session so that it produces the final `*_enriched.vtt` and `video_commentary.md`. Only then is the workflow complete.
+If Gemini is configured correctly, Step 3 should not pause for manual agent input.
 
 ---
 
@@ -154,17 +144,11 @@ After the final run confirm:
 (Get-ChildItem "data\<VIDEO_ID>\frames_dense" -Filter "*.json").Count
 
 # Final outputs present
-Get-ChildItem "data\<VIDEO_ID>" -Filter "*_enriched.vtt"
-Get-ChildItem "data\<VIDEO_ID>" -Filter "video_commentary.md"
+Get-ChildItem "data\<VIDEO_ID>" -Filter "filtered_visual_events.json"
+Get-ChildItem "data\<VIDEO_ID>\output_markdown" -Filter "*.md"
 ```
 
-Read the first 40 lines of `video_commentary.md` to confirm the narrative reads coherently.
-
-If the user asked for markdown output too, continue with:
-
-```bash
-uv run python -m pipeline.component2.main --vtt "data/<VIDEO_ID>/<file>.vtt" --visuals-json "data/<VIDEO_ID>/dense_analysis.json" --output-root "data/<VIDEO_ID>" --video-id "<VIDEO_ID>"
-```
+Read the first 40 lines of the generated markdown file to confirm the narrative reads coherently.
 
 ---
 
@@ -177,10 +161,11 @@ uv run python -m pipeline.component2.main --vtt "data/<VIDEO_ID>/<file>.vtt" --v
 | `dense_analysis.json` | Full merged frame-by-frame analysis |
 | `batches/dense_batch_prompt_NNN-MMM.txt` | Batch prompt for agent |
 | `batches/dense_batch_response_NNN-MMM.json` | Batch response from agent |
-| `batches/dedup_prompt.txt` | Scene grouping prompt |
-| `batches/dedup_response.json` | Polished scene descriptions |
-| `*_enriched.vtt` | **Final**: original spoken VTT + `[Visual: ...]` scene blocks |
-| `video_commentary.md` | **Final**: polished visual-only screenplay |
+| `filtered_visual_events.json` | Instructional visual events only |
+| `filtered_visual_events.debug.json` | Filter report |
+| `output_markdown/<lesson>.md` | **Final**: synthesized lesson markdown |
+| `output_markdown/<lesson>.chunks.json` | Chunk debug output |
+| `output_markdown/<lesson>.llm_debug.json` | LLM debug output |
 
 ---
 

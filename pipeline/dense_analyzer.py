@@ -507,7 +507,7 @@ def run_analysis(
     else:
         analysis = {}
 
-    # Prefill minimal entries for every frame not in queue, so dedup has full key set.
+    # Prefill minimal entries for every frame not in queue, so downstream filtering/synthesis has a complete timeline.
     for key in all_keys:
         if key in analysis:
             continue

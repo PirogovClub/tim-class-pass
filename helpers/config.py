@@ -61,7 +61,6 @@ def get_config_for_video(video_id: str) -> dict:
         yaml_default = dict(raw.get("default") or raw if isinstance(raw, dict) else {})
     result = {
         "agent_images": os.getenv("AGENT_IMAGES") or os.getenv("AGENT") or DEFAULT_AGENT,
-        "agent_dedup": os.getenv("AGENT_DEDUP") or os.getenv("AGENT") or DEFAULT_AGENT,
         "batch_size": DEFAULT_BATCH_SIZE,
         "parallel_batches": False,
         "workers": _parse_int(os.getenv("WORKERS") or os.getenv("MAX_WORKERS"), None),
@@ -69,7 +68,7 @@ def get_config_for_video(video_id: str) -> dict:
         "vtt_file": None,
         "model_name": os.getenv("MODEL_NAME"),
         "model_images": os.getenv("MODEL_IMAGES") or os.getenv("MODEL_NAME"),
-        "model_dedup": os.getenv("MODEL_DEDUP") or os.getenv("MODEL_NAME"),
+        "model_component2": os.getenv("MODEL_COMPONENT2") or os.getenv("MODEL_VLM") or os.getenv("MODEL_NAME"),
         "model_gaps": os.getenv("MODEL_GAPS") or os.getenv("MODEL_NAME"),
         "model_vlm": os.getenv("MODEL_VLM") or os.getenv("MODEL_NAME"),
         "ssim_threshold": _parse_float(os.getenv("SSIM_THRESHOLD"), 0.95),
@@ -84,7 +83,7 @@ def get_config_for_video(video_id: str) -> dict:
     _model_keys = (
         "model_name",
         "model_images",
-        "model_dedup",
+        "model_component2",
         "model_gaps",
         "model_vlm",
     )
@@ -92,7 +91,6 @@ def get_config_for_video(video_id: str) -> dict:
         "video_file",
         "vtt_file",
         "agent_images",
-        "agent_dedup",
         "batch_size",
         "parallel_batches",
         "workers",

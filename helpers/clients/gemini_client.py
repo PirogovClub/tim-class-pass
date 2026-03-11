@@ -26,17 +26,15 @@ GEMINI_KEY_ERROR_MSG = (
 
 _STEP_ENV_SUFFIX = {
     "images": "MODEL_IMAGES",
-    "dedup": "MODEL_DEDUP",
     "gaps": "MODEL_GAPS",
     "vlm": "MODEL_VLM",
 }
 # Benchmark winner for frame extraction: fastest passing, good quality (see docs/benchmarking.md).
-# Override via pipeline.yml (model_images, model_dedup) or env (MODEL_IMAGES, MODEL_NAME).
+# Override via pipeline.yml (model_images) or env (MODEL_IMAGES, MODEL_NAME).
 _DEFAULT_GEMINI_MODEL = "gemini-2.5-flash-lite-preview-09-2025"
 
 _STEP_DEFAULTS = {
     "images": _DEFAULT_GEMINI_MODEL,
-    "dedup": _DEFAULT_GEMINI_MODEL,
     "gaps": _DEFAULT_GEMINI_MODEL,
     "vlm": _DEFAULT_GEMINI_MODEL,
 }
