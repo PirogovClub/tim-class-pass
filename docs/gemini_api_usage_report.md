@@ -8,16 +8,17 @@
 
 ## Implementation status (current)
 
-As of the Gemini client implementation, the project has:
+As of the current Gemini client implementation, the project has:
 
 - **Central client:** All Gemini calls go through **`gemini_client.py`** (`get_client()`, `get_model_for_step()`, `generate_with_retry()`). No per-module client creation.
-- **Model selection:** **pipeline.yml** first (optional `model_name`, `model_images`, `model_dedup`, `model_gaps`, `model_vlm` under `default` or `videos`), then env (`MODEL_NAME`, `MODEL_IMAGES`, etc.), then step defaults. See [README.md](../README.md) “Gemini usage” and [.env.template](../.env.template).
+- **Model selection:** For the dense pipeline, `data/<video_id>/pipeline.yml` (`default`) first (optional `model_name`, `model_images`, `model_dedup`, `model_gaps`, `model_vlm`), then env (`MODEL_NAME`, `MODEL_IMAGES`, etc.), then step defaults. The standalone markdown pipeline uses `--model`, then `MODEL_COMPONENT2`, `MODEL_VLM`, `MODEL_NAME`, then its default. See [README.md](../README.md) “Gemini usage” and [.env.template](../.env.template).
 - **Startup validation:** When agent or provider is `gemini`, `require_gemini_key()` runs before any step; missing `GEMINI_API_KEY` fails fast with a clear error.
 - **Retries:** `generate_with_retry()` retries on 429/503/500 with exponential backoff (1s, 2s, 4s).
 - **Streaming:** Optional `GEMINI_STREAMING=1` uses streaming for dedup and gap detection; default remains non-streaming.
 - **Generation config:** All Gemini call sites use `GenerateContentConfig` (temperature, `response_mime_type` for JSON where applicable). Empty responses are handled (raise or safe default).
+- **Structured markdown synthesis:** `pipeline/component2/llm_processor.py` uses Gemini structured output with a Pydantic response schema for markdown chunk synthesis.
 
-**How to use:** Set `GEMINI_API_KEY` in `.env`. Optionally set models in `pipeline.yml` or env. Run with `--agent gemini` or `AGENT_IMAGES`/`AGENT_DEDUP`=gemini (main pipeline), or `--provider gemini` (gap_detector, vlm_translator). See README and the skill `skills/gemini_usage/SKILL.md`.
+**How to use:** Set `GEMINI_API_KEY` in `.env`. Optionally set models in `data/<video_id>/pipeline.yml`, pass `--model` to `pipeline.component2.main`, or use env overrides. Run with `--agent gemini` or `AGENT_IMAGES`/`AGENT_DEDUP`=gemini (dense pipeline), `uv run python -m pipeline.component2.main --model gemini-...` (markdown pipeline), or `--provider gemini` (gap_detector, vlm_translator). See README and the skill `skills/gemini_usage/SKILL.md`.
 
 The sections below describe the **original** state and improvement ideas; many of the latter are now implemented.
 
@@ -31,24 +32,18 @@ The sections below describe the **original** state and improvement ideas; many o
 | `pipeline/deduplicator.py` | `_dedup_gemini()` | Text-only deduplication of scene descriptions → JSON |
 | `pipeline/gap_detector.py` | `extract_gaps_gemini()` | Transcript → structured gaps (JSON with Pydantic schema) |
 | `pipeline/vlm_translator.py` | `translate_gemini()` | Image + context → VLM description (visual gap translation) |
+| `pipeline/component2/llm_processor.py` | `_call_gemini()` | Structured markdown chunk synthesis for the standalone markdown pipeline |
 
-**Configuration:** `GEMINI_API_KEY` is read from environment (`.env` / `.env.template`). No in-repo validation that the key is set when `--agent gemini` or `AGENT_IMAGES`/`AGENT_DEDUP`=gemini is used.
+**Configuration:** `GEMINI_API_KEY` is read from environment (`.env` / `.env.template`). The repo now validates the key before Gemini-backed dense-pipeline execution, and the standalone markdown pipeline uses the same shared client transport.
 
 ---
 
 ## 2. Current Client Usage
 
-- **No shared client.** Each of the four modules does:
-  - Lazy `from google import genai` and `from google.genai import types`
-  - `client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))` inside the Gemini-specific function
-- **No central config.** Model names and options are scattered:
-  - `dense_analyzer`: `MODEL_NAME` / `MODEL_IMAGES` (default `gemini-1.5-pro`)
-  - `deduplicator`: `MODEL_NAME` / `MODEL_DEDUP` (default `gemini-1.5-pro`)
-  - `gap_detector`: `MODEL_NAME` (default `gemini-2.5-flash`)
-  - `vlm_translator`: `MODEL_NAME` (default `gemini-1.5-pro`)
-- **Single API surface used:** `client.models.generate_content(...)` with `types.Content` / `types.Part` (and in `gap_detector` only: `types.GenerateContentConfig` with `response_mime_type` / `response_schema`).
-
-So the project uses a **valid** client (`genai.Client`) but in a duplicated, ad-hoc way with no reuse or centralized configuration.
+- **Shared client exists.** Dense pipeline and supporting scripts use the central `helpers/clients/gemini_client.py`.
+- **Shared retries exist.** `generate_with_retry()` and `generate_with_retry_stream()` handle transient failures centrally.
+- **Structured output is used in multiple places.** `gap_detector` and `pipeline/component2/llm_processor.py` use schema-backed Gemini output.
+- **Model selection is centralized for the dense pipeline.** The standalone markdown pipeline reuses the same transport but resolves its model locally from CLI/env.
 
 ---
 

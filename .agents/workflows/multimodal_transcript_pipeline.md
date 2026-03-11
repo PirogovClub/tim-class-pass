@@ -8,6 +8,8 @@ description: How to run the Multimodal YouTube Video Transcript Enrichment Pipel
 
 Analyzes every second of a video, generates per-frame visual descriptions, groups them into scenes, and produces an enriched `.vtt` transcript + `video_commentary.md` screenplay.
 
+If the user also wants markdown lesson synthesis, run the separate Component 2 + Step 3 pipeline after dense extraction completes.
+
 ---
 
 ## Critical: Do not stop until the pipeline is complete
@@ -157,6 +159,12 @@ Get-ChildItem "data\<VIDEO_ID>" -Filter "video_commentary.md"
 ```
 
 Read the first 40 lines of `video_commentary.md` to confirm the narrative reads coherently.
+
+If the user asked for markdown output too, continue with:
+
+```bash
+uv run python -m pipeline.component2.main --vtt "data/<VIDEO_ID>/<file>.vtt" --visuals-json "data/<VIDEO_ID>/dense_analysis.json" --output-root "data/<VIDEO_ID>" --video-id "<VIDEO_ID>"
+```
 
 ---
 

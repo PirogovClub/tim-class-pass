@@ -1,10 +1,15 @@
 # Full pipeline (detailed)
 
-This document describes every step of the multimodal transcript enrichment pipeline as run by **tim-class-pass** (CLI in `pipeline/main.py`). For the deduplicator alone, see [deduplicator.md](deduplicator.md).
+This document describes both runnable pipelines in this repository:
+
+1. The **dense enrichment pipeline** run by `uv run tim-class-pass`
+2. The **standalone Component 2 + Step 3 markdown pipeline** run by `uv run python -m pipeline.component2.main`
+
+For the deduplicator alone, see [deduplicator.md](deduplicator.md).
 
 ---
 
-## Overview
+## Dense enrichment pipeline overview
 
 ```
 YouTube URL / existing video_id
@@ -34,11 +39,11 @@ YouTube URL / existing video_id
   *_enriched.vtt  +  video_commentary.md
 ```
 
-Entry point: `uv run tim-class-pass --url "..."` or `uv run tim-class-pass --video_id "Folder Name"`. (Alternative: `uv run python -m pipeline.main ...`.)
+Entry point: `uv run tim-class-pass --url "..."` or `uv run tim-class-pass --video_id "Folder Name"`. Alternative: `uv run python -m pipeline.main ...`.
 
 ---
 
-## Information flow (Mermaid)
+## Dense enrichment information flow (Mermaid)
 
 Diagram: where each file is **generated** (arrow from step to file), where **consumed** (arrow into step), and what it **contains**.
 
@@ -348,4 +353,77 @@ The main CLI is implemented with **Click** in `pipeline/main.py` and invoked via
 | `--parallel` | Step 2: generate all batch task files + manifest, exit 10; then run with `--merge-only` after subagents finish. |
 | `--merge-only` | Step 2: merge all `dense_batch_response_*.json` into `dense_analysis.json`, write per-frame JSONs, then run Step 3. |
 
-Config (e.g. `pipeline.yml`) can set `video_file`, `vtt_file`, `agent_images`, `agent_dedup`, `batch_size`, `workers`, `ssim_threshold`, etc.; CLI overrides where applicable.
+Config for the dense pipeline is loaded from `data/<video_id>/pipeline.yml` using the `default` section. CLI overrides where applicable.
+
+---
+
+## Component 2 + Step 3 markdown pipeline
+
+This is a separate pipeline branch for producing RAG-ready markdown after you already have:
+
+- a raw `.vtt` transcript
+- a dense frame-analysis JSON such as `dense_analysis.json`
+
+Entry point:
+
+```bash
+uv run python -m pipeline.component2.main \
+  --vtt "data/<video_id>/<lesson>.vtt" \
+  --visuals-json "data/<video_id>/dense_analysis.json" \
+  --output-root "data/<video_id>" \
+  --video-id "<video_id>"
+```
+
+### What it does
+
+1. `pipeline/invalidation_filter.py`
+   - reads the dense frame-analysis JSON
+   - keeps only instructional visual events
+   - writes `filtered_visual_events.json`
+2. `pipeline/component2/parser.py`
+   - parses the VTT
+   - synchronizes transcript lines and filtered visual events
+   - produces semantic `LessonChunk` objects
+3. `pipeline/component2/llm_processor.py`
+   - builds Gemini structured-output prompts
+   - translates and merges transcript + visual deltas
+   - returns `EnrichedMarkdownChunk` objects
+4. `pipeline/component2/main.py`
+   - orchestrates the full flow
+   - writes markdown plus debug artifacts
+
+### Outputs
+
+```text
+<output-root>/
+├── filtered_visual_events.json
+├── filtered_visual_events.debug.json
+└── output_markdown/
+    ├── <lesson_name>.md
+    ├── <lesson_name>.chunks.json
+    └── <lesson_name>.llm_debug.json
+```
+
+### CLI flags
+
+| Flag | Effect |
+|------|--------|
+| `--vtt` | Required path to the raw transcript |
+| `--visuals-json` | Required path to dense frame-analysis JSON |
+| `--output-root` | Optional output folder; defaults to the VTT parent |
+| `--video-id` | Optional config/model lookup hint |
+| `--model` | Optional Gemini model override |
+| `--target-duration-seconds` | Target semantic chunk size before extending to a sentence boundary |
+| `--max-concurrency` | Max simultaneous Gemini chunk requests |
+
+### Model selection
+
+The markdown pipeline resolves models in this order:
+
+1. `--model`
+2. env `MODEL_COMPONENT2`
+3. env `MODEL_VLM`
+4. env `MODEL_NAME`
+5. default `gemini-2.5-flash`
+
+Gemini access still uses the shared `helpers/clients/gemini_client.py` transport/retry layer.
