@@ -190,7 +190,14 @@ def test_run_component2_pipeline_writes_outputs(monkeypatch, tmp_path: Path) -> 
         encoding="utf-8",
     )
 
+    progress_messages: list[str] = []
+
     async def fake_process_chunks(chunks, **kwargs):
+        progress_callback = kwargs.get("progress_callback")
+        total = len(chunks)
+        if progress_callback is not None:
+            for index, chunk in enumerate(chunks, start=1):
+                progress_callback(index, total, chunk, 0.25)
         return [
             (
                 chunk,
@@ -209,6 +216,7 @@ def test_run_component2_pipeline_writes_outputs(monkeypatch, tmp_path: Path) -> 
         visuals_json_path=visuals_json_path,
         output_root=lesson_dir,
         target_duration_seconds=30.0,
+        progress_callback=progress_messages.append,
     )
 
     assert outputs["filtered_events_path"].is_file()
@@ -220,6 +228,9 @@ def test_run_component2_pipeline_writes_outputs(monkeypatch, tmp_path: Path) -> 
     assert "# lesson" in markdown
     assert "Chunk 0 markdown" in markdown
     assert "**Tags:** Trend Break Level" in markdown
+    assert any("[+00:00] Step 3.1/4" in message for message in progress_messages)
+    assert any("Chunk 1/1 complete" in message and "chunk_time=0.2s" in message for message in progress_messages)
+    assert any("Step 3.4/4 complete" in message for message in progress_messages)
 
 
 def test_component2_main_help() -> None:

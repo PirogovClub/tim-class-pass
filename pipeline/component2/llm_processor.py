@@ -3,7 +3,9 @@ from __future__ import annotations
 import asyncio
 import json
 import os
+import time
 from pathlib import Path
+from typing import Callable
 
 from helpers import config as pipeline_config
 from helpers.clients import gemini_client
@@ -197,14 +199,23 @@ async def process_chunks(
     video_id: str | None = None,
     model: str | None = None,
     max_concurrency: int = 5,
+    progress_callback: Callable[[int, int, LessonChunk, float], None] | None = None,
 ) -> list[tuple[LessonChunk, EnrichedMarkdownChunk]]:
     semaphore = asyncio.Semaphore(max(1, max_concurrency))
     ordered_results: list[tuple[LessonChunk, EnrichedMarkdownChunk] | None] = [None] * len(chunks)
+    completed = 0
+    progress_lock = asyncio.Lock()
 
     async def _worker(chunk: LessonChunk) -> None:
+        nonlocal completed
         async with semaphore:
+            started_at = time.perf_counter()
             enriched = await process_chunk(chunk, video_id=video_id, model=model)
             ordered_results[chunk.chunk_index] = (chunk, enriched)
+            if progress_callback is not None:
+                async with progress_lock:
+                    completed += 1
+                    progress_callback(completed, len(chunks), chunk, time.perf_counter() - started_at)
 
     await asyncio.gather(*(_worker(chunk) for chunk in chunks))
     return [item for item in ordered_results if item is not None]

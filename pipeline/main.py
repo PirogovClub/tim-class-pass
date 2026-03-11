@@ -251,6 +251,7 @@ def main(
                 output_root=video_dir,
                 video_id=video_id_resolved,
                 model=model_component2,
+                progress_callback=lambda message: logger.info(message),
             )
             logger.info(f"Generated markdown outputs for {current_vtt_path.name}")
             logger.info(f"  • filtered_visual_events.json: {outputs['filtered_events_path']}")
