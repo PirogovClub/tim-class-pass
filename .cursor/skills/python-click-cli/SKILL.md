@@ -14,7 +14,7 @@ For Python CLI applications in this repository, use `click` for argument parsing
 - Do not introduce new `argparse`-based parsers
 - If touching an `argparse` CLI, prefer migrating it to `click` instead of expanding it
 
-Use `pipeline/main.py` as the local style reference.
+Use `pipeline/main.py` and `pipeline/component2/main.py` as the local style references.
 
 ## Implementation pattern
 
@@ -48,7 +48,7 @@ if __name__ == "__main__":
 
 ## Option rules
 
-- Use kebab-case flag names such as `--video-id` and let `click` map them to snake_case parameters
+- Prefer kebab-case flag names for new CLIs, but preserve existing repository flag names when a CLI already exposes underscore-style options such as `--video_id`
 - Use `click.Choice(...)` for enumerated values
 - Use `is_flag=True` for booleans
 - Use `type=int` / `type=float` for scalar numeric options
@@ -63,7 +63,7 @@ Example:
 
 ```python
 if (url and video_id) or (not url and not video_id):
-    raise click.UsageError("Exactly one of --url or --video-id is required.")
+    raise click.UsageError("Exactly one of --url or --video_id is required.")
 ```
 
 ## Async rule

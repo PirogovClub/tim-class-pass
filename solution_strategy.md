@@ -58,14 +58,28 @@ Here is the complete blueprint:
 
 ---
 
-### What Components Are You Missing?
+### Current Implementation Status
 
-Your recent data output (the JSON and VTT) proves you have **Component 1 (Multimodal Batch Processor)** fully operational. Your Antigravity Agent has already laid the groundwork for **Component 0 (downloader.py)**.
+You have **Component 0 (downloader.py)** and **Component 1 (Multimodal Batch Processor)** operational, and the repository now also contains the first implementation of:
 
-Here are the concrete components you are currently missing to close the loop:
+- **Component 2:** `pipeline/invalidation_filter.py`
+- **Component 3:** `pipeline/component2/parser.py`, `pipeline/component2/llm_processor.py`, `pipeline/component2/main.py`
 
-1. **The Invalidation Filter + New Synthesis Pipeline (Components 2 & 3):** This is the highest priority engineering task. You have the `vtt` text and the `frame_analysis` JSON. We need a standalone invalidation filter that produces `filtered_visual_events.json`, followed by a fresh parser/synchronizer/translation pipeline that outputs finished `.md` lesson documents.
-2. **The Metadata Taxonomy Schema (for Component 4):** Your VLM is extracting `pattern_terms` like "Уровень излома тренда" and "Уровень лимитного игрока." To make RAG work perfectly, you need a finalized, canonical JSON list of these terms. This list will be the master filter directory in your vector database. You need an automated script to read all 150 JSON analysis files and compile a definitive list of unique taxonomy terms.
-3. **The Final Algorithm Schema:** For **Component 6 (The Orchestrator Agent)** to run its synthesis loop, we need to define the exact table of contents for the resulting `alghorithm.md` rulebook. The agent cannot write the book without knowing the chapters we need.
+Dense pipeline run command:
 
-Are you ready to write the Python script (Components 2 and 3) that takes the VTT and JSON you just showed and fuses them into a clean, synthesized Markdown document?
+```bash
+uv run tim-class-pass --video_id <VIDEO_ID> --batch-size 10
+```
+
+Standalone markdown synthesis run command:
+
+```bash
+uv run python -m pipeline.component2.main --vtt "data/<VIDEO_ID>/<lesson>.vtt" --visuals-json "data/<VIDEO_ID>/dense_analysis.json" --output-root "data/<VIDEO_ID>" --video-id "<VIDEO_ID>"
+```
+
+The remaining strategic gaps are now:
+
+1. **Metadata Taxonomy Schema (for Component 4):** Your VLM is extracting `pattern_terms` like "Уровень излома тренда" and "Уровень лимитного игрока." To make RAG work perfectly, you still need a finalized, canonical JSON list of these terms.
+2. **The Final Algorithm Schema:** For **Component 6 (The Orchestrator Agent)** to run its synthesis loop, you still need to define the exact table of contents for the resulting `algorithm.md` rulebook.
+
+The current next step is to run the standalone markdown pipeline on a real lesson and review the generated `.md` output for prompt and chunking quality.

@@ -1,6 +1,19 @@
 Here is the complete, consolidated master document for **Component 2 (The Clean, Merge & Translate Pipeline)**.
 
-You can copy this entire block and save it as `Component_2_BRD_and_Prompts.md`. You can feed this directly to your AI coding agent (like Cursor) module by module to build the complete Python application.
+Status note: the repository now contains an implemented version of this design as:
+
+- `pipeline/invalidation_filter.py`
+- `pipeline/component2/parser.py`
+- `pipeline/component2/llm_processor.py`
+- `pipeline/component2/main.py`
+
+Run it with:
+
+```bash
+uv run python -m pipeline.component2.main --vtt "data/<video_id>/<lesson>.vtt" --visuals-json "data/<video_id>/dense_analysis.json" --output-root "data/<video_id>" --video-id "<video_id>"
+```
+
+The sections below remain the design/BRD reference for the current implementation.
 
 ---
 

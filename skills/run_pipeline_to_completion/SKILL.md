@@ -1,11 +1,11 @@
 ---
 name: Run Pipeline to Completion
-description: Run the multimodal transcript enrichment pipeline from start to finish without stopping; complete every agent step and re-run until final outputs exist. Use subagents for batch and dedup steps when possible.
+description: Run the multimodal transcript enrichment pipeline from start to finish without stopping; complete every agent step and re-run until the requested final outputs exist. Use subagents for batch and dedup steps when possible, and continue into the standalone markdown pipeline when the user wants lesson markdown.
 ---
 
 # Run Pipeline to Completion
 
-When you run this project's pipeline (`uv run tim-class-pass --video_id ...` or `--url ...`), run it **from beginning to end**. Use `--workers N` (cap 8) to speed up Step 1 (frame extraction) and Step 1.5 (structural compare) on long videos.
+When you run this project's dense pipeline (`uv run tim-class-pass --video_id ...` or `--url ...`), run it **from beginning to end**. Use `--workers N` (cap 8) to speed up Step 1 (frame extraction) and Step 1.5 (structural compare) on long videos.
 
 ## Do not stop at exit code 10
 
@@ -41,4 +41,18 @@ To run all frame-analysis batches in parallel with subagents:
 - Do **not** ask the user to fill the response files or re-run.
 - You must perform the agent step (yourself or via subagents) and re-run in a loop until the run finishes.
 
-Only when the pipeline run completes without exit 10 and the final outputs exist (`*_enriched.vtt`, `video_commentary.md`) is the task complete.
+Only when the dense pipeline run completes without exit 10 and the final outputs exist (`*_enriched.vtt`, `video_commentary.md`) is that phase complete.
+
+## If the user also wants markdown lesson synthesis
+
+Continue with the standalone markdown pipeline after the dense pipeline succeeds:
+
+```bash
+uv run python -m pipeline.component2.main --vtt "data/<video_id>/<lesson>.vtt" --visuals-json "data/<video_id>/dense_analysis.json" --output-root "data/<video_id>" --video-id "<video_id>"
+```
+
+That phase is complete only when:
+
+- `filtered_visual_events.json` exists
+- `output_markdown/<lesson>.md` exists
+- the markdown file looks coherent on a quick read
