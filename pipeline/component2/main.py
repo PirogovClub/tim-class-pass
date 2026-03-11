@@ -42,6 +42,7 @@ def run_component2_pipeline(
     output_root: Path | str | None = None,
     video_id: str | None = None,
     model: str | None = None,
+    reducer_model: str | None = None,
     target_duration_seconds: float = 120.0,
     max_concurrency: int = 5,
     progress_callback: Callable[[str], None] | None = None,
@@ -130,7 +131,7 @@ def run_component2_pipeline(
     rag_ready_markdown = synthesize_full_document(
         intermediate_markdown,
         video_id=video_id,
-        model=model,
+        model=reducer_model,
     )
     rag_ready_markdown_path.write_text(rag_ready_markdown, encoding="utf-8")
     _emit(f"Step 3.5/5 complete: wrote `{rag_ready_markdown_path.name}`.")
@@ -176,6 +177,11 @@ def run_component2_pipeline(
     help="Optional Gemini model override for markdown synthesis.",
 )
 @click.option(
+    "--reducer-model",
+    default=None,
+    help="Optional Gemini model override for the final quant-reducer pass.",
+)
+@click.option(
     "--target-duration-seconds",
     type=float,
     default=120.0,
@@ -195,6 +201,7 @@ def main(
     output_root: Path | None,
     video_id: str | None,
     model: str | None,
+    reducer_model: str | None,
     target_duration_seconds: float,
     max_concurrency: int,
 ) -> None:
@@ -207,6 +214,7 @@ def main(
         output_root=output_root,
         video_id=video_id,
         model=model,
+        reducer_model=reducer_model,
         target_duration_seconds=target_duration_seconds,
         max_concurrency=max_concurrency,
         progress_callback=_timestamped_echo,

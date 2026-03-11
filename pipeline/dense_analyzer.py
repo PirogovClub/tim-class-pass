@@ -2,9 +2,11 @@ import os
 import sys
 import json
 import re
+import threading
 import click
 import base64
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dotenv import load_dotenv
 
 from helpers.utils.compare import compare_images
@@ -388,6 +390,204 @@ def _load_structural_index(video_dir: str) -> dict[str, dict]:
         return {}
 
 
+def _chunk_label(chunk_keys: list[str]) -> str:
+    return f"{chunk_keys[0]}-{chunk_keys[-1]}"
+
+
+def partition_queue_keys(queue_keys: list[str], chunk_size: int) -> list[list[str]]:
+    if chunk_size <= 0:
+        raise ValueError("chunk_size must be positive")
+    return [queue_keys[i : i + chunk_size] for i in range(0, len(queue_keys), chunk_size)]
+
+
+def _resolve_step2_chunk_workers(requested_workers: int | None) -> int:
+    default_workers = max((os.cpu_count() or 1) - 2, 1)
+    if requested_workers is None:
+        return default_workers
+    try:
+        requested = int(requested_workers)
+    except (TypeError, ValueError):
+        return default_workers
+    return min(max(requested, 1), default_workers)
+
+
+def _write_analysis_outputs(
+    analysis: dict[str, dict],
+    analysis_file: str,
+    frames_dir: str,
+) -> None:
+    sorted_analysis = dict(sorted(analysis.items(), key=lambda item: item[0]))
+    with open(analysis_file, "w", encoding="utf-8") as f:
+        json.dump(sorted_analysis, f, indent=2, ensure_ascii=False)
+    for key, entry in sorted_analysis.items():
+        json_path = os.path.join(frames_dir, f"frame_{key}.json")
+        with open(json_path, "w", encoding="utf-8") as f:
+            json.dump(entry, f, indent=2, ensure_ascii=False)
+
+
+def _entries_meaningfully_different(left: dict, right: dict) -> bool:
+    return json.dumps(left, sort_keys=True, ensure_ascii=False) != json.dumps(
+        right,
+        sort_keys=True,
+        ensure_ascii=False,
+    )
+
+
+def _process_chunk_sequential(
+    *,
+    chunk_index: int,
+    total_chunks: int,
+    batch_entries: list[tuple[str, str]],
+    initial_previous_state: str,
+    video_id: str,
+    agent: str,
+    structural_index: dict[str, dict],
+    analysis_snapshot: dict[str, dict],
+    total_frames: int,
+    telemetry_enabled: bool,
+    video_dir: str,
+    status_lock: object | None = None,
+    phase_label: str = "provisional",
+) -> dict[str, dict]:
+    batch_label = _chunk_label([key for key, _ in batch_entries])
+    chunk_prefix = f"[chunk {chunk_index + 1}/{total_chunks} {batch_label} | {phase_label}]"
+    print(f"{chunk_prefix} start ({len(batch_entries)} frames)", flush=True)
+
+    def _write_status(partial_analysis: dict[str, dict], in_flight: dict | None = None) -> None:
+        if not telemetry_enabled:
+            return
+        if status_lock is not None:
+            with status_lock:
+                _write_processing_status(video_dir, partial_analysis, total_frames, in_flight=in_flight)
+            return
+        _write_processing_status(video_dir, partial_analysis, total_frames, in_flight=in_flight)
+
+    batch_result: dict[str, dict] = {}
+    prev_state = initial_previous_state
+
+    for idx, (key, path) in enumerate(batch_entries):
+        if not os.path.exists(path):
+            print(f"{chunk_prefix} warning: frame {path} not found, skipping", flush=True)
+            continue
+        print(f"{chunk_prefix} frame {idx + 1}/{len(batch_entries)} -> {key}", flush=True)
+        prompt = _single_frame_prompt(key, path, prev_state)
+        in_flight: dict[str, object] = {}
+
+        def on_event(ev):
+            kind = ev.get("kind")
+            stage = ev.get("stage", "")
+            provider = ev.get("provider", "")
+            fk = ev.get("frame_key")
+            if kind == "start":
+                in_flight["current_frame"] = fk
+                in_flight["current_stage"] = stage
+                in_flight["current_provider"] = provider
+                in_flight["last_progress_at"] = round(time.time(), 2)
+                print(f"{chunk_prefix}   [{fk}] {stage}...", flush=True)
+            elif kind == "chunk":
+                in_flight["last_progress_at"] = round(time.time(), 2)
+                in_flight["stream_chars"] = in_flight.get("stream_chars", 0) + len(ev.get("text_delta") or "")
+            elif kind == "end":
+                in_flight.pop("current_frame", None)
+                in_flight.pop("current_stage", None)
+                in_flight.pop("current_provider", None)
+                in_flight.pop("stream_chars", None)
+                in_flight["last_progress_at"] = round(time.time(), 2)
+                print(f"{chunk_prefix}   [{fk}] {stage} done", flush=True)
+            elif kind == "retry":
+                print(f"{chunk_prefix}   [{fk}] {stage} retry {ev.get('attempt', 1)}", flush=True)
+            if in_flight:
+                partial = dict(analysis_snapshot)
+                partial.update(batch_result)
+                _write_status(partial, in_flight=in_flight)
+
+        frame_started = time.perf_counter()
+        structural_info = structural_index.get(key) if isinstance(structural_index, dict) else None
+        structural_score = None
+        compare_seconds = None
+        is_significant = True
+
+        if structural_info:
+            is_significant = bool(structural_info.get("is_significant", True))
+            if structural_info.get("score") is not None:
+                structural_score = float(structural_info.get("score"))
+            compare_seconds = structural_info.get("compare_seconds")
+
+        if not is_significant:
+            entry = minimal_no_change_frame(key)
+            if structural_score is not None:
+                entry["structural_score"] = structural_score
+            entry["timings"] = {
+                "compare_seconds": compare_seconds,
+                "total_seconds": round(time.perf_counter() - frame_started, 4),
+            }
+        elif agent == "openai":
+            entry = _analyze_frame_openai(path, prompt, video_id, on_event=on_event, frame_key=key)
+            if structural_score is not None:
+                entry["structural_score"] = structural_score
+            if compare_seconds is not None:
+                entry["timings"] = {"compare_seconds": compare_seconds}
+        else:
+            entry = _analyze_frame_gemini(path, prompt, video_id, on_event=on_event, frame_key=key)
+            if structural_score is not None:
+                entry["structural_score"] = structural_score
+            if compare_seconds is not None:
+                entry["timings"] = {"compare_seconds": compare_seconds}
+
+        entry = ensure_material_change(entry)
+        batch_result[key] = entry
+        prev_state = json.dumps(entry, ensure_ascii=False)
+        partial_analysis = dict(analysis_snapshot)
+        partial_analysis.update(batch_result)
+        _write_status(partial_analysis)
+
+    print(f"{chunk_prefix} complete", flush=True)
+    return batch_result
+
+
+def _reprocess_chunk_boundary(
+    *,
+    chunk_index: int,
+    total_chunks: int,
+    batch_entries: list[tuple[str, str]],
+    previous_chunk_state: str,
+    video_id: str,
+    agent: str,
+    structural_index: dict[str, dict],
+    analysis_snapshot: dict[str, dict],
+    total_frames: int,
+    telemetry_enabled: bool,
+    video_dir: str,
+    status_lock: object | None = None,
+) -> tuple[dict[str, dict], bool]:
+    boundary_key = batch_entries[0][0]
+    corrected_boundary = _process_chunk_sequential(
+        chunk_index=chunk_index,
+        total_chunks=total_chunks,
+        batch_entries=batch_entries[:1],
+        initial_previous_state=previous_chunk_state,
+        video_id=video_id,
+        agent=agent,
+        structural_index=structural_index,
+        analysis_snapshot=analysis_snapshot,
+        total_frames=total_frames,
+        telemetry_enabled=telemetry_enabled,
+        video_dir=video_dir,
+        status_lock=status_lock,
+        phase_label="boundary-reprocess",
+    )
+    return corrected_boundary, boundary_key in corrected_boundary
+
+
+def _merge_chunk_results(
+    analysis: dict[str, dict],
+    chunk_result: dict[str, dict],
+) -> dict[str, dict]:
+    merged = dict(analysis)
+    merged.update(chunk_result)
+    return dict(sorted(merged.items(), key=lambda item: item[0]))
+
+
 def run_analysis(
     video_id: str,
     batch_size: int = 10,
@@ -395,6 +595,10 @@ def run_analysis(
     parallel_batches: bool = False,
     merge_only: bool = False,
     max_batches: int | None = None,
+    step2_parallel_chunks: bool | None = None,
+    step2_reprocess_boundaries: bool | None = None,
+    step2_chunk_size: int | None = None,
+    step2_chunk_workers: int | None = None,
 ):
     agent = _normalize_agent(agent)
     from helpers import config as pipeline_config
@@ -402,6 +606,24 @@ def run_analysis(
     cfg = pipeline_config.get_config_for_video(video_id)
     ssim_threshold = float(cfg.get("ssim_threshold", 0.95))
     telemetry_enabled = bool(cfg.get("telemetry_enabled", True))
+    step2_parallel_chunks = bool(
+        cfg.get("step2_parallel_chunks", False) if step2_parallel_chunks is None else step2_parallel_chunks
+    )
+    step2_reprocess_boundaries = bool(
+        cfg.get("step2_reprocess_boundaries", True)
+        if step2_reprocess_boundaries is None
+        else step2_reprocess_boundaries
+    )
+    step2_chunk_size = (
+        cfg.get("step2_chunk_size")
+        if step2_chunk_size is None
+        else step2_chunk_size
+    )
+    step2_chunk_workers = (
+        cfg.get("step2_chunk_workers")
+        if step2_chunk_workers is None
+        else step2_chunk_workers
+    )
     video_dir = os.path.join("data", video_id)
     index_file = os.path.join(video_dir, "dense_index.json")
     analysis_file = os.path.join(video_dir, "dense_analysis.json")
@@ -540,6 +762,159 @@ def run_analysis(
     else:
         previous_state = ""
     last_relevant_key = _last_relevant_key(analysis)
+
+    chunk_size = int(step2_chunk_size or batch_size or 1)
+    use_chunk_mode = (
+        agent in {"openai", "gemini"}
+        and step2_parallel_chunks
+        and chunk_size > 0
+        and len(remaining_keys) > 1
+    )
+
+    if use_chunk_mode:
+        chunk_groups = partition_queue_keys(remaining_keys, chunk_size)
+        if max_batches is not None:
+            chunk_groups = chunk_groups[:max_batches]
+        resolved_chunk_workers = min(_resolve_step2_chunk_workers(step2_chunk_workers), max(len(chunk_groups), 1))
+        status_lock = threading.Lock()
+        frames_dir = os.path.join(video_dir, "frames_dense")
+        print(
+            "Step 2 chunk mode enabled: "
+            f"{len(chunk_groups)} chunks, chunk_size={chunk_size}, workers={resolved_chunk_workers}, "
+            f"boundary_reprocess={step2_reprocess_boundaries}",
+            flush=True,
+        )
+
+        chunk_metadata: dict[int, dict] = {}
+        with ThreadPoolExecutor(max_workers=resolved_chunk_workers) as executor:
+            future_map = {}
+            for chunk_index, chunk_keys in enumerate(chunk_groups):
+                batch_entries = [(key, queue_index[key]) for key in chunk_keys]
+                batch_label = _chunk_label(chunk_keys)
+                prompt_file = os.path.join(batches_dir, f"dense_batch_prompt_{batch_label}.txt")
+                response_file = os.path.join(batches_dir, f"dense_batch_response_{batch_label}.json")
+                seeded_previous_state = previous_state if chunk_index == 0 else ""
+                prompt_text = get_batch_prompt(batch_entries, video_dir, seeded_previous_state)
+                with open(prompt_file, "w", encoding="utf-8") as f:
+                    f.write(prompt_text)
+                future = executor.submit(
+                    _process_chunk_sequential,
+                    chunk_index=chunk_index,
+                    total_chunks=len(chunk_groups),
+                    batch_entries=batch_entries,
+                    initial_previous_state=seeded_previous_state,
+                    video_id=video_id,
+                    agent=agent,
+                    structural_index=structural_index,
+                    analysis_snapshot=analysis,
+                    total_frames=len(all_keys),
+                    telemetry_enabled=telemetry_enabled,
+                    video_dir=video_dir,
+                    status_lock=status_lock,
+                )
+                future_map[future] = {
+                    "chunk_index": chunk_index,
+                    "chunk_keys": chunk_keys,
+                    "batch_entries": batch_entries,
+                    "batch_label": batch_label,
+                    "response_file": response_file,
+                }
+
+            for future in as_completed(future_map):
+                meta = future_map[future]
+                provisional_result = future.result()
+                meta["provisional_result"] = provisional_result
+                chunk_metadata[meta["chunk_index"]] = meta
+                print(
+                    f"[chunk {meta['chunk_index'] + 1}/{len(chunk_groups)} {meta['batch_label']}] provisional result ready",
+                    flush=True,
+                )
+
+        final_previous_state = previous_state
+        for chunk_index in range(len(chunk_groups)):
+            meta = chunk_metadata[chunk_index]
+            provisional_result = meta["provisional_result"]
+            final_chunk_result = dict(provisional_result)
+            replayed = False
+
+            if chunk_index > 0 and step2_reprocess_boundaries:
+                print(
+                    f"[chunk {chunk_index + 1}/{len(chunk_groups)} {meta['batch_label']}] boundary reprocessing start",
+                    flush=True,
+                )
+                corrected_boundary, has_boundary = _reprocess_chunk_boundary(
+                    chunk_index=chunk_index,
+                    total_chunks=len(chunk_groups),
+                    batch_entries=meta["batch_entries"],
+                    previous_chunk_state=final_previous_state,
+                    video_id=video_id,
+                    agent=agent,
+                    structural_index=structural_index,
+                    analysis_snapshot=analysis,
+                    total_frames=len(all_keys),
+                    telemetry_enabled=telemetry_enabled,
+                    video_dir=video_dir,
+                    status_lock=status_lock,
+                )
+                if has_boundary:
+                    boundary_key = meta["chunk_keys"][0]
+                    corrected_entry = corrected_boundary[boundary_key]
+                    if _entries_meaningfully_different(corrected_entry, provisional_result.get(boundary_key, {})):
+                        print(
+                            f"[chunk {chunk_index + 1}/{len(chunk_groups)} {meta['batch_label']}] "
+                            "boundary changed, replaying chunk sequentially",
+                            flush=True,
+                        )
+                        final_chunk_result = _process_chunk_sequential(
+                            chunk_index=chunk_index,
+                            total_chunks=len(chunk_groups),
+                            batch_entries=meta["batch_entries"],
+                            initial_previous_state=final_previous_state,
+                            video_id=video_id,
+                            agent=agent,
+                            structural_index=structural_index,
+                            analysis_snapshot=analysis,
+                            total_frames=len(all_keys),
+                            telemetry_enabled=telemetry_enabled,
+                            video_dir=video_dir,
+                            status_lock=status_lock,
+                            phase_label="boundary-replay",
+                        )
+                        replayed = True
+                    else:
+                        final_chunk_result[boundary_key] = corrected_entry
+                        print(
+                            f"[chunk {chunk_index + 1}/{len(chunk_groups)} {meta['batch_label']}] "
+                            "boundary matched provisional output",
+                            flush=True,
+                        )
+
+            analysis = _merge_chunk_results(analysis, final_chunk_result)
+            _write_analysis_outputs(analysis, analysis_file, frames_dir)
+            if telemetry_enabled:
+                _write_processing_status(video_dir, analysis, len(all_keys))
+            with open(meta["response_file"], "w", encoding="utf-8") as f:
+                json.dump(final_chunk_result, f, indent=2, ensure_ascii=False)
+            final_previous_state = json.dumps(
+                final_chunk_result[meta["chunk_keys"][-1]],
+                ensure_ascii=False,
+            )
+            print(
+                f"[chunk {chunk_index + 1}/{len(chunk_groups)} {meta['batch_label']}] "
+                f"merged ({len(final_chunk_result)} frames, replayed={replayed})",
+                flush=True,
+            )
+
+        remaining_keys = [k for k in queue_keys if k not in analysis]
+        done_queue = len(queue_keys) - len(remaining_keys)
+        previous_state = final_previous_state
+        last_relevant_key = _last_relevant_key(analysis)
+        if remaining_keys:
+            still_remaining = len(all_keys) - len(analysis)
+            print(f"{still_remaining} frames remaining. Re-run to process next chunk set.")
+            sys.exit(AGENT_NEEDS_ANALYSIS)
+        print(f"Analysis complete. Saved to {analysis_file}")
+        return
 
     batches_done = 0
     while remaining_keys and (max_batches is None or batches_done < max_batches):

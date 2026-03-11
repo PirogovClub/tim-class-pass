@@ -129,6 +129,10 @@ def main(
         vtt_file = cfg.get("vtt_file")
         capture_fps = float(cfg.get("capture_fps", 1.0))
         llm_queue_diff_threshold = float(cfg.get("llm_queue_diff_threshold", 0.14))
+        step2_parallel_chunks = bool(cfg.get("step2_parallel_chunks", False))
+        step2_reprocess_boundaries = bool(cfg.get("step2_reprocess_boundaries", True))
+        step2_chunk_size = cfg.get("step2_chunk_size")
+        step2_chunk_workers = cfg.get("step2_chunk_workers")
         cfg_workers = cfg.get("workers")
         if workers is not None:
             requested_workers = workers
@@ -157,6 +161,11 @@ def main(
         logger.info(f"Agent (images): {agent_images_resolved} | Batch size: {batch_size_resolved}")
         logger.info(f"Max workers: {max_workers}")
         logger.info(f"Capture FPS: {capture_fps} | LLM queue diff threshold: {llm_queue_diff_threshold}")
+        logger.info(
+            "Step 2 chunking: "
+            f"enabled={step2_parallel_chunks}, chunk_size={step2_chunk_size or batch_size_resolved}, "
+            f"chunk_workers={step2_chunk_workers}, reprocess_boundaries={step2_reprocess_boundaries}"
+        )
         if video_file or vtt_file:
             logger.info(f"From pipeline.yml: video_file={video_file or 'auto'} | vtt_file={vtt_file or 'auto'}")
         logger.info("=" * 50)
@@ -221,6 +230,10 @@ def main(
             parallel_batches=parallel_batches,
             merge_only=merge_only,
             max_batches=max_batches,
+            step2_parallel_chunks=step2_parallel_chunks,
+            step2_reprocess_boundaries=step2_reprocess_boundaries,
+            step2_chunk_size=step2_chunk_size,
+            step2_chunk_workers=step2_chunk_workers,
         )
 
         if stop_after == 2:
@@ -249,6 +262,7 @@ def main(
             raise FileNotFoundError(f"No VTT files found under {video_dir}")
 
         model_component2 = cfg.get("model_component2")
+        model_component2_reducer = cfg.get("model_component2_reducer")
         for current_vtt_path in vtt_paths:
             outputs = run_component2_pipeline(
                 vtt_path=current_vtt_path,
@@ -256,6 +270,7 @@ def main(
                 output_root=video_dir,
                 video_id=video_id_resolved,
                 model=model_component2,
+                reducer_model=model_component2_reducer,
                 progress_callback=lambda message: logger.info(message),
             )
             logger.info(f"Generated markdown outputs for {current_vtt_path.name}")

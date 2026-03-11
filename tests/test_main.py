@@ -48,6 +48,7 @@ def test_pipeline_main_step3_runs_component2(monkeypatch, tmp_path) -> None:
             "vtt_file": "lesson.vtt",
             "parallel_batches": False,
             "model_component2": None,
+            "model_component2_reducer": "gemini-2.5-pro",
         },
     )
 
@@ -85,3 +86,4 @@ def test_pipeline_main_step3_runs_component2(monkeypatch, tmp_path) -> None:
     assert seen["video_id"] == video_id
     assert seen["vtt_path"].resolve() == (video_dir / "lesson.vtt").resolve()
     assert seen["visuals_json_path"].resolve() == (video_dir / "dense_analysis.json").resolve()
+    assert seen["reducer_model"] == "gemini-2.5-pro"
