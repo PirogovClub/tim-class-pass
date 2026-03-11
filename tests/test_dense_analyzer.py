@@ -140,6 +140,31 @@ def _setup_video_3frames(tmp_path: Path, video_id: str = "video3") -> Path:
     return video_dir
 
 
+def _setup_video_4frames(tmp_path: Path, video_id: str = "video4") -> Path:
+    video_dir = tmp_path / "data" / video_id
+    frames_dir = video_dir / "frames_dense"
+    frames_dir.mkdir(parents=True)
+    for name, color in [
+        ("frame_000001.jpg", (255, 255, 255)),
+        ("frame_000002.jpg", (160, 160, 160)),
+        ("frame_000003.jpg", (90, 90, 90)),
+        ("frame_000004.jpg", (0, 0, 0)),
+    ]:
+        Image.new("RGB", (24, 24), color=color).save(frames_dir / name)
+    with open(video_dir / "dense_index.json", "w", encoding="utf-8") as f:
+        json.dump(
+            {
+                "000001": "frames_dense/frame_000001.jpg",
+                "000002": "frames_dense/frame_000002.jpg",
+                "000003": "frames_dense/frame_000003.jpg",
+                "000004": "frames_dense/frame_000004.jpg",
+            },
+            f,
+            indent=2,
+        )
+    return video_dir
+
+
 def test_batch_carry_forward_passes_batch_relevant_state(monkeypatch, tmp_path: Path) -> None:
     """
     Within-batch context carry-forward: when frame 000001 is relevant and 000002 comes next
@@ -180,4 +205,118 @@ def test_batch_carry_forward_passes_batch_relevant_state(monkeypatch, tmp_path: 
     assert keys_by_call == ["000001", "000002", "000003"]
     assert "Previous frame state: None" in seen_prompts[0]
     assert "Content of 000001" in seen_prompts[1]
+
+
+def test_partition_queue_keys_splits_in_stable_order() -> None:
+    assert dense_analyzer.partition_queue_keys(["000001", "000002", "000003", "000004", "000005"], 2) == [
+        ["000001", "000002"],
+        ["000003", "000004"],
+        ["000005"],
+    ]
+
+
+def test_chunk_workers_are_capped_to_cpu_minus_two(monkeypatch) -> None:
+    monkeypatch.setattr(dense_analyzer.os, "cpu_count", lambda: 8)
+
+    assert dense_analyzer._resolve_step2_chunk_workers(None) == 6
+    assert dense_analyzer._resolve_step2_chunk_workers(99) == 6
+    assert dense_analyzer._resolve_step2_chunk_workers(1) == 1
+
+
+def test_chunk_mode_reprocesses_boundary_and_replays_chunk(monkeypatch, tmp_path: Path) -> None:
+    video_id = "video4"
+    video_dir = _setup_video_4frames(tmp_path, video_id=video_id)
+    _write_llm_queue(video_dir, ["000001", "000002", "000003", "000004"])
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(
+        config,
+        "get_config_for_video",
+        lambda _: {
+            "ssim_threshold": 0.50,
+            "telemetry_enabled": False,
+            "step2_parallel_chunks": True,
+            "step2_chunk_size": 2,
+            "step2_reprocess_boundaries": True,
+            "step2_chunk_workers": 2,
+        },
+    )
+
+    call_counts: dict[str, int] = {}
+
+    def fake_analyze_frame(frame_path: str, prompt_text: str, video_id=None, **kwargs):
+        key = kwargs.get("frame_key") or ""
+        call_counts[key] = call_counts.get(key, 0) + 1
+        if key == "000001":
+            facts = ["Intro 000001"]
+        elif key == "000002":
+            facts = ["Bridge 000002"]
+        elif key == "000003":
+            facts = ["Boundary corrected"] if "Bridge 000002" in prompt_text else ["Boundary provisional"]
+        else:
+            facts = ["Tail replayed"] if "Boundary corrected" in prompt_text else ["Tail provisional"]
+        return {
+            "frame_timestamp": f"00:00:0{key[-1]}",
+            "material_change": True,
+            "lesson_relevant": True,
+            "scene_boundary": True,
+            "change_summary": [f"Frame {key}"],
+            "current_state": {"visual_facts": facts, "trading_relevant_interpretation": []},
+        }
+
+    monkeypatch.setattr(dense_analyzer, "_analyze_frame_openai", fake_analyze_frame)
+
+    dense_analyzer.run_analysis(video_id, batch_size=2, agent="openai")
+
+    with open(video_dir / "dense_analysis.json", "r", encoding="utf-8") as f:
+        analysis = json.load(f)
+
+    assert list(analysis.keys()) == ["000001", "000002", "000003", "000004"]
+    assert analysis["000003"]["current_state"]["visual_facts"] == ["Boundary corrected"]
+    assert analysis["000004"]["current_state"]["visual_facts"] == ["Tail replayed"]
+    assert call_counts["000003"] == 3
+    assert call_counts["000004"] == 2
+
+
+def test_chunk_mode_disabled_falls_back_to_sequential(monkeypatch, tmp_path: Path) -> None:
+    video_id = "video4-seq"
+    video_dir = _setup_video_4frames(tmp_path, video_id=video_id)
+    _write_llm_queue(video_dir, ["000001", "000002", "000003", "000004"])
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(
+        config,
+        "get_config_for_video",
+        lambda _: {
+            "ssim_threshold": 0.50,
+            "telemetry_enabled": False,
+            "step2_parallel_chunks": False,
+            "step2_chunk_size": 2,
+            "step2_reprocess_boundaries": True,
+            "step2_chunk_workers": 2,
+        },
+    )
+
+    seen_prompts: list[str] = []
+    call_order: list[str] = []
+
+    def fake_analyze_frame(frame_path: str, prompt_text: str, video_id=None, **kwargs):
+        key = kwargs.get("frame_key") or ""
+        call_order.append(key)
+        seen_prompts.append(prompt_text)
+        return {
+            "frame_timestamp": f"00:00:0{key[-1]}",
+            "material_change": True,
+            "lesson_relevant": True,
+            "scene_boundary": True,
+            "change_summary": [f"Frame {key}"],
+            "current_state": {"visual_facts": [f"Content {key}"], "trading_relevant_interpretation": []},
+        }
+
+    monkeypatch.setattr(dense_analyzer, "_analyze_frame_openai", fake_analyze_frame)
+
+    dense_analyzer.run_analysis(video_id, batch_size=2, agent="openai")
+
+    assert call_order == ["000001", "000002", "000003", "000004"]
+    assert "Previous frame state: None" in seen_prompts[0]
+    assert "Content 000001" in seen_prompts[1]
+    assert "Content 000002" in seen_prompts[2]
 

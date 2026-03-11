@@ -14,6 +14,10 @@ DEFAULT_LLM_QUEUE_DIFF_THRESHOLD = 0.025
 DEFAULT_COMPARE_BLUR_RADIUS = 1.5
 
 
+def _default_step2_chunk_workers() -> int:
+    return max((os.cpu_count() or 1) - 2, 1)
+
+
 def _parse_int(raw: str | None, default: int | None = None) -> int | None:
     if raw is None:
         return default
@@ -82,6 +86,10 @@ def get_config_for_video(video_id: str) -> dict:
         ),
         "compare_blur_radius": _parse_float(os.getenv("COMPARE_BLUR_RADIUS"), DEFAULT_COMPARE_BLUR_RADIUS),
         "compare_artifacts_dir": os.getenv("COMPARE_ARTIFACTS_DIR") or "frames_structural_preprocessed",
+        "step2_parallel_chunks": _parse_bool(os.getenv("STEP2_PARALLEL_CHUNKS"), False),
+        "step2_reprocess_boundaries": _parse_bool(os.getenv("STEP2_REPROCESS_BOUNDARIES"), True),
+        "step2_chunk_size": _parse_int(os.getenv("STEP2_CHUNK_SIZE"), None),
+        "step2_chunk_workers": _parse_int(os.getenv("STEP2_CHUNK_WORKERS"), _default_step2_chunk_workers()),
         "model_component2_reducer": os.getenv("MODEL_COMPONENT2_REDUCER") or os.getenv("MODEL_COMPONENT2") or os.getenv("MODEL_NAME"),
         "telemetry_enabled": _parse_bool(os.getenv("TELEMETRY_ENABLED"), True),
     }
@@ -111,6 +119,10 @@ def get_config_for_video(video_id: str) -> dict:
         "llm_queue_diff_threshold",
         "compare_blur_radius",
         "compare_artifacts_dir",
+        "step2_parallel_chunks",
+        "step2_reprocess_boundaries",
+        "step2_chunk_size",
+        "step2_chunk_workers",
         "telemetry_enabled",
         *_model_keys,
     )
@@ -125,6 +137,10 @@ def get_config_for_video(video_id: str) -> dict:
                 value = _parse_float(value, result["ssim_threshold"])
             if key == "workers" and isinstance(value, str):
                 value = _parse_int(value, result["workers"])
+            if key == "step2_chunk_size" and isinstance(value, str):
+                value = _parse_int(value, result["step2_chunk_size"])
+            if key == "step2_chunk_workers" and isinstance(value, str):
+                value = _parse_int(value, result["step2_chunk_workers"])
             if key in {"capture_fps", "llm_queue_diff_threshold", "compare_blur_radius"} and isinstance(value, str):
                 value = _parse_float(value, result[key])
             result[key] = value
