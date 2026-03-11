@@ -619,49 +619,23 @@ def _call_agent(
     stage: str,
     frame_key: str | None = None,
 ) -> dict[str, Any]:
-    if agent == "openai":
-        from helpers.clients import openai_client
-        text = openai_client.chat_completion_with_image(
-            prompt,
-            str(image_path),
-            step="images",
-            video_id=video_id,
-            max_tokens=2000,
-            on_event=on_event,
-            stage=stage,
-            frame_key=frame_key,
-        )
-        return _parse_json_from_response(text)
-    if agent == "gemini":
-        from helpers.clients import gemini_client
-        from google.genai import types
-        with open(image_path, "rb") as f:
-            image_bytes = f.read()
-        contents = [
-            types.Content(
-                role="user",
-                parts=[
-                    types.Part.from_text(text=prompt),
-                    types.Part.from_bytes(data=image_bytes, mime_type="image/jpeg"),
-                ],
-            )
-        ]
-        config = types.GenerateContentConfig(
-            response_mime_type="application/json",
-            temperature=0.3,
-        )
-        text = gemini_client.generate_with_retry_stream(
-            model=gemini_client.get_model_for_step("images", video_id),
-            contents=contents,
-            config=config,
-            on_event=on_event,
-            stage=stage,
-            frame_key=frame_key,
-        ).strip()
-        if not text:
-            raise ValueError("Gemini returned empty response for analysis")
-        return _parse_json_from_response(text)
-    raise ValueError(f"Unsupported agent: {agent}. Use openai or gemini.")
+    from helpers.clients.providers import get_provider, resolve_model_for_stage
+
+    stage_key = f"analyze_{stage}"
+    result = get_provider(agent).generate_text_with_image(
+        model=resolve_model_for_stage(stage_key, video_id=video_id),
+        prompt=prompt,
+        image_path=str(image_path),
+        max_tokens=2000,
+        temperature=0.3,
+        response_mime_type="application/json",
+        on_event=on_event,
+        stage=stage,
+        frame_key=frame_key,
+    )
+    if not result.text:
+        raise ValueError(f"{agent} returned empty response for analysis")
+    return _parse_json_from_response(result.text)
 
 
 def build_extraction_prompt(
@@ -762,8 +736,22 @@ def analyze_frame(
     on_event: Any = None,
 ) -> dict[str, Any]:
     timings: dict[str, float] = {}
+    extract_usage_records: list[dict[str, Any]] = []
+    relevance_usage_records: list[dict[str, Any]] = []
 
     resolved_agent = _resolve_agent(agent, video_id)
+
+    def _capture_usage(ev: dict[str, Any]) -> None:
+        meta = ev.get("meta") or {}
+        usage_records = meta.get("usage_records")
+        usage = meta.get("usage")
+        target = extract_usage_records if ev.get("stage") == "extract" else relevance_usage_records
+        if isinstance(usage_records, list):
+            target[:] = usage_records
+        elif isinstance(usage, dict):
+            target[:] = [usage]
+        if on_event is not None:
+            on_event(ev)
 
     started = time.perf_counter()
     extracted = extract_with_agent(
@@ -772,7 +760,7 @@ def analyze_frame(
         agent=resolved_agent,
         previous_state=previous_state,
         video_id=video_id,
-        on_event=on_event,
+        on_event=_capture_usage,
     )
     timings["extract_seconds"] = round(time.perf_counter() - started, 4)
 
@@ -785,7 +773,7 @@ def analyze_frame(
         previous_state=previous_state,
         transcript_context=transcript_context,
         video_id=video_id,
-        on_event=on_event,
+        on_event=_capture_usage,
     )
     timings["relevance_seconds"] = round(time.perf_counter() - started, 4)
 
@@ -804,6 +792,10 @@ def analyze_frame(
                 "change_summary": relevance.get("change_summary") or [],
                 "previous_relevant_frame": previous_relevant_frame,
                 "timings": timings,
+                "request_usage": {
+                    "extract": extract_usage_records,
+                    "relevance": relevance_usage_records,
+                },
             }
         )
         return ensure_material_change(skipped)
@@ -821,6 +813,10 @@ def analyze_frame(
     merged["explanation_summary"] = relevance.get("explanation_summary")
     merged["previous_relevant_frame"] = previous_relevant_frame
     merged["timings"] = timings
+    merged["request_usage"] = {
+        "extract": extract_usage_records,
+        "relevance": relevance_usage_records,
+    }
     merged["pipeline_status"] = "explained"
     if not merged.get("change_summary"):
         merged["change_summary"] = relevance.get("change_summary") or []

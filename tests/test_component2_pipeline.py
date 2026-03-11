@@ -226,6 +226,17 @@ def test_run_component2_pipeline_writes_outputs(monkeypatch, tmp_path: Path) -> 
                     synthesized_markdown=f"Chunk {chunk.chunk_index} markdown",
                     metadata_tags=["Trend Break Level"],
                 ),
+                [
+                    {
+                        "provider": "gemini",
+                        "model": "gemini-2.5-flash",
+                        "attempt": 1,
+                        "status": "succeeded",
+                        "prompt_tokens": 12,
+                        "output_tokens": 5,
+                        "total_tokens": 17,
+                    }
+                ],
             )
             for chunk in chunks
         ]
@@ -233,7 +244,20 @@ def test_run_component2_pipeline_writes_outputs(monkeypatch, tmp_path: Path) -> 
     monkeypatch.setattr("pipeline.component2.main.process_chunks", fake_process_chunks)
     def fake_synthesize_full_document(raw_markdown, **kwargs):
         reducer_calls.append(kwargs)
-        return "---\ntags:\n  - Trend Break Level\n---\n\n# lesson\n\n## Topic\n- **Rule 1:** Use the level.\n"
+        return (
+            "---\ntags:\n  - Trend Break Level\n---\n\n# lesson\n\n## Topic\n- **Rule 1:** Use the level.\n",
+            [
+                {
+                    "provider": "gemini",
+                    "model": "gemini-2.5-pro",
+                    "attempt": 1,
+                    "status": "succeeded",
+                    "prompt_tokens": 30,
+                    "output_tokens": 9,
+                    "total_tokens": 39,
+                }
+            ],
+        )
 
     monkeypatch.setattr("pipeline.component2.main.synthesize_full_document", fake_synthesize_full_document)
 
@@ -255,11 +279,15 @@ def test_run_component2_pipeline_writes_outputs(monkeypatch, tmp_path: Path) -> 
 
     intermediate_markdown = outputs["intermediate_markdown_path"].read_text(encoding="utf-8")
     rag_ready_markdown = outputs["rag_ready_markdown_path"].read_text(encoding="utf-8")
+    llm_debug = json.loads(outputs["llm_debug_path"].read_text(encoding="utf-8"))
+    reducer_usage = json.loads(outputs["reducer_usage_path"].read_text(encoding="utf-8"))
     assert "# lesson" in intermediate_markdown
     assert "Chunk 0 markdown" in intermediate_markdown
     assert "**Tags:** Trend Break Level" in intermediate_markdown
     assert rag_ready_markdown.startswith("---")
     assert "## Topic" in rag_ready_markdown
+    assert llm_debug[0]["request_usage"][0]["total_tokens"] == 17
+    assert reducer_usage[0]["total_tokens"] == 39
     assert reducer_calls[0]["model"] == "gemini-2.5-pro"
     assert any("[+00:00] Step 3.1/5" in message for message in progress_messages)
     assert any("Chunk 1/1 complete" in message and "chunk_time=0.2s" in message for message in progress_messages)

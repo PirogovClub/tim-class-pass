@@ -20,6 +20,7 @@ dependencies = [
 
 [project.scripts]
 tim-class-pass = "tim_class_pass.main:main"
+tim-class-pass-usage = "tim_class_pass.usage_report:main"
 
 [build-system]
 requires = ["hatchling"]

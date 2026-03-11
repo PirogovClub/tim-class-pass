@@ -44,19 +44,40 @@ Or run all candidates defined in the script:
 python scripts/benchmark_models.py
 ```
 
+## Cross-Provider Comparison
+
+To compare the current Gemini default against GPT-4o mini on the same frame and scorer:
+
+```bash
+cd H:\GITS\tim-class-pass
+python scripts/benchmark_models.py --models "gemini-2.5-flash-lite,gpt-4o-mini"
+```
+
+You can also use an explicit provider prefix for OpenAI:
+
+```bash
+python scripts/benchmark_models.py --models "gemini-2.5-flash-lite,openai:gpt-4o-mini"
+```
+
+Requirements:
+
+- `GEMINI_API_KEY` must be set when any `gemini-*` model is included.
+- `OPENAI_API_KEY` must be set when any OpenAI model such as `gpt-4o-mini` is included.
+- The report will score both providers against the same gold file and include elapsed time, token counts, and comparable cost estimates when pricing is known.
+
 ## Switching the Default Model
 
 If a better model is found, update `pipeline.yml` or the per-video pipeline config to set `model_images`:
 
 ```yaml
 # pipeline.yml
-model_images: gemini-2.5-flash-lite-preview-09-2025
+model_images: gemini-2.5-flash-lite
 ```
 
 Or override via env:
 
 ```
-MODEL_IMAGES=gemini-2.5-flash-lite-preview-09-2025
+MODEL_IMAGES=gemini-2.5-flash-lite
 ```
 
 ## What Changed in Phases 1-5

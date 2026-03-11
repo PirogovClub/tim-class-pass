@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 DATA_DIR = "data"
 AGENT_NEEDS_ANALYSIS = 10
-IMAGE_AGENT_CHOICES = ["openai", "gemini", "ide"]
+IMAGE_AGENT_CHOICES = ["openai", "gemini", "mlx", "setra", "ide"]
 
 
 @click.command()
@@ -123,7 +123,7 @@ def main(
         file_handler = logging.FileHandler(log_path, encoding="utf-8")
         file_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
         logging.getLogger().addHandler(file_handler)
-        agent_images_resolved = agent_images if agent_images is not None else (agent if agent is not None else cfg["agent_images"])
+        agent_images_resolved = agent_images if agent_images is not None else (agent if agent is not None else (cfg.get("provider_images") or cfg["agent_images"]))
         batch_size_resolved = batch_size if batch_size is not None else cfg["batch_size"]
         video_file = cfg.get("video_file")
         vtt_file = cfg.get("vtt_file")
@@ -140,7 +140,7 @@ def main(
             requested_workers = cfg_workers
         else:
             requested_workers = None
-        default_workers = min(os.cpu_count() or 1, 8)
+        default_workers = min(max((os.cpu_count() or 1) // 2, 1), 8)
         if requested_workers is None:
             max_workers = default_workers
         else:
@@ -155,6 +155,12 @@ def main(
         if agent_images_resolved == "gemini":
             from helpers.clients import gemini_client
             gemini_client.require_gemini_key()
+        elif agent_images_resolved == "openai":
+            from helpers.clients import openai_client
+            openai_client.require_openai_key()
+        elif agent_images_resolved == "setra":
+            from helpers.clients import setra_client
+            setra_client.require_setra_config()
 
         logger.info("=" * 50)
         logger.info("Transcript Enrichment Pipeline — Dense Mode")
@@ -243,8 +249,6 @@ def main(
             return
 
         # ── Step 3: Component 2 + markdown synthesis ───────────────────────
-        from helpers.clients import gemini_client
-        gemini_client.require_gemini_key()
         logger.info("Step 3: Running Component 2 + markdown synthesis...")
         from pipeline.component2.main import run_component2_pipeline
 
@@ -263,6 +267,21 @@ def main(
 
         model_component2 = cfg.get("model_component2")
         model_component2_reducer = cfg.get("model_component2_reducer")
+        provider_component2 = cfg.get("provider_component2")
+        provider_component2_reducer = cfg.get("provider_component2_reducer")
+        for required_provider in {provider_component2, provider_component2_reducer}:
+            if required_provider == "gemini":
+                from helpers.clients import gemini_client
+
+                gemini_client.require_gemini_key()
+            elif required_provider == "openai":
+                from helpers.clients import openai_client
+
+                openai_client.require_openai_key()
+            elif required_provider == "setra":
+                from helpers.clients import setra_client
+
+                setra_client.require_setra_config()
         for current_vtt_path in vtt_paths:
             outputs = run_component2_pipeline(
                 vtt_path=current_vtt_path,
@@ -270,7 +289,9 @@ def main(
                 output_root=video_dir,
                 video_id=video_id_resolved,
                 model=model_component2,
+                provider=provider_component2,
                 reducer_model=model_component2_reducer,
+                reducer_provider=provider_component2_reducer,
                 progress_callback=lambda message: logger.info(message),
             )
             logger.info(f"Generated markdown outputs for {current_vtt_path.name}")

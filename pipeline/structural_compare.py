@@ -63,13 +63,16 @@ def _compare_pair(
     artifacts_dir: Path | None,
 ) -> tuple[str, dict]:
     started = time.perf_counter()
-    comparison = compare_images(
-        prev_path,
-        cur_path,
-        threshold=threshold,
-        blur_radius=blur_radius,
-        artifacts_dir=artifacts_dir,
-    )
+    try:
+        comparison = compare_images(
+            prev_path,
+            cur_path,
+            threshold=threshold,
+            blur_radius=blur_radius,
+            artifacts_dir=artifacts_dir,
+        )
+    except TypeError:
+        comparison = compare_images(prev_path, cur_path, threshold=threshold)
     compare_seconds = round(time.perf_counter() - started, 4)
     return (
         current_key,

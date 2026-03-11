@@ -9,11 +9,12 @@ from typing import Callable
 
 from helpers import config as pipeline_config
 from helpers.clients import gemini_client
+from helpers.clients.providers import get_provider, resolve_model_for_stage, resolve_provider_for_stage
 from pipeline.component2.models import EnrichedMarkdownChunk, LessonChunk
 from pipeline.component2.parser import seconds_to_mmss
 
 
-DEFAULT_COMPONENT2_MODEL = "gemini-2.5-flash"
+DEFAULT_COMPONENT2_MODEL = "gemini-2.5-flash-lite"
 
 SYSTEM_PROMPT = """You are the Literal Scribe for a trading-lesson pipeline. Your objective is to produce a faithful English markdown transcript that preserves the lesson's information density before any later reduction step.
 
@@ -102,6 +103,9 @@ SYSTEM_PROMPT = """You are the Literal Scribe for a trading-lesson pipeline. You
 
 
 def _resolve_model(video_id: str | None = None, model: str | None = None) -> str:
+    resolved = resolve_model_for_stage("component2", video_id=video_id, explicit_model=model)
+    if resolved:
+        return resolved
     if model:
         return model
     config_candidates: list[str] = []
@@ -124,6 +128,10 @@ def _resolve_model(video_id: str | None = None, model: str | None = None) -> str
         if candidate.lower().startswith("gemini-"):
             return candidate
     return DEFAULT_COMPONENT2_MODEL
+
+
+def _resolve_provider(video_id: str | None = None, provider: str | None = None) -> str:
+    return resolve_provider_for_stage("component2", video_id=video_id, explicit_provider=provider)
 
 
 def build_user_prompt(chunk: LessonChunk) -> str:
@@ -171,28 +179,39 @@ def parse_enriched_markdown_chunk(payload: str) -> EnrichedMarkdownChunk:
     return EnrichedMarkdownChunk.model_validate_json(payload)
 
 
-def _call_gemini(chunk: LessonChunk, *, video_id: str | None = None, model: str | None = None) -> EnrichedMarkdownChunk:
-    from google.genai import types
-
+def _call_provider(
+    chunk: LessonChunk,
+    *,
+    video_id: str | None = None,
+    model: str | None = None,
+    provider: str | None = None,
+) -> tuple[EnrichedMarkdownChunk, list[dict]]:
+    resolved_provider = _resolve_provider(video_id=video_id, provider=provider)
     resolved_model = _resolve_model(video_id=video_id, model=model)
-    response = gemini_client.generate_with_retry(
+    response = get_provider(resolved_provider).generate_text(
         model=resolved_model,
-        contents=build_user_prompt(chunk),
-        config=types.GenerateContentConfig(
-            system_instruction=SYSTEM_PROMPT,
-            response_mime_type="application/json",
-            response_schema=EnrichedMarkdownChunk,
-            temperature=0.2,
-        ),
+        user_text=build_user_prompt(chunk),
+        system_instruction=SYSTEM_PROMPT,
+        response_mime_type="application/json",
+        response_schema=EnrichedMarkdownChunk,
+        temperature=0.2,
+        stage=f"{resolved_provider}_component2",
+        frame_key=f"chunk_{chunk.chunk_index:03d}",
     )
     raw_text = (response.text or "").strip()
     if not raw_text:
-        raise ValueError("Gemini returned empty response for markdown chunk synthesis.")
-    return parse_enriched_markdown_chunk(raw_text)
+        raise ValueError(f"{resolved_provider} returned empty response for markdown chunk synthesis.")
+    return parse_enriched_markdown_chunk(raw_text), response.usage_records
 
 
-async def process_chunk(chunk: LessonChunk, *, video_id: str | None = None, model: str | None = None) -> EnrichedMarkdownChunk:
-    return await asyncio.to_thread(_call_gemini, chunk, video_id=video_id, model=model)
+async def process_chunk(
+    chunk: LessonChunk,
+    *,
+    video_id: str | None = None,
+    model: str | None = None,
+    provider: str | None = None,
+) -> tuple[EnrichedMarkdownChunk, list[dict]]:
+    return await asyncio.to_thread(_call_provider, chunk, video_id=video_id, model=model, provider=provider)
 
 
 async def process_chunks(
@@ -200,11 +219,12 @@ async def process_chunks(
     *,
     video_id: str | None = None,
     model: str | None = None,
+    provider: str | None = None,
     max_concurrency: int = 5,
     progress_callback: Callable[[int, int, LessonChunk, float], None] | None = None,
-) -> list[tuple[LessonChunk, EnrichedMarkdownChunk]]:
+) -> list[tuple[LessonChunk, EnrichedMarkdownChunk, list[dict]]]:
     semaphore = asyncio.Semaphore(max(1, max_concurrency))
-    ordered_results: list[tuple[LessonChunk, EnrichedMarkdownChunk] | None] = [None] * len(chunks)
+    ordered_results: list[tuple[LessonChunk, EnrichedMarkdownChunk, list[dict]] | None] = [None] * len(chunks)
     completed = 0
     progress_lock = asyncio.Lock()
 
@@ -212,8 +232,8 @@ async def process_chunks(
         nonlocal completed
         async with semaphore:
             started_at = time.perf_counter()
-            enriched = await process_chunk(chunk, video_id=video_id, model=model)
-            ordered_results[chunk.chunk_index] = (chunk, enriched)
+            enriched, usage_records = await process_chunk(chunk, video_id=video_id, model=model, provider=provider)
+            ordered_results[chunk.chunk_index] = (chunk, enriched, usage_records)
             if progress_callback is not None:
                 async with progress_lock:
                     completed += 1
@@ -232,25 +252,26 @@ def format_final_markdown(enriched_chunk: EnrichedMarkdownChunk) -> str:
 
 def assemble_video_markdown(
     lesson_name: str,
-    processed_chunks: list[tuple[LessonChunk, EnrichedMarkdownChunk]],
+    processed_chunks: list[tuple],
 ) -> str:
     ordered = sorted(processed_chunks, key=lambda item: item[0].chunk_index)
-    sections = [format_final_markdown(enriched) for _, enriched in ordered]
+    sections = [format_final_markdown(item[1]) for item in ordered]
     body = "\n\n---\n\n".join(section.strip() for section in sections if section.strip())
     return f"# {lesson_name}\n\n{body}\n"
 
 
-def write_llm_debug(path: Path | str, processed_chunks: list[tuple[LessonChunk, EnrichedMarkdownChunk]]) -> None:
+def write_llm_debug(path: Path | str, processed_chunks: list[tuple]) -> None:
     destination = Path(path)
     destination.parent.mkdir(parents=True, exist_ok=True)
     payload = [
         {
-            "chunk_index": chunk.chunk_index,
-            "start_time_seconds": chunk.start_time_seconds,
-            "end_time_seconds": chunk.end_time_seconds,
-            "visual_event_count": len(chunk.visual_events),
-            "result": enriched.model_dump(),
+            "chunk_index": item[0].chunk_index,
+            "start_time_seconds": item[0].start_time_seconds,
+            "end_time_seconds": item[0].end_time_seconds,
+            "visual_event_count": len(item[0].visual_events),
+            "result": item[1].model_dump(),
+            "request_usage": item[2] if len(item) > 2 else [],
         }
-        for chunk, enriched in sorted(processed_chunks, key=lambda item: item[0].chunk_index)
+        for item in sorted(processed_chunks, key=lambda item: item[0].chunk_index)
     ]
     destination.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")

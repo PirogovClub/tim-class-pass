@@ -125,13 +125,17 @@ flowchart TB
     F_filtered["filtered_visual_events.json: instructional visual events only"]
     F_chunks["output_intermediate/*.chunks.json: synchronized lesson chunks"]
     F_intermediate["output_intermediate/*.md: literal-scribe markdown"]
-    F_llm_debug["output_intermediate/*.llm_debug.json: LLM chunk results"]
+    F_llm_debug["output_intermediate/*.llm_debug.json: LLM chunk results + request usage"]
+    F_reducer_usage["output_intermediate/*.reducer_usage.json: reducer request usage"]
     F_rag["output_rag_ready/*.md: topic-grouped RAG-ready markdown"]
+    F_usage_summary["ai_usage_summary.json: per-run usage summary"]
     Step3 --> F_filtered
     Step3 --> F_chunks
     Step3 --> F_intermediate
     Step3 --> F_llm_debug
+    Step3 --> F_reducer_usage
     Step3 --> F_rag
+    Step3 --> F_usage_summary
   end
 ```
 
@@ -139,7 +143,7 @@ flowchart TB
 
 - **dense_index.json** is updated in Step 1.5 (paths change to `_diff_*.jpg`); Step 1.6 and Step 2 read the updated index.
 - Step 2 **reads** `llm_queue/manifest.json` + `llm_queue/*.jpg` and **writes** `dense_batch_prompt_*.txt`, merges into **dense_analysis.json**. It also reads `batches/dense_batch_response_*.json` when re-run after the agent fills it.
-- Step 3 **reads** `dense_analysis.json` and the selected `.vtt`, writes `filtered_visual_events.json`, then writes Pass 1 artifacts under `output_intermediate/` and the final reducer output under `output_rag_ready/`.
+- Step 3 **reads** `dense_analysis.json` and the selected `.vtt`, writes `filtered_visual_events.json`, writes Pass 1 artifacts under `output_intermediate/`, writes reducer usage, and refreshes `ai_usage_summary.json`.
 - **llm_queue/\*_prompt.txt** files are generated for inspection or external use; Step 2 does not read those prompt files.
 
 ---
@@ -280,7 +284,7 @@ High-level flow:
 9. **IDE agent:** If agent is `ide` and the response file does not exist:
    - Writes `batches/last_agent_task.json` with `prompt_file`, `response_file`, `type: "batch"`, `frame_paths`, `prompt_content`.
    - Prints that the agent must write the response to that JSON file. Exits with code 10. The user/IDE fills the response and re-runs `tim-class-pass` (or `python -m pipeline.main`).
-10. **API agents (OpenAI, Gemini):** If the response file does not exist, for each frame in the batch:
+10. **API agents (OpenAI, Gemini, MLX, Setra):** If the response file does not exist, for each frame in the batch:
     - Builds a single-frame prompt (with previous state for context).
     - Optionally uses `structural_index` to skip or to pass `structural_score`/`compare_seconds`; if `is_significant` is False, uses minimal no-change entry and does not call the API.
     - Otherwise calls the vision/chat API (OpenAI or Gemini), parses the JSON response, normalizes with `ensure_material_change`, and stores the entry. Writes the full batch result to `dense_batch_response_<start>-<end>.json`.
@@ -291,6 +295,7 @@ High-level flow:
 - `data/<video_id>/dense_analysis.json` (full per-frame analysis; updated after each batch).  
 - `data/<video_id>/frames_dense/frame_<key>.json` (per-frame extraction).  
 - `data/<video_id>/batches/dense_batch_prompt_<start>-<end>.txt`, `dense_batch_response_<start>-<end>.json` (and, for IDE, `last_agent_task.json`).  
+- `data/<video_id>/ai_usage_summary.json` (request/token summary rebuilt from inline usage records).  
 - Optionally `batches/task_*.json` and `batches/manifest.json` when using parallel-batches mode.
 
 ---
@@ -311,11 +316,11 @@ Summary:
 3. Write `filtered_visual_events.json` and `filtered_visual_events.debug.json`.
 4. Parse the VTT and synchronize transcript lines with filtered visual events.
 5. Create semantic `LessonChunk` objects and write `output_intermediate/<lesson>.chunks.json`.
-6. Call Gemini structured outputs to synthesize Pass 1 literal-scribe markdown chunks.
+6. Call the configured provider/model for Pass 1 literal-scribe markdown chunks.
 7. Write `output_intermediate/<lesson>.llm_debug.json`.
 8. Assemble Pass 1 markdown into `output_intermediate/<lesson>.md`.
-9. Run a whole-document Gemini reducer pass that reorganizes the lesson into topic-based RAG-ready markdown.
-10. Write the final result to `output_rag_ready/<lesson>.md`.
+9. Run a whole-document reducer pass that reorganizes the lesson into topic-based RAG-ready markdown.
+10. Write the final result to `output_rag_ready/<lesson>.md` and reducer usage to `output_intermediate/<lesson>.reducer_usage.json`.
 
 **Outputs:**  
 - `data/<video_id>/filtered_visual_events.json`  
@@ -323,6 +328,7 @@ Summary:
 - `data/<video_id>/output_intermediate/<lesson>.md`  
 - `data/<video_id>/output_intermediate/<lesson>.chunks.json`  
 - `data/<video_id>/output_intermediate/<lesson>.llm_debug.json`
+- `data/<video_id>/output_intermediate/<lesson>.reducer_usage.json`
 - `data/<video_id>/output_rag_ready/<lesson>.md`
 
 ---
@@ -339,13 +345,15 @@ Summary:
 | `data/<video_id>/llm_queue/*.jpg`, `manifest.json` | 1.6 | Selected frames (Step 2 input). |
 | `data/<video_id>/llm_queue/*_prompt.txt` | 1.7 | Single-frame prompts (optional/external use). |
 | `data/<video_id>/dense_analysis.json` | 2 | Full per-frame extraction (merged). |
+| `data/<video_id>/ai_usage_summary.json` | 2, 3 | Aggregated request/token summary from inline usage records. |
 | `data/<video_id>/frames_dense/frame_*.json` | 2 | Per-frame extraction JSON. |
 | `data/<video_id>/batches/dense_batch_*`, `last_agent_task.json` | 2 | Batch prompts/responses and batch-agent state. |
 | `data/<video_id>/filtered_visual_events.json` | 3 | Filtered instructional visual events. |
 | `data/<video_id>/filtered_visual_events.debug.json` | 3 | Filter report and rejected frame reasons. |
 | `data/<video_id>/output_intermediate/*.md` | 3 | Pass 1 literal-scribe markdown. |
 | `data/<video_id>/output_intermediate/*.chunks.json` | 3 | Chunk debug output. |
-| `data/<video_id>/output_intermediate/*.llm_debug.json` | 3 | LLM result debug output. |
+| `data/<video_id>/output_intermediate/*.llm_debug.json` | 3 | LLM result debug output with per-chunk request usage. |
+| `data/<video_id>/output_intermediate/*.reducer_usage.json` | 3 | Pass 2 reducer request usage. |
 | `data/<video_id>/output_rag_ready/*.md` | 3 | Final topic-grouped RAG-ready markdown. |
 
 ---
@@ -358,9 +366,9 @@ The main CLI is implemented with **Click** in `pipeline/main.py` and invoked via
 |------|--------|
 | `--url URL` | Download video and VTT first (Step 0); then run pipeline. |
 | `--video_id ID` | Use existing `data/<ID>/` (skip Step 0). |
-| `--agent-images`, `--agent` | Choose agent for Step 2 (ide, openai, gemini). |
+| `--agent-images`, `--agent` | Choose agent for Step 2 (ide, openai, gemini, mlx, setra). |
 | `--batch-size N` | Frames per batch in Step 2 (default from config or 10). |
-| `--workers N` | Max workers for Step 1 + Step 1.5 (cap 8; default `min(os.cpu_count() or 1, 8)`). |
+| `--workers N` | Max workers for Step 1 + Step 1.5 (cap 8; default `floor(cpu_count / 2)`). |
 | `--recapture` | Force Step 1 to re-extract frames and re-run 1.5–1.7. |
 | `--recompare` | Force Step 1.5 to recompute structural index. |
 | `--parallel` | Step 2: generate all batch task files + manifest, exit 10; then run with `--merge-only` after subagents finish. |
@@ -398,7 +406,7 @@ uv run python -m pipeline.component2.main \
    - synchronizes transcript lines and filtered visual events
    - produces semantic `LessonChunk` objects
 3. `pipeline/component2/llm_processor.py`
-   - builds Gemini structured-output prompts
+   - builds provider-backed structured-output prompts
    - translates and merges transcript + visual deltas
    - returns `EnrichedMarkdownChunk` objects
 4. `pipeline/component2/main.py`
@@ -414,7 +422,8 @@ uv run python -m pipeline.component2.main \
 ├── output_intermediate/
 │   ├── <lesson_name>.md
 │   ├── <lesson_name>.chunks.json
-│   └── <lesson_name>.llm_debug.json
+│   ├── <lesson_name>.llm_debug.json
+│   └── <lesson_name>.reducer_usage.json
 └── output_rag_ready/
     └── <lesson_name>.md
 ```
@@ -427,7 +436,10 @@ uv run python -m pipeline.component2.main \
 | `--visuals-json` | Required path to dense frame-analysis JSON |
 | `--output-root` | Optional output folder; defaults to the VTT parent |
 | `--video-id` | Optional config/model lookup hint |
-| `--model` | Optional Gemini model override |
+| `--model` | Optional markdown model override |
+| `--provider` | Optional markdown provider override |
+| `--reducer-model` | Optional reducer model override |
+| `--reducer-provider` | Optional reducer provider override |
 | `--target-duration-seconds` | Target semantic chunk size before extending to a sentence boundary |
 | `--max-concurrency` | Max simultaneous Gemini chunk requests |
 
@@ -439,6 +451,6 @@ The markdown pipeline resolves models in this order:
 2. env `MODEL_COMPONENT2`
 3. env `MODEL_VLM`
 4. env `MODEL_NAME`
-5. default `gemini-2.5-flash`
+5. default `gemini-2.5-flash-lite`
 
 Gemini access still uses the shared `helpers/clients/gemini_client.py` transport/retry layer.

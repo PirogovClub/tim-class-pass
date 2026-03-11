@@ -1,0 +1,290 @@
+[
+  {
+    "repr_type_correct": true,
+    "visual_facts_count": 6,
+    "visual_facts_dense": true,
+    "interpretation_is_list": true,
+    "interpretation_count": 3,
+    "interpretation_dense": true,
+    "pattern_match": false,
+    "level_values_present": true,
+    "stop_values_present": false,
+    "passes": false,
+    "elapsed_s": 7.79,
+    "model": "gemini-2.5-flash-lite",
+    "prompt_tokens": 832,
+    "output_tokens": 390,
+    "input_tokens_per_sec": null,
+    "output_tokens_per_sec": 50.1,
+    "estimated_input_cost_usd": 8.32e-05,
+    "estimated_output_cost_usd": 0.000156,
+    "estimated_total_cost_usd": 0.0002392,
+    "estimated_cost_per_100k_images_usd": 23.92,
+    "frame_key": "000474",
+    "prompt": "(Transcript context unavailable: not enough values to unpack (expected 3, got 1))\n\nYou are extracting a compact benchmark JSON from one trading-education frame.\n\nReturn ONLY strict JSON. No markdown fences. No comments. No prose outside JSON. No trailing commas.\nUse only the keys shown below.\n\nTask:\n- classify `visual_representation_type`\n- produce 4-6 full-sentence `visual_facts`\n- produce 2-3 short low-inference `trading_relevant_interpretation` items\n- include `structural_pattern_visible` as an array of generic pattern names\n- include conceptual `level_values` and `stop_values` with exact visible labels when readable\n\nRules:\n- Describe only the chart/diagram/drawing and its text annotations.\n- Ignore instructor/person/laptop/background unless they cover or point at the diagram.\n- Read titles/headers/label boxes/numeric markers first and copy them exactly as shown.\n- If text is Russian/Cyrillic, copy it exactly and do not translate in extraction fields.\n- Prefer visible labels over inferred meaning.\n- For bars/candles interacting with a level in a teaching diagram, use `abstract_bar_diagram`.\n- For level interaction, use `price_action_around_level` in `structural_pattern_visible` when applicable.\n- `trading_relevant_interpretation` must be grounded in what is visibly drawn or labeled.\n- Avoid calling a level \"support/resistance\" unless the image text says so.\n- Avoid directional claims unless explicitly drawn (e.g., arrows) or labeled.\n- Keep strings concise.\n- If there is no visible level/stop label, return an empty array for that entity list.\n- `material_change` should be true for this frame unless the image is effectively blank or unchanged.\n\nReturn this exact shape:\n{\n  \"frame_timestamp\": \"000474\",\n  \"material_change\": true,\n  \"visual_representation_type\": \"abstract_bar_diagram\",\n  \"current_state\": {\n    \"visual_facts\": [\"...\", \"...\", \"...\", \"...\"],\n    \"structural_pattern_visible\": [\"price_action_around_level\"],\n    \"trading_relevant_interpretation\": [\"...\", \"...\"]\n  },\n  \"extracted_entities\": {\n    \"level_values\": [\n      {\"label\": \"<visible label>\", \"value_description\": \"conceptual price level\"}\n    ],\n    \"stop_values\": [\n      {\"label\": \"<visible label>\", \"value_description\": \"area above or below level\"}\n    ]\n  }\n}",
+    "model_output": {
+      "frame_timestamp": "000474",
+      "material_change": true,
+      "change_summary": [
+        "The frame displays two candlestick charts with annotations.",
+        "The left chart is labeled Д1 (ДНЕВКА) and shows a rising trend.",
+        "The right chart is labeled ЛОКАЛЬНЫЕ ТФ М5, М15, Н1 and shows a price action that does not contradict the trend."
+      ],
+      "visual_representation_type": "abstract_bar_diagram",
+      "example_type": "abstract_teaching_example",
+      "extraction_mode": "conceptual_only",
+      "screen_type": "unknown",
+      "educational_event_type": [
+        "none"
+      ],
+      "current_state": {
+        "symbol": null,
+        "timeframe": null,
+        "platform": null,
+        "chart_type": "unknown",
+        "visible_date_range": null,
+        "visible_price_range": null,
+        "chart_layout": {
+          "main_chart_present": false,
+          "indicator_panels_present": false,
+          "watchlist_present": false,
+          "order_panel_present": false,
+          "layout_description": null
+        },
+        "drawn_objects": [],
+        "visible_annotations": [],
+        "cursor_or_highlight": {
+          "present": false,
+          "location": null,
+          "target": null
+        },
+        "visual_facts": [
+          "The frame displays two candlestick charts with annotations.",
+          "The left chart is labeled Д1 (ДНЕВКА) and shows a rising trend.",
+          "The right chart is labeled ЛОКАЛЬНЫЕ ТФ М5, М15, Н1 and shows a price action that does not contradict the trend.",
+          "Text at the top states: 'When switching to local timeframes (M5-H1), the daily timeframe should not contradict them.'",
+          "The right chart has an arrow pointing to a level with text 'РАЗВЕРНУЛСЯ ДО ДНЕВНОГО УРОВНЯ' (Turned to the daily level).",
+          "The right chart also has text 'НЕ ПРОТИВОРЕЧИТ' (Does not contradict) with an arrow pointing upwards."
+        ],
+        "structural_pattern_visible": [
+          "price_action_around_level"
+        ],
+        "trading_relevant_interpretation": [
+          "Local timeframes should align with the daily timeframe trend.",
+          "Price action on local timeframes should not contradict the established daily trend.",
+          "A reversal to a daily level is indicated on the local timeframe chart."
+        ],
+        "readability": {
+          "text_confidence": "medium",
+          "numeric_confidence": "low",
+          "structure_confidence": "medium"
+        }
+      },
+      "extracted_entities": {
+        "setup_names": [],
+        "level_values": [
+          {
+            "label": "ДНЕВНОГО УРОВНЯ",
+            "value_description": "daily level"
+          }
+        ],
+        "risk_reward_values": [],
+        "atr_values": [],
+        "entry_values": [],
+        "stop_values": [],
+        "target_values": [],
+        "pattern_terms": []
+      },
+      "notes": null
+    }
+  },
+  {
+    "repr_type_correct": true,
+    "visual_facts_count": 5,
+    "visual_facts_dense": true,
+    "interpretation_is_list": true,
+    "interpretation_count": 3,
+    "interpretation_dense": true,
+    "pattern_match": false,
+    "level_values_present": true,
+    "stop_values_present": false,
+    "passes": false,
+    "elapsed_s": 1.82,
+    "model": "gemini-2.5-flash-lite-preview-09-2025",
+    "prompt_tokens": 832,
+    "output_tokens": 446,
+    "input_tokens_per_sec": null,
+    "output_tokens_per_sec": 245.1,
+    "estimated_input_cost_usd": 8.32e-05,
+    "estimated_output_cost_usd": 0.0001784,
+    "estimated_total_cost_usd": 0.0002616,
+    "estimated_cost_per_100k_images_usd": 26.16,
+    "frame_key": "000474",
+    "prompt": "(Transcript context unavailable: not enough values to unpack (expected 3, got 1))\n\nYou are extracting a compact benchmark JSON from one trading-education frame.\n\nReturn ONLY strict JSON. No markdown fences. No comments. No prose outside JSON. No trailing commas.\nUse only the keys shown below.\n\nTask:\n- classify `visual_representation_type`\n- produce 4-6 full-sentence `visual_facts`\n- produce 2-3 short low-inference `trading_relevant_interpretation` items\n- include `structural_pattern_visible` as an array of generic pattern names\n- include conceptual `level_values` and `stop_values` with exact visible labels when readable\n\nRules:\n- Describe only the chart/diagram/drawing and its text annotations.\n- Ignore instructor/person/laptop/background unless they cover or point at the diagram.\n- Read titles/headers/label boxes/numeric markers first and copy them exactly as shown.\n- If text is Russian/Cyrillic, copy it exactly and do not translate in extraction fields.\n- Prefer visible labels over inferred meaning.\n- For bars/candles interacting with a level in a teaching diagram, use `abstract_bar_diagram`.\n- For level interaction, use `price_action_around_level` in `structural_pattern_visible` when applicable.\n- `trading_relevant_interpretation` must be grounded in what is visibly drawn or labeled.\n- Avoid calling a level \"support/resistance\" unless the image text says so.\n- Avoid directional claims unless explicitly drawn (e.g., arrows) or labeled.\n- Keep strings concise.\n- If there is no visible level/stop label, return an empty array for that entity list.\n- `material_change` should be true for this frame unless the image is effectively blank or unchanged.\n\nReturn this exact shape:\n{\n  \"frame_timestamp\": \"000474\",\n  \"material_change\": true,\n  \"visual_representation_type\": \"abstract_bar_diagram\",\n  \"current_state\": {\n    \"visual_facts\": [\"...\", \"...\", \"...\", \"...\"],\n    \"structural_pattern_visible\": [\"price_action_around_level\"],\n    \"trading_relevant_interpretation\": [\"...\", \"...\"]\n  },\n  \"extracted_entities\": {\n    \"level_values\": [\n      {\"label\": \"<visible label>\", \"value_description\": \"conceptual price level\"}\n    ],\n    \"stop_values\": [\n      {\"label\": \"<visible label>\", \"value_description\": \"area above or below level\"}\n    ]\n  }\n}",
+    "model_output": {
+      "frame_timestamp": "000474",
+      "material_change": true,
+      "change_summary": [
+        "The slide title states: \"При переходе на локальные ТФ (М5–Н1) дневка не должна противоречить им\" (When switching to local TFs (M5-H1), the daily timeframe should not contradict them).",
+        "The left diagram is labeled Д1 (ДНЕВКА) and shows a clear upward trend labeled \"ГЛОБАЛЬНИЙ ТРЕНД\" (GLOBAL TREND).",
+        "The right diagram is labeled ЛОКАЛЬНЫЕ ТФ М5, М15, Н1 and shows price action that appears to reverse near a horizontal line."
+      ],
+      "visual_representation_type": "abstract_bar_diagram",
+      "example_type": "abstract_teaching_example",
+      "extraction_mode": "conceptual_only",
+      "screen_type": "unknown",
+      "educational_event_type": [
+        "none"
+      ],
+      "current_state": {
+        "symbol": null,
+        "timeframe": null,
+        "platform": null,
+        "chart_type": "unknown",
+        "visible_date_range": null,
+        "visible_price_range": null,
+        "chart_layout": {
+          "main_chart_present": false,
+          "indicator_panels_present": false,
+          "watchlist_present": false,
+          "order_panel_present": false,
+          "layout_description": null
+        },
+        "drawn_objects": [],
+        "visible_annotations": [],
+        "cursor_or_highlight": {
+          "present": false,
+          "location": null,
+          "target": null
+        },
+        "visual_facts": [
+          "The slide title states: \"При переходе на локальные ТФ (М5–Н1) дневка не должна противоречить им\" (When switching to local TFs (M5-H1), the daily timeframe should not contradict them).",
+          "The left diagram is labeled Д1 (ДНЕВКА) and shows a clear upward trend labeled \"ГЛОБАЛЬНИЙ ТРЕНД\" (GLOBAL TREND).",
+          "The right diagram is labeled ЛОКАЛЬНЫЕ ТФ М5, М15, Н1 and shows price action that appears to reverse near a horizontal line.",
+          "The right diagram contains annotations: \"НЕ ПРОТИВОРЕЧИТ\" (DOES NOT CONTRADICT) pointing to a small upward move, and \"РАЗВЕРНУЛСЯ ДО ДНЕВНОГО УРОВНЯ\" (REVERSED TO THE DAILY LEVEL) with a downward arrow near the top level.",
+          "Both diagrams display sequences of red (down) and green (up) candles forming price movements."
+        ],
+        "structural_pattern_visible": [
+          "price_action_around_level"
+        ],
+        "trading_relevant_interpretation": [
+          "The global trend on the daily chart is upward.",
+          "The local timeframe chart shows a reversal near a significant daily level.",
+          "The local movement is deemed consistent if it does not contradict the global trend."
+        ],
+        "readability": {
+          "text_confidence": "medium",
+          "numeric_confidence": "low",
+          "structure_confidence": "medium"
+        }
+      },
+      "extracted_entities": {
+        "setup_names": [],
+        "level_values": [
+          {
+            "label": "ДНЕВНОГО УРОВНЯ",
+            "value_description": "conceptual price level indicated on the right chart"
+          }
+        ],
+        "risk_reward_values": [],
+        "atr_values": [],
+        "entry_values": [],
+        "stop_values": [],
+        "target_values": [],
+        "pattern_terms": []
+      },
+      "notes": null
+    }
+  },
+  {
+    "repr_type_correct": true,
+    "visual_facts_count": 4,
+    "visual_facts_dense": true,
+    "interpretation_is_list": true,
+    "interpretation_count": 2,
+    "interpretation_dense": true,
+    "pattern_match": false,
+    "level_values_present": false,
+    "stop_values_present": false,
+    "passes": false,
+    "elapsed_s": 12.36,
+    "model": "gpt-4o-mini",
+    "prompt_tokens": 37355,
+    "output_tokens": 197,
+    "input_tokens_per_sec": null,
+    "output_tokens_per_sec": 15.9,
+    "estimated_input_cost_usd": 0.00560325,
+    "estimated_output_cost_usd": 0.0001182,
+    "estimated_total_cost_usd": 0.00572145,
+    "estimated_cost_per_100k_images_usd": 572.14,
+    "frame_key": "000474",
+    "prompt": "(Transcript context unavailable: not enough values to unpack (expected 3, got 1))\n\nYou are extracting a compact benchmark JSON from one trading-education frame.\n\nReturn ONLY strict JSON. No markdown fences. No comments. No prose outside JSON. No trailing commas.\nUse only the keys shown below.\n\nTask:\n- classify `visual_representation_type`\n- produce 4-6 full-sentence `visual_facts`\n- produce 2-3 short low-inference `trading_relevant_interpretation` items\n- include `structural_pattern_visible` as an array of generic pattern names\n- include conceptual `level_values` and `stop_values` with exact visible labels when readable\n\nRules:\n- Describe only the chart/diagram/drawing and its text annotations.\n- Ignore instructor/person/laptop/background unless they cover or point at the diagram.\n- Read titles/headers/label boxes/numeric markers first and copy them exactly as shown.\n- If text is Russian/Cyrillic, copy it exactly and do not translate in extraction fields.\n- Prefer visible labels over inferred meaning.\n- For bars/candles interacting with a level in a teaching diagram, use `abstract_bar_diagram`.\n- For level interaction, use `price_action_around_level` in `structural_pattern_visible` when applicable.\n- `trading_relevant_interpretation` must be grounded in what is visibly drawn or labeled.\n- Avoid calling a level \"support/resistance\" unless the image text says so.\n- Avoid directional claims unless explicitly drawn (e.g., arrows) or labeled.\n- Keep strings concise.\n- If there is no visible level/stop label, return an empty array for that entity list.\n- `material_change` should be true for this frame unless the image is effectively blank or unchanged.\n\nReturn this exact shape:\n{\n  \"frame_timestamp\": \"000474\",\n  \"material_change\": true,\n  \"visual_representation_type\": \"abstract_bar_diagram\",\n  \"current_state\": {\n    \"visual_facts\": [\"...\", \"...\", \"...\", \"...\"],\n    \"structural_pattern_visible\": [\"price_action_around_level\"],\n    \"trading_relevant_interpretation\": [\"...\", \"...\"]\n  },\n  \"extracted_entities\": {\n    \"level_values\": [\n      {\"label\": \"<visible label>\", \"value_description\": \"conceptual price level\"}\n    ],\n    \"stop_values\": [\n      {\"label\": \"<visible label>\", \"value_description\": \"area above or below level\"}\n    ]\n  }\n}",
+    "model_output": {
+      "frame_timestamp": "000474",
+      "material_change": true,
+      "change_summary": [
+        "При переходе на локальные ТФ (M5-H1) дневка не должна противоречить им.",
+        "Д1 (Дневка) показывает бычий тренд.",
+        "Локальные ТФ M5, M15, H1 показывают разворот до дневного уровня."
+      ],
+      "visual_representation_type": "abstract_bar_diagram",
+      "example_type": "abstract_teaching_example",
+      "extraction_mode": "conceptual_only",
+      "screen_type": "unknown",
+      "educational_event_type": [
+        "none"
+      ],
+      "current_state": {
+        "symbol": null,
+        "timeframe": null,
+        "platform": null,
+        "chart_type": "unknown",
+        "visible_date_range": null,
+        "visible_price_range": null,
+        "chart_layout": {
+          "main_chart_present": false,
+          "indicator_panels_present": false,
+          "watchlist_present": false,
+          "order_panel_present": false,
+          "layout_description": null
+        },
+        "drawn_objects": [],
+        "visible_annotations": [],
+        "cursor_or_highlight": {
+          "present": false,
+          "location": null,
+          "target": null
+        },
+        "visual_facts": [
+          "При переходе на локальные ТФ (M5-H1) дневка не должна противоречить им.",
+          "Д1 (Дневка) показывает бычий тренд.",
+          "Локальные ТФ M5, M15, H1 показывают разворот до дневного уровня.",
+          "Обозначенные уровни являются критическими для анализа."
+        ],
+        "structural_pattern_visible": [
+          "price_action_around_level"
+        ],
+        "trading_relevant_interpretation": [
+          "Локальные ТФ не противоречат дневному тренду.",
+          "Дневные уровни важны для принятия торговых решений."
+        ],
+        "readability": {
+          "text_confidence": "medium",
+          "numeric_confidence": "low",
+          "structure_confidence": "medium"
+        }
+      },
+      "extracted_entities": {
+        "setup_names": [],
+        "level_values": [],
+        "risk_reward_values": [],
+        "atr_values": [],
+        "entry_values": [],
+        "stop_values": [],
+        "target_values": [],
+        "pattern_terms": []
+      },
+      "notes": null
+    }
+  }
+]
