@@ -39,18 +39,18 @@ Use this skill when configuring or running the main pipeline, the standalone mar
   ```yaml
   default:
     agent_images: gemini
-    model_name: gemini-2.5-flash
-    model_images: gemini-2.5-flash
-    model_component2: gemini-2.5-flash
-    model_gaps: gemini-2.5-flash
-    model_vlm: gemini-2.5-flash
+    model_name: gemini-2.5-flash-lite
+    model_images: gemini-2.5-flash-lite
+    model_component2: gemini-2.5-flash-lite
+    model_gaps: gemini-2.5-flash-lite
+    model_vlm: gemini-2.5-flash-lite
   ```
 - **Env**  
   `MODEL_NAME`, `MODEL_IMAGES`, `MODEL_COMPONENT2`, `MODEL_GAPS`, `MODEL_VLM` (see `.env.template`). Used when pipeline does not set a model for that step.
 - **Markdown pipeline precedence**  
-  `--model` > `MODEL_COMPONENT2` > `MODEL_VLM` > `MODEL_NAME` > default `gemini-2.5-flash`.
+  `--model` > `MODEL_COMPONENT2` > `MODEL_VLM` > `MODEL_NAME` > default `gemini-2.5-flash-lite`.
 - **Step defaults** (if neither pipeline nor env set a model):  
-  main-pipeline Step 2 uses the current default from `helpers/clients/gemini_client.py`; markdown synthesis defaults to `gemini-2.5-flash`; gaps default to `gemini-2.5-flash`.
+  main-pipeline Step 2 uses the current default from `helpers/clients/gemini_client.py`; markdown synthesis defaults to `gemini-2.5-flash-lite`; gaps default to `gemini-2.5-flash-lite`.
 
 When using **both** OpenAI and Gemini in the same project, set **step-specific** models (e.g. `model_images` in pipeline or `MODEL_IMAGES` in env) so Gemini steps use a Gemini model (e.g. `gemini-1.5-pro`) and not `MODEL_NAME=gpt-4o`.
 

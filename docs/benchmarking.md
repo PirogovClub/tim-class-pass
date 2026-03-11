@@ -17,7 +17,7 @@ Benchmarking is **not** the primary workflow. The main functionality of this rep
 ## How to run
 
 ```bash
-python scripts/benchmark_models.py --models gemini-2.5-flash-lite-preview-09-2025
+python scripts/benchmark_models.py --models gemini-2.5-flash-lite
 ```
 
 Other common modes:
@@ -25,7 +25,16 @@ Other common modes:
 ```bash
 python scripts/benchmark_models.py --ps
 python scripts/benchmark_models.py --ps --gemini
+python scripts/benchmark_models.py --models "gemini-2.5-flash-lite,gpt-4o-mini"
+python scripts/benchmark_models.py --models "gemini-2.5-flash-lite,openai:gpt-4o-mini"
 ```
+
+Provider notes:
+
+- Gemini models use their raw API ids such as `gemini-2.5-flash-lite`.
+- OpenAI models can be passed as raw ids like `gpt-4o-mini` or with an explicit `openai:` prefix such as `openai:gpt-4o-mini`.
+- `--gemini` appends all current Gemini multimodal models from the live API to whatever is already in `--models`.
+- MLX models still use the `mlx-*` task names exposed by the local service.
 
 ## Outputs
 
@@ -34,8 +43,9 @@ Reports are written to `benchmark-reports/benchmark_<timestamp>.json` (or `--out
 - prompt used
 - normalized model output
 - elapsed time
-- token counts and estimated costs (Gemini only)
+- token counts
+- estimated costs for Gemini and supported OpenAI models
 
 ## Current model focus
 
-For routine checks, use `gemini-2.5-flash-lite-preview-09-2025` as the default benchmark model.
+For routine checks, use `gemini-2.5-flash-lite` as the default benchmark model.

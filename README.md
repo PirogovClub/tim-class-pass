@@ -131,6 +131,7 @@ data/<video_id>/
 │   └── manifest.json
 ├── dense_index.json                   # Second → frame path index
 ├── dense_analysis.json                # Full merged analysis
+├── ai_usage_summary.json              # Per-run token/request summary across available artifacts
 ├── batches/                           # Step 2 intermediate files
 │   ├── dense_batch_prompt_NNN-MMM.txt   # Batch prompt (agent input)
 │   └── dense_batch_response_NNN-MMM.json # Batch response (agent output)
@@ -139,7 +140,8 @@ data/<video_id>/
 ├── output_intermediate/
 │   ├── <lesson_name>.md               # Pass 1 literal-scribe markdown
 │   ├── <lesson_name>.chunks.json      # Chunk debug output
-│   └── <lesson_name>.llm_debug.json   # LLM result debug output
+│   ├── <lesson_name>.llm_debug.json   # LLM result debug output + per-chunk request usage
+│   └── <lesson_name>.reducer_usage.json # Pass 2 reducer request usage
 └── output_rag_ready/
     ├── <lesson_name>.md               # ✅ FINAL: topic-grouped RAG-ready markdown
 ```
@@ -159,7 +161,8 @@ Given a VTT and dense frame-analysis JSON, the markdown pipeline writes:
 ├── output_intermediate/
 │   ├── <lesson_name>.md
 │   ├── <lesson_name>.chunks.json
-│   └── <lesson_name>.llm_debug.json
+│   ├── <lesson_name>.llm_debug.json
+│   └── <lesson_name>.reducer_usage.json
 └── output_rag_ready/
     └── <lesson_name>.md
 ```
@@ -205,7 +208,10 @@ uv run python -m pipeline.component2.main ^
 
 Optional overrides:
 
-- `--model` to force a Gemini model for markdown synthesis
+- `--model` to force a model for markdown synthesis
+- `--provider` to force a provider for markdown synthesis
+- `--reducer-model` to force a model for the reducer pass
+- `--reducer-provider` to force a provider for the reducer pass
 - `--target-duration-seconds` to change chunk size
 - `--max-concurrency` to cap simultaneous Gemini requests
 
@@ -222,28 +228,48 @@ Optional `video_file` and `vtt_file` are filenames inside `data/<video_id>/`.
 ```yaml
 default:
   agent_images: ide
+  provider_images: gemini
+  provider_component2: gemini
+  provider_component2_reducer: gemini
+  provider_gaps: gemini
+  provider_vlm: gemini
+  provider_analyze_extract: gemini
+  provider_analyze_relevance: gemini
   batch_size: 10
-  workers: 8
+  workers: 4
   capture_fps: 0.5
   llm_queue_diff_threshold: 0.025
   compare_blur_radius: 1.5
   compare_artifacts_dir: "frames_structural_preprocessed"
   video_file: "Lesson 2. Levels part 1.mp4"
   vtt_file: "Lesson 2. Levels part 1.vtt"
-  model_component2: gemini-2.5-flash
-  model_component2_reducer: gemini-2.5-flash
+  model_images: gemini-2.5-flash-lite
+  model_component2: gemini-2.5-flash-lite
+  model_component2_reducer: gemini-2.5-flash-lite
+  model_gaps: gemini-2.5-flash-lite
+  model_vlm: gemini-2.5-flash-lite
+  model_analyze_extract: gemini-2.5-flash-lite
+  model_analyze_relevance: gemini-2.5-flash-lite
 ```
 
 **Precedence:** CLI > `data/<video_id>/pipeline.yml` (`default`) > env > built-in default.
 
-### Gemini usage
+Worker defaults now resolve to `max(1, floor(cpu_count / 2))` when not explicitly configured.
 
-When the agent is **gemini** in the dense pipeline, or when running the markdown pipeline, set `GEMINI_API_KEY` in `.env`.
+### AI Provider Usage
 
-- Main pipeline model selection: `model_name`, `model_images`, `model_component2`, `model_gaps`, `model_vlm` from `data/<video_id>/pipeline.yml`, then env.
-- Markdown pipeline model selection: `--model`, then env (`MODEL_COMPONENT2_REDUCER`, `MODEL_COMPONENT2`, `MODEL_VLM`, `MODEL_NAME`), then default `gemini-2.5-flash`.
+Set the provider-specific credentials you actually use:
 
-The shared Gemini transport, retries, and key validation live in `helpers/clients/gemini_client.py`. For details see [docs/gemini_api_usage_report.md](docs/gemini_api_usage_report.md).
+- `GEMINI_API_KEY` for Gemini
+- `OPENAI_API_KEY` for OpenAI
+- `SETRA_BASE_URL` and optional `SETRA_API_KEY` for Setra
+- `MLX_SERVICE_BASE_URL` for MLX-local image tasks
+
+- Project YAML can now make provider/model choice explicit per stage with `provider_*` and `model_*` keys.
+- Request usage is stored inline where available and summarized into `data/<video_id>/ai_usage_summary.json`.
+- You can rebuild the summary at any time with `uv run python -m pipeline.usage_report --video-id "<video_id>" --print-summary`.
+
+Provider transports live under `helpers/clients/`.
 
 ### CLI Reference
 
@@ -253,10 +279,10 @@ The main pipeline entry point is **`tim-class-pass`** (Click). Run `uv run tim-c
 |------|---------|-------------|
 | `--url URL` | — | YouTube URL to download and process |
 | `--video_id ID` | — | Use existing `data/<ID>/` folder (skip download) |
-| `--agent-images` | from config | Agent for Step 2 (frame analysis): `ide`, `openai`, `gemini` |
+| `--agent-images` | from config | Agent for Step 2 (frame analysis): `ide`, `openai`, `gemini`, `mlx`, `setra` |
 | `--agent` | from config | Alias for `--agent-images` |
 | `--batch-size N` | from config | Frames per agent batch (5–20 recommended) |
-| `--workers N` | from config | Max workers for Step 1 + 1.5 (cap 8) |
+| `--workers N` | from config | Max workers for Step 1 + 1.5 (cap 8; default `floor(cpu_count / 2)`) |
 | `--recapture` | off | Force re-extract frames even if already done |
 | `--recompare` | off | Force re-run structural compare (SSIM) even if already done |
 | `--parallel` | off | Step 2: generate batch task files + manifest, exit 10; then re-run with `--merge-only` |

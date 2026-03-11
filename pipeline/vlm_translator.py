@@ -17,39 +17,28 @@ def encode_image(image_path: str) -> str:
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode('utf-8')
 
-def translate_openai(frame_path: str, context: str, video_id: str | None = None) -> str:
-    from helpers.clients import openai_client
+def _translate_with_provider(provider_name: str, frame_path: str, context: str, video_id: str | None = None) -> tuple[str, list[dict]]:
+    from helpers.clients.providers import get_provider, resolve_model_for_stage
     prompt = get_vlm_prompt(context)
-    return openai_client.chat_completion_with_image(
-        prompt,
-        frame_path,
-        step="vlm",
-        video_id=video_id,
+    response = get_provider(provider_name).generate_text_with_image(
+        model=resolve_model_for_stage("vlm", video_id=video_id),
+        prompt=prompt,
+        image_path=frame_path,
         max_tokens=300,
+        stage="vlm_translator",
     )
+    return response.text, response.usage_records
+
+
+def translate_openai(frame_path: str, context: str, video_id: str | None = None) -> str:
+    return _translate_with_provider("openai", frame_path, context, video_id=video_id)[0]
 
 def translate_gemini(frame_path: str, context: str, video_id: str | None = None) -> str:
-    from helpers.clients import gemini_client
-    from google.genai import types
+    return _translate_with_provider("gemini", frame_path, context, video_id=video_id)[0]
 
-    prompt = get_vlm_prompt(context)
-    with open(frame_path, "rb") as f:
-        image_bytes = f.read()
 
-    response = gemini_client.generate_with_retry(
-        model=gemini_client.get_model_for_step("vlm", video_id),
-        contents=[
-            types.Content(
-                role="user",
-                parts=[
-                    types.Part.from_text(text=prompt),
-                    types.Part.from_bytes(data=image_bytes, mime_type="image/jpeg"),
-                ]
-            )
-        ],
-        config=types.GenerateContentConfig(temperature=0.4),
-    )
-    return (response.text or "").strip()
+def translate_setra(frame_path: str, context: str, video_id: str | None = None) -> str:
+    return _translate_with_provider("setra", frame_path, context, video_id=video_id)[0]
 
 def write_vlm_prompt(frame_path: str, context: str, gap_id: str, video_dir: str) -> tuple[str, str]:
     """Write the VLM prompt file for agent processing. Returns (prompt_path, response_path)."""
@@ -63,6 +52,12 @@ def run_translator(video_id: str, provider: str):
     if provider == "gemini":
         from helpers.clients import gemini_client
         gemini_client.require_gemini_key()
+    elif provider == "openai":
+        from helpers.clients import openai_client
+        openai_client.require_openai_key()
+    elif provider == "setra":
+        from helpers.clients import setra_client
+        setra_client.require_setra_config()
     video_dir = os.path.join("data", video_id)
     targets_file = os.path.join(video_dir, "targets.json")
 
@@ -74,9 +69,12 @@ def run_translator(video_id: str, provider: str):
         targets_data = json.load(f)
 
     pending_prompts = []  # (gap_id, prompt_file, response_file) for agent to fill
+    request_usage_records: list[dict] = []
 
     print(f"Translating visual gaps for video {video_id} using {provider}")
     for vtt_filename, gaps in targets_data.items():
+        if str(vtt_filename).startswith("__"):
+            continue
         for index, gap in enumerate(gaps):
             if 'vlm_description' in gap:
                 print(f"  Gap at {gap['exact_timestamp']} already has a description.")
@@ -93,11 +91,20 @@ def run_translator(video_id: str, provider: str):
             
             try:
                 if provider == "openai":
-                    description = translate_openai(frame_path, context, video_id=video_id)
+                    description, usage_records = _translate_with_provider("openai", frame_path, context, video_id=video_id)
                     gap['vlm_description'] = description
+                    gap['request_usage'] = usage_records
+                    request_usage_records.extend(usage_records)
                 elif provider == "gemini":
-                    description = translate_gemini(frame_path, context, video_id=video_id)
+                    description, usage_records = _translate_with_provider("gemini", frame_path, context, video_id=video_id)
                     gap['vlm_description'] = description
+                    gap['request_usage'] = usage_records
+                    request_usage_records.extend(usage_records)
+                elif provider == "setra":
+                    description, usage_records = _translate_with_provider("setra", frame_path, context, video_id=video_id)
+                    gap['vlm_description'] = description
+                    gap['request_usage'] = usage_records
+                    request_usage_records.extend(usage_records)
                 elif provider == "antigravity":
                     prompt_file, response_file = write_vlm_prompt(frame_path, context, gap_id, video_dir)
                     if os.path.exists(response_file):
@@ -114,8 +121,12 @@ def run_translator(video_id: str, provider: str):
                 print(f"  Error translating frame {frame_path}: {e}")
 
     # Save what we have so far
+    if request_usage_records:
+        targets_data["__request_usage__"] = list(targets_data.get("__request_usage__", [])) + request_usage_records
     with open(targets_file, "w", encoding="utf-8") as f:
         json.dump(targets_data, f, indent=2)
+    from helpers.usage_report import write_video_usage_summary
+    write_video_usage_summary(video_dir)
 
     if pending_prompts:
         print(f"\nANTIGRAVITY: {len(pending_prompts)} frame(s) need agent analysis.")

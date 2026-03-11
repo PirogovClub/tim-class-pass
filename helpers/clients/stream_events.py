@@ -18,6 +18,7 @@ KIND_RETRY = "retry"
 PROVIDER_MLX = "mlx"
 PROVIDER_GEMINI = "gemini"
 PROVIDER_OPENAI = "openai"
+PROVIDER_SETRA = "setra"
 
 # Callback: receives one event dict, returns None
 # Event dict: provider, stage, kind, text_delta (optional), attempt (optional),

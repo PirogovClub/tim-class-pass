@@ -48,41 +48,36 @@ IMPORTANT: Output ONLY strictly valid JSON according to this schema:
 }
 """
 
-def extract_gaps_openai(transcript_text: str, video_id: str | None = None) -> GapsResponse:
-    from helpers.clients import openai_client
-    client = openai_client.get_client()
-    model = openai_client.get_model_for_step("gaps", video_id)
-    completion = client.beta.chat.completions.parse(
-        model=model,
-        messages=[
-            {"role": "system", "content": get_system_prompt()},
-            {"role": "user", "content": f"Transcript:\n{transcript_text}"}
-        ],
-        response_format=GapsResponse
-    )
-    return completion.choices[0].message.parsed
+def _extract_gaps_with_provider(provider_name: str, transcript_text: str, video_id: str | None = None) -> tuple[GapsResponse, list[dict]]:
+    from helpers.clients.providers import get_provider, resolve_model_for_stage
 
-def extract_gaps_gemini(transcript_text: str, video_id: str | None = None) -> GapsResponse:
-    from helpers.clients import gemini_client
-    from google.genai import types
-
-    model = gemini_client.get_model_for_step("gaps", video_id)
-    contents = [
-        types.Content(role="user", parts=[types.Part.from_text(text=f"System: {get_system_prompt()}\n\nTranscript:\n{transcript_text}")])
-    ]
-    config = types.GenerateContentConfig(
+    response = get_provider(provider_name).generate_text(
+        model=resolve_model_for_stage("gaps", video_id=video_id),
+        user_text=f"Transcript:\n{transcript_text}",
+        system_instruction=get_system_prompt(),
         response_mime_type="application/json",
         response_schema=GapsResponse,
         temperature=0.2,
+        stage="gap_detector",
     )
-    if os.getenv("GEMINI_STREAMING"):
-        text = gemini_client.generate_with_retry_stream(model=model, contents=contents, config=config).strip()
-    else:
-        response = gemini_client.generate_with_retry(model=model, contents=contents, config=config)
-        text = (response.text or "").strip()
+    text = (response.text or "").strip()
     if not text:
-        raise ValueError("Gemini returned empty response for gap detection")
-    return GapsResponse.model_validate_json(text)
+        raise ValueError(f"{provider_name} returned empty response for gap detection")
+    return GapsResponse.model_validate_json(text), response.usage_records
+
+
+def extract_gaps_openai(transcript_text: str, video_id: str | None = None) -> GapsResponse:
+    response, _ = _extract_gaps_with_provider("openai", transcript_text, video_id=video_id)
+    return response
+
+def extract_gaps_gemini(transcript_text: str, video_id: str | None = None) -> GapsResponse:
+    response, _ = _extract_gaps_with_provider("gemini", transcript_text, video_id=video_id)
+    return response
+
+
+def extract_gaps_setra(transcript_text: str, video_id: str | None = None) -> GapsResponse:
+    response, _ = _extract_gaps_with_provider("setra", transcript_text, video_id=video_id)
+    return response
 
 def write_prompt_file(transcript_text: str, vtt_file: str, video_dir: str) -> tuple[str, str]:
     """Write the prompt file for agent-based processing. Returns (prompt_path, response_path)."""
@@ -102,6 +97,12 @@ def process_video(video_id: str, provider: str):
     if provider == "gemini":
         from helpers.clients import gemini_client
         gemini_client.require_gemini_key()
+    elif provider == "openai":
+        from helpers.clients import openai_client
+        openai_client.require_openai_key()
+    elif provider == "setra":
+        from helpers.clients import setra_client
+        setra_client.require_setra_config()
     video_dir = os.path.join("data", video_id)
     if not os.path.exists(video_dir):
         print(f"Directory {video_dir} not found.")
@@ -115,15 +116,18 @@ def process_video(video_id: str, provider: str):
         return
 
     targets_data = {}
+    request_usage_records: list[dict] = []
     for vtt_file in vtt_files:
         print(f"Processing {vtt_file} with provider: {provider}")
         with open(vtt_file, "r", encoding="utf-8") as f:
             transcript_text = f.read()
 
         if provider == "openai":
-            response = extract_gaps_openai(transcript_text, video_id=video_id)
+            response, usage_records = _extract_gaps_with_provider("openai", transcript_text, video_id=video_id)
         elif provider == "gemini":
-            response = extract_gaps_gemini(transcript_text, video_id=video_id)
+            response, usage_records = _extract_gaps_with_provider("gemini", transcript_text, video_id=video_id)
+        elif provider == "setra":
+            response, usage_records = _extract_gaps_with_provider("setra", transcript_text, video_id=video_id)
         elif provider == "antigravity":
             # Write prompt file for agent processing then immediately read back the response
             prompt_file, response_file = write_prompt_file(transcript_text, vtt_file, video_dir)
@@ -133,14 +137,20 @@ def process_video(video_id: str, provider: str):
                 print(f"ANTIGRAVITY: Run gap_detector in two-step mode or have the agent fill it in.")
                 sys.exit(10)  # Exit with code 10 = "needs agent analysis"
             response = read_response_file(response_file)
+            usage_records = []
         else:
             raise ValueError(f"Unknown provider {provider}")
             
         targets_data[os.path.basename(vtt_file)] = response.model_dump()['gaps']
+        request_usage_records.extend(usage_records)
         
     output_path = os.path.join(video_dir, "targets.json")
+    if request_usage_records:
+        targets_data["__request_usage__"] = request_usage_records
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(targets_data, f, indent=2)
+    from helpers.usage_report import write_video_usage_summary
+    write_video_usage_summary(video_dir)
     
     print(f"Saved gaps to {output_path}")
 

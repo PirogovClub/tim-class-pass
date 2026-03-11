@@ -14,8 +14,12 @@ DEFAULT_LLM_QUEUE_DIFF_THRESHOLD = 0.025
 DEFAULT_COMPARE_BLUR_RADIUS = 1.5
 
 
+def _default_pipeline_workers() -> int:
+    return max((os.cpu_count() or 1) // 2, 1)
+
+
 def _default_step2_chunk_workers() -> int:
-    return max((os.cpu_count() or 1) - 2, 1)
+    return _default_pipeline_workers()
 
 
 def _parse_int(raw: str | None, default: int | None = None) -> int | None:
@@ -68,9 +72,16 @@ def get_config_for_video(video_id: str) -> dict:
         yaml_default = dict(raw.get("default") or raw if isinstance(raw, dict) else {})
     result = {
         "agent_images": os.getenv("AGENT_IMAGES") or os.getenv("AGENT") or DEFAULT_AGENT,
+        "provider_images": os.getenv("PROVIDER_IMAGES") or os.getenv("AGENT_IMAGES") or os.getenv("AGENT") or DEFAULT_AGENT,
+        "provider_component2": os.getenv("PROVIDER_COMPONENT2") or "gemini",
+        "provider_component2_reducer": os.getenv("PROVIDER_COMPONENT2_REDUCER") or os.getenv("PROVIDER_COMPONENT2") or "gemini",
+        "provider_gaps": os.getenv("PROVIDER_GAPS") or os.getenv("LLM_PROVIDER") or "gemini",
+        "provider_vlm": os.getenv("PROVIDER_VLM") or os.getenv("LLM_PROVIDER") or "gemini",
+        "provider_analyze_extract": os.getenv("PROVIDER_ANALYZE_EXTRACT") or os.getenv("PROVIDER_IMAGES") or os.getenv("AGENT_IMAGES") or os.getenv("AGENT") or "gemini",
+        "provider_analyze_relevance": os.getenv("PROVIDER_ANALYZE_RELEVANCE") or os.getenv("PROVIDER_IMAGES") or os.getenv("AGENT_IMAGES") or os.getenv("AGENT") or "gemini",
         "batch_size": DEFAULT_BATCH_SIZE,
         "parallel_batches": False,
-        "workers": _parse_int(os.getenv("WORKERS") or os.getenv("MAX_WORKERS"), None),
+        "workers": _parse_int(os.getenv("WORKERS") or os.getenv("MAX_WORKERS"), _default_pipeline_workers()),
         "video_file": None,
         "vtt_file": None,
         "model_name": os.getenv("MODEL_NAME"),
@@ -78,6 +89,8 @@ def get_config_for_video(video_id: str) -> dict:
         "model_component2": os.getenv("MODEL_COMPONENT2") or os.getenv("MODEL_VLM") or os.getenv("MODEL_NAME"),
         "model_gaps": os.getenv("MODEL_GAPS") or os.getenv("MODEL_NAME"),
         "model_vlm": os.getenv("MODEL_VLM") or os.getenv("MODEL_NAME"),
+        "model_analyze_extract": os.getenv("MODEL_ANALYZE_EXTRACT") or os.getenv("MODEL_IMAGES") or os.getenv("MODEL_NAME"),
+        "model_analyze_relevance": os.getenv("MODEL_ANALYZE_RELEVANCE") or os.getenv("MODEL_IMAGES") or os.getenv("MODEL_NAME"),
         "ssim_threshold": _parse_float(os.getenv("SSIM_THRESHOLD"), 0.95),
         "capture_fps": _parse_float(os.getenv("CAPTURE_FPS"), DEFAULT_CAPTURE_FPS),
         "llm_queue_diff_threshold": _parse_float(
@@ -106,6 +119,17 @@ def get_config_for_video(video_id: str) -> dict:
         "model_component2_reducer",
         "model_gaps",
         "model_vlm",
+        "model_analyze_extract",
+        "model_analyze_relevance",
+    )
+    _provider_keys = (
+        "provider_images",
+        "provider_component2",
+        "provider_component2_reducer",
+        "provider_gaps",
+        "provider_vlm",
+        "provider_analyze_extract",
+        "provider_analyze_relevance",
     )
     _override_keys = (
         "video_file",
@@ -124,6 +148,7 @@ def get_config_for_video(video_id: str) -> dict:
         "step2_chunk_size",
         "step2_chunk_workers",
         "telemetry_enabled",
+        *_provider_keys,
         *_model_keys,
     )
     for key, value in yaml_default.items():

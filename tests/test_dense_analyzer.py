@@ -117,6 +117,62 @@ def test_run_analysis_only_analyzes_queue_keys(monkeypatch, tmp_path: Path) -> N
     assert analysis["000002"]["material_change"] is True
 
 
+def test_run_analysis_persists_request_usage(monkeypatch, tmp_path: Path) -> None:
+    video_id = "video-usage"
+    video_dir = _setup_video(tmp_path, video_id=video_id)
+    _write_llm_queue(video_dir, ["000001"])
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(
+        config,
+        "get_config_for_video",
+        lambda video_id: {"ssim_threshold": 0.95, "telemetry_enabled": False},
+    )
+
+    def fake_analyze_frame(frame_path: str, prompt_text: str, video_id=None, **kwargs):
+        on_event = kwargs.get("on_event")
+        frame_key = kwargs.get("frame_key")
+        if on_event is not None:
+            on_event(
+                {
+                    "kind": "end",
+                    "stage": "openai_images",
+                    "provider": "openai",
+                    "frame_key": frame_key,
+                    "meta": {
+                        "usage_records": [
+                            {
+                                "provider": "openai",
+                                "model": "gpt-4o",
+                                "attempt": 1,
+                                "status": "succeeded",
+                                "prompt_tokens": 10,
+                                "output_tokens": 3,
+                                "total_tokens": 13,
+                            }
+                        ]
+                    },
+                }
+            )
+        return {
+            "frame_timestamp": "00:00:01",
+            "material_change": True,
+            "lesson_relevant": True,
+            "scene_boundary": True,
+            "change_summary": ["Frame with usage"],
+            "current_state": {"visual_facts": ["Annotated chart"], "trading_relevant_interpretation": []},
+        }
+
+    monkeypatch.setattr(dense_analyzer, "_analyze_frame_openai", fake_analyze_frame)
+
+    dense_analyzer.run_analysis(video_id, batch_size=1, agent="openai")
+
+    with open(video_dir / "dense_analysis.json", "r", encoding="utf-8") as f:
+        analysis = json.load(f)
+
+    assert analysis["000001"]["request_usage"][0]["total_tokens"] == 13
+    assert (video_dir / "ai_usage_summary.json").is_file()
+
+
 # ---------------------------------------------------------------------------
 # Phase 2 tests: within-batch context carry-forward + scene anchoring
 # ---------------------------------------------------------------------------

@@ -4,8 +4,9 @@ import os
 
 from helpers import config as pipeline_config
 from helpers.clients import gemini_client
+from helpers.clients.providers import get_provider, resolve_model_for_stage, resolve_provider_for_stage
 
-DEFAULT_REDUCER_MODEL = "gemini-2.5-flash"
+DEFAULT_REDUCER_MODEL = "gemini-2.5-flash-lite"
 
 QUANT_SYSTEM_PROMPT = """You are an expert Quantitative Trading Architect. Your job is to take a translated, chronological transcript of a trading lecture and transform it into a strict, topic-based algorithmic rulebook optimized for a RAG Vector Database.
 
@@ -37,6 +38,9 @@ Return markdown only.
 
 
 def _resolve_reducer_model(video_id: str | None = None, model: str | None = None) -> str:
+    resolved = resolve_model_for_stage("component2_reducer", video_id=video_id, explicit_model=model)
+    if resolved:
+        return resolved
     if model:
         return model
     config_candidates: list[str] = []
@@ -63,25 +67,29 @@ def _resolve_reducer_model(video_id: str | None = None, model: str | None = None
     return DEFAULT_REDUCER_MODEL
 
 
+def _resolve_reducer_provider(video_id: str | None = None, provider: str | None = None) -> str:
+    return resolve_provider_for_stage("component2_reducer", video_id=video_id, explicit_provider=provider)
+
+
 def synthesize_full_document(
     raw_markdown: str,
     *,
     video_id: str | None = None,
     model: str | None = None,
-) -> str:
-    from google.genai import types
-
+    provider: str | None = None,
+) -> tuple[str, list[dict]]:
+    resolved_provider = _resolve_reducer_provider(video_id=video_id, provider=provider)
     resolved_model = _resolve_reducer_model(video_id=video_id, model=model)
-    response = gemini_client.generate_with_retry(
+    response = get_provider(resolved_provider).generate_text(
         model=resolved_model,
-        contents=raw_markdown,
-        config=types.GenerateContentConfig(
-            system_instruction=QUANT_SYSTEM_PROMPT,
-            temperature=0.2,
-            max_output_tokens=8192,
-        ),
+        user_text=raw_markdown,
+        system_instruction=QUANT_SYSTEM_PROMPT,
+        temperature=0.2,
+        max_tokens=8192,
+        stage=f"{resolved_provider}_component2_reducer",
+        frame_key="component2_reducer",
     )
     reduced_markdown = (response.text or "").strip()
     if not reduced_markdown:
-        raise ValueError("Gemini returned empty response for quant reduction.")
-    return reduced_markdown
+        raise ValueError(f"{resolved_provider} returned empty response for quant reduction.")
+    return reduced_markdown, response.usage_records

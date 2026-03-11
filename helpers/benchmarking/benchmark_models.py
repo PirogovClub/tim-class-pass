@@ -31,6 +31,7 @@ from pydantic import BaseModel
 from helpers.analyze import _normalize_extraction_output
 from helpers.clients import mlx_client
 from helpers.clients import gemini_client
+from helpers.clients import openai_client
 from scripts.build_benchmark_frame_prompt import build_prompt_from_vtt
 
 GOLD_DIR = ROOT / "tests" / "gold"
@@ -71,6 +72,11 @@ GEMINI_PRICING_USD_PER_MTOK = {
     "gemini-3-pro-preview": {"input": 2.00, "output": 12.00},
     "gemini-3.1-pro-preview": {"input": 2.00, "output": 12.00},
     "gemini-3.1-flash-lite-preview": {"input": 0.25, "output": 1.50},
+}
+
+# OpenAI API pricing per 1M tokens for benchmarked comparison models.
+OPENAI_PRICING_USD_PER_MTOK = {
+    "gpt-4o-mini": {"input": 0.15, "output": 0.60},
 }
 
 
@@ -139,6 +145,41 @@ def estimate_gemini_cost(model: str, prompt_tokens: int | None, output_tokens: i
         "estimated_total_cost_usd": round(total, 8),
         "estimated_cost_per_100k_images_usd": round(total * BENCHMARK_BULK_IMAGE_COUNT, 2),
     }
+
+
+def _resolve_openai_benchmark_model(name: str) -> str | None:
+    """Allow raw OpenAI model ids or an explicit openai: prefix in --models."""
+    if name.startswith("openai:"):
+        resolved = name.split(":", 1)[1].strip()
+        return resolved or None
+    if name.startswith(("gpt-", "o1-", "o3-", "o4-")):
+        return name
+    return None
+
+
+def estimate_openai_cost(model: str, prompt_tokens: int | None, output_tokens: int | None) -> dict[str, float] | None:
+    """Estimate OpenAI API cost from token counts and current per-model pricing."""
+    resolved_model = _resolve_openai_benchmark_model(model)
+    pricing = OPENAI_PRICING_USD_PER_MTOK.get(resolved_model or "")
+    if pricing is None or prompt_tokens is None or output_tokens is None:
+        return None
+    input_cost = (prompt_tokens / 1_000_000) * pricing["input"]
+    output_cost = (output_tokens / 1_000_000) * pricing["output"]
+    total = input_cost + output_cost
+    return {
+        "estimated_input_cost_usd": round(input_cost, 8),
+        "estimated_output_cost_usd": round(output_cost, 8),
+        "estimated_total_cost_usd": round(total, 8),
+        "estimated_cost_per_100k_images_usd": round(total * BENCHMARK_BULK_IMAGE_COUNT, 2),
+    }
+
+
+def estimate_benchmark_cost(model: str, prompt_tokens: int | None, output_tokens: int | None) -> dict[str, float] | None:
+    """Estimate API cost for benchmark runs across supported providers."""
+    return (
+        estimate_gemini_cost(model, prompt_tokens, output_tokens)
+        or estimate_openai_cost(model, prompt_tokens, output_tokens)
+    )
 
 
 def _is_general_benchmark_gemini_model(name: str) -> bool:
@@ -373,6 +414,17 @@ def benchmark_model(
                 stage="benchmark",
                 frame_key=frame_key,
             ).strip()
+        elif (openai_model := _resolve_openai_benchmark_model(model)) is not None:
+            raw_text = openai_client.chat_completion_with_image(
+                prompt,
+                frame_path,
+                model=openai_model,
+                max_tokens=BENCHMARK_MAX_OUTPUT_TOKENS,
+                response_format={"type": "json_object"},
+                on_event=on_event,
+                stage="benchmark",
+                frame_key=frame_key,
+            ).strip()
         elif model.startswith("mlx-"):
             raw_text = mlx_client.chat_image(
                 model,
@@ -437,7 +489,7 @@ def benchmark_model(
         score["input_tokens_per_sec"] = None
         score["output_tokens_per_sec"] = None
 
-    cost_estimate = estimate_gemini_cost(model, score.get("prompt_tokens"), score.get("output_tokens"))
+    cost_estimate = estimate_benchmark_cost(model, score.get("prompt_tokens"), score.get("output_tokens"))
     if cost_estimate is not None:
         score.update(cost_estimate)
     else:
@@ -477,10 +529,13 @@ def benchmark_model(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Benchmark local VLMs against Gemini gold set")
+    parser = argparse.ArgumentParser(description="Benchmark multimodal models against the gold set")
     parser.add_argument("--host", default=None, help="MLX server host, e.g. http://192.168.1.5:11434")
     parser.add_argument("--models", default="", help="Comma-separated list of models to benchmark")
     parser.add_argument("--gold-dir", default=str(GOLD_DIR), help="Path to gold JSON files")
+    parser.add_argument("--frame-key", default=None, help="Optional one-off frame key override")
+    parser.add_argument("--frame-path", default=None, help="Optional one-off frame image path override")
+    parser.add_argument("--gold-file", default=None, help="Optional one-off gold JSON filename or absolute path")
     parser.add_argument("--ps", action="store_true", help="Use available models from server (mlx_client.list_models)")
     parser.add_argument("--gemini", action="store_true", help="Also benchmark all current general Gemini generateContent models (requires GEMINI_API_KEY)")
     parser.add_argument("--output", "-o", default=None, help="Results JSON path (default: benchmark-reports/benchmark_<timestamp>.json)")
@@ -513,6 +568,8 @@ def main() -> None:
 
     if any(m.startswith("gemini-") for m in models):
         gemini_client.require_gemini_key()
+    if any(_resolve_openai_benchmark_model(m) for m in models):
+        openai_client.require_openai_key()
 
     mlx_models = [m for m in models if m.startswith("mlx-")]
     if mlx_models:
@@ -525,11 +582,26 @@ def main() -> None:
             return
 
     gold_dir = Path(args.gold_dir)
+    if args.frame_key or args.frame_path or args.gold_file:
+        frame_key = args.frame_key or next(iter(GOLD_FRAMES.keys()))
+        frame_path_override = args.frame_path or FRAME_PATHS.get(frame_key, "")
+        gold_override = args.gold_file or GOLD_FRAMES.get(frame_key)
+        if not gold_override:
+            raise ValueError("A gold file is required when overriding the benchmark frame.")
+        frame_targets = [(frame_key, gold_override, frame_path_override)]
+    else:
+        frame_targets = [
+            (frame_key, gold_filename, FRAME_PATHS.get(frame_key, ""))
+            for frame_key, gold_filename in GOLD_FRAMES.items()
+        ]
 
     print("=" * 60)
-    print("Local Model Benchmark — Gemini Parity Acceptance Test")
+    print("Model Benchmark - Provider Comparison")
     print("=" * 60)
-    print(f"Benchmarking {len(models)} model(s). Frame: {list(GOLD_FRAMES.keys())}. Host: {args.host or 'from env'}")
+    print(
+        f"Benchmarking {len(models)} model(s). "
+        f"Frame: {[frame_key for frame_key, _, _ in frame_targets]}. Host: {args.host or 'from env'}"
+    )
     print(f"Output cap: {BENCHMARK_MAX_OUTPUT_TOKENS} tokens", flush=True)
     print("Progress: streaming = active; wait for [done] per model.", flush=True)
 
@@ -543,8 +615,10 @@ def main() -> None:
     print(f"Report path: {out_path}", flush=True)
     total_models = len(models)
 
-    for frame_key, gold_filename in GOLD_FRAMES.items():
-        gold_path = gold_dir / gold_filename
+    for frame_key, gold_filename, configured_frame_path in frame_targets:
+        gold_path = Path(gold_filename)
+        if not gold_path.is_absolute():
+            gold_path = gold_dir / gold_filename
         if not gold_path.exists():
             print(f"Gold file not found: {gold_path}")
             continue
@@ -552,7 +626,7 @@ def main() -> None:
         with open(gold_path, "r", encoding="utf-8") as f:
             gold = json.load(f)
 
-        frame_path = FRAME_PATHS.get(frame_key, "")
+        frame_path = configured_frame_path
         resolved = Path(frame_path).resolve() if frame_path else None
         if resolved and not resolved.exists():
             # Fallback: try same path relative to cwd (ROOT may differ when run via uv/cache)

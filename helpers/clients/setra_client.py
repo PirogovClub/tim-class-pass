@@ -1,7 +1,6 @@
 """
-Central OpenAI API client: shared client, model resolution from config/env,
-and chat helpers. Use this module instead of instantiating OpenAI in feature code.
-Supports optional streaming progress via on_event callback.
+Setra API client using an OpenAI-compatible chat interface.
+Configure via SETRA_BASE_URL, SETRA_API_KEY, and optional SETRA_MODEL.
 """
 from __future__ import annotations
 
@@ -15,53 +14,52 @@ from helpers.clients.stream_events import (
     KIND_END,
     KIND_RETRY,
     KIND_START,
-    PROVIDER_OPENAI,
     emit,
 )
 from helpers.clients.usage import normalize_usage_record
 
-_client: Any = None
+PROVIDER_SETRA = "setra"
 
-OPENAI_KEY_ERROR_MSG = (
-    "OPENAI_API_KEY is required when using OpenAI models. Set it in .env or environment."
-)
+_client: Any = None
 _RETRY_ATTEMPTS = 3
 _RETRY_DELAYS = (1.0, 2.0, 4.0)
 
 
-def require_openai_key() -> None:
-    if not (os.getenv("OPENAI_API_KEY") or "").strip():
-        raise ValueError(OPENAI_KEY_ERROR_MSG)
+def require_setra_config() -> None:
+    if not (os.getenv("SETRA_BASE_URL") or "").strip():
+        raise ValueError("SETRA_BASE_URL is required when using provider=setra.")
 
 
 def get_client():
-    """Return OpenAI client; uses OPENAI_API_KEY from env."""
     global _client
-    require_openai_key()
+    require_setra_config()
     if _client is None:
         from openai import OpenAI
 
-        _client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        _client = OpenAI(
+            api_key=os.getenv("SETRA_API_KEY") or "setra",
+            base_url=os.getenv("SETRA_BASE_URL"),
+        )
     return _client
 
 
 def get_model_for_step(step: str, video_id: str | None = None) -> str:
-    """Resolve model name. step: images, gaps, vlm. Precedence: config > MODEL_* env > default."""
-    default = "gpt-4o"
     if video_id:
         try:
             from helpers import config as pipeline_config
 
             cfg = pipeline_config.get_config_for_video(video_id)
-            step_key = f"model_{step}"
-            val = cfg.get(step_key) or cfg.get("model_name")
+            val = cfg.get(f"model_{step}") or cfg.get("model_name")
             if val and str(val).strip():
                 return str(val).strip()
         except Exception:
             pass
-    step_env = {"images": "MODEL_IMAGES", "gaps": "MODEL_GAPS", "vlm": "MODEL_VLM"}.get(step)
-    val = os.getenv(step_env or "MODEL_IMAGES") or os.getenv("MODEL_NAME")
-    return (val or default).strip()
+    env_key = {"images": "MODEL_IMAGES", "gaps": "MODEL_GAPS", "vlm": "MODEL_VLM"}.get(step)
+    return (
+        os.getenv(env_key or "MODEL_NAME")
+        or os.getenv("SETRA_MODEL")
+        or "setra-default"
+    ).strip()
 
 
 def _is_retryable(err: BaseException) -> bool:
@@ -78,18 +76,16 @@ def chat_completion_result(
     max_tokens: int = 2000,
     response_format: dict[str, Any] | None = None,
     on_event: Any = None,
-    stage: str = "openai_chat",
+    stage: str = "setra_chat",
     frame_key: str | None = None,
 ) -> ProviderResponse:
     client = get_client()
     model = model or get_model_for_step(step, video_id)
     usage_records: list[dict[str, Any]] = []
-
     for attempt in range(_RETRY_ATTEMPTS):
         try:
             if attempt > 0 and on_event is not None:
-                emit(on_event, provider=PROVIDER_OPENAI, stage=stage, kind=KIND_RETRY, attempt=attempt, frame_key=frame_key)
-
+                emit(on_event, provider=PROVIDER_SETRA, stage=stage, kind=KIND_RETRY, attempt=attempt, frame_key=frame_key)
             if on_event is None:
                 resp = client.chat.completions.create(
                     model=model,
@@ -98,7 +94,7 @@ def chat_completion_result(
                     response_format=response_format,
                 )
                 usage_record = normalize_usage_record(
-                    provider=PROVIDER_OPENAI,
+                    provider=PROVIDER_SETRA,
                     model=model,
                     usage=getattr(resp, "usage", None),
                     stage=stage,
@@ -110,19 +106,19 @@ def chat_completion_result(
                 usage_records.append(usage_record)
                 return ProviderResponse(
                     text=(resp.choices[0].message.content or "").strip(),
-                    provider=PROVIDER_OPENAI,
+                    provider=PROVIDER_SETRA,
                     model=model,
                     usage_records=usage_records,
                     raw_response=resp,
                 )
 
-            emit(on_event, provider=PROVIDER_OPENAI, stage=stage, kind=KIND_START, frame_key=frame_key)
+            emit(on_event, provider=PROVIDER_SETRA, stage=stage, kind=KIND_START, frame_key=frame_key)
             stream = client.chat.completions.create(
                 model=model,
                 messages=messages,
                 max_tokens=max_tokens,
-                stream=True,
                 response_format=response_format,
+                stream=True,
                 stream_options={"include_usage": True},
             )
             parts: list[str] = []
@@ -131,10 +127,10 @@ def chat_completion_result(
                 delta = (chunk.choices[0].delta.content or "") if chunk.choices else ""
                 if delta:
                     parts.append(delta)
-                    emit(on_event, provider=PROVIDER_OPENAI, stage=stage, kind=KIND_CHUNK, text_delta=delta, frame_key=frame_key)
+                    emit(on_event, provider=PROVIDER_SETRA, stage=stage, kind=KIND_CHUNK, text_delta=delta, frame_key=frame_key)
                 usage_obj = getattr(chunk, "usage", None) or usage_obj
             usage_record = normalize_usage_record(
-                provider=PROVIDER_OPENAI,
+                provider=PROVIDER_SETRA,
                 model=model,
                 usage=usage_obj,
                 stage=stage,
@@ -146,7 +142,7 @@ def chat_completion_result(
             usage_records.append(usage_record)
             emit(
                 on_event,
-                provider=PROVIDER_OPENAI,
+                provider=PROVIDER_SETRA,
                 stage=stage,
                 kind=KIND_END,
                 frame_key=frame_key,
@@ -154,7 +150,7 @@ def chat_completion_result(
             )
             return ProviderResponse(
                 text="".join(parts).strip(),
-                provider=PROVIDER_OPENAI,
+                provider=PROVIDER_SETRA,
                 model=model,
                 usage_records=usage_records,
                 raw_response=None,
@@ -162,7 +158,7 @@ def chat_completion_result(
         except Exception as e:
             usage_records.append(
                 normalize_usage_record(
-                    provider=PROVIDER_OPENAI,
+                    provider=PROVIDER_SETRA,
                     model=model,
                     usage=None,
                     stage=stage,
@@ -176,8 +172,7 @@ def chat_completion_result(
             if not _is_retryable(e) or attempt == _RETRY_ATTEMPTS - 1:
                 raise ProviderRequestError(str(e), usage_records=usage_records) from e
             time.sleep(_RETRY_DELAYS[attempt])
-
-    raise ProviderRequestError("OpenAI request failed unexpectedly", usage_records=usage_records)
+    raise ProviderRequestError("Setra request failed unexpectedly", usage_records=usage_records)
 
 
 def chat_completion(
@@ -189,10 +184,9 @@ def chat_completion(
     max_tokens: int = 2000,
     response_format: dict[str, Any] | None = None,
     on_event: Any = None,
-    stage: str = "openai_chat",
+    stage: str = "setra_chat",
     frame_key: str | None = None,
 ) -> str:
-    """Single completion; returns message content."""
     return chat_completion_result(
         messages,
         model=model,
@@ -216,7 +210,7 @@ def chat_completion_with_image_result(
     max_tokens: int = 2000,
     response_format: dict[str, Any] | None = None,
     on_event: Any = None,
-    stage: str = "openai_images",
+    stage: str = "setra_images",
     frame_key: str | None = None,
 ) -> ProviderResponse:
     import base64
@@ -255,10 +249,9 @@ def chat_completion_with_image(
     max_tokens: int = 2000,
     response_format: dict[str, Any] | None = None,
     on_event: Any = None,
-    stage: str = "openai_images",
+    stage: str = "setra_images",
     frame_key: str | None = None,
 ) -> str:
-    """Send one user message with text + image (base64); returns assistant content."""
     return chat_completion_with_image_result(
         prompt,
         image_path,

@@ -5,6 +5,7 @@ import shutil
 import argparse
 import subprocess
 import math
+import inspect
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
@@ -164,18 +165,14 @@ def extract_dense_frames(
         print(f"Extracting at {capture_fps}fps in {len(segments)} segments with {max_workers} workers...")
         futures = []
         with ThreadPoolExecutor(max_workers=min(max_workers, len(segments))) as executor:
+            extract_segment_params = inspect.signature(_extract_segment).parameters
             for i, (start, seg_duration, label) in enumerate(segments):
                 seg_dir = os.path.join(video_dir, f"frames_dense_seg_{i:03d}")
+                submit_args = [video_file, start, seg_duration, seg_dir, label]
+                if "capture_fps" in extract_segment_params:
+                    submit_args.append(capture_fps)
                 futures.append(
-                    executor.submit(
-                        _extract_segment,
-                        video_file,
-                        start,
-                        seg_duration,
-                        seg_dir,
-                        label,
-                        capture_fps,
-                    )
+                    executor.submit(_extract_segment, *submit_args)
                 )
             failed = False
             for future in as_completed(futures):

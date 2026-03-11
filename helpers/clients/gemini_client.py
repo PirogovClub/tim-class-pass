@@ -11,6 +11,7 @@ from typing import Any
 
 from dotenv import load_dotenv
 
+from helpers.clients.provider_types import ProviderRequestError, ProviderResponse
 from helpers.clients.stream_events import (
     KIND_CHUNK,
     KIND_END,
@@ -19,6 +20,7 @@ from helpers.clients.stream_events import (
     PROVIDER_GEMINI,
     emit,
 )
+from helpers.clients.usage import normalize_usage_record
 
 _client: Any = None
 
@@ -33,9 +35,9 @@ _STEP_ENV_SUFFIX = {
     "gaps": "MODEL_GAPS",
     "vlm": "MODEL_VLM",
 }
-# Benchmark winner for frame extraction: fastest passing, good quality (see docs/benchmarking.md).
+# Benchmark winner for frame extraction: best quality/cost/latency tradeoff for image recognition.
 # Override via pipeline.yml (model_images) or env (MODEL_IMAGES, MODEL_NAME).
-_DEFAULT_GEMINI_MODEL = "gemini-2.5-flash-lite-preview-09-2025"
+_DEFAULT_GEMINI_MODEL = "gemini-2.5-flash-lite"
 
 _STEP_DEFAULTS = {
     "images": _DEFAULT_GEMINI_MODEL,
@@ -98,28 +100,86 @@ def _is_retryable(err: BaseException) -> bool:
     return False
 
 
-def generate_with_retry(model: str, contents: Any, config: Any = None, **kwargs: Any) -> Any:
+def generate_content_result(
+    model: str,
+    contents: Any,
+    config: Any = None,
+    *,
+    on_event: Any = None,
+    stage: str = "gemini_text",
+    frame_key: str | None = None,
+    **kwargs: Any,
+) -> ProviderResponse:
     client = get_client()
+    usage_records: list[dict[str, Any]] = []
     last_err: BaseException | None = None
     for attempt in range(_RETRY_ATTEMPTS):
         try:
-            return client.models.generate_content(
+            if attempt > 0 and on_event is not None:
+                emit(on_event, provider=PROVIDER_GEMINI, stage=stage, kind=KIND_RETRY, attempt=attempt, frame_key=frame_key)
+            if on_event is not None:
+                emit(on_event, provider=PROVIDER_GEMINI, stage=stage, kind=KIND_START, frame_key=frame_key)
+            response = client.models.generate_content(
                 model=model,
                 contents=contents,
                 config=config,
                 **kwargs,
             )
+            usage_record = normalize_usage_record(
+                provider=PROVIDER_GEMINI,
+                model=model,
+                usage=getattr(response, "usage_metadata", None) or getattr(response, "usage", None),
+                stage=stage,
+                operation="generate_content",
+                attempt=attempt + 1,
+                status="succeeded",
+                extra={"frame_key": frame_key},
+            )
+            usage_records.append(usage_record)
+            if on_event is not None:
+                emit(
+                    on_event,
+                    provider=PROVIDER_GEMINI,
+                    stage=stage,
+                    kind=KIND_END,
+                    frame_key=frame_key,
+                    meta={"usage": usage_record, "usage_records": usage_records},
+                )
+            return ProviderResponse(
+                text=(response.text or "").strip(),
+                provider=PROVIDER_GEMINI,
+                model=model,
+                usage_records=usage_records,
+                raw_response=response,
+            )
         except Exception as e:
             last_err = e
+            usage_records.append(
+                normalize_usage_record(
+                    provider=PROVIDER_GEMINI,
+                    model=model,
+                    usage=None,
+                    stage=stage,
+                    operation="generate_content",
+                    attempt=attempt + 1,
+                    status="failed",
+                    error=str(e),
+                    extra={"frame_key": frame_key},
+                )
+            )
             if not _is_retryable(e) or attempt == _RETRY_ATTEMPTS - 1:
-                raise
+                raise ProviderRequestError(str(e), usage_records=usage_records) from e
             time.sleep(_RETRY_DELAYS[attempt])
     if last_err is not None:
-        raise last_err
-    raise RuntimeError("generate_with_retry: unexpected state")
+        raise ProviderRequestError(str(last_err), usage_records=usage_records) from last_err
+    raise ProviderRequestError("generate_content_result: unexpected state", usage_records=usage_records)
 
 
-def generate_with_retry_stream(
+def generate_with_retry(model: str, contents: Any, config: Any = None, **kwargs: Any) -> Any:
+    return generate_content_result(model=model, contents=contents, config=config, **kwargs).raw_response
+
+
+def generate_content_stream_result(
     model: str,
     contents: Any,
     config: Any = None,
@@ -129,11 +189,10 @@ def generate_with_retry_stream(
     frame_key: str | None = None,
     **kwargs: Any,
 ) -> str:
-    """Stream generation; returns final concatenated text.
-    If on_event is set, emits start/chunk/end (and retry on retries).
-    """
+    """Stream generation; returns structured provider response."""
     client = get_client()
     last_err: BaseException | None = None
+    usage_records: list[dict[str, Any]] = []
     for attempt in range(_RETRY_ATTEMPTS):
         try:
             if attempt > 0 and on_event is not None:
@@ -155,19 +214,17 @@ def generate_with_retry_stream(
                     parts.append(text)
                     if on_event is not None:
                         emit(on_event, provider=PROVIDER_GEMINI, stage=stage, kind=KIND_CHUNK, text_delta=text, frame_key=frame_key)
-            usage_meta: dict[str, Any] | None = None
-            if last_chunk is not None:
-                um = getattr(last_chunk, "usage_metadata", None)
-                if um is not None:
-                    pt = getattr(um, "prompt_token_count", None) or getattr(um, "input_token_count", None)
-                    ot = getattr(um, "candidates_token_count", None) or getattr(um, "output_token_count", None)
-                    if pt is not None or ot is not None:
-                        usage_meta = {
-                            "prompt_tokens": pt if pt is not None else 0,
-                            "output_tokens": ot if ot is not None else 0,
-                            "prompt_eval_duration_ns": None,
-                            "eval_duration_ns": None,
-                        }
+            usage_record = normalize_usage_record(
+                provider=PROVIDER_GEMINI,
+                model=model,
+                usage=getattr(last_chunk, "usage_metadata", None) if last_chunk is not None else None,
+                stage=stage,
+                operation="generate_content_stream",
+                attempt=attempt + 1,
+                status="succeeded",
+                extra={"frame_key": frame_key},
+            )
+            usage_records.append(usage_record)
             if on_event is not None:
                 emit(
                     on_event,
@@ -175,14 +232,54 @@ def generate_with_retry_stream(
                     stage=stage,
                     kind=KIND_END,
                     frame_key=frame_key,
-                    meta={"usage": usage_meta} if usage_meta is not None else None,
+                    meta={"usage": usage_record, "usage_records": usage_records},
                 )
-            return "".join(parts).strip()
+            return ProviderResponse(
+                text="".join(parts).strip(),
+                provider=PROVIDER_GEMINI,
+                model=model,
+                usage_records=usage_records,
+                raw_response=last_chunk,
+            )
         except Exception as e:
             last_err = e
+            usage_records.append(
+                normalize_usage_record(
+                    provider=PROVIDER_GEMINI,
+                    model=model,
+                    usage=None,
+                    stage=stage,
+                    operation="generate_content_stream",
+                    attempt=attempt + 1,
+                    status="failed",
+                    error=str(e),
+                    extra={"frame_key": frame_key},
+                )
+            )
             if not _is_retryable(e) or attempt == _RETRY_ATTEMPTS - 1:
-                raise
+                raise ProviderRequestError(str(e), usage_records=usage_records) from e
             time.sleep(_RETRY_DELAYS[attempt])
     if last_err is not None:
-        raise last_err
-    return ""
+        raise ProviderRequestError(str(last_err), usage_records=usage_records) from last_err
+    raise ProviderRequestError("generate_content_stream_result: unexpected state", usage_records=usage_records)
+
+
+def generate_with_retry_stream(
+    model: str,
+    contents: Any,
+    config: Any = None,
+    *,
+    on_event: Any = None,
+    stage: str = "gemini_stream",
+    frame_key: str | None = None,
+    **kwargs: Any,
+) -> str:
+    return generate_content_stream_result(
+        model=model,
+        contents=contents,
+        config=config,
+        on_event=on_event,
+        stage=stage,
+        frame_key=frame_key,
+        **kwargs,
+    ).text

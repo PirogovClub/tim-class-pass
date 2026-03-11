@@ -12,6 +12,7 @@ import time
 from pathlib import Path
 from typing import Any
 
+from helpers.clients.provider_types import ProviderRequestError, ProviderResponse
 from helpers.clients.stream_events import (
     KIND_CHUNK,
     KIND_END,
@@ -20,6 +21,7 @@ from helpers.clients.stream_events import (
     PROVIDER_MLX,
     emit,
 )
+from helpers.clients.usage import normalize_usage_record
 
 def normalize_mlx_host(host: str | None = None) -> str:
     """Return MLX service base URL from env or argument (for display / scripts)."""
@@ -100,7 +102,7 @@ def list_models(host: str | None = None) -> list[str]:
     return sorted(names)
 
 
-def chat_image(
+def chat_image_result(
     model: str,
     prompt: str,
     image_path: Path | str,
@@ -111,7 +113,7 @@ def chat_image(
     on_event: Any = None,
     stage: str = "mlx_images",
     frame_key: str | None = None,
-) -> str:
+) -> ProviderResponse:
     """
     Send image + prompt to MLX POST /api/v1/chat. Accepts a path: client reads the file,
     converts to base64, sends image_base64 (no image_path). Per lmg-ai-chats docs we use
@@ -138,22 +140,92 @@ def chat_image(
         "image_base64": image_base64_str,
     }
 
+    usage_records: list[dict[str, Any]] = []
     last_err: BaseException | None = None
     for attempt in range(_RETRY_ATTEMPTS):
         try:
             if attempt > 0 and on_event is not None:
                 emit(on_event, provider=PROVIDER_MLX, stage=stage, kind=KIND_RETRY, attempt=attempt, frame_key=frame_key)
-            return _chat_image_impl(url, payload, on_event, stage, frame_key)
+            if on_event is not None:
+                emit(on_event, provider=PROVIDER_MLX, stage=stage, kind=KIND_START, frame_key=frame_key)
+            response_text = _chat_image_impl(url, payload, on_event, stage, frame_key)
+            usage_record = normalize_usage_record(
+                provider=PROVIDER_MLX,
+                model=model,
+                usage=None,
+                stage=stage,
+                operation="chat_image",
+                attempt=attempt + 1,
+                status="succeeded",
+                extra={"frame_key": frame_key},
+            )
+            usage_records.append(usage_record)
+            if on_event is not None:
+                if response_text:
+                    emit(on_event, provider=PROVIDER_MLX, stage=stage, kind=KIND_CHUNK, text_delta=response_text, frame_key=frame_key)
+                emit(
+                    on_event,
+                    provider=PROVIDER_MLX,
+                    stage=stage,
+                    kind=KIND_END,
+                    frame_key=frame_key,
+                    meta={"usage": usage_record, "usage_records": usage_records},
+                )
+            return ProviderResponse(
+                text=response_text,
+                provider=PROVIDER_MLX,
+                model=model,
+                usage_records=usage_records,
+                raw_response=None,
+            )
         except Exception as e:
             last_err = e
+            usage_records.append(
+                normalize_usage_record(
+                    provider=PROVIDER_MLX,
+                    model=model,
+                    usage=None,
+                    stage=stage,
+                    operation="chat_image",
+                    attempt=attempt + 1,
+                    status="failed",
+                    error=str(e),
+                    extra={"frame_key": frame_key},
+                )
+            )
             if attempt == _RETRY_ATTEMPTS - 1:
-                raise
+                raise ProviderRequestError(str(e), usage_records=usage_records) from e
             if not _is_retryable(e):
-                raise
+                raise ProviderRequestError(str(e), usage_records=usage_records) from e
             time.sleep(_RETRY_DELAYS[attempt])
     if last_err is not None:
-        raise last_err
-    return ""
+        raise ProviderRequestError(str(last_err), usage_records=usage_records) from last_err
+    raise ProviderRequestError("MLX request failed unexpectedly", usage_records=usage_records)
+
+
+def chat_image(
+    model: str,
+    prompt: str,
+    image_path: Path | str,
+    *,
+    host: str | None = None,
+    options: dict[str, Any] | None = None,
+    request_kwargs: dict[str, Any] | None = None,
+    on_event: Any = None,
+    stage: str = "mlx_images",
+    frame_key: str | None = None,
+) -> str:
+    return chat_image_result(
+        model,
+        prompt,
+        image_path,
+        host=host,
+        options=options,
+        request_kwargs=request_kwargs,
+        on_event=on_event,
+        stage=stage,
+        frame_key=frame_key,
+    ).text
 
 
 def _chat_image_impl(
@@ -172,9 +244,4 @@ def _chat_image_impl(
     with urllib.request.urlopen(req, timeout=300) as r:
         out = json.loads(r.read().decode())
     response_text = (out.get("response") or "").strip()
-    if on_event is not None:
-        emit(on_event, provider=PROVIDER_MLX, stage=stage, kind=KIND_START, frame_key=frame_key)
-        if response_text:
-            emit(on_event, provider=PROVIDER_MLX, stage=stage, kind=KIND_CHUNK, text_delta=response_text, frame_key=frame_key)
-        emit(on_event, provider=PROVIDER_MLX, stage=stage, kind=KIND_END, frame_key=frame_key)
     return response_text

@@ -30,7 +30,18 @@ def _parse_json_from_response(text: str) -> dict:
     match = re.search(r"```(?:json)?\s*([\s\S]*?)```", text)
     if match:
         text = match.group(1).strip()
-    return json.loads(text)
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        # Try stripping trailing truncation (unclosed string/object)
+        for suffix in (r',\s*$', r'"[^"]*$', r'[,\]}\s]*$'):
+            trimmed = re.sub(suffix, "", text)
+            if trimmed != text:
+                try:
+                    return json.loads(trimmed)
+                except json.JSONDecodeError:
+                    pass
+        raise
 
 
 def _encode_image(path: str) -> str:
@@ -48,6 +59,57 @@ def _single_frame_prompt(frame_key: str, frame_path: str, previous_state: str) -
     )
 
 
+def _analyze_frame_provider(
+    provider_name: str,
+    frame_path: str,
+    prompt_text: str,
+    video_id: str | None = None,
+    *,
+    on_event=None,
+    frame_key: str | None = None,
+) -> dict:
+    from helpers.clients.providers import get_provider, resolve_model_for_stage
+
+    provider = get_provider(provider_name)
+    result = provider.generate_text_with_image(
+        model=resolve_model_for_stage("images", video_id=video_id),
+        prompt=prompt_text,
+        image_path=frame_path,
+        max_tokens=2000,
+        temperature=0.3,
+        response_mime_type="application/json",
+        on_event=on_event,
+        stage=f"{provider_name}_images",
+        frame_key=frame_key,
+    )
+    if not result.text:
+        raise ValueError(f"{provider_name} returned empty response for frame analysis")
+    try:
+        return _parse_json_from_response(result.text)
+    except json.JSONDecodeError as e:
+        if frame_key is None:
+            raise
+        # One retry on parse failure (model may return truncated JSON)
+        result2 = provider.generate_text_with_image(
+            model=resolve_model_for_stage("images", video_id=video_id),
+            prompt=prompt_text,
+            image_path=frame_path,
+            max_tokens=2000,
+            temperature=0.3,
+            response_mime_type="application/json",
+            on_event=on_event,
+            stage=f"{provider_name}_images",
+            frame_key=frame_key,
+        )
+        if result2.text:
+            try:
+                return _parse_json_from_response(result2.text)
+            except json.JSONDecodeError:
+                pass
+        # Fallback so pipeline can complete
+        return minimal_no_change_frame(frame_key, skip_reason="json_parse_failed")
+
+
 def _analyze_frame_openai(
     frame_path: str,
     prompt_text: str,
@@ -56,18 +118,14 @@ def _analyze_frame_openai(
     on_event=None,
     frame_key: str | None = None,
 ) -> dict:
-    from helpers.clients import openai_client
-    text = openai_client.chat_completion_with_image(
-        prompt_text,
+    return _analyze_frame_provider(
+        "openai",
         frame_path,
-        step="images",
+        prompt_text,
         video_id=video_id,
-        max_tokens=2000,
         on_event=on_event,
-        stage="openai_images",
         frame_key=frame_key,
     )
-    return _parse_json_from_response(text)
 
 
 def _analyze_frame_gemini(
@@ -78,34 +136,50 @@ def _analyze_frame_gemini(
     on_event=None,
     frame_key: str | None = None,
 ) -> dict:
-    from helpers.clients import gemini_client
-    from google.genai import types
-    with open(frame_path, "rb") as f:
-        image_bytes = f.read()
-    contents = [
-        types.Content(
-            role="user",
-            parts=[
-                types.Part.from_text(text=prompt_text),
-                types.Part.from_bytes(data=image_bytes, mime_type="image/jpeg"),
-            ],
-        )
-    ]
-    config = types.GenerateContentConfig(
-        response_mime_type="application/json",
-        temperature=0.3,
-    )
-    text = gemini_client.generate_with_retry_stream(
-        model=gemini_client.get_model_for_step("images", video_id),
-        contents=contents,
-        config=config,
+    return _analyze_frame_provider(
+        "gemini",
+        frame_path,
+        prompt_text,
+        video_id=video_id,
         on_event=on_event,
-        stage="gemini_images",
         frame_key=frame_key,
-    ).strip()
-    if not text:
-        raise ValueError("Gemini returned empty response for frame analysis")
-    return _parse_json_from_response(text)
+    )
+
+
+def _analyze_frame_mlx(
+    frame_path: str,
+    prompt_text: str,
+    video_id: str | None = None,
+    *,
+    on_event=None,
+    frame_key: str | None = None,
+) -> dict:
+    return _analyze_frame_provider(
+        "mlx",
+        frame_path,
+        prompt_text,
+        video_id=video_id,
+        on_event=on_event,
+        frame_key=frame_key,
+    )
+
+
+def _analyze_frame_setra(
+    frame_path: str,
+    prompt_text: str,
+    video_id: str | None = None,
+    *,
+    on_event=None,
+    frame_key: str | None = None,
+) -> dict:
+    return _analyze_frame_provider(
+        "setra",
+        frame_path,
+        prompt_text,
+        video_id=video_id,
+        on_event=on_event,
+        frame_key=frame_key,
+    )
 
 PRODUCTION_PROMPT = """You are analyzing sequential screenshots from a trading education video for building a structured trading knowledge base.
 
@@ -408,7 +482,8 @@ def _resolve_step2_chunk_workers(requested_workers: int | None) -> int:
         requested = int(requested_workers)
     except (TypeError, ValueError):
         return default_workers
-    return min(max(requested, 1), default_workers)
+    # Respect explicit config; cap at 8 to avoid thundering herd on API
+    return min(max(requested, 1), 8)
 
 
 def _write_analysis_outputs(
@@ -472,6 +547,7 @@ def _process_chunk_sequential(
         print(f"{chunk_prefix} frame {idx + 1}/{len(batch_entries)} -> {key}", flush=True)
         prompt = _single_frame_prompt(key, path, prev_state)
         in_flight: dict[str, object] = {}
+        request_usage_records: list[dict] = []
 
         def on_event(ev):
             kind = ev.get("kind")
@@ -493,6 +569,13 @@ def _process_chunk_sequential(
                 in_flight.pop("current_provider", None)
                 in_flight.pop("stream_chars", None)
                 in_flight["last_progress_at"] = round(time.time(), 2)
+                meta = ev.get("meta") or {}
+                usage_records = meta.get("usage_records")
+                usage = meta.get("usage")
+                if isinstance(usage_records, list):
+                    request_usage_records[:] = usage_records
+                elif isinstance(usage, dict):
+                    request_usage_records[:] = [usage]
                 print(f"{chunk_prefix}   [{fk}] {stage} done", flush=True)
             elif kind == "retry":
                 print(f"{chunk_prefix}   [{fk}] {stage} retry {ev.get('attempt', 1)}", flush=True)
@@ -523,16 +606,19 @@ def _process_chunk_sequential(
             }
         elif agent == "openai":
             entry = _analyze_frame_openai(path, prompt, video_id, on_event=on_event, frame_key=key)
-            if structural_score is not None:
-                entry["structural_score"] = structural_score
-            if compare_seconds is not None:
-                entry["timings"] = {"compare_seconds": compare_seconds}
+        elif agent == "mlx":
+            entry = _analyze_frame_mlx(path, prompt, video_id, on_event=on_event, frame_key=key)
+        elif agent == "setra":
+            entry = _analyze_frame_setra(path, prompt, video_id, on_event=on_event, frame_key=key)
         else:
             entry = _analyze_frame_gemini(path, prompt, video_id, on_event=on_event, frame_key=key)
+        if is_significant:
             if structural_score is not None:
                 entry["structural_score"] = structural_score
             if compare_seconds is not None:
                 entry["timings"] = {"compare_seconds": compare_seconds}
+            if request_usage_records:
+                entry["request_usage"] = request_usage_records
 
         entry = ensure_material_change(entry)
         batch_result[key] = entry
@@ -602,6 +688,7 @@ def run_analysis(
 ):
     agent = _normalize_agent(agent)
     from helpers import config as pipeline_config
+    from helpers.usage_report import write_video_usage_summary
 
     cfg = pipeline_config.get_config_for_video(video_id)
     ssim_threshold = float(cfg.get("ssim_threshold", 0.95))
@@ -655,6 +742,7 @@ def run_analysis(
                 json.dump(entry, f, indent=2, ensure_ascii=False)
         if telemetry_enabled:
             _write_processing_status(video_dir, analysis, len(analysis))
+        write_video_usage_summary(video_dir)
         print(f"Merge-only: Merged {len(response_files)} batch files into {analysis_file} ({len(analysis)} frames).")
         return
 
@@ -765,7 +853,7 @@ def run_analysis(
 
     chunk_size = int(step2_chunk_size or batch_size or 1)
     use_chunk_mode = (
-        agent in {"openai", "gemini"}
+        agent in {"openai", "gemini", "mlx", "setra"}
         and step2_parallel_chunks
         and chunk_size > 0
         and len(remaining_keys) > 1
@@ -891,6 +979,7 @@ def run_analysis(
 
             analysis = _merge_chunk_results(analysis, final_chunk_result)
             _write_analysis_outputs(analysis, analysis_file, frames_dir)
+            write_video_usage_summary(video_dir)
             if telemetry_enabled:
                 _write_processing_status(video_dir, analysis, len(all_keys))
             with open(meta["response_file"], "w", encoding="utf-8") as f:
@@ -963,6 +1052,7 @@ def run_analysis(
                 print(f"  Analyzing frame {key} ({idx + 1}/{len(batch_entries)})...")
                 prompt = _single_frame_prompt(key, path, prev_state)
                 in_flight = {}
+                request_usage_records: list[dict] = []
 
                 def _make_on_event(iframe_key, ivideo_dir, ianalysis, ibatch_result, itotal_frames, itelemetry_enabled, iin_flight):
                     def on_event(ev):
@@ -985,6 +1075,13 @@ def run_analysis(
                             iin_flight.pop("current_provider", None)
                             iin_flight.pop("stream_chars", None)
                             iin_flight["last_progress_at"] = round(time.time(), 2)
+                            meta = ev.get("meta") or {}
+                            usage_records = meta.get("usage_records")
+                            usage = meta.get("usage")
+                            if isinstance(usage_records, list):
+                                request_usage_records[:] = usage_records
+                            elif isinstance(usage, dict):
+                                request_usage_records[:] = [usage]
                             print(f"    [{fk}] {stage} done", flush=True)
                         elif kind == "retry":
                             print(f"    [{fk}] {stage} retry {ev.get('attempt', 1)}", flush=True)
@@ -1018,16 +1115,19 @@ def run_analysis(
                         }
                     elif agent == "openai":
                         entry = _analyze_frame_openai(path, prompt, video_id, on_event=on_event, frame_key=key)
-                        if structural_score is not None:
-                            entry["structural_score"] = structural_score
-                        if compare_seconds is not None:
-                            entry["timings"] = {"compare_seconds": compare_seconds}
+                    elif agent == "mlx":
+                        entry = _analyze_frame_mlx(path, prompt, video_id, on_event=on_event, frame_key=key)
+                    elif agent == "setra":
+                        entry = _analyze_frame_setra(path, prompt, video_id, on_event=on_event, frame_key=key)
                     else:
                         entry = _analyze_frame_gemini(path, prompt, video_id, on_event=on_event, frame_key=key)
+                    if is_significant:
                         if structural_score is not None:
                             entry["structural_score"] = structural_score
                         if compare_seconds is not None:
                             entry["timings"] = {"compare_seconds": compare_seconds}
+                        if request_usage_records:
+                            entry["request_usage"] = request_usage_records
                     entry = ensure_material_change(entry)
                     batch_result[key] = entry
                     prev_state = json.dumps(entry, ensure_ascii=False)
@@ -1061,6 +1161,7 @@ def run_analysis(
 
         with open(analysis_file, "w", encoding="utf-8") as f:
             json.dump(analysis, f, indent=2, ensure_ascii=False)
+        write_video_usage_summary(video_dir)
         if telemetry_enabled:
             _write_processing_status(video_dir, analysis, len(all_keys))
 
@@ -1094,8 +1195,8 @@ def run_analysis(
 @click.option(
     "--agent",
     default=os.getenv("AGENT_IMAGES", os.getenv("AGENT", "ide")),
-    type=click.Choice(["openai", "gemini", "ide", "antigravity"]),
-    help="Agent: ide (IDE as AI agent), openai, gemini (default: ide)",
+    type=click.Choice(["openai", "gemini", "mlx", "setra", "ide", "antigravity"]),
+    help="Agent: ide (IDE as AI agent), openai, gemini, mlx, setra (default: ide)",
 )
 @click.option("--parallel", is_flag=True, help="Option B: generate all batch task files + manifest, exit 10")
 @click.option("--merge-only", is_flag=True, help="Merge all dense_batch_response_*.json into dense_analysis.json and exit")

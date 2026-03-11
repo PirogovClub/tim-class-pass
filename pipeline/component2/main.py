@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import asyncio
 from datetime import datetime
+import json
 from pathlib import Path
 import time
 from typing import Callable
 
 import click
 
+from helpers.usage_report import write_video_usage_summary
 from pipeline.component2.llm_processor import assemble_video_markdown, process_chunks, write_llm_debug
 from pipeline.component2.quant_reducer import synthesize_full_document
 from pipeline.component2.parser import parse_and_sync, seconds_to_mmss, write_lesson_chunks
@@ -42,7 +44,9 @@ def run_component2_pipeline(
     output_root: Path | str | None = None,
     video_id: str | None = None,
     model: str | None = None,
+    provider: str | None = None,
     reducer_model: str | None = None,
+    reducer_provider: str | None = None,
     target_duration_seconds: float = 120.0,
     max_concurrency: int = 5,
     progress_callback: Callable[[str], None] | None = None,
@@ -67,6 +71,7 @@ def run_component2_pipeline(
     filtered_debug_path = root / "filtered_visual_events.debug.json"
     chunk_debug_path = output_intermediate_dir / f"{lesson_name}.chunks.json"
     llm_debug_path = output_intermediate_dir / f"{lesson_name}.llm_debug.json"
+    reducer_usage_path = output_intermediate_dir / f"{lesson_name}.reducer_usage.json"
     intermediate_markdown_path = output_intermediate_dir / f"{lesson_name}.md"
     rag_ready_markdown_path = output_rag_ready_dir / f"{lesson_name}.md"
 
@@ -115,6 +120,7 @@ def run_component2_pipeline(
             chunks,
             video_id=video_id,
             model=model,
+            provider=provider,
             max_concurrency=max_concurrency,
             progress_callback=_on_chunk_progress,
         )
@@ -128,12 +134,19 @@ def run_component2_pipeline(
     _emit(f"Step 3.4/5 complete: wrote `{intermediate_markdown_path.name}` and debug artifacts.")
 
     _emit("Step 3.5/5: Running Pass 2 quant reduction for RAG-ready markdown...")
-    rag_ready_markdown = synthesize_full_document(
+    reducer_result = synthesize_full_document(
         intermediate_markdown,
         video_id=video_id,
         model=reducer_model,
+        provider=reducer_provider,
     )
+    if isinstance(reducer_result, tuple):
+        rag_ready_markdown, reducer_usage = reducer_result
+    else:
+        rag_ready_markdown, reducer_usage = reducer_result, []
     rag_ready_markdown_path.write_text(rag_ready_markdown, encoding="utf-8")
+    reducer_usage_path.write_text(json.dumps(reducer_usage, indent=2, ensure_ascii=False), encoding="utf-8")
+    write_video_usage_summary(root)
     _emit(f"Step 3.5/5 complete: wrote `{rag_ready_markdown_path.name}`.")
 
     return {
@@ -141,6 +154,7 @@ def run_component2_pipeline(
         "filtered_debug_path": filtered_debug_path,
         "chunk_debug_path": chunk_debug_path,
         "llm_debug_path": llm_debug_path,
+        "reducer_usage_path": reducer_usage_path,
         "intermediate_markdown_path": intermediate_markdown_path,
         "rag_ready_markdown_path": rag_ready_markdown_path,
         "markdown_path": rag_ready_markdown_path,
@@ -177,9 +191,21 @@ def run_component2_pipeline(
     help="Optional Gemini model override for markdown synthesis.",
 )
 @click.option(
+    "--provider",
+    default=None,
+    type=click.Choice(["openai", "gemini", "mlx", "setra"]),
+    help="Optional provider override for markdown synthesis.",
+)
+@click.option(
     "--reducer-model",
     default=None,
     help="Optional Gemini model override for the final quant-reducer pass.",
+)
+@click.option(
+    "--reducer-provider",
+    default=None,
+    type=click.Choice(["openai", "gemini", "setra"]),
+    help="Optional provider override for the final quant-reducer pass.",
 )
 @click.option(
     "--target-duration-seconds",
@@ -201,7 +227,9 @@ def main(
     output_root: Path | None,
     video_id: str | None,
     model: str | None,
+    provider: str | None,
     reducer_model: str | None,
+    reducer_provider: str | None,
     target_duration_seconds: float,
     max_concurrency: int,
 ) -> None:
@@ -214,7 +242,9 @@ def main(
         output_root=output_root,
         video_id=video_id,
         model=model,
+        provider=provider,
         reducer_model=reducer_model,
+        reducer_provider=reducer_provider,
         target_duration_seconds=target_duration_seconds,
         max_concurrency=max_concurrency,
         progress_callback=_timestamped_echo,
