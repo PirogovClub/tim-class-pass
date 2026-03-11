@@ -11,6 +11,13 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 SEGMENT_SECONDS_TARGET = 60
 
 
+def _frame_number_to_key(frame_number: int, capture_fps: float) -> str:
+    if capture_fps <= 0:
+        raise ValueError("capture_fps must be greater than 0")
+    timestamp_seconds = max(1, int(round(frame_number / capture_fps)))
+    return f"{timestamp_seconds:06d}"
+
+
 def _run_ffmpeg_cmd(cmd: list[str]) -> bool:
     result = subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=None, text=True)
     if result.returncode == 0:
@@ -52,6 +59,7 @@ def _extract_segment(
     duration_seconds: float,
     output_dir: str,
     label: str,
+    capture_fps: float,
 ) -> bool:
     os.makedirs(output_dir, exist_ok=True)
     output_pattern = os.path.join(output_dir, "frame_%06d.jpg")
@@ -64,7 +72,7 @@ def _extract_segment(
         "-t",
         f"{duration_seconds:.3f}",
         "-vf",
-        "fps=1,scale=1280:-1",
+        f"fps={capture_fps},scale=1280:-1",
         "-qscale:v",
         "2",
         "-y",
@@ -79,9 +87,10 @@ def extract_dense_frames(
     video_id: str,
     video_file_override: str | None = None,
     max_workers: int | None = None,
+    capture_fps: float = 1.0,
 ):
     """
-    Extract 1 fps frames. video_file_override: optional filename (e.g. from pipeline.yml)
+    Extract dense frames. video_file_override: optional filename (e.g. from pipeline.yml)
     relative to data/<video_id>/. If None, use first .mp4 in folder.
     """
     video_dir = os.path.join("data", video_id)
@@ -92,6 +101,9 @@ def extract_dense_frames(
         max_workers = 1
     if max_workers > 8:
         max_workers = 8
+    if capture_fps <= 0:
+        print("Error: capture_fps must be greater than 0")
+        sys.exit(1)
 
     # Always start clean
     if os.path.exists(frames_dir):
@@ -128,9 +140,9 @@ def extract_dense_frames(
 
     # Safe for Windows console (cp1252)
     try:
-        print(f"Extracting 1 frame/second from {video_file}...")
+        print(f"Extracting {capture_fps} frame(s)/second from {video_file}...")
     except UnicodeEncodeError:
-        print(f"Extracting 1 frame/second from {video_id}...")
+        print(f"Extracting {capture_fps} frame(s)/second from {video_id}...")
 
     duration = _probe_duration_seconds(video_file)
     should_segment = duration is not None and duration > SEGMENT_SECONDS_TARGET and max_workers > 1
@@ -149,7 +161,7 @@ def extract_dense_frames(
             label = f"{i + 1}/{segment_count}"
             segments.append((start, seg_duration, label))
 
-        print(f"Extracting 1fps in {len(segments)} segments with {max_workers} workers...")
+        print(f"Extracting at {capture_fps}fps in {len(segments)} segments with {max_workers} workers...")
         futures = []
         with ThreadPoolExecutor(max_workers=min(max_workers, len(segments))) as executor:
             for i, (start, seg_duration, label) in enumerate(segments):
@@ -162,6 +174,7 @@ def extract_dense_frames(
                         seg_duration,
                         seg_dir,
                         label,
+                        capture_fps,
                     )
                 )
             failed = False
@@ -183,17 +196,18 @@ def extract_dense_frames(
             )
             for frame_file in frame_files:
                 src = os.path.join(seg_path, frame_file)
-                dst_name = f"frame_{global_index:06d}.jpg"
+                dst_key = _frame_number_to_key(global_index, capture_fps)
+                dst_name = f"frame_{dst_key}.jpg"
                 dst = os.path.join(frames_dir, dst_name)
                 os.replace(src, dst)
                 global_index += 1
             shutil.rmtree(seg_path)
     else:
-        # Use ffmpeg to extract 1 fps
+        # Use ffmpeg to extract dense frames
         output_pattern = os.path.join(frames_dir, "frame_%06d.jpg")
         cmd = [
             "ffmpeg", "-i", video_file,
-            "-vf", "fps=1,scale=1280:-1",
+            "-vf", f"fps={capture_fps},scale=1280:-1",
             "-qscale:v", "2",
             "-y",
             output_pattern
@@ -205,9 +219,14 @@ def extract_dense_frames(
     # Build the index
     frames = sorted(f for f in os.listdir(frames_dir) if f.endswith(".jpg"))
     index = {}
-    for frame_file in frames:
-        # frame_000001.jpg -> key "000001"
-        key = frame_file.replace("frame_", "").replace(".jpg", "")
+    for frame_number, frame_file in enumerate(frames, start=1):
+        key = _frame_number_to_key(frame_number, capture_fps)
+        expected_name = f"frame_{key}.jpg"
+        source_path = os.path.join(frames_dir, frame_file)
+        target_path = os.path.join(frames_dir, expected_name)
+        if frame_file != expected_name:
+            os.replace(source_path, target_path)
+            frame_file = expected_name
         index[key] = os.path.join("frames_dense", frame_file)
 
     with open(index_file, "w", encoding="utf-8") as f:
@@ -217,8 +236,9 @@ def extract_dense_frames(
     return len(index)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Extract 1fps frames from a video")
+    parser = argparse.ArgumentParser(description="Extract dense frames from a video")
     parser.add_argument("video_id", help="Video ID in data/")
+    parser.add_argument("--fps", type=float, default=1.0, help="Frames per second to extract.")
     parser.add_argument(
         "--workers",
         type=int,
@@ -227,5 +247,5 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     
-    n = extract_dense_frames(args.video_id, max_workers=args.workers)
+    n = extract_dense_frames(args.video_id, max_workers=args.workers, capture_fps=args.fps)
     print(f"Done: {n} frames extracted.")

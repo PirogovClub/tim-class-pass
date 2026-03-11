@@ -5,7 +5,7 @@ description: Run the multimodal transcript enrichment pipeline from start to fin
 
 # Run Pipeline to Completion
 
-When you run this project's dense pipeline (`uv run tim-class-pass --video_id ...` or `--url ...`), run it **from beginning to end**. Use `--workers N` (cap 8) to speed up Step 1 (frame extraction) and Step 1.5 (structural compare) on long videos.
+When you run this project's dense pipeline (`uv run tim-class-pass --video_id ...` or `--url ...`), run it **from beginning to end**. Use `--workers N` (cap 8) to speed up Step 1 (frame extraction) and Step 1.5 (structural compare) on long videos. The current defaults are tuned for recall: dense capture is typically `0.5 fps`, structural compare uses grayscale+blur SSIM, and the queue threshold is lower than before.
 
 ## Do not stop at exit code 10
 
@@ -45,5 +45,6 @@ Only when the pipeline run completes without exit 10 and the final outputs exist
 Required outputs:
 
 - `filtered_visual_events.json`
-- `output_markdown/<lesson>.md`
-- the markdown file looks coherent on a quick read
+- `output_intermediate/<lesson>.md`
+- `output_rag_ready/<lesson>.md`
+- the final RAG-ready markdown file looks coherent on a quick read

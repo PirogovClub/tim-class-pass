@@ -8,6 +8,30 @@ from pipeline.component2.models import VisualEvent
 
 
 UNKNOWN_VISUAL_TYPES = {"", "n/a", "na", "none", "null", "unknown"}
+INSTRUCTIONAL_CHANGE_KEYWORDS = (
+    "annot",
+    "arrow",
+    "diagram",
+    "draw",
+    "highlight",
+    "label",
+    "level",
+    "mark",
+    "slide",
+    "text",
+    "trendline",
+    "whipsaw",
+    "x",
+)
+NEGATIVE_INSTRUCTIONAL_PHRASES = (
+    "close-up shot of the instructor",
+    "generic transition",
+    "no diagram is present",
+    "no direct trading information",
+    "no visible educational material",
+    "placeholder",
+    "transition screen",
+)
 
 
 def _sort_key(frame_key: str) -> tuple[int, str]:
@@ -51,13 +75,90 @@ def is_valid_visual_event(entry: dict[str, Any]) -> bool:
     if not bool(entry.get("material_change")):
         return False
     visual_type = str(entry.get("visual_representation_type") or "").strip().lower()
-    return visual_type not in UNKNOWN_VISUAL_TYPES
+    if visual_type not in UNKNOWN_VISUAL_TYPES:
+        return True
+    return _has_instructional_signal(entry)
 
 
 def rejection_reason(entry: dict[str, Any]) -> str:
     if not bool(entry.get("material_change")):
         return "no_material_change"
-    return "unknown_visual_type"
+    return "unknown_visual_type_without_instructional_signal"
+
+
+def _sequence_has_content(value: Any) -> bool:
+    if isinstance(value, list):
+        return any(bool(item) for item in value)
+    return False
+
+
+def _dict_has_content(value: Any) -> bool:
+    if not isinstance(value, dict):
+        return False
+    for nested in value.values():
+        if isinstance(nested, dict) and _dict_has_content(nested):
+            return True
+        if isinstance(nested, list) and _sequence_has_content(nested):
+            return True
+        if nested not in (None, "", [], {}, False):
+            return True
+    return False
+
+
+def _contains_instructional_keyword(values: list[str]) -> bool:
+    joined = " ".join(str(item).lower() for item in values if item)
+    return any(keyword in joined for keyword in INSTRUCTIONAL_CHANGE_KEYWORDS)
+
+
+def _has_instructional_signal(entry: dict[str, Any]) -> bool:
+    change_summary = [str(item) for item in list(entry.get("change_summary") or [])]
+    combined_text = " ".join(change_summary).lower()
+    if any(phrase in combined_text for phrase in NEGATIVE_INSTRUCTIONAL_PHRASES):
+        current_state = dict(entry.get("current_state") or {})
+        extracted_entities = dict(entry.get("extracted_entities") or {})
+        has_explicit_markup = (
+            _sequence_has_content(current_state.get("visible_annotations"))
+            or _sequence_has_content(current_state.get("drawn_objects"))
+            or _sequence_has_content(current_state.get("structural_pattern_visible"))
+            or _dict_has_content(extracted_entities)
+        )
+        if not has_explicit_markup:
+            return False
+
+    if _contains_instructional_keyword(change_summary):
+        return True
+
+    educational_events = [str(item) for item in list(entry.get("educational_event_type") or [])]
+    if _contains_instructional_keyword(educational_events):
+        return True
+
+    current_state = dict(entry.get("current_state") or {})
+    extracted_entities = dict(entry.get("extracted_entities") or {})
+
+    if _sequence_has_content(current_state.get("visible_annotations")):
+        return True
+    if _sequence_has_content(current_state.get("drawn_objects")):
+        return True
+    if _sequence_has_content(current_state.get("structural_pattern_visible")):
+        return True
+
+    cursor_or_highlight = str(current_state.get("cursor_or_highlight") or "").strip().lower()
+    if cursor_or_highlight and any(keyword in cursor_or_highlight for keyword in INSTRUCTIONAL_CHANGE_KEYWORDS):
+        return True
+
+    if _dict_has_content(extracted_entities):
+        return True
+
+    screen_type = str(entry.get("screen_type") or "").strip().lower()
+    if screen_type in {"slides", "chart_with_annotation", "chart", "browser", "platform"} and (
+        _sequence_has_content(current_state.get("visible_annotations"))
+        or _sequence_has_content(current_state.get("drawn_objects"))
+        or _sequence_has_content(current_state.get("structural_pattern_visible"))
+        or _contains_instructional_keyword([str(item) for item in list(current_state.get("visual_facts") or [])])
+    ):
+        return True
+
+    return False
 
 
 def _normalize_visual_event(frame_key: str, entry: dict[str, Any]) -> VisualEvent:

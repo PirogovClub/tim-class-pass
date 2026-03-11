@@ -34,7 +34,7 @@ YouTube URL / existing video_id
 [Step 3] pipeline/component2/main.py
         │
         ▼
-  filtered_visual_events.json  +  output_markdown/*.md
+  filtered_visual_events.json  +  output_intermediate/*.md  +  output_rag_ready/*.md
 ```
 
 Entry point: `uv run tim-class-pass --url "..."` or `uv run tim-class-pass --video_id "Folder Name"`. Alternative: `uv run python -m pipeline.main ...`.
@@ -63,7 +63,7 @@ flowchart TB
   subgraph step1 [Step 1: Dense capture]
     Step1[pipeline/dense_capturer.py]
     F_dense_index["dense_index.json: frame_key to path"]
-    F_frames_jpg["frames_dense/frame_NNNNNN.jpg: 1fps images"]
+    F_frames_jpg["frames_dense/frame_NNNNNN.jpg: dense color images"]
     Step1 --> F_dense_index
     Step1 --> F_frames_jpg
   end
@@ -73,10 +73,12 @@ flowchart TB
 
   subgraph step1_5 [Step 1.5: Structural compare]
     Step1_5[pipeline/structural_compare.py]
-    F_structural["structural_index.json: SSIM score, is_significant per frame"]
+    F_structural["structural_index.json: grayscale+blur SSIM score, is_significant per frame"]
     F_frames_renamed["frames_dense/frame_N_diff_X.jpg: renamed with diff"]
+    F_compare_artifacts["frames_structural_preprocessed/*.png: inspectable grayscale+blur comparison images"]
     Step1_5 --> F_structural
     Step1_5 --> F_frames_renamed
+    Step1_5 --> F_compare_artifacts
   end
 
   F_dense_index --> Step1_5
@@ -121,13 +123,15 @@ flowchart TB
   subgraph step3 [Step 3: Markdown synthesis]
     Step3[pipeline/component2/main.py]
     F_filtered["filtered_visual_events.json: instructional visual events only"]
-    F_chunks["output_markdown/*.chunks.json: synchronized lesson chunks"]
-    F_markdown["output_markdown/*.md: synthesized lesson markdown"]
-    F_llm_debug["output_markdown/*.llm_debug.json: LLM chunk results"]
+    F_chunks["output_intermediate/*.chunks.json: synchronized lesson chunks"]
+    F_intermediate["output_intermediate/*.md: literal-scribe markdown"]
+    F_llm_debug["output_intermediate/*.llm_debug.json: LLM chunk results"]
+    F_rag["output_rag_ready/*.md: topic-grouped RAG-ready markdown"]
     Step3 --> F_filtered
     Step3 --> F_chunks
-    Step3 --> F_markdown
+    Step3 --> F_intermediate
     Step3 --> F_llm_debug
+    Step3 --> F_rag
   end
 ```
 
@@ -135,7 +139,7 @@ flowchart TB
 
 - **dense_index.json** is updated in Step 1.5 (paths change to `_diff_*.jpg`); Step 1.6 and Step 2 read the updated index.
 - Step 2 **reads** `llm_queue/manifest.json` + `llm_queue/*.jpg` and **writes** `dense_batch_prompt_*.txt`, merges into **dense_analysis.json**. It also reads `batches/dense_batch_response_*.json` when re-run after the agent fills it.
-- Step 3 **reads** `dense_analysis.json` and the selected `.vtt`, writes `filtered_visual_events.json`, then writes markdown and debug artifacts under `output_markdown/`.
+- Step 3 **reads** `dense_analysis.json` and the selected `.vtt`, writes `filtered_visual_events.json`, then writes Pass 1 artifacts under `output_intermediate/` and the final reducer output under `output_rag_ready/`.
 - **llm_queue/\*_prompt.txt** files are generated for inspection or external use; Step 2 does not read those prompt files.
 
 ---
@@ -159,21 +163,21 @@ flowchart TB
 ## Step 1: Dense frame capture
 
 **Script:** `pipeline/dense_capturer.py`  
-**Function:** `extract_dense_frames(video_id, video_file_override=None, max_workers=None)`  
+**Function:** `extract_dense_frames(video_id, video_file_override=None, max_workers=None, capture_fps=...)`  
 **Skip:** If `dense_index.json` and `frames_dense/` already exist, unless `--recapture` is set.
 
 1. **Clean:** Removes existing `frames_dense/` and `dense_index.json` if present (so the run is full re-extraction).
 2. **Resolve video file:** Uses `video_file_override` from pipeline config if set; otherwise the first `.mp4` in `data/<video_id>/`.
-3. **FFmpeg:** Runs FFmpeg to extract **1 frame per second**:
-   - Filter: `fps=1,scale=1280:-1` (width 1280, height auto).
+3. **FFmpeg:** Runs FFmpeg to extract dense color frames:
+   - Default filter: `fps=0.5,scale=1280:-1` (width 1280, height auto).
    - Quality: `-qscale:v 2`.
-   - Output pattern: `frames_dense/frame_%06d.jpg` (e.g. `frame_000001.jpg`, `frame_000002.jpg`).
+   - Output pattern: `frames_dense/frame_%06d.jpg`, then files are renamed/indexed to second-based keys (for example `frame_000002.jpg`, `frame_000004.jpg` at `0.5 fps`).
 4. **Parallel segments (when enabled):** If `max_workers > 1` and video duration is known and > 60s, it splits the video into ~60s segments, runs one FFmpeg process per segment in parallel, writes into `frames_dense_seg_XXX/`, then merges into `frames_dense/` with global renumbering.
 5. **Index:** Builds a mapping from frame number (as 6-digit string key, e.g. `"000001"`) to the path under the video dir, e.g. `frames_dense/frame_000001.jpg`.
 6. **Write:** Saves the index to `data/<video_id>/dense_index.json`.
 
 **Outputs:**  
-- `data/<video_id>/frames_dense/frame_NNNNNN.jpg` (one per second of video).  
+- `data/<video_id>/frames_dense/frame_NNNNNN.jpg` (dense color frames, keyed by sampled second).  
 - `data/<video_id>/dense_index.json` (keys = frame keys, values = relative paths to those JPGs).
 
 ---
@@ -185,10 +189,10 @@ flowchart TB
 **Skip:** If `structural_index.json` already exists, unless `force=True` (e.g. `--recompare` or `--recapture`).
 
 1. **Load:** Reads `dense_index.json` and gets the sorted list of frame keys.
-2. **Config:** Reads `ssim_threshold` from pipeline config (default `0.95`). Frames with SSIM above this are considered “unchanged” relative to the previous frame.
+2. **Config:** Reads `ssim_threshold` and `compare_blur_radius` from pipeline config (defaults `0.95` and `1.5`). Frames with SSIM above the threshold are considered “unchanged” relative to the previous frame.
 3. **Compare:** For each frame (except the first), optionally in parallel when `max_workers > 1`:
-   - Loads previous and current frame from `frames_dense/`.
-   - Calls `compare_images(prev_path, cur_path, threshold)` (SSIM-based comparison).
+   - Loads previous and current color frames from `frames_dense/`.
+   - Converts them to grayscale, applies Gaussian blur, and calls `compare_images(prev_path, cur_path, threshold, blur_radius=...)`.
    - Stores for that frame: `previous_key`, `score`, `is_significant` (True if score &lt; threshold), `threshold`, `metadata`, `compare_seconds`.
    - First frame gets `score=1.0`, `is_significant=True`, `reason="first_frame"`.
 4. **Rename (optional):** If `rename_with_diff=True` (default), for every frame:
@@ -199,20 +203,21 @@ flowchart TB
 
 **Outputs:**  
 - `data/<video_id>/structural_index.json` (per-frame SSIM and significance).  
-- `data/<video_id>/frames_dense/frame_NNNNNN_diff_X.XXXX.jpg` (renamed; `dense_index.json` updated).
+- `data/<video_id>/frames_dense/frame_NNNNNN_diff_X.XXXX.jpg` (renamed; `dense_index.json` updated).  
+- `data/<video_id>/frames_structural_preprocessed/*.png` (inspectable grayscale+blur comparison images).
 
 ---
 
 ## Step 1.6: LLM queue selection
 
 **Script:** `pipeline/select_llm_frames.py`  
-**Function:** `build_llm_queue(video_id, threshold=0.14)`  
+**Function:** `build_llm_queue(video_id, threshold=None)`  
 **Depends on:** Step 1.5 must have run (frames must have `_diff_<value>` in the filename).
 
 1. **Load:** Reads `dense_index.json` (keys and paths; paths now include `_diff_X.XXXX`).
 2. **Parse diff:** For each frame, extracts the numeric diff from the filename via regex `_diff_([0-9]*\.[0-9]+)` (e.g. `0.6928` from `frame_000003_diff_0.6928.jpg`). If missing, treats diff as `0.0`.
 3. **Select:**
-   - Any frame with `diff > threshold` (default **0.14**, i.e. 14%) is selected with reason `"above_threshold"`.
+   - Any frame with `diff > threshold` (default from config, now typically **0.025**) is selected with reason `"above_threshold"`.
    - For every such frame, the **immediately previous** frame is also selected (if not already), with reason `"previous_of_threshold"`, so each “change” has context.
 4. **Copy:** Copies the selected frame files (from `frames_dense/`) into `data/<video_id>/llm_queue/` (same filenames). Skips copy if the file already exists in `llm_queue/`.
 5. **Manifest:** Writes `llm_queue/manifest.json` with: `video_id`, `threshold`, `total_selected`, `copied`, and `items` (per selected frame: `reason`, `diff`, `source` path).
@@ -300,21 +305,25 @@ Summary:
 
 1. Load `dense_analysis.json`.
 2. Run the invalidation filter:
-   - keep only entries where `material_change == true`
-   - keep only entries where `visual_representation_type != "unknown"`
+   - keep entries where `material_change == true`
+   - keep all known visual types
+   - keep selected `unknown` entries only when they still contain explicit instructional signals (for example annotations, drawings, structural patterns, or strong rule-oriented cues)
 3. Write `filtered_visual_events.json` and `filtered_visual_events.debug.json`.
 4. Parse the VTT and synchronize transcript lines with filtered visual events.
-5. Create semantic `LessonChunk` objects and write `output_markdown/<lesson>.chunks.json`.
-6. Call Gemini structured outputs to synthesize translated markdown chunks.
-7. Write `output_markdown/<lesson>.llm_debug.json`.
-8. Assemble final markdown into `output_markdown/<lesson>.md`.
+5. Create semantic `LessonChunk` objects and write `output_intermediate/<lesson>.chunks.json`.
+6. Call Gemini structured outputs to synthesize Pass 1 literal-scribe markdown chunks.
+7. Write `output_intermediate/<lesson>.llm_debug.json`.
+8. Assemble Pass 1 markdown into `output_intermediate/<lesson>.md`.
+9. Run a whole-document Gemini reducer pass that reorganizes the lesson into topic-based RAG-ready markdown.
+10. Write the final result to `output_rag_ready/<lesson>.md`.
 
 **Outputs:**  
 - `data/<video_id>/filtered_visual_events.json`  
 - `data/<video_id>/filtered_visual_events.debug.json`  
-- `data/<video_id>/output_markdown/<lesson>.md`  
-- `data/<video_id>/output_markdown/<lesson>.chunks.json`  
-- `data/<video_id>/output_markdown/<lesson>.llm_debug.json`
+- `data/<video_id>/output_intermediate/<lesson>.md`  
+- `data/<video_id>/output_intermediate/<lesson>.chunks.json`  
+- `data/<video_id>/output_intermediate/<lesson>.llm_debug.json`
+- `data/<video_id>/output_rag_ready/<lesson>.md`
 
 ---
 
@@ -323,9 +332,10 @@ Summary:
 | Path | Step | Description |
 |------|------|-------------|
 | `data/<video_id>/*.mp4`, `*.vtt` | 0 | Video and source transcripts. |
-| `data/<video_id>/frames_dense/frame_*_diff_*.jpg` | 1, 1.5 | One frame per second; filenames include SSIM diff. |
+| `data/<video_id>/frames_dense/frame_*_diff_*.jpg` | 1, 1.5 | Dense color frames; filenames include SSIM diff. |
 | `data/<video_id>/dense_index.json` | 1, 1.5 | Frame key → path to JPG. |
 | `data/<video_id>/structural_index.json` | 1.5 | Per-frame SSIM score and `is_significant`. |
+| `data/<video_id>/frames_structural_preprocessed/*.png` | 1.5 | Inspectable grayscale+blur images used by structural compare. |
 | `data/<video_id>/llm_queue/*.jpg`, `manifest.json` | 1.6 | Selected frames (Step 2 input). |
 | `data/<video_id>/llm_queue/*_prompt.txt` | 1.7 | Single-frame prompts (optional/external use). |
 | `data/<video_id>/dense_analysis.json` | 2 | Full per-frame extraction (merged). |
@@ -333,9 +343,10 @@ Summary:
 | `data/<video_id>/batches/dense_batch_*`, `last_agent_task.json` | 2 | Batch prompts/responses and batch-agent state. |
 | `data/<video_id>/filtered_visual_events.json` | 3 | Filtered instructional visual events. |
 | `data/<video_id>/filtered_visual_events.debug.json` | 3 | Filter report and rejected frame reasons. |
-| `data/<video_id>/output_markdown/*.md` | 3 | Final lesson markdown. |
-| `data/<video_id>/output_markdown/*.chunks.json` | 3 | Chunk debug output. |
-| `data/<video_id>/output_markdown/*.llm_debug.json` | 3 | LLM result debug output. |
+| `data/<video_id>/output_intermediate/*.md` | 3 | Pass 1 literal-scribe markdown. |
+| `data/<video_id>/output_intermediate/*.chunks.json` | 3 | Chunk debug output. |
+| `data/<video_id>/output_intermediate/*.llm_debug.json` | 3 | LLM result debug output. |
+| `data/<video_id>/output_rag_ready/*.md` | 3 | Final topic-grouped RAG-ready markdown. |
 
 ---
 
@@ -400,10 +411,12 @@ uv run python -m pipeline.component2.main \
 <output-root>/
 ├── filtered_visual_events.json
 ├── filtered_visual_events.debug.json
-└── output_markdown/
-    ├── <lesson_name>.md
-    ├── <lesson_name>.chunks.json
-    └── <lesson_name>.llm_debug.json
+├── output_intermediate/
+│   ├── <lesson_name>.md
+│   ├── <lesson_name>.chunks.json
+│   └── <lesson_name>.llm_debug.json
+└── output_rag_ready/
+    └── <lesson_name>.md
 ```
 
 ### CLI flags

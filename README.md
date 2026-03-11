@@ -54,13 +54,13 @@ YouTube URL / existing video_id
 [Step 0] pipeline/downloader.py         — Download .mp4 + .vtt via yt-dlp (skipped if --video_id)
         │
         ▼
-[Step 1] pipeline/dense_capturer.py     — Extract 1 frame/second → frames_dense/ + dense_index.json
+[Step 1] pipeline/dense_capturer.py     — Extract dense color frames (default 0.5 fps) → frames_dense/ + dense_index.json
         │
         ▼
-[Step 1.5] pipeline/structural_compare.py — SSIM between consecutive frames → structural_index.json; rename frames with _diff_<value>
+[Step 1.5] pipeline/structural_compare.py — Grayscale+blur SSIM between consecutive frames → structural_index.json; rename frames with _diff_<value>; save structural compare artifacts
         │
         ▼
-[Step 1.6] pipeline/select_llm_frames.py — Copy frames with diff>14% (+ previous frame) → llm_queue/ + manifest.json
+[Step 1.6] pipeline/select_llm_frames.py — Copy frames with configurable diff threshold (default 0.025) (+ previous frame) → llm_queue/ + manifest.json
         │
         ▼
 [Step 1.7] pipeline/build_llm_prompts.py — Write single-frame *_prompt.txt for each file in llm_queue/
@@ -86,8 +86,9 @@ Step 3 runs the new Component 2 + Step 3 flow:
 
 - invalidates non-instructional frames into `filtered_visual_events.json`
 - parses the VTT and synchronizes transcript lines with filtered visual events
-- synthesizes English markdown with Gemini structured outputs
-- writes final markdown plus chunk/debug artifacts under `output_markdown/`
+- synthesizes chronological intermediate markdown with Gemini structured outputs
+- runs a second whole-document Gemini reduction pass
+- writes both intermediate and final RAG-ready markdown outputs
 
 ### B. Component 2 + Step 3 markdown pipeline
 
@@ -97,8 +98,9 @@ The standalone markdown pipeline is implemented in `pipeline/component2/main.py`
 2. Runs the invalidation filter
 3. Writes `filtered_visual_events.json`
 4. Builds semantic lesson chunks
-5. Calls Gemini structured outputs to synthesize English markdown
-6. Writes markdown plus debug artifacts
+5. Calls Gemini structured outputs to synthesize chronological intermediate markdown
+6. Runs a whole-document quant reduction pass for the final RAG-ready document
+7. Writes intermediate, final, and debug artifacts
 
 CLI entrypoint:
 
@@ -117,10 +119,11 @@ data/<video_id>/
 ├── <video_id>.mp4                     # Original video
 ├── *.vtt                              # Original spoken transcript
 ├── frames_dense/
-│   ├── frame_000001_diff_0.XXXX.jpg   # 1fps frames (renamed with SSIM diff after Step 1.5)
+│   ├── frame_000002_diff_0.XXXX.jpg   # Dense color frames (default 0.5fps; renamed with SSIM diff after Step 1.5)
 │   ├── frame_000001.json              # Per-frame structured extraction (Step 2)
 │   └── ...
 ├── structural_index.json              # SSIM structural diff results (Step 1.5)
+├── frames_structural_preprocessed/    # Step 1.5 grayscale+blur images used for comparison
 ├── llm_queue/                         # Selected frames for LLM processing (Step 1.6)
 │   ├── frame_000123_diff_0.1523.jpg
 │   ├── frame_000122_diff_0.0412.jpg   # previous frame included
@@ -133,11 +136,15 @@ data/<video_id>/
 │   └── dense_batch_response_NNN-MMM.json # Batch response (agent output)
 ├── filtered_visual_events.json        # Step 3 filtered instructional events
 ├── filtered_visual_events.debug.json  # Step 3 filter report
-└── output_markdown/
-    ├── <lesson_name>.md               # ✅ FINAL: synthesized lesson markdown
-    ├── <lesson_name>.chunks.json      # Chunk debug output
-    └── <lesson_name>.llm_debug.json   # LLM result debug output
+├── output_intermediate/
+│   ├── <lesson_name>.md               # Pass 1 literal-scribe markdown
+│   ├── <lesson_name>.chunks.json      # Chunk debug output
+│   └── <lesson_name>.llm_debug.json   # LLM result debug output
+└── output_rag_ready/
+    ├── <lesson_name>.md               # ✅ FINAL: topic-grouped RAG-ready markdown
 ```
+
+The structural compare artifacts are for inspection only. Step 2 still sends the original color JPGs from `llm_queue/` to Gemini.
 
 ---
 
@@ -149,10 +156,12 @@ Given a VTT and dense frame-analysis JSON, the markdown pipeline writes:
 <output-root>/
 ├── filtered_visual_events.json
 ├── filtered_visual_events.debug.json
-└── output_markdown/
-    ├── <lesson_name>.md
-    ├── <lesson_name>.chunks.json
-    └── <lesson_name>.llm_debug.json
+├── output_intermediate/
+│   ├── <lesson_name>.md
+│   ├── <lesson_name>.chunks.json
+│   └── <lesson_name>.llm_debug.json
+└── output_rag_ready/
+    └── <lesson_name>.md
 ```
 
 ## Running the Pipelines
@@ -215,9 +224,14 @@ default:
   agent_images: ide
   batch_size: 10
   workers: 8
+  capture_fps: 0.5
+  llm_queue_diff_threshold: 0.025
+  compare_blur_radius: 1.5
+  compare_artifacts_dir: "frames_structural_preprocessed"
   video_file: "Lesson 2. Levels part 1.mp4"
   vtt_file: "Lesson 2. Levels part 1.vtt"
   model_component2: gemini-2.5-flash
+  model_component2_reducer: gemini-2.5-flash
 ```
 
 **Precedence:** CLI > `data/<video_id>/pipeline.yml` (`default`) > env > built-in default.
@@ -227,7 +241,7 @@ default:
 When the agent is **gemini** in the dense pipeline, or when running the markdown pipeline, set `GEMINI_API_KEY` in `.env`.
 
 - Main pipeline model selection: `model_name`, `model_images`, `model_component2`, `model_gaps`, `model_vlm` from `data/<video_id>/pipeline.yml`, then env.
-- Markdown pipeline model selection: `--model`, then env (`MODEL_COMPONENT2`, `MODEL_VLM`, `MODEL_NAME`), then default `gemini-2.5-flash`.
+- Markdown pipeline model selection: `--model`, then env (`MODEL_COMPONENT2_REDUCER`, `MODEL_COMPONENT2`, `MODEL_VLM`, `MODEL_NAME`), then default `gemini-2.5-flash`.
 
 The shared Gemini transport, retries, and key validation live in `helpers/clients/gemini_client.py`. For details see [docs/gemini_api_usage_report.md](docs/gemini_api_usage_report.md).
 
@@ -323,7 +337,7 @@ Get-ChildItem "data\<VIDEO_ID>" -Filter "filtered_visual_events.json"
 Get-ChildItem "data\<VIDEO_ID>\output_markdown" -Filter "*.md"
 ```
 
-Read the first part of `output_markdown/<lesson>.md` to confirm the markdown reads coherently and the visual blockquotes are anchored sensibly.
+Read the first part of `output_intermediate/<lesson>.md` to confirm Pass 1 retained the chronology and visual evidence, then inspect `output_rag_ready/<lesson>.md` to confirm the final reducer grouped the material by topic.
 
 ---
 

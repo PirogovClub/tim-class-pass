@@ -6,6 +6,8 @@ import re
 import shutil
 from pathlib import Path
 
+from helpers import config as pipeline_config
+
 
 DIFF_PATTERN = re.compile(r"_diff_([0-9]*\.[0-9]+)")
 
@@ -20,11 +22,13 @@ def _parse_diff_from_name(name: str) -> float:
         return 0.0
 
 
-def build_llm_queue(video_id: str, *, threshold: float = 0.14) -> Path:
+def build_llm_queue(video_id: str, *, threshold: float | None = None) -> Path:
     video_dir = Path("data") / video_id
     index_path = video_dir / "dense_index.json"
     if not index_path.exists():
         raise FileNotFoundError(f"Missing dense index: {index_path}")
+    cfg = pipeline_config.get_config_for_video(video_id)
+    resolved_threshold = float(threshold if threshold is not None else cfg.get("llm_queue_diff_threshold", 0.14))
 
     with open(index_path, "r", encoding="utf-8") as f:
         index = json.load(f)
@@ -38,7 +42,7 @@ def build_llm_queue(video_id: str, *, threshold: float = 0.14) -> Path:
             continue
         filename = Path(rel_path).name
         diff = _parse_diff_from_name(filename)
-        if diff > threshold:
+        if diff > resolved_threshold:
             selected[key] = {
                 "reason": "above_threshold",
                 "diff": diff,
@@ -55,6 +59,8 @@ def build_llm_queue(video_id: str, *, threshold: float = 0.14) -> Path:
                     }
 
     out_dir = video_dir / "llm_queue"
+    if out_dir.exists():
+        shutil.rmtree(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
     copied = 0
@@ -74,7 +80,7 @@ def build_llm_queue(video_id: str, *, threshold: float = 0.14) -> Path:
     manifest_path = out_dir / "manifest.json"
     manifest = {
         "video_id": video_id,
-        "threshold": threshold,
+        "threshold": resolved_threshold,
         "total_selected": len(selected),
         "copied": copied,
         "items": dict(sorted(selected.items())),
@@ -84,7 +90,7 @@ def build_llm_queue(video_id: str, *, threshold: float = 0.14) -> Path:
 
     print(
         f"Step 1.6: LLM queue built. Selected: {len(selected)} | copied: {copied} | "
-        f"threshold: {threshold} | path: {out_dir}"
+        f"threshold: {resolved_threshold} | path: {out_dir}"
     )
     return out_dir
 

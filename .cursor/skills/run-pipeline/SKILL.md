@@ -19,17 +19,17 @@ description: Runs the multimodal transcript enrichment pipeline end-to-end witho
   - `--parallel` — Step 2: generate all batch task files + manifest, then exit 10; after subagents finish, re-run with `--merge-only`.
   - `--merge-only` — Step 2: merge all batch response files into `dense_analysis.json`, then continue to Step 3.
 
-Main-pipeline config: `data/<video_id>/pipeline.yml` (`default` section) can set `workers`, `video_file`, `vtt_file`, `agent_images`, `batch_size`, `model_component2`, etc.; CLI overrides.
+Main-pipeline config: `data/<video_id>/pipeline.yml` (`default` section) can set `workers`, `video_file`, `vtt_file`, `agent_images`, `batch_size`, `capture_fps`, `llm_queue_diff_threshold`, `compare_blur_radius`, `compare_artifacts_dir`, `model_component2`, `model_component2_reducer`, etc.; CLI overrides.
 
 ## Step order (do not skip)
 
 1. **Step 0** — Download (only if `--url`).
-2. **Step 1** — Dense frame capture (`dense_capturer`): 1 fps from video → `frames_dense/`, `dense_index.json`. Uses `--workers` (parallel segments when > 1).
-3. **Step 1.5** — Structural compare (SSIM): `structural_compare` → `structural_index.json`, frame renames. Uses `--workers`.
+2. **Step 1** — Dense frame capture (`dense_capturer`): dense color frames from video (default `0.5 fps`) → `frames_dense/`, `dense_index.json`. Uses `--workers` (parallel segments when > 1).
+3. **Step 1.5** — Structural compare (grayscale + blur SSIM): `structural_compare` → `structural_index.json`, frame renames, and `frames_structural_preprocessed/`. Uses `--workers`.
 4. **Step 1.6** — LLM queue selection → `llm_queue/`, `manifest.json`.
 5. **Step 1.7** — Build LLM prompts → `llm_queue/*_prompt.txt`.
 6. **Step 2** — Dense analysis (batched); may exit 10 for agent input.
-7. **Step 3** — Component 2 + markdown synthesis → `filtered_visual_events.json`, `output_markdown/*.md`.
+7. **Step 3** — Component 2 + two-pass markdown synthesis → `filtered_visual_events.json`, `output_intermediate/*.md`, `output_rag_ready/*.md`.
 
 Step 2 needs `llm_queue/manifest.json`; if missing, Steps 1.5–1.7 must run first.
 
@@ -46,7 +46,7 @@ Option B (parallel batches): run once with `--parallel`, spawn one subagent per 
 
 - Emit progress after each batch. For long runs, use `data/<video_id>/processing_status.json` (if present) for ETA.
 - Do not stop at exit 10: perform the agent step (or delegate to a subagent) and re-run until done.
-- Task is complete only when `filtered_visual_events.json` and at least one markdown file under `data/<video_id>/output_markdown/` exist.
+- Task is complete only when `filtered_visual_events.json`, at least one file under `data/<video_id>/output_intermediate/`, and at least one file under `data/<video_id>/output_rag_ready/` exist.
 
 ## Running the markdown pipeline
 
@@ -62,12 +62,14 @@ Outputs:
 
 - `filtered_visual_events.json`
 - `filtered_visual_events.debug.json`
-- `output_markdown/<lesson>.md`
-- `output_markdown/<lesson>.chunks.json`
-- `output_markdown/<lesson>.llm_debug.json`
+- `output_intermediate/<lesson>.md`
+- `output_intermediate/<lesson>.chunks.json`
+- `output_intermediate/<lesson>.llm_debug.json`
+- `output_rag_ready/<lesson>.md`
 
 ## Output checklist
 
 - `data/<video_id>/filtered_visual_events.json`
-- `data/<video_id>/output_markdown/*.md`
+- `data/<video_id>/output_intermediate/*.md`
+- `data/<video_id>/output_rag_ready/*.md`
 

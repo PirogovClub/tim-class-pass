@@ -69,9 +69,11 @@ def test_pipeline_main_step3_runs_component2(monkeypatch, tmp_path) -> None:
         return {
             "filtered_events_path": video_dir / "filtered_visual_events.json",
             "filtered_debug_path": video_dir / "filtered_visual_events.debug.json",
-            "chunk_debug_path": video_dir / "output_markdown" / "lesson.chunks.json",
-            "llm_debug_path": video_dir / "output_markdown" / "lesson.llm_debug.json",
-            "markdown_path": video_dir / "output_markdown" / "lesson.md",
+            "chunk_debug_path": video_dir / "output_intermediate" / "lesson.chunks.json",
+            "llm_debug_path": video_dir / "output_intermediate" / "lesson.llm_debug.json",
+            "intermediate_markdown_path": video_dir / "output_intermediate" / "lesson.md",
+            "rag_ready_markdown_path": video_dir / "output_rag_ready" / "lesson.md",
+            "markdown_path": video_dir / "output_rag_ready" / "lesson.md",
         }
 
     monkeypatch.setattr("pipeline.component2.main.run_component2_pipeline", fake_run_component2_pipeline)

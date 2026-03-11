@@ -9,6 +9,7 @@ from typing import Callable
 import click
 
 from pipeline.component2.llm_processor import assemble_video_markdown, process_chunks, write_llm_debug
+from pipeline.component2.quant_reducer import synthesize_full_document
 from pipeline.component2.parser import parse_and_sync, seconds_to_mmss, write_lesson_chunks
 from pipeline.invalidation_filter import (
     build_debug_report,
@@ -56,28 +57,31 @@ def run_component2_pipeline(
     visuals_json = Path(visuals_json_path)
     lesson_name = _derive_lesson_name(vtt)
     root = Path(output_root) if output_root is not None else _default_output_root(vtt)
-    output_markdown_dir = root / "output_markdown"
-    output_markdown_dir.mkdir(parents=True, exist_ok=True)
+    output_intermediate_dir = root / "output_intermediate"
+    output_rag_ready_dir = root / "output_rag_ready"
+    output_intermediate_dir.mkdir(parents=True, exist_ok=True)
+    output_rag_ready_dir.mkdir(parents=True, exist_ok=True)
 
     filtered_events_path = root / "filtered_visual_events.json"
     filtered_debug_path = root / "filtered_visual_events.debug.json"
-    chunk_debug_path = output_markdown_dir / f"{lesson_name}.chunks.json"
-    llm_debug_path = output_markdown_dir / f"{lesson_name}.llm_debug.json"
-    markdown_path = output_markdown_dir / f"{lesson_name}.md"
+    chunk_debug_path = output_intermediate_dir / f"{lesson_name}.chunks.json"
+    llm_debug_path = output_intermediate_dir / f"{lesson_name}.llm_debug.json"
+    intermediate_markdown_path = output_intermediate_dir / f"{lesson_name}.md"
+    rag_ready_markdown_path = output_rag_ready_dir / f"{lesson_name}.md"
 
-    _emit(f"Step 3.1/4: Filtering instructional visual events from `{visuals_json.name}`...")
+    _emit(f"Step 3.1/5: Filtering instructional visual events from `{visuals_json.name}`...")
     raw_analysis = load_dense_analysis(visuals_json)
     events = filter_visual_events(raw_analysis)
     filter_report = build_debug_report(raw_analysis, events)
     write_filtered_events(filtered_events_path, events)
     write_debug_report(filtered_debug_path, filter_report)
     _emit(
-        "Step 3.1/4 complete: "
+        "Step 3.1/5 complete: "
         f"kept {filter_report['kept_events']} events, rejected {filter_report['rejected_frames']}, "
         f"input frames {filter_report['input_frames']}."
     )
 
-    _emit(f"Step 3.2/4: Synchronizing transcript `{vtt.name}` with filtered events...")
+    _emit(f"Step 3.2/5: Synchronizing transcript `{vtt.name}` with filtered events...")
     chunks = parse_and_sync(
         vtt_path=vtt,
         filtered_events_path=filtered_events_path,
@@ -87,13 +91,13 @@ def run_component2_pipeline(
     total_transcript_lines = sum(len(chunk.transcript_lines) for chunk in chunks)
     total_chunk_events = sum(len(chunk.visual_events) for chunk in chunks)
     _emit(
-        "Step 3.2/4 complete: "
+        "Step 3.2/5 complete: "
         f"created {len(chunks)} chunks from {total_transcript_lines} transcript lines and "
         f"{total_chunk_events} synchronized visual events."
     )
 
     _emit(
-        "Step 3.3/4: Running markdown synthesis "
+        "Step 3.3/5: Running Pass 1 literal-scribe synthesis "
         f"(chunks={len(chunks)}, concurrency={max(1, max_concurrency)})..."
     )
 
@@ -114,20 +118,31 @@ def run_component2_pipeline(
             progress_callback=_on_chunk_progress,
         )
     )
-    _emit(f"Step 3.3/4 complete: synthesized {len(processed_chunks)} markdown chunks.")
+    _emit(f"Step 3.3/5 complete: synthesized {len(processed_chunks)} intermediate markdown chunks.")
 
-    _emit("Step 3.4/4: Writing markdown and debug artifacts...")
-    markdown = assemble_video_markdown(lesson_name, processed_chunks)
-    markdown_path.write_text(markdown, encoding="utf-8")
+    _emit("Step 3.4/5: Writing intermediate markdown and debug artifacts...")
+    intermediate_markdown = assemble_video_markdown(lesson_name, processed_chunks)
+    intermediate_markdown_path.write_text(intermediate_markdown, encoding="utf-8")
     write_llm_debug(llm_debug_path, processed_chunks)
-    _emit(f"Step 3.4/4 complete: wrote `{markdown_path.name}` and debug artifacts.")
+    _emit(f"Step 3.4/5 complete: wrote `{intermediate_markdown_path.name}` and debug artifacts.")
+
+    _emit("Step 3.5/5: Running Pass 2 quant reduction for RAG-ready markdown...")
+    rag_ready_markdown = synthesize_full_document(
+        intermediate_markdown,
+        video_id=video_id,
+        model=model,
+    )
+    rag_ready_markdown_path.write_text(rag_ready_markdown, encoding="utf-8")
+    _emit(f"Step 3.5/5 complete: wrote `{rag_ready_markdown_path.name}`.")
 
     return {
         "filtered_events_path": filtered_events_path,
         "filtered_debug_path": filtered_debug_path,
         "chunk_debug_path": chunk_debug_path,
         "llm_debug_path": llm_debug_path,
-        "markdown_path": markdown_path,
+        "intermediate_markdown_path": intermediate_markdown_path,
+        "rag_ready_markdown_path": rag_ready_markdown_path,
+        "markdown_path": rag_ready_markdown_path,
     }
 
 

@@ -11,7 +11,7 @@ from pipeline.component2.llm_processor import (
 from pipeline.component2.main import main, run_component2_pipeline
 from pipeline.component2.models import EnrichedMarkdownChunk, LessonChunk, TranscriptLine, VisualEvent
 from pipeline.component2.parser import create_lesson_chunks
-from pipeline.invalidation_filter import build_debug_report, filter_visual_events, load_dense_analysis
+from pipeline.invalidation_filter import build_debug_report, filter_visual_events, is_valid_visual_event, load_dense_analysis
 
 
 def _sample_json_path() -> Path:
@@ -41,7 +41,7 @@ def test_filter_visual_events_sample_json_uses_instructional_frames_only() -> No
     assert [event.timestamp_seconds for event in events] == sorted(event.timestamp_seconds for event in events)
 
     report = build_debug_report(raw, events)
-    assert report["rejected_frame_keys"]["000063"] == "unknown_visual_type"
+    assert report["rejected_frame_keys"]["000063"] == "unknown_visual_type_without_instructional_signal"
     assert report["rejected_frame_keys"]["000128"] == "no_material_change"
 
 
@@ -83,6 +83,21 @@ def test_create_lesson_chunks_carries_previous_visual_state() -> None:
     assert chunks[0].visual_events[0].frame_key == "000015"
     assert chunks[1].previous_visual_state == {"diagram": "A"}
     assert chunks[1].visual_events[0].frame_key == "000132"
+
+
+def test_invalidation_filter_keeps_unknown_frame_with_annotation_signal() -> None:
+    entry = {
+        "frame_timestamp": "000010",
+        "material_change": True,
+        "visual_representation_type": "unknown",
+        "change_summary": ["A red X annotation appears near the level"],
+        "current_state": {
+            "visible_annotations": [{"text": "X", "location": "top-right", "language": "symbol"}],
+        },
+        "extracted_entities": {},
+    }
+
+    assert is_valid_visual_event(entry) is True
 
 
 def test_build_user_prompt_contains_xml_sections_and_timestamps() -> None:
@@ -210,6 +225,10 @@ def test_run_component2_pipeline_writes_outputs(monkeypatch, tmp_path: Path) -> 
         ]
 
     monkeypatch.setattr("pipeline.component2.main.process_chunks", fake_process_chunks)
+    monkeypatch.setattr(
+        "pipeline.component2.main.synthesize_full_document",
+        lambda raw_markdown, **kwargs: "---\ntags:\n  - Trend Break Level\n---\n\n# lesson\n\n## Topic\n- **Rule 1:** Use the level.\n",
+    )
 
     outputs = run_component2_pipeline(
         vtt_path=vtt_path,
@@ -222,15 +241,20 @@ def test_run_component2_pipeline_writes_outputs(monkeypatch, tmp_path: Path) -> 
     assert outputs["filtered_events_path"].is_file()
     assert outputs["chunk_debug_path"].is_file()
     assert outputs["llm_debug_path"].is_file()
-    assert outputs["markdown_path"].is_file()
+    assert outputs["intermediate_markdown_path"].is_file()
+    assert outputs["rag_ready_markdown_path"].is_file()
+    assert outputs["markdown_path"] == outputs["rag_ready_markdown_path"]
 
-    markdown = outputs["markdown_path"].read_text(encoding="utf-8")
-    assert "# lesson" in markdown
-    assert "Chunk 0 markdown" in markdown
-    assert "**Tags:** Trend Break Level" in markdown
-    assert any("[+00:00] Step 3.1/4" in message for message in progress_messages)
+    intermediate_markdown = outputs["intermediate_markdown_path"].read_text(encoding="utf-8")
+    rag_ready_markdown = outputs["rag_ready_markdown_path"].read_text(encoding="utf-8")
+    assert "# lesson" in intermediate_markdown
+    assert "Chunk 0 markdown" in intermediate_markdown
+    assert "**Tags:** Trend Break Level" in intermediate_markdown
+    assert rag_ready_markdown.startswith("---")
+    assert "## Topic" in rag_ready_markdown
+    assert any("[+00:00] Step 3.1/5" in message for message in progress_messages)
     assert any("Chunk 1/1 complete" in message and "chunk_time=0.2s" in message for message in progress_messages)
-    assert any("Step 3.4/4 complete" in message for message in progress_messages)
+    assert any("Step 3.5/5 complete" in message for message in progress_messages)
 
 
 def test_component2_main_help() -> None:
