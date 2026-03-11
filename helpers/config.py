@@ -9,6 +9,9 @@ CONFIG_FILENAME = "pipeline.yml"
 DATA_DIR = "data"
 DEFAULT_AGENT = "ide"
 DEFAULT_BATCH_SIZE = 10
+DEFAULT_CAPTURE_FPS = 0.5
+DEFAULT_LLM_QUEUE_DIFF_THRESHOLD = 0.025
+DEFAULT_COMPARE_BLUR_RADIUS = 1.5
 
 
 def _parse_int(raw: str | None, default: int | None = None) -> int | None:
@@ -72,6 +75,14 @@ def get_config_for_video(video_id: str) -> dict:
         "model_gaps": os.getenv("MODEL_GAPS") or os.getenv("MODEL_NAME"),
         "model_vlm": os.getenv("MODEL_VLM") or os.getenv("MODEL_NAME"),
         "ssim_threshold": _parse_float(os.getenv("SSIM_THRESHOLD"), 0.95),
+        "capture_fps": _parse_float(os.getenv("CAPTURE_FPS"), DEFAULT_CAPTURE_FPS),
+        "llm_queue_diff_threshold": _parse_float(
+            os.getenv("LLM_QUEUE_DIFF_THRESHOLD"),
+            DEFAULT_LLM_QUEUE_DIFF_THRESHOLD,
+        ),
+        "compare_blur_radius": _parse_float(os.getenv("COMPARE_BLUR_RADIUS"), DEFAULT_COMPARE_BLUR_RADIUS),
+        "compare_artifacts_dir": os.getenv("COMPARE_ARTIFACTS_DIR") or "frames_structural_preprocessed",
+        "model_component2_reducer": os.getenv("MODEL_COMPONENT2_REDUCER") or os.getenv("MODEL_COMPONENT2") or os.getenv("MODEL_NAME"),
         "telemetry_enabled": _parse_bool(os.getenv("TELEMETRY_ENABLED"), True),
     }
     batch_env = os.getenv("BATCH_SIZE")
@@ -84,6 +95,7 @@ def get_config_for_video(video_id: str) -> dict:
         "model_name",
         "model_images",
         "model_component2",
+        "model_component2_reducer",
         "model_gaps",
         "model_vlm",
     )
@@ -95,6 +107,10 @@ def get_config_for_video(video_id: str) -> dict:
         "parallel_batches",
         "workers",
         "ssim_threshold",
+        "capture_fps",
+        "llm_queue_diff_threshold",
+        "compare_blur_radius",
+        "compare_artifacts_dir",
         "telemetry_enabled",
         *_model_keys,
     )
@@ -109,6 +125,8 @@ def get_config_for_video(video_id: str) -> dict:
                 value = _parse_float(value, result["ssim_threshold"])
             if key == "workers" and isinstance(value, str):
                 value = _parse_int(value, result["workers"])
+            if key in {"capture_fps", "llm_queue_diff_threshold", "compare_blur_radius"} and isinstance(value, str):
+                value = _parse_float(value, result[key])
             result[key] = value
     if isinstance(result["batch_size"], str):
         try:

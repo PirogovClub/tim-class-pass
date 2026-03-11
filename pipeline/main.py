@@ -127,6 +127,8 @@ def main(
         batch_size_resolved = batch_size if batch_size is not None else cfg["batch_size"]
         video_file = cfg.get("video_file")
         vtt_file = cfg.get("vtt_file")
+        capture_fps = float(cfg.get("capture_fps", 1.0))
+        llm_queue_diff_threshold = float(cfg.get("llm_queue_diff_threshold", 0.14))
         cfg_workers = cfg.get("workers")
         if workers is not None:
             requested_workers = workers
@@ -154,6 +156,7 @@ def main(
         logger.info("Transcript Enrichment Pipeline — Dense Mode")
         logger.info(f"Agent (images): {agent_images_resolved} | Batch size: {batch_size_resolved}")
         logger.info(f"Max workers: {max_workers}")
+        logger.info(f"Capture FPS: {capture_fps} | LLM queue diff threshold: {llm_queue_diff_threshold}")
         if video_file or vtt_file:
             logger.info(f"From pipeline.yml: video_file={video_file or 'auto'} | vtt_file={vtt_file or 'auto'}")
         logger.info("=" * 50)
@@ -173,6 +176,7 @@ def main(
                 video_id_resolved,
                 video_file_override=video_file,
                 max_workers=max_workers,
+                capture_fps=capture_fps,
             )
         else:
             import json
@@ -187,12 +191,13 @@ def main(
             video_id_resolved,
             force=bool(recompare or recapture),
             max_workers=max_workers,
+            progress_callback=lambda message: logger.info(message),
         )
 
         # ── Step 1.6: LLM queue selection (diff threshold) ────────────────
         from pipeline import select_llm_frames
-        logger.info("Step 1.6: Building LLM queue (diff > 14% + previous)...")
-        select_llm_frames.build_llm_queue(video_id_resolved, threshold=0.14)
+        logger.info(f"Step 1.6: Building LLM queue (diff > {llm_queue_diff_threshold:.4f} + previous)...")
+        select_llm_frames.build_llm_queue(video_id_resolved, threshold=llm_queue_diff_threshold)
 
         # ── Step 1.7: Build LLM prompt files ──────────────────────────────
         from pipeline import build_llm_prompts
@@ -255,12 +260,14 @@ def main(
             )
             logger.info(f"Generated markdown outputs for {current_vtt_path.name}")
             logger.info(f"  • filtered_visual_events.json: {outputs['filtered_events_path']}")
-            logger.info(f"  • Markdown: {outputs['markdown_path']}")
+            logger.info(f"  • intermediate markdown: {outputs['intermediate_markdown_path']}")
+            logger.info(f"  • rag-ready markdown: {outputs['rag_ready_markdown_path']}")
 
         logger.info("=" * 50)
         logger.info(f"Pipeline Complete! Check data/{video_id_resolved}/")
         logger.info(f"  • filtered_visual_events.json — Instructional visual events only")
-        logger.info(f"  • output_markdown/*.md — Final lesson markdown outputs")
+        logger.info(f"  • output_intermediate/*.md — Pass 1 literal-scribe markdown")
+        logger.info(f"  • output_rag_ready/*.md — Final RAG-ready lesson markdown")
         logger.info("=" * 50)
 
     except SystemExit as e:
