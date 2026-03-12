@@ -330,6 +330,8 @@ def resolve_provider_for_stage(stage: str, video_id: str | None = None, explicit
     defaults = {
         "images": "gemini",
         "component2": "gemini",
+        "component2_extract": "gemini",
+        "component2_render": "gemini",
         "component2_reducer": "gemini",
         "gaps": "gemini",
         "vlm": "gemini",
