@@ -1,0 +1,33 @@
+[
+  {
+    "chunk_index": 0,
+    "start_time_seconds": 0.0,
+    "end_time_seconds": 30.0,
+    "transcript_lines": [
+      {"start_seconds": 0.0, "end_seconds": 5.0, "text": "A level is a price zone where the market reacted."},
+      {"start_seconds": 6.0, "end_seconds": 12.0, "text": "The more reactions, the stronger the level."}
+    ],
+    "visual_events": [
+      {
+        "timestamp_seconds": 10,
+        "frame_key": "000010",
+        "visual_representation_type": "annotated_chart",
+        "example_type": "positive_example",
+        "change_summary": ["Level marked with horizontal line"],
+        "current_state": {},
+        "extracted_entities": {}
+      }
+    ],
+    "previous_visual_state": null
+  },
+  {
+    "chunk_index": 1,
+    "start_time_seconds": 30.0,
+    "end_time_seconds": 60.0,
+    "transcript_lines": [
+      {"start_seconds": 32.0, "end_seconds": 40.0, "text": "Multiple touches confirm the level."}
+    ],
+    "visual_events": [],
+    "previous_visual_state": null
+  }
+]

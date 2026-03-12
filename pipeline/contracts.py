@@ -19,78 +19,113 @@ class PipelinePaths:
 
     @property
     def filtered_visuals_path(self) -> Path:
+        """Path to filtered visual events JSON after invalidation filter."""
         return self.video_root / "filtered_visual_events.json"
 
     @property
     def filtered_visuals_debug_path(self) -> Path:
+        """Path to filtered visual events debug JSON."""
         return self.video_root / "filtered_visual_events.debug.json"
 
     @property
     def output_intermediate_dir(self) -> Path:
+        """Directory for intermediate pipeline artifacts (chunks, knowledge, evidence, rules)."""
         return self.video_root / "output_intermediate"
 
     @property
     def output_rag_ready_dir(self) -> Path:
+        """Directory for RAG-ready markdown and export outputs."""
         return self.video_root / "output_rag_ready"
 
     @property
     def output_review_dir(self) -> Path:
+        """Directory for review markdown and export manifests."""
         return self.video_root / "output_review"
 
     def lesson_chunks_path(self, lesson_name: str) -> Path:
+        """Path to lesson chunks JSON (synced transcript + visual events)."""
         return self.output_intermediate_dir / f"{lesson_name}.chunks.json"
 
     def pass1_markdown_path(self, lesson_name: str) -> Path:
+        """Path to pass-1 intermediate markdown."""
         return self.output_intermediate_dir / f"{lesson_name}.md"
 
     def llm_debug_path(self, lesson_name: str) -> Path:
+        """Path to LLM chunk processing debug JSON."""
         return self.output_intermediate_dir / f"{lesson_name}.llm_debug.json"
 
     def reducer_usage_path(self, lesson_name: str) -> Path:
+        """Path to quant reducer usage JSON."""
         return self.output_intermediate_dir / f"{lesson_name}.reducer_usage.json"
 
     def rag_ready_markdown_path(self, lesson_name: str) -> Path:
+        """Path to legacy RAG-ready markdown (post reducer)."""
         return self.output_rag_ready_dir / f"{lesson_name}.md"
 
     # Task 7 exporter outputs (distinct from legacy .md)
     def review_markdown_path(self, lesson_name: str) -> Path:
+        """Path to exporter-generated review markdown."""
         return self.output_review_dir / f"{lesson_name}.review_markdown.md"
 
     def rag_ready_export_path(self, lesson_name: str) -> Path:
+        """Path to exporter-generated RAG-ready markdown."""
         return self.output_rag_ready_dir / f"{lesson_name}.rag_ready.md"
 
     def review_render_debug_path(self, lesson_name: str) -> Path:
+        """Path to review render debug JSON (when using LLM render)."""
         return self.output_review_dir / f"{lesson_name}.review_render_debug.json"
 
     def rag_render_debug_path(self, lesson_name: str) -> Path:
+        """Path to RAG render debug JSON (when using LLM render)."""
         return self.output_rag_ready_dir / f"{lesson_name}.rag_render_debug.json"
 
     # Future-safe placeholders for structured outputs (Task 2+)
     def knowledge_events_path(self, lesson_name: str) -> Path:
+        """Path to extracted knowledge events JSON."""
         return self.output_intermediate_dir / f"{lesson_name}.knowledge_events.json"
 
     def knowledge_debug_path(self, lesson_name: str) -> Path:
+        """Path to knowledge extraction debug JSON."""
         return self.output_intermediate_dir / f"{lesson_name}.knowledge_debug.json"
 
     def evidence_index_path(self, lesson_name: str) -> Path:
+        """Path to evidence index JSON (linked visual evidence)."""
         return self.output_intermediate_dir / f"{lesson_name}.evidence_index.json"
 
     def evidence_debug_path(self, lesson_name: str) -> Path:
+        """Path to evidence linking debug JSON."""
         return self.output_intermediate_dir / f"{lesson_name}.evidence_debug.json"
 
     def rule_cards_path(self, lesson_name: str) -> Path:
+        """Path to rule cards JSON (normalized rules from knowledge + evidence)."""
         return self.output_intermediate_dir / f"{lesson_name}.rule_cards.json"
 
     def rule_debug_path(self, lesson_name: str) -> Path:
+        """Path to rule reducer debug JSON."""
         return self.output_intermediate_dir / f"{lesson_name}.rule_debug.json"
 
     def concept_graph_path(self, lesson_name: str) -> Path:
+        """Path to lesson-level concept graph JSON (Task 12)."""
         return self.output_intermediate_dir / f"{lesson_name}.concept_graph.json"
 
+    def concept_graph_debug_path(self, lesson_name: str) -> Path:
+        """Path to concept graph relation debug JSON."""
+        return self.output_intermediate_dir / f"{lesson_name}.concept_graph_debug.json"
+
+    def ml_manifest_path(self, lesson_name: str) -> Path:
+        """Path to lesson-level ML manifest (Task 13)."""
+        return self.output_intermediate_dir / f"{lesson_name}.ml_manifest.json"
+
+    def labeling_manifest_path(self, lesson_name: str) -> Path:
+        """Path to lesson-level labeling manifest (Task 13)."""
+        return self.output_intermediate_dir / f"{lesson_name}.labeling_manifest.json"
+
     def export_manifest_path(self, lesson_name: str) -> Path:
+        """Path to exporter artifact manifest JSON for a lesson."""
         return self.output_review_dir / f"{lesson_name}.export_manifest.json"
 
     def inspection_report_path(self) -> Path:
+        """Path to pipeline inspection report JSON (preflight)."""
         return self.video_root / "pipeline_inspection.json"
 
     def ensure_output_dirs(self) -> None:
@@ -112,5 +147,6 @@ class PipelineFeatureFlags:
     enable_concept_graph: bool = False
     enable_new_markdown_render: bool = False
     enable_exporters: bool = False
+    enable_ml_prep: bool = False  # Task 13: enrich rule cards for ML and write manifests
     use_llm_review_render: bool = False
     use_llm_rag_render: bool = False

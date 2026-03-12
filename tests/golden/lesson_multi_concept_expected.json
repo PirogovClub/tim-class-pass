@@ -1,0 +1,8 @@
+{
+  "min_knowledge_events": 3,
+  "min_evidence_refs": 2,
+  "min_rule_cards": 2,
+  "required_concepts": ["level", "false_breakout"],
+  "required_rule_prefixes": ["rule_"],
+  "max_rag_markdown_lines": 120
+}

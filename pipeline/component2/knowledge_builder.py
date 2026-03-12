@@ -13,6 +13,10 @@ from pydantic import BaseModel, Field
 
 from pipeline.io_utils import atomic_write_text, atomic_write_json
 from pipeline.component2.parser import seconds_to_mmss
+from pipeline.component2.provenance import (
+    build_knowledge_event_provenance,
+    validate_knowledge_event_provenance,
+)
 from pipeline.component2.visual_compaction import (
     VisualCompactionConfig,
     assert_no_raw_visual_blob_leak,
@@ -299,6 +303,9 @@ def extract_chunk_knowledge(
 
     events = extraction_result_to_knowledge_events(parsed, chunk)
     debug["emitted_event_ids"] = [e.event_id for e in events]
+    debug["provenance_warnings"] = [
+        w for e in events for w in validate_knowledge_event_provenance(e)
+    ]
     return (parsed, debug)
 
 
@@ -419,19 +426,6 @@ def dedupe_statements(statements: list[ExtractedStatement]) -> list[ExtractedSta
 # ----- Map to KnowledgeEvent -----
 
 
-def _metadata_for_chunk(chunk: AdaptedChunk) -> dict[str, Any]:
-    return {
-        "chunk_index": chunk.chunk_index,
-        "chunk_start_time_seconds": chunk.start_time_seconds,
-        "chunk_end_time_seconds": chunk.end_time_seconds,
-        "transcript_line_count": len(chunk.transcript_lines),
-        "candidate_visual_frame_keys": chunk.candidate_visual_frame_keys,
-        "candidate_visual_types": chunk.candidate_visual_types,
-        "candidate_example_types": chunk.candidate_example_types,
-        "has_previous_visual_state": chunk.previous_visual_state is not None,
-    }
-
-
 def extraction_result_to_knowledge_events(
     extraction: ChunkExtractionResult,
     chunk: AdaptedChunk,
@@ -445,7 +439,16 @@ def extraction_result_to_knowledge_events(
     )
     ts_start = seconds_to_mmss(t_start)
     ts_end = seconds_to_mmss(t_end)
-    meta = _metadata_for_chunk(chunk)
+    metadata = build_knowledge_event_provenance(
+        lesson_id=chunk.lesson_id,
+        chunk_index=chunk.chunk_index,
+        chunk_start_time_seconds=chunk.start_time_seconds,
+        chunk_end_time_seconds=chunk.end_time_seconds,
+        transcript_line_count=len(chunk.transcript_lines),
+        candidate_visual_frame_keys=chunk.candidate_visual_frame_keys,
+        candidate_visual_types=chunk.candidate_visual_types,
+        candidate_example_types=chunk.candidate_example_types,
+    )
     events: list[KnowledgeEvent] = []
 
     for bucket_name, event_type in BUCKET_TO_EVENT_TYPE.items():
@@ -482,7 +485,7 @@ def extraction_result_to_knowledge_events(
                     confidence=label,
                     confidence_score=conf_score,
                     ambiguity_notes=st.ambiguity_notes or [],
-                    metadata=strip_raw_visual_blobs_from_metadata(meta),
+                    metadata=strip_raw_visual_blobs_from_metadata(metadata),
                 )
                 events.append(ke)
             except Exception:
@@ -515,6 +518,10 @@ def build_knowledge_events_from_extraction_results(
             "start_time_seconds": chunk.start_time_seconds,
             "end_time_seconds": chunk.end_time_seconds,
             "num_events_emitted": len(events),
+            "emitted_event_ids": [e.event_id for e in events],
+            "provenance_warnings": [
+                w for e in events for w in validate_knowledge_event_provenance(e)
+            ],
         }
         row["parsed_extraction"] = extraction.model_dump()
         debug_rows.append(row)

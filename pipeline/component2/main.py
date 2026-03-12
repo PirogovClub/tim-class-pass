@@ -40,6 +40,18 @@ from pipeline.component2.rule_reducer import (
     save_rule_cards,
     save_rule_debug,
 )
+from pipeline.component2.concept_graph import (
+    build_concept_graph,
+    load_rule_cards as load_rule_cards_for_concept_graph,
+    save_concept_graph,
+    save_concept_graph_debug,
+)
+from pipeline.component2.ml_prep import (
+    build_labeling_manifest,
+    build_ml_manifest,
+    enrich_rule_card_collection_for_ml,
+    save_ml_manifest,
+)
 from pipeline.component2.exporters import (
     export_review_markdown,
     export_rag_markdown,
@@ -66,14 +78,17 @@ from pipeline.invalidation_filter import (
 
 
 def _default_output_root(vtt_path: Path) -> Path:
+    """Use VTT file's parent directory as output root when not specified."""
     return vtt_path.parent
 
 
 def _derive_lesson_name(vtt_path: Path) -> str:
+    """Derive lesson name from VTT filename stem."""
     return vtt_path.stem
 
 
 def _format_elapsed(seconds: float) -> str:
+    """Format elapsed seconds as MM:SS."""
     total_seconds = max(0, int(seconds))
     minutes = total_seconds // 60
     secs = total_seconds % 60
@@ -110,6 +125,8 @@ def run_component2_pipeline(
     enable_knowledge_events: bool = False,
     enable_evidence_linking: bool = False,
     enable_rule_cards: bool = False,
+    enable_concept_graph: bool = False,
+    enable_ml_prep: bool = False,
     preserve_legacy_markdown: bool = True,
     enable_new_markdown_render: bool = False,
     enable_exporters: bool = False,
@@ -117,6 +134,7 @@ def run_component2_pipeline(
     use_llm_rag_render: bool = False,
     progress_callback: Callable[[str], None] | None = None,
 ) -> dict[str, Path]:
+    """Run Component 2 pipeline: filter, chunk, optional knowledge/evidence/rule-cards/concept-graph/exporters, legacy markdown. Returns dict of written paths."""
     pipeline_started_at = time.perf_counter()
     knowledge_collection = None
     evidence_index = None
@@ -303,6 +321,77 @@ def run_component2_pipeline(
                     "Run with --enable-evidence-linking first or ensure the file exists.",
                 )
 
+    # Task 13: ML prep — enrich rule cards and write ML manifest (optional; requires rule_cards + evidence_index)
+    if enable_ml_prep:
+        rc_path = paths.rule_cards_path(lesson_name)
+        ei_path = paths.evidence_index_path(lesson_name)
+        if require_artifact(
+            rc_path,
+            "step13_ml_prep",
+            "Generate rule_cards.json first",
+        ) and require_artifact(
+            ei_path,
+            "step13_ml_prep",
+            "Generate evidence_index.json first",
+        ):
+            if rule_cards is None:
+                rule_cards = RuleCardCollection.model_validate_json(
+                    rc_path.read_text(encoding="utf-8")
+                )
+            if evidence_index is None:
+                evidence_index = load_evidence_index(ei_path)
+            assert rule_cards is not None and evidence_index is not None
+            _emit("Step 13: Enriching rule cards for ML and writing manifests...")
+            enriched_rule_cards = enrich_rule_card_collection_for_ml(
+                rule_cards, evidence_index
+            )
+            save_rule_cards(enriched_rule_cards, paths.rule_cards_path(lesson_name))
+            rule_cards = enriched_rule_cards
+            ml_manifest, _ = build_ml_manifest(
+                lesson_id=lesson_name,
+                rule_cards=enriched_rule_cards,
+                evidence_index=evidence_index,
+            )
+            save_ml_manifest(ml_manifest, paths.ml_manifest_path(lesson_name))
+            labeling_manifest = build_labeling_manifest(
+                lesson_id=lesson_name,
+                rule_cards=enriched_rule_cards,
+                evidence_index=evidence_index,
+            )
+            save_ml_manifest(
+                labeling_manifest,
+                paths.labeling_manifest_path(lesson_name),
+            )
+            _emit(
+                f"Step 13 complete: wrote ML manifest and labeling manifest to "
+                f"{paths.ml_manifest_path(lesson_name).name}, "
+                f"{paths.labeling_manifest_path(lesson_name).name}."
+            )
+
+    # Task 12: concept graph from rule cards (additive; requires rule_cards.json)
+    if enable_concept_graph:
+        rc_path = paths.rule_cards_path(lesson_name)
+        if require_artifact(
+            rc_path,
+            "step12_concept_graph",
+            "Generate rule_cards.json first (e.g. --enable-rule-cards).",
+        ):
+            rule_cards_for_graph = (
+                rule_cards
+                if rule_cards is not None
+                else load_rule_cards_for_concept_graph(rc_path)
+            )
+            concept_graph, concept_graph_debug = build_concept_graph(rule_cards_for_graph)
+            save_concept_graph(concept_graph, paths.concept_graph_path(lesson_name))
+            save_concept_graph_debug(
+                concept_graph_debug,
+                paths.concept_graph_debug_path(lesson_name),
+            )
+            _emit(
+                f"Step 12 complete: wrote concept graph ({len(concept_graph.nodes)} nodes, "
+                f"{len(concept_graph.relations)} relations) to {paths.concept_graph_path(lesson_name).name}."
+            )
+
     # Task 7 exporter stage: derive review_markdown.md and rag_ready.md from structured JSON only
     exporter_ran = False
     if enable_exporters:
@@ -334,6 +423,9 @@ def run_component2_pipeline(
                 rule_cards_path=rc_path,
                 evidence_index_path=ei_path,
                 knowledge_events_path=ke_path if ke_path.exists() else None,
+                concept_graph_path=paths.concept_graph_path(lesson_name)
+                if paths.concept_graph_path(lesson_name).exists()
+                else None,
                 output_path=review_path,
                 use_llm=use_llm_review_render,
                 video_id=video_id,
@@ -507,6 +599,15 @@ def run_component2_pipeline(
     maybe_add_output(result, "evidence_debug_path", paths.evidence_debug_path(lesson_name))
     maybe_add_output(result, "rule_cards_path", paths.rule_cards_path(lesson_name))
     maybe_add_output(result, "rule_debug_path", paths.rule_debug_path(lesson_name))
+    maybe_add_output(result, "ml_manifest_path", paths.ml_manifest_path(lesson_name))
+    maybe_add_output(result, "labeling_manifest_path", paths.labeling_manifest_path(lesson_name))
+    if enable_concept_graph and paths.concept_graph_path(lesson_name).exists():
+        maybe_add_output(result, "concept_graph_path", paths.concept_graph_path(lesson_name))
+        maybe_add_output(
+            result,
+            "concept_graph_debug_path",
+            paths.concept_graph_debug_path(lesson_name),
+        )
     maybe_add_output(result, "review_markdown_path", paths.review_markdown_path(lesson_name))
     maybe_add_output(result, "rag_ready_markdown_path", paths.rag_ready_markdown_path(lesson_name))
     maybe_add_output(result, "rag_ready_export_path", paths.rag_ready_export_path(lesson_name))
@@ -602,6 +703,18 @@ def run_component2_pipeline(
     help="Build rule cards from knowledge events and evidence; write rule_cards.json and rule_debug.json.",
 )
 @click.option(
+    "--enable-concept-graph",
+    is_flag=True,
+    default=False,
+    help="Task 12: Build concept graph from rule cards; write concept_graph.json and concept_graph_debug.json.",
+)
+@click.option(
+    "--enable-ml-prep",
+    is_flag=True,
+    default=False,
+    help="Task 13: Enrich rule cards for ML and write ml_manifest.json and labeling_manifest.json.",
+)
+@click.option(
     "--no-preserve-legacy-markdown",
     "no_preserve_legacy_markdown",
     is_flag=True,
@@ -646,12 +759,15 @@ def main(
     enable_knowledge_events: bool,
     enable_evidence_linking: bool,
     enable_rule_cards: bool,
+    enable_concept_graph: bool,
+    enable_ml_prep: bool,
     no_preserve_legacy_markdown: bool,
     enable_new_markdown_render: bool,
     enable_exporters: bool,
     use_llm_review_render: bool,
     use_llm_rag_render: bool,
 ) -> None:
+    """Click entry point for the standalone Component 2 + Step 3 markdown pipeline."""
     def _timestamped_echo(message: str) -> None:
         click.echo(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - INFO - {message}")
 
@@ -669,6 +785,8 @@ def main(
         enable_knowledge_events=enable_knowledge_events,
         enable_evidence_linking=enable_evidence_linking,
         enable_rule_cards=enable_rule_cards,
+        enable_concept_graph=enable_concept_graph,
+        enable_ml_prep=enable_ml_prep,
         preserve_legacy_markdown=not no_preserve_legacy_markdown,
         enable_new_markdown_render=enable_new_markdown_render,
         enable_exporters=enable_exporters,

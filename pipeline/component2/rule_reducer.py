@@ -8,6 +8,10 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from pipeline.io_utils import atomic_write_text, atomic_write_json
+from pipeline.component2.provenance import (
+    build_rule_card_provenance,
+    validate_rule_card_provenance,
+)
 from pipeline.component2.visual_compaction import (
     VisualCompactionConfig,
     assert_no_raw_visual_blob_leak,
@@ -539,7 +543,9 @@ def make_rule_id(
 
 
 def distribute_example_refs(candidate: RuleCandidate) -> dict[str, list[str]]:
-    """Map example_role to positive/negative/ambiguous evidence_id lists."""
+    """Map example_role to positive/negative/ambiguous evidence_id lists.
+    Illustration is not treated as positive (Task 13: conservative ML labeling).
+    """
     out: dict[str, list[str]] = {
         "positive_example_refs": [],
         "negative_example_refs": [],
@@ -548,12 +554,13 @@ def distribute_example_refs(candidate: RuleCandidate) -> dict[str, list[str]]:
     for ref in candidate.linked_evidence:
         eid = ref.evidence_id
         role = (getattr(ref, "example_role", None) or "unknown").lower()
-        if role in ("positive_example", "illustration"):
+        if role == "positive_example":
             out["positive_example_refs"].append(eid)
         elif role in ("negative_example", "counterexample"):
             out["negative_example_refs"].append(eid)
         elif role == "ambiguous_example":
             out["ambiguous_example_refs"].append(eid)
+        # illustration: do not add to positive (reserved for future ML prep)
     return out
 
 
@@ -595,33 +602,40 @@ def candidate_to_rule_card(
 ) -> RuleCard:
     """Convert RuleCandidate to RuleCard."""
     cfg = compaction_cfg if compaction_cfg is not None else VisualCompactionConfig()
+    all_source_events = (
+        candidate.primary_events
+        + candidate.condition_events
+        + candidate.invalidation_events
+        + candidate.exception_events
+        + candidate.comparison_events
+        + candidate.example_events
+    )
+    prov = build_rule_card_provenance(
+        lesson_id=candidate.lesson_id,
+        source_events=all_source_events,
+        linked_evidence=candidate.linked_evidence,
+    )
+    source_event_ids = prov.get("source_event_ids", [])
+    evidence_refs = trim_rule_card_visual_refs(
+        prov.get("evidence_refs", []), max_refs=3
+    )
+
     concept = (candidate.concept or "unknown").strip() or "unknown"
     rule_id = make_rule_id(candidate.lesson_id, candidate.concept, candidate.subconcept, candidate_index)
     rule_text = choose_canonical_rule_text(candidate)
     conf_label, conf_score = score_rule_candidate_confidence(candidate)
     example_map = distribute_example_refs(candidate)
-    source_event_ids = list(
-        {
-            e.event_id
-            for e in (
-                candidate.primary_events
-                + candidate.condition_events
-                + candidate.invalidation_events
-                + candidate.exception_events
-                + candidate.comparison_events
-                + candidate.example_events
-            )
-        }
-    )
-    evidence_refs = trim_rule_card_visual_refs(
-        [r.evidence_id for r in candidate.linked_evidence], max_refs=3
-    )
     section = None
     subsection = None
     if candidate.primary_events:
         first = candidate.primary_events[0]
         section = getattr(first, "section", None)
         subsection = getattr(first, "subsection", None)
+
+    metadata = dict(strip_raw_visual_blobs_from_metadata(candidate.metadata))
+    metadata["source_sections"] = prov.get("source_sections", [])
+    metadata["source_subsections"] = prov.get("source_subsections", [])
+    metadata["source_chunk_indexes"] = prov.get("source_chunk_indexes", [])
 
     return RuleCard(
         rule_id=rule_id,
@@ -647,7 +661,7 @@ def candidate_to_rule_card(
         positive_example_refs=example_map["positive_example_refs"],
         negative_example_refs=example_map["negative_example_refs"],
         ambiguous_example_refs=example_map["ambiguous_example_refs"],
-        metadata=strip_raw_visual_blobs_from_metadata(candidate.metadata),
+        metadata=metadata,
     )
 
 
@@ -687,6 +701,7 @@ def build_rule_cards(
                 "invalidation": card.invalidation,
                 "split_applied": getattr(cand, "from_split", False),
                 "confidence_score": card.confidence_score,
+                "provenance_warnings": validate_rule_card_provenance(card),
             }
         )
     collection = RuleCardCollection(

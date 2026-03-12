@@ -1,0 +1,26 @@
+{
+  "000005": {
+    "material_change": true,
+    "visual_representation_type": "annotated_chart",
+    "example_type": "positive_example",
+    "change_summary": ["Support level marked"],
+    "current_state": {},
+    "extracted_entities": {}
+  },
+  "000015": {
+    "material_change": true,
+    "visual_representation_type": "annotated_chart",
+    "example_type": "counterexample",
+    "change_summary": ["False breakout above level"],
+    "current_state": {},
+    "extracted_entities": {}
+  },
+  "000050": {
+    "material_change": true,
+    "visual_representation_type": "diagram",
+    "example_type": "positive_example",
+    "change_summary": ["Multiple touches at level"],
+    "current_state": {},
+    "extracted_entities": {}
+  }
+}

@@ -1,6 +1,6 @@
 # Framework Modules and Pipeline Flow
 
-This document lists all modules, their functions, what they do, and how they are triggered during the main pipeline and the standalone Component 2 + Step 3 markdown pipeline. It complements [README.md](../README.md) and [pipeline.md](pipeline.md).
+This document lists all modules, their functions, what they do, and how they are triggered during the main pipeline and the standalone Component 2 + Step 3 markdown pipeline. It complements [README.md](../README.md), [pipeline.md](pipeline.md), and [pipeline_structure_and_features.md](pipeline_structure_and_features.md) (output layout, path contract, optional stages, feature flags).
 
 ---
 
@@ -222,8 +222,25 @@ The README describes the framework well: pipeline overview, steps 0–3, output 
 
 | Function | Purpose | When triggered |
 |----------|---------|----------------|
-| `run_component2_pipeline(vtt_path, visuals_json_path, output_root=None, video_id=None, model=None, provider=None, reducer_model=None, reducer_provider=None, target_duration_seconds=120, max_concurrency=5, progress_callback=None)` | Step 3.1: Loads dense analysis, filter_visual_events, build_debug_report, write_filtered_events, write_debug_report. Step 3.2: parse_and_sync(vtt, filtered_events_path, target_duration_seconds), write_lesson_chunks. Step 3.3: process_chunks(...) with progress. Step 3.4: assemble_video_markdown, write intermediate markdown and write_llm_debug. Step 3.5: synthesize_full_document, write RAG-ready markdown and reducer usage JSON, write_video_usage_summary. Returns dict of output paths (filtered_events_path, chunk_debug_path, llm_debug_path, reducer_usage_path, intermediate_markdown_path, rag_ready_markdown_path, etc.). | Called from pipeline/main.py for each VTT in Step 3; also entry point for the standalone markdown pipeline. |
-| `main()` | Click CLI: --vtt, --visuals-json, --output-root, --video-id, --model, --provider, --reducer-model, --reducer-provider, --target-duration-seconds, --max-concurrency. Calls run_component2_pipeline and echoes output paths. | Running `uv run python -m pipeline.component2.main` (standalone markdown pipeline). |
+| `run_component2_pipeline(...)` | Step 3.1: invalidation filter, write filtered_events. Step 3.2: parse_and_sync, write_lesson_chunks. Optional: knowledge extraction, evidence linking, rule cards (step4b), **concept graph (step12)**, exporters. Step 3.3–3.5: legacy Pass 1 + Pass 2 markdown. Returns dict of output paths (including concept_graph_path when --enable-concept-graph ran). | Called from pipeline/main.py for each VTT in Step 3; also entry point for the standalone markdown pipeline. |
+| `main()` | Click CLI: --vtt, --visuals-json, --output-root, --video-id, --model, --provider, --reducer-model, --reducer-provider, --target-duration-seconds, --max-concurrency, **--enable-concept-graph**, etc. Calls run_component2_pipeline and echoes output paths. | Running `uv run python -m pipeline.component2.main` (standalone markdown pipeline). |
+
+### 8.8 `pipeline/component2/concept_graph.py` (Task 12)
+
+| Function | Purpose | When triggered |
+|----------|---------|----------------|
+| `normalize_concept_id(name)` | Normalizes a concept/subconcept name to a stable slug (lowercase, replace non-alphanumeric with underscore). | Used when building node ids and relation keys. |
+| `create_concept_nodes(rules)` | Collects unique concepts and subconcepts from rules, infers parent for each subconcept, builds `ConceptNode` list, dedupes. | Called from build_concept_graph. |
+| `create_parent_child_relations(rules)` | For each rule with both concept and subconcept, adds parent_of and child_of relations. | Called from build_concept_graph. |
+| `create_sibling_related_relations(rules)` | For subconcepts sharing a concept, adds related_to in both directions. | Called from build_concept_graph. |
+| `create_precedes_relations(rules)` | From source chunk order within each concept family, adds precedes relations. | Called from build_concept_graph. |
+| `create_depends_on_relations(rules)` | From dependency cues in rule text/comparisons/context, adds depends_on (subconcept → concept). | Called from build_concept_graph. |
+| `create_contrasts_with_relations(rules)` | From lexical contrast pairs and comparison cues, adds contrasts_with. | Called from build_concept_graph. |
+| `create_supports_relations(rules)` | For support-like subconcept names (rating, confirmation, etc.), adds supports. | Called from build_concept_graph. |
+| `build_concept_graph(rule_cards)` | Builds nodes and all relation types, dedupes relations, returns (ConceptGraph, debug_rows). | Called from component2/main when --enable-concept-graph and rule_cards exist. |
+| `load_rule_cards(path)` | Loads RuleCardCollection from JSON. | Called from component2/main for step12 when rule_cards not in memory. |
+| `save_concept_graph(graph, output_path)` | Writes ConceptGraph JSON atomically. | Called from component2/main after build_concept_graph. |
+| `save_concept_graph_debug(debug_rows, output_path)` | Writes debug relation rows as JSON. | Called from component2/main after build_concept_graph. |
 
 ---
 
@@ -311,5 +328,6 @@ These are used by scripts or separate workflows, not by the default `tim-class-p
 | 3.3 | After 3.2 | component2/llm_processor | process_chunks |
 | 3.4 | After 3.3 | component2/llm_processor | assemble_video_markdown, write_llm_debug |
 | 3.5 | After 3.4 | component2/quant_reducer, usage_report | synthesize_full_document, write_video_usage_summary |
+| 12 | Optional: --enable-concept-graph (requires rule_cards) | component2/concept_graph | load_rule_cards, build_concept_graph, save_concept_graph, save_concept_graph_debug |
 
 This completes the full list of modules, functions, and pipeline triggers for the framework.

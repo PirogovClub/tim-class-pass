@@ -26,7 +26,27 @@ tim-class-pass-usage = "tim_class_pass.usage_report:main"
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.pytest.ini_options]
+markers = [
+    "live_provider: mark tests that call live LLM providers (run with -m live_provider); skip when API keys unset",
+]
+
 [dependency-groups]
 dev = [
     "pytest>=9.0.2",
+    "pytest-cov>=6.0.0",
 ]
+
+[tool.coverage.run]
+source = ["pipeline", "helpers"]
+omit = ["*/tests/*", "*__pycache__*"]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+]
+show_missing = true

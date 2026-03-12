@@ -130,6 +130,7 @@ class RuleCard(ProvenanceMixin):
 class KnowledgeEventCollection(SchemaBase):
     schema_version: str = "1.0"
     lesson_id: str
+    lesson_title: Optional[str] = None
     events: List[KnowledgeEvent] = Field(default_factory=list)
 
 
@@ -149,6 +150,40 @@ class RuleCardCollection(SchemaBase):
     schema_version: str = "1.0"
     lesson_id: str
     rules: List[RuleCard] = Field(default_factory=list)
+
+
+# ----- Task 12: Concept graph schemas -----
+
+ConceptNodeType = Literal["concept", "subconcept", "rule_group"]
+
+
+class ConceptNode(SchemaBase):
+    """Single node in a lesson-level concept graph."""
+
+    concept_id: str
+    name: str
+    type: ConceptNodeType = "concept"
+    parent_id: Optional[str] = None
+    aliases: List[str] = Field(default_factory=list)
+    metadata: Dict[str, Any] = Field(default_factory=dict)
+
+
+class ConceptRelation(SchemaBase):
+    """Typed directed relation between two concept nodes."""
+
+    relation_id: str
+    source_id: str
+    target_id: str
+    relation_type: str
+    metadata: Dict[str, Any] = Field(default_factory=dict)
+
+
+class ConceptGraph(SchemaBase):
+    """Lesson-level concept graph (Task 12)."""
+
+    lesson_id: str
+    nodes: List[ConceptNode] = Field(default_factory=list)
+    relations: List[ConceptRelation] = Field(default_factory=list)
 
 
 class LessonKnowledgeBundle(SchemaBase):

@@ -876,4 +876,715 @@ Do not:
 - overload final markdown with debug provenance
 ```
 
+Yes — for **Task 11**, I would make it much more concrete.
+
+**Confidence: High**
+
+This is one of the tasks where exact helper behavior matters a lot. If provenance is implemented loosely, it becomes inconsistent very quickly.
+
+Below is a **detailed implementation addendum** for Task 11, including function behavior and usable code.
+
+---
+
+# `pipeline/component2/provenance.py`
+
+## 1. Core helpers
+
+These should be the foundation for every provenance operation.
+
+```python
+from __future__ import annotations
+
+from typing import Any, Iterable
+
+
+def dedupe_preserve_order(items: Iterable[Any]) -> list[Any]:
+    seen = set()
+    result: list[Any] = []
+    for item in items:
+        if item in (None, "", [], {}):
+            continue
+        try:
+            key = item
+            if key in seen:
+                continue
+            seen.add(key)
+        except TypeError:
+            # fallback for unhashable values
+            key = repr(item)
+            if key in seen:
+                continue
+            seen.add(key)
+        result.append(item)
+    return result
+
+
+def compact_nonempty_strs(items: Iterable[Any]) -> list[str]:
+    out: list[str] = []
+    for item in items:
+        if item is None:
+            continue
+        text = str(item).strip()
+        if text:
+            out.append(text)
+    return dedupe_preserve_order(out)
+
+
+def compact_nonempty_ints(items: Iterable[Any]) -> list[int]:
+    out: list[int] = []
+    for item in items:
+        if item is None or item == "":
+            continue
+        try:
+            out.append(int(item))
+        except (TypeError, ValueError):
+            continue
+    return dedupe_preserve_order(out)
+
+
+def prune_none_values(payload: dict[str, Any]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in payload.items():
+        if value is None:
+            continue
+        if isinstance(value, list) and not value:
+            continue
+        if isinstance(value, dict) and not value:
+            continue
+        result[key] = value
+    return result
+```
+
+---
+
+## 2. Knowledge-event provenance builder
+
+This should be the only way `KnowledgeEvent.metadata` provenance is created.
+
+```python
+def build_knowledge_event_provenance(
+    *,
+    lesson_id: str,
+    chunk_index: int | None,
+    chunk_start_time_seconds: float | None,
+    chunk_end_time_seconds: float | None,
+    transcript_line_count: int | None,
+    candidate_visual_frame_keys: list[str],
+    candidate_visual_types: list[str],
+    candidate_example_types: list[str],
+) -> dict[str, Any]:
+    payload = {
+        "chunk_index": chunk_index,
+        "chunk_start_time_seconds": chunk_start_time_seconds,
+        "chunk_end_time_seconds": chunk_end_time_seconds,
+        "transcript_line_count": transcript_line_count,
+        "candidate_visual_frame_keys": compact_nonempty_strs(candidate_visual_frame_keys),
+        "candidate_visual_types": compact_nonempty_strs(candidate_visual_types),
+        "candidate_example_types": compact_nonempty_strs(candidate_example_types),
+    }
+    return prune_none_values(payload)
+```
+
+### Expected output shape
+
+```json
+{
+  "chunk_index": 4,
+  "chunk_start_time_seconds": 120.0,
+  "chunk_end_time_seconds": 145.0,
+  "transcript_line_count": 6,
+  "candidate_visual_frame_keys": ["000120", "000122"],
+  "candidate_visual_types": ["annotated_chart"],
+  "candidate_example_types": ["false_breakout_example"]
+}
+```
+
+---
+
+## 3. Evidence provenance builder
+
+This should normalize and bound evidence provenance.
+
+```python
+def build_evidence_ref_provenance(
+    *,
+    lesson_id: str,
+    timestamp_start: float | None,
+    timestamp_end: float | None,
+    frame_ids: list[str],
+    screenshot_paths: list[str],
+    raw_visual_event_ids: list[str],
+    source_event_ids: list[str],
+) -> dict[str, Any]:
+    payload = {
+        "lesson_id": lesson_id,
+        "timestamp_start": timestamp_start,
+        "timestamp_end": timestamp_end,
+        "frame_ids": compact_nonempty_strs(frame_ids),
+        "screenshot_paths": compact_nonempty_strs(screenshot_paths),
+        "raw_visual_event_ids": compact_nonempty_strs(raw_visual_event_ids),
+        "source_event_ids": compact_nonempty_strs(source_event_ids),
+    }
+    return prune_none_values(payload)
+```
+
+### Important
+
+This function should not include:
+
+* raw visual event blobs
+* `current_state`
+* `previous_visual_state`
+* dense-analysis JSON fragments
+
+---
+
+## 4. Rule-card provenance builder
+
+This is the most important builder because it must survive merge/split logic.
+
+```python
+def merge_source_event_ids(*collections: list[str]) -> list[str]:
+    merged: list[str] = []
+    for collection in collections:
+        merged.extend(collection or [])
+    return compact_nonempty_strs(merged)
+
+
+def merge_evidence_refs(*collections: list[str]) -> list[str]:
+    merged: list[str] = []
+    for collection in collections:
+        merged.extend(collection or [])
+    return compact_nonempty_strs(merged)
+
+
+def merge_source_sections(events: list[Any]) -> list[str]:
+    return compact_nonempty_strs(getattr(ev, "section", None) for ev in events)
+
+
+def merge_source_subsections(events: list[Any]) -> list[str]:
+    return compact_nonempty_strs(getattr(ev, "subsection", None) for ev in events)
+
+
+def merge_source_chunk_indexes(events: list[Any]) -> list[int]:
+    indexes: list[int] = []
+    for ev in events:
+        metadata = getattr(ev, "metadata", {}) or {}
+        indexes.append(metadata.get("chunk_index"))
+    return compact_nonempty_ints(indexes)
+
+
+def build_rule_card_provenance(
+    *,
+    lesson_id: str,
+    source_events: list[Any],
+    linked_evidence: list[Any],
+) -> dict[str, Any]:
+    source_event_ids = merge_source_event_ids(
+        [getattr(ev, "event_id", None) for ev in source_events]
+    )
+    evidence_refs = merge_evidence_refs(
+        [getattr(ev, "evidence_id", None) for ev in linked_evidence]
+    )
+
+    payload = {
+        "lesson_id": lesson_id,
+        "source_event_ids": source_event_ids,
+        "evidence_refs": evidence_refs,
+        "source_sections": merge_source_sections(source_events),
+        "source_subsections": merge_source_subsections(source_events),
+        "source_chunk_indexes": merge_source_chunk_indexes(source_events),
+    }
+    return prune_none_values(payload)
+```
+
+### Expected output shape
+
+```json
+{
+  "lesson_id": "lesson_2",
+  "source_event_ids": [
+    "ke_lesson2_4_rule_statement_0",
+    "ke_lesson2_4_condition_0"
+  ],
+  "evidence_refs": ["evid_lesson2_3_0"],
+  "source_sections": ["Level"],
+  "source_subsections": ["level_rating"],
+  "source_chunk_indexes": [4, 5]
+}
+```
+
+---
+
+## 5. Validation functions
+
+These should return warnings, not throw immediately.
+
+### `KnowledgeEvent`
+
+```python
+def validate_knowledge_event_provenance(event: Any) -> list[str]:
+    warnings: list[str] = []
+
+    if not getattr(event, "lesson_id", None):
+        warnings.append("missing lesson_id")
+
+    metadata = getattr(event, "metadata", {}) or {}
+
+    if metadata.get("chunk_index") is None:
+        warnings.append("missing metadata.chunk_index")
+
+    if getattr(event, "timestamp_start", None) is None and metadata.get("chunk_start_time_seconds") is None:
+        warnings.append("missing both event timestamp_start and metadata.chunk_start_time_seconds")
+
+    if getattr(event, "timestamp_end", None) is None and metadata.get("chunk_end_time_seconds") is None:
+        warnings.append("missing both event timestamp_end and metadata.chunk_end_time_seconds")
+
+    frame_keys = metadata.get("candidate_visual_frame_keys", []) or []
+    visual_types = metadata.get("candidate_visual_types", []) or []
+
+    if visual_types and not frame_keys:
+        warnings.append("visual types present but candidate_visual_frame_keys missing")
+
+    return warnings
+```
+
+### `EvidenceRef`
+
+```python
+def validate_evidence_ref_provenance(evidence: Any) -> list[str]:
+    warnings: list[str] = []
+
+    if not getattr(evidence, "lesson_id", None):
+        warnings.append("missing lesson_id")
+
+    if getattr(evidence, "timestamp_start", None) is None and getattr(evidence, "timestamp_end", None) is None:
+        warnings.append("missing both timestamp_start and timestamp_end")
+
+    frame_ids = getattr(evidence, "frame_ids", []) or []
+    raw_ids = getattr(evidence, "raw_visual_event_ids", []) or []
+
+    if not frame_ids and not raw_ids:
+        warnings.append("missing both frame_ids and raw_visual_event_ids")
+
+    screenshot_paths = getattr(evidence, "screenshot_paths", []) or []
+    if screenshot_paths and not frame_ids:
+        warnings.append("screenshot_paths present but frame_ids missing")
+
+    if not (getattr(evidence, "source_event_ids", []) or []):
+        warnings.append("missing source_event_ids")
+
+    return warnings
+```
+
+### `RuleCard`
+
+```python
+def validate_rule_card_provenance(rule: Any) -> list[str]:
+    warnings: list[str] = []
+
+    if not getattr(rule, "lesson_id", None):
+        warnings.append("missing lesson_id")
+
+    source_event_ids = getattr(rule, "source_event_ids", []) or []
+    evidence_refs = getattr(rule, "evidence_refs", []) or []
+
+    if not source_event_ids:
+        warnings.append("missing source_event_ids")
+
+    if getattr(rule, "visual_summary", None) and not evidence_refs:
+        warnings.append("visual_summary present but evidence_refs missing")
+
+    if not getattr(rule, "concept", None):
+        warnings.append("missing concept")
+
+    return warnings
+```
+
+---
+
+## 6. Coverage checker
+
+This is very useful for QA and manifests.
+
+```python
+def compute_provenance_coverage(
+    *,
+    knowledge_events: list[Any],
+    evidence_refs: list[Any],
+    rule_cards: list[Any],
+) -> dict[str, int]:
+    return {
+        "knowledge_events_total": len(knowledge_events),
+        "knowledge_events_with_chunk_index": sum(
+            1 for ev in knowledge_events
+            if ((getattr(ev, "metadata", {}) or {}).get("chunk_index") is not None)
+        ),
+        "knowledge_events_with_visual_candidates": sum(
+            1 for ev in knowledge_events
+            if ((getattr(ev, "metadata", {}) or {}).get("candidate_visual_frame_keys") or [])
+        ),
+        "evidence_refs_total": len(evidence_refs),
+        "evidence_refs_with_frame_ids": sum(
+            1 for ev in evidence_refs if (getattr(ev, "frame_ids", []) or [])
+        ),
+        "evidence_refs_with_source_event_ids": sum(
+            1 for ev in evidence_refs if (getattr(ev, "source_event_ids", []) or [])
+        ),
+        "rule_cards_total": len(rule_cards),
+        "rule_cards_with_source_event_ids": sum(
+            1 for rule in rule_cards if (getattr(rule, "source_event_ids", []) or [])
+        ),
+        "rule_cards_with_evidence_refs": sum(
+            1 for rule in rule_cards if (getattr(rule, "evidence_refs", []) or [])
+        ),
+    }
+```
+
+---
+
+# Integration by file
+
+## `knowledge_builder.py`
+
+Every `KnowledgeEvent` should get provenance from the builder, not handcrafted.
+
+### Exact integration
+
+```python
+from pipeline.component2.provenance import (
+    build_knowledge_event_provenance,
+    validate_knowledge_event_provenance,
+)
+
+metadata = build_knowledge_event_provenance(
+    lesson_id=lesson_id,
+    chunk_index=chunk.chunk_index,
+    chunk_start_time_seconds=chunk.start_time_seconds,
+    chunk_end_time_seconds=chunk.end_time_seconds,
+    transcript_line_count=len(chunk.transcript_lines),
+    candidate_visual_frame_keys=chunk.candidate_visual_frame_keys,
+    candidate_visual_types=chunk.candidate_visual_types,
+    candidate_example_types=chunk.candidate_example_types,
+)
+
+event = KnowledgeEvent(
+    event_id=event_id,
+    lesson_id=lesson_id,
+    lesson_title=lesson_title,
+    section=chunk.section,
+    subsection=chunk.subsection,
+    timestamp_start=str(chunk.start_time_seconds),
+    timestamp_end=str(chunk.end_time_seconds),
+    event_type=event_type,
+    raw_text=statement.text,
+    normalized_text=statement.text,
+    concept=concept,
+    subconcept=subconcept,
+    evidence_refs=[],
+    confidence=label,
+    confidence_score=score,
+    ambiguity_notes=statement.ambiguity_notes,
+    metadata=metadata,
+)
+
+prov_warnings = validate_knowledge_event_provenance(event)
+```
+
+### Recommendation
+
+Put `prov_warnings` into `knowledge_debug.json`, not the final event.
+
+---
+
+## `evidence_linker.py`
+
+### Exact integration
+
+```python
+from pipeline.component2.provenance import (
+    build_evidence_ref_provenance,
+    validate_evidence_ref_provenance,
+)
+
+prov = build_evidence_ref_provenance(
+    lesson_id=lesson_id,
+    timestamp_start=candidate.timestamp_start,
+    timestamp_end=candidate.timestamp_end,
+    frame_ids=prov_payload["frame_ids"],
+    screenshot_paths=prov_payload["screenshot_paths"],
+    raw_visual_event_ids=prov_payload["raw_visual_event_ids"],
+    source_event_ids=[ev.event_id for ev in linked_events],
+)
+
+evidence_ref = EvidenceRef(
+    evidence_id=evidence_id,
+    lesson_id=lesson_id,
+    timestamp_start=str(candidate.timestamp_start) if candidate.timestamp_start is not None else None,
+    timestamp_end=str(candidate.timestamp_end) if candidate.timestamp_end is not None else None,
+    frame_ids=prov["frame_ids"],
+    screenshot_paths=prov["screenshot_paths"],
+    visual_type=candidate.visual_type,
+    example_role=example_role,
+    compact_visual_summary=summary,
+    linked_rule_ids=[],
+    raw_visual_event_ids=prov["raw_visual_event_ids"],
+    source_event_ids=prov["source_event_ids"],
+    metadata={},
+)
+
+prov_warnings = validate_evidence_ref_provenance(evidence_ref)
+```
+
+---
+
+## `rule_reducer.py`
+
+### Exact integration
+
+```python
+from pipeline.component2.provenance import (
+    build_rule_card_provenance,
+    validate_rule_card_provenance,
+)
+
+prov = build_rule_card_provenance(
+    lesson_id=lesson_id,
+    source_events=all_source_events,
+    linked_evidence=linked_evidence,
+)
+
+rule = RuleCard(
+    rule_id=rule_id,
+    lesson_id=lesson_id,
+    concept=concept or "unknown",
+    subconcept=subconcept,
+    title=title,
+    rule_text=rule_text,
+    conditions=conditions,
+    context=context,
+    invalidation=invalidation,
+    exceptions=exceptions,
+    comparisons=comparisons,
+    algorithm_notes=algorithm_notes,
+    visual_summary=visual_summary,
+    evidence_refs=prov.get("evidence_refs", []),
+    source_event_ids=prov.get("source_event_ids", []),
+    confidence=confidence_label,
+    confidence_score=confidence_score,
+    candidate_features=[],
+    positive_example_refs=positive_example_refs,
+    negative_example_refs=negative_example_refs,
+    ambiguous_example_refs=ambiguous_example_refs,
+    labeling_guidance=labeling_guidance,
+    metadata={
+        "source_sections": prov.get("source_sections", []),
+        "source_subsections": prov.get("source_subsections", []),
+        "source_chunk_indexes": prov.get("source_chunk_indexes", []),
+    },
+)
+
+prov_warnings = validate_rule_card_provenance(rule)
+```
+
+### Important
+
+Use provenance builder **after** final merge/split is done.
+
+---
+
+## `exporters.py`
+
+I recommend compact provenance in review markdown only.
+
+### Helper
+
+```python
+def format_compact_provenance(rule: Any) -> str | None:
+    source_event_ids = getattr(rule, "source_event_ids", []) or []
+    evidence_refs = getattr(rule, "evidence_refs", []) or []
+
+    lines: list[str] = []
+
+    if evidence_refs:
+        lines.append(f"**Evidence refs:** {', '.join(evidence_refs[:3])}")
+
+    if source_event_ids:
+        lines.append(f"**Source events:** {', '.join(source_event_ids[:3])}")
+
+    if not lines:
+        return None
+
+    return "\n".join(lines)
+```
+
+### Use in review markdown
+
+After rule sections:
+
+```python
+prov_block = format_compact_provenance(rule)
+if prov_block:
+    parts.append(prov_block)
+```
+
+### Do not use in RAG markdown by default.
+
+---
+
+# Tests
+
+## `tests/test_provenance.py`
+
+### Test 1 — knowledge event provenance builder
+
+```python
+def test_build_knowledge_event_provenance():
+    payload = build_knowledge_event_provenance(
+        lesson_id="lesson1",
+        chunk_index=4,
+        chunk_start_time_seconds=10.0,
+        chunk_end_time_seconds=20.0,
+        transcript_line_count=3,
+        candidate_visual_frame_keys=["001", "001", "002"],
+        candidate_visual_types=["annotated_chart", "annotated_chart"],
+        candidate_example_types=["false_breakout", ""],
+    )
+
+    assert payload["chunk_index"] == 4
+    assert payload["candidate_visual_frame_keys"] == ["001", "002"]
+    assert payload["candidate_visual_types"] == ["annotated_chart"]
+    assert payload["candidate_example_types"] == ["false_breakout"]
+```
+
+### Test 2 — evidence provenance builder
+
+```python
+def test_build_evidence_ref_provenance():
+    payload = build_evidence_ref_provenance(
+        lesson_id="lesson1",
+        timestamp_start=12.0,
+        timestamp_end=18.0,
+        frame_ids=["001", "002", "001"],
+        screenshot_paths=["a.png", "a.png", "b.png"],
+        raw_visual_event_ids=["ve_raw_001", "ve_raw_002"],
+        source_event_ids=["ke_1", "ke_2", "ke_1"],
+    )
+
+    assert payload["frame_ids"] == ["001", "002"]
+    assert payload["screenshot_paths"] == ["a.png", "b.png"]
+    assert payload["source_event_ids"] == ["ke_1", "ke_2"]
+```
+
+### Test 3 — rule provenance builder
+
+```python
+def test_build_rule_card_provenance():
+    class E:
+        def __init__(self, event_id, section, subsection, chunk_index):
+            self.event_id = event_id
+            self.section = section
+            self.subsection = subsection
+            self.metadata = {"chunk_index": chunk_index}
+
+    class V:
+        def __init__(self, evidence_id):
+            self.evidence_id = evidence_id
+
+    events = [
+        E("ke_1", "Level", "rating", 4),
+        E("ke_2", "Level", "rating", 5),
+    ]
+    evidence = [V("evid_1"), V("evid_1"), V("evid_2")]
+
+    payload = build_rule_card_provenance(
+        lesson_id="lesson1",
+        source_events=events,
+        linked_evidence=evidence,
+    )
+
+    assert payload["source_event_ids"] == ["ke_1", "ke_2"]
+    assert payload["evidence_refs"] == ["evid_1", "evid_2"]
+    assert payload["source_sections"] == ["Level"]
+    assert payload["source_subsections"] == ["rating"]
+    assert payload["source_chunk_indexes"] == [4, 5]
+```
+
+### Test 4 — validation warnings
+
+```python
+def test_validate_rule_card_provenance_warns_on_missing_source_ids():
+    class Rule:
+        lesson_id = "lesson1"
+        source_event_ids = []
+        evidence_refs = []
+        visual_summary = None
+        concept = "level"
+
+    warnings = validate_rule_card_provenance(Rule())
+    assert "missing source_event_ids" in warnings
+```
+
+### Test 5 — coverage checker
+
+```python
+def test_compute_provenance_coverage():
+    class Event:
+        def __init__(self, chunk_index=None, frame_keys=None):
+            self.metadata = {
+                "chunk_index": chunk_index,
+                "candidate_visual_frame_keys": frame_keys or [],
+            }
+
+    class Evidence:
+        def __init__(self, frame_ids=None, source_event_ids=None):
+            self.frame_ids = frame_ids or []
+            self.source_event_ids = source_event_ids or []
+
+    class Rule:
+        def __init__(self, source_event_ids=None, evidence_refs=None):
+            self.source_event_ids = source_event_ids or []
+            self.evidence_refs = evidence_refs or []
+
+    stats = compute_provenance_coverage(
+        knowledge_events=[Event(1, ["001"]), Event(None, [])],
+        evidence_refs=[Evidence(["001"], ["ke_1"]), Evidence([], [])],
+        rule_cards=[Rule(["ke_1"], ["evid_1"]), Rule([], [])],
+    )
+
+    assert stats["knowledge_events_total"] == 2
+    assert stats["knowledge_events_with_chunk_index"] == 1
+    assert stats["evidence_refs_with_source_event_ids"] == 1
+    assert stats["rule_cards_with_source_event_ids"] == 1
+```
+
+---
+
+# One more thing I would explicitly add
+
+I would add this sentence to Task 11:
+
+```text
+All provenance merges must be deterministic, deduplicated, and order-preserving; provenance should never depend on incidental iteration order or transient debug state.
+```
+
+That matters a lot for reproducibility.
+
+---
+
+# My recommendation
+
+Yes — for Task 11, I would absolutely include these implementation details.
+
+Because provenance is only useful if it is:
+
+* consistent
+* compact
+* deterministic
+* preserved through transformations
+
+Without exact builders and validators, each stage will drift.
+
+
+
 

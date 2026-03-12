@@ -1,0 +1,52 @@
+[
+  {
+    "chunk_index": 0,
+    "start_time_seconds": 0.0,
+    "end_time_seconds": 45.0,
+    "transcript_lines": [
+      {"start_seconds": 0.0, "end_seconds": 8.0, "text": "Levels are support and resistance zones."},
+      {"start_seconds": 10.0, "end_seconds": 20.0, "text": "A false breakout occurs when price breaks then returns."}
+    ],
+    "visual_events": [
+      {
+        "timestamp_seconds": 5,
+        "frame_key": "000005",
+        "visual_representation_type": "annotated_chart",
+        "example_type": "positive_example",
+        "change_summary": ["Support level marked"],
+        "current_state": {},
+        "extracted_entities": {}
+      },
+      {
+        "timestamp_seconds": 15,
+        "frame_key": "000015",
+        "visual_representation_type": "annotated_chart",
+        "example_type": "counterexample",
+        "change_summary": ["False breakout above level"],
+        "current_state": {},
+        "extracted_entities": {}
+      }
+    ],
+    "previous_visual_state": null
+  },
+  {
+    "chunk_index": 1,
+    "start_time_seconds": 45.0,
+    "end_time_seconds": 90.0,
+    "transcript_lines": [
+      {"start_seconds": 48.0, "end_seconds": 55.0, "text": "Level rating improves with multiple touches."}
+    ],
+    "visual_events": [
+      {
+        "timestamp_seconds": 50,
+        "frame_key": "000050",
+        "visual_representation_type": "diagram",
+        "example_type": "positive_example",
+        "change_summary": ["Multiple touches at level"],
+        "current_state": {},
+        "extracted_entities": {}
+      }
+    ],
+    "previous_visual_state": null
+  }
+]
