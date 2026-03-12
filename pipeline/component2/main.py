@@ -44,10 +44,18 @@ from pipeline.component2.exporters import (
     export_review_markdown,
     export_rag_markdown,
     load_rule_cards as load_rule_cards_for_export,
-    write_export_manifest,
 )
 from pipeline.contracts import PipelinePaths
+from pipeline.io_utils import (
+    atomic_write_text,
+    atomic_write_json,
+    build_export_manifest,
+    write_artifact_manifest,
+)
 from pipeline.schemas import RuleCardCollection
+from helpers import config as pipeline_config
+from pipeline.component2.visual_compaction import from_pipeline_config
+from pipeline.component2.visual_policy_debug import write_visual_compaction_debug
 from pipeline.invalidation_filter import (
     build_debug_report,
     filter_visual_events,
@@ -70,6 +78,21 @@ def _format_elapsed(seconds: float) -> str:
     minutes = total_seconds // 60
     secs = total_seconds % 60
     return f"{minutes:02d}:{secs:02d}"
+
+
+def maybe_add_output(outputs: dict[str, Path], key: str, path: Path) -> None:
+    """Add path to outputs dict only if it exists."""
+    if path.exists():
+        outputs[key] = path
+
+
+def require_artifact(path: Path, stage_name: str, hint: str) -> bool:
+    """Return True if path exists; otherwise print skip message and return False."""
+    if path.exists():
+        return True
+    print(f"[{stage_name}] Skipping: required artifact missing: {path}")
+    print(f"[{stage_name}] Hint: {hint}")
+    return False
 
 
 def run_component2_pipeline(
@@ -108,10 +131,8 @@ def run_component2_pipeline(
     visuals_json = Path(visuals_json_path)
     lesson_name = _derive_lesson_name(vtt)
     root = Path(output_root) if output_root is not None else _default_output_root(vtt)
-    output_intermediate_dir = root / "output_intermediate"
-    output_rag_ready_dir = root / "output_rag_ready"
-    output_intermediate_dir.mkdir(parents=True, exist_ok=True)
-    output_rag_ready_dir.mkdir(parents=True, exist_ok=True)
+    paths = PipelinePaths(video_root=root, vtt_path=vtt, visuals_json_path=visuals_json)
+    paths.ensure_output_dirs()
     step4_ran = False
     step5_ran = False
 
@@ -130,20 +151,16 @@ def run_component2_pipeline(
     )
     prepare_component2_run(_preflight_config, lesson_name)
 
-    filtered_events_path = root / "filtered_visual_events.json"
-    filtered_debug_path = root / "filtered_visual_events.debug.json"
-    chunk_debug_path = output_intermediate_dir / f"{lesson_name}.chunks.json"
-    llm_debug_path = output_intermediate_dir / f"{lesson_name}.llm_debug.json"
-    reducer_usage_path = output_intermediate_dir / f"{lesson_name}.reducer_usage.json"
-    intermediate_markdown_path = output_intermediate_dir / f"{lesson_name}.md"
-    rag_ready_markdown_path = output_rag_ready_dir / f"{lesson_name}.md"
+    _pipeline_cfg = pipeline_config.get_config_for_video(video_id or lesson_name)
+    compaction_cfg = from_pipeline_config(_pipeline_cfg)
+    enable_visual_compaction_debug = _pipeline_cfg.get("enable_visual_compaction_debug", False)
 
     _emit(f"Step 3.1/5: Filtering instructional visual events from `{visuals_json.name}`...")
     raw_analysis = load_dense_analysis(visuals_json)
     events = filter_visual_events(raw_analysis)
     filter_report = build_debug_report(raw_analysis, events)
-    write_filtered_events(filtered_events_path, events)
-    write_debug_report(filtered_debug_path, filter_report)
+    write_filtered_events(paths.filtered_visuals_path, events)
+    write_debug_report(paths.filtered_visuals_debug_path, filter_report)
     _emit(
         "Step 3.1/5 complete: "
         f"kept {filter_report['kept_events']} events, rejected {filter_report['rejected_frames']}, "
@@ -153,10 +170,10 @@ def run_component2_pipeline(
     _emit(f"Step 3.2/5: Synchronizing transcript `{vtt.name}` with filtered events...")
     chunks = parse_and_sync(
         vtt_path=vtt,
-        filtered_events_path=filtered_events_path,
+        filtered_events_path=paths.filtered_visuals_path,
         target_duration_seconds=target_duration_seconds,
     )
-    write_lesson_chunks(chunk_debug_path, chunks)
+    write_lesson_chunks(paths.lesson_chunks_path(lesson_name), chunks)
     total_transcript_lines = sum(len(chunk.transcript_lines) for chunk in chunks)
     total_chunk_events = sum(len(chunk.visual_events) for chunk in chunks)
     _emit(
@@ -167,7 +184,6 @@ def run_component2_pipeline(
 
     if enable_knowledge_events:
         _emit("Step 3.2b: Extracting structured knowledge events...")
-        paths = PipelinePaths(video_root=root)
         raw_chunks = [c.model_dump() for c in chunks]
         adapted = adapt_chunks(raw_chunks, lesson_id=lesson_name, lesson_title=None)
 
@@ -188,6 +204,7 @@ def run_component2_pipeline(
                 provider=provider,
                 max_concurrency=max_concurrency,
                 progress_callback=_on_extraction_progress,
+                compaction_cfg=compaction_cfg,
             )
         )
         extraction_results = [r[1] for r in results]
@@ -206,19 +223,15 @@ def run_component2_pipeline(
         )
 
     if enable_evidence_linking:
-        paths = PipelinePaths(video_root=root)
         knowledge_events_for_evidence = None
         if enable_knowledge_events:
             knowledge_events_for_evidence = knowledge_collection.events
-        else:
-            ke_path = paths.knowledge_events_path(lesson_name)
-            if ke_path.exists():
-                knowledge_events_for_evidence = load_knowledge_events(ke_path)
-            else:
-                _emit(
-                    f"Step 4 skipped: enable_evidence_linking is True but {ke_path.name} not found. "
-                    "Run with --enable-knowledge-events first or ensure the file exists."
-                )
+        elif require_artifact(
+            paths.knowledge_events_path(lesson_name),
+            "step4_evidence_linking",
+            "Enable knowledge extraction first or generate knowledge_events.json",
+        ):
+            knowledge_events_for_evidence = load_knowledge_events(paths.knowledge_events_path(lesson_name))
         if knowledge_events_for_evidence is not None:
             _emit("Step 4: Linking visual evidence to knowledge events...")
             raw_chunks = [c.model_dump() for c in chunks]
@@ -227,9 +240,27 @@ def run_component2_pipeline(
                 knowledge_events=knowledge_events_for_evidence,
                 chunks=raw_chunks,
                 dense_analysis=raw_analysis,
+                video_root=paths.video_root,
+                compaction_cfg=compaction_cfg,
             )
             save_evidence_index(evidence_index, paths.evidence_index_path(lesson_name))
             save_evidence_debug(evidence_debug, paths.evidence_debug_path(lesson_name))
+            if enable_visual_compaction_debug and evidence_index is not None:
+                debug_entries = [
+                    {
+                        "candidate_id": ref.evidence_id,
+                        "summary_after_compaction": ref.compact_visual_summary,
+                        "kept_screenshot_candidates": list(getattr(ref, "screenshot_paths", []) or []),
+                        "blocked_raw_fields": [],
+                    }
+                    for ref in evidence_index.evidence_refs
+                ]
+                write_visual_compaction_debug(
+                    lesson_name,
+                    paths.output_intermediate_dir,
+                    debug_entries,
+                    compaction_cfg_used=compaction_cfg,
+                )
             step4_ran = True
             assert evidence_index is not None
             _emit(
@@ -238,7 +269,6 @@ def run_component2_pipeline(
             )
 
     if enable_rule_cards:
-        paths = PipelinePaths(video_root=root)
         ke_path = paths.knowledge_events_path(lesson_name)
         ei_path = paths.evidence_index_path(lesson_name)
         if knowledge_collection is None and ke_path.exists():
@@ -250,6 +280,7 @@ def run_component2_pipeline(
             rule_cards, rule_debug = build_rule_cards(
                 knowledge_collection=knowledge_collection,
                 evidence_index=evidence_index,
+                compaction_cfg=compaction_cfg,
             )
             save_rule_cards(rule_cards, paths.rule_cards_path(lesson_name))
             save_rule_debug(rule_debug, paths.rule_debug_path(lesson_name))
@@ -260,34 +291,33 @@ def run_component2_pipeline(
             )
         else:
             if knowledge_collection is None:
-                _emit(
-                    f"Step 4b skipped: enable_rule_cards is True but {ke_path.name} not found. "
-                    "Run with --enable-knowledge-events first or ensure the file exists."
+                require_artifact(
+                    ke_path,
+                    "step4b_rule_cards",
+                    "Run with --enable-knowledge-events first or ensure the file exists.",
                 )
             if evidence_index is None:
-                _emit(
-                    f"Step 4b skipped: enable_rule_cards requires {ei_path.name}. "
-                    "Run with --enable-evidence-linking first or ensure the file exists."
+                require_artifact(
+                    ei_path,
+                    "step4b_rule_cards",
+                    "Run with --enable-evidence-linking first or ensure the file exists.",
                 )
 
     # Task 7 exporter stage: derive review_markdown.md and rag_ready.md from structured JSON only
     exporter_ran = False
     if enable_exporters:
-        paths = PipelinePaths(video_root=root)
         rc_path = paths.rule_cards_path(lesson_name)
         ei_path = paths.evidence_index_path(lesson_name)
         ke_path = paths.knowledge_events_path(lesson_name)
-        if not rc_path.exists():
-            _emit(
-                f"Exporters skipped: {rc_path.name} not found. "
-                "Run with --enable-rule-cards first or ensure the file exists."
-            )
-        elif not ei_path.exists():
-            _emit(
-                f"Exporters skipped: {ei_path.name} not found. "
-                "Run with --enable-evidence-linking first or ensure the file exists."
-            )
-        else:
+        if require_artifact(
+            rc_path,
+            "step5_exporters",
+            "Run with --enable-rule-cards first or ensure the file exists.",
+        ) and require_artifact(
+            ei_path,
+            "step5_exporters",
+            "Run with --enable-evidence-linking first or ensure the file exists.",
+        ):
             _emit("Step (exporters): Generating review and RAG markdown from rule cards and evidence...")
             review_path = paths.review_markdown_path(lesson_name)
             rag_path = paths.rag_ready_export_path(lesson_name)
@@ -310,6 +340,7 @@ def run_component2_pipeline(
                 model=model,
                 provider=provider,
                 review_render_debug_path=review_debug_path,
+                compaction_cfg=compaction_cfg,
             )
             _, rag_usage = export_rag_markdown(
                 lesson_id=lesson_name,
@@ -323,23 +354,40 @@ def run_component2_pipeline(
                 model=model,
                 provider=provider,
                 rag_render_debug_path=rag_debug_path,
+                compaction_cfg=compaction_cfg,
             )
-            # Optional export manifest
+            # Export manifest: only include existing artifacts (build_export_manifest)
+            artifact_paths = {
+                "inspection_report": paths.inspection_report_path(),
+                "filtered_visuals": paths.filtered_visuals_path,
+                "filtered_visuals_debug": paths.filtered_visuals_debug_path,
+                "chunks": paths.lesson_chunks_path(lesson_name),
+                "knowledge_events": paths.knowledge_events_path(lesson_name),
+                "evidence_index": paths.evidence_index_path(lesson_name),
+                "rule_cards": paths.rule_cards_path(lesson_name),
+                "review_markdown": paths.review_markdown_path(lesson_name),
+                "rag_markdown_legacy": paths.rag_ready_markdown_path(lesson_name),
+                "rag_markdown_exported": paths.rag_ready_export_path(lesson_name),
+                "export_manifest": paths.export_manifest_path(lesson_name),
+            }
+            flags = {
+                "enable_exporters": True,
+                "use_llm_review_render": use_llm_review_render,
+                "use_llm_rag_render": use_llm_rag_render,
+            }
+            manifest_payload = build_export_manifest(
+                lesson_id=lesson_name,
+                video_root=paths.video_root,
+                artifact_paths=artifact_paths,
+                flags=flags,
+            )
             rc_coll = rule_cards if rule_cards is not None else load_rule_cards_for_export(rc_path)
             ei_coll = evidence_index if evidence_index is not None else load_evidence_index(ei_path)
-            manifest_path = paths.output_review_dir / f"{lesson_name}.export_manifest.json"
-            write_export_manifest(
-                {
-                    "lesson_id": lesson_name,
-                    "review_markdown_path": str(review_path),
-                    "rag_markdown_path": str(rag_path),
-                    "used_llm_review_render": use_llm_review_render,
-                    "used_llm_rag_render": use_llm_rag_render,
-                    "rule_count": len(rc_coll.rules),
-                    "evidence_count": len(ei_coll.evidence_refs),
-                },
-                manifest_path,
-            )
+            manifest_payload["rule_count"] = len(rc_coll.rules)
+            manifest_payload["evidence_count"] = len(ei_coll.evidence_refs)
+            manifest_payload["used_llm_review_render"] = use_llm_review_render
+            manifest_payload["used_llm_rag_render"] = use_llm_rag_render
+            write_artifact_manifest(paths.export_manifest_path(lesson_name), manifest_payload)
             exporter_ran = True
             _emit(
                 f"Step (exporters) complete: wrote `{review_path.name}`, `{rag_path.name}`, and manifest."
@@ -348,7 +396,6 @@ def run_component2_pipeline(
     # New markdown render path (after 4b): requires rule_cards + evidence_index
     render_ran = False
     if enable_new_markdown_render:
-        paths = PipelinePaths(video_root=root)
         rc_path = paths.rule_cards_path(lesson_name)
         ei_path = paths.evidence_index_path(lesson_name)
         if rule_cards is None and rc_path.exists():
@@ -369,9 +416,9 @@ def run_component2_pipeline(
                 model=model,
                 provider=provider,
             )
-            review_md_path = output_intermediate_dir / f"{lesson_name}.review.md"
-            review_md_path.write_text(render_result.markdown, encoding="utf-8")
-            render_debug_path = output_intermediate_dir / f"{lesson_name}.render_debug.json"
+            review_md_path = paths.output_intermediate_dir / f"{lesson_name}.review.md"
+            atomic_write_text(review_md_path, render_result.markdown, encoding="utf-8")
+            render_debug_path = paths.output_intermediate_dir / f"{lesson_name}.render_debug.json"
             render_debug_row = {
                 "num_rule_cards": len(rule_cards.rules),
                 "num_evidence_refs": len(evidence_index.evidence_refs),
@@ -428,10 +475,10 @@ def run_component2_pipeline(
 
         _emit("Step 3.4/5: Writing intermediate markdown and debug artifacts...")
         intermediate_markdown = assemble_video_markdown(lesson_name, processed_chunks)
-        intermediate_markdown_path.write_text(intermediate_markdown, encoding="utf-8")
-        write_llm_debug(llm_debug_path, legacy_debug_rows(processed_chunks))
+        atomic_write_text(paths.pass1_markdown_path(lesson_name), intermediate_markdown, encoding="utf-8")
+        write_llm_debug(paths.llm_debug_path(lesson_name), legacy_debug_rows(processed_chunks))
         _emit(
-            f"Step 3.4/5 complete: wrote `{intermediate_markdown_path.name}` and debug artifacts."
+            f"Step 3.4/5 complete: wrote `{paths.pass1_markdown_path(lesson_name).name}` and debug artifacts."
         )
 
         _emit("Step 3.5/5: Running Pass 2 quant reduction for RAG-ready markdown...")
@@ -445,44 +492,34 @@ def run_component2_pipeline(
             rag_ready_markdown, reducer_usage = reducer_result
         else:
             rag_ready_markdown, reducer_usage = reducer_result, []
-        rag_ready_markdown_path.write_text(rag_ready_markdown, encoding="utf-8")
-        reducer_usage_path.write_text(
-            json.dumps(reducer_usage, indent=2, ensure_ascii=False), encoding="utf-8"
-        )
+        atomic_write_text(paths.rag_ready_markdown_path(lesson_name), rag_ready_markdown, encoding="utf-8")
+        atomic_write_json(paths.reducer_usage_path(lesson_name), reducer_usage)
         write_video_usage_summary(root)
-        _emit(f"Step 3.5/5 complete: wrote `{rag_ready_markdown_path.name}`.")
+        _emit(f"Step 3.5/5 complete: wrote `{paths.rag_ready_markdown_path(lesson_name).name}`.")
 
-    result: dict[str, Path] = {
-        "filtered_events_path": filtered_events_path,
-        "filtered_debug_path": filtered_debug_path,
-        "chunk_debug_path": chunk_debug_path,
-    }
+    result: dict[str, Path] = {}
+    maybe_add_output(result, "inspection_report_path", paths.inspection_report_path())
+    maybe_add_output(result, "filtered_events_path", paths.filtered_visuals_path)
+    maybe_add_output(result, "filtered_debug_path", paths.filtered_visuals_debug_path)
+    maybe_add_output(result, "chunk_debug_path", paths.lesson_chunks_path(lesson_name))
+    maybe_add_output(result, "knowledge_events_path", paths.knowledge_events_path(lesson_name))
+    maybe_add_output(result, "evidence_index_path", paths.evidence_index_path(lesson_name))
+    maybe_add_output(result, "evidence_debug_path", paths.evidence_debug_path(lesson_name))
+    maybe_add_output(result, "rule_cards_path", paths.rule_cards_path(lesson_name))
+    maybe_add_output(result, "rule_debug_path", paths.rule_debug_path(lesson_name))
+    maybe_add_output(result, "review_markdown_path", paths.review_markdown_path(lesson_name))
+    maybe_add_output(result, "rag_ready_markdown_path", paths.rag_ready_markdown_path(lesson_name))
+    maybe_add_output(result, "rag_ready_export_path", paths.rag_ready_export_path(lesson_name))
+    maybe_add_output(result, "export_manifest_path", paths.export_manifest_path(lesson_name))
     if preserve_legacy_markdown:
-        result["llm_debug_path"] = llm_debug_path
-        result["reducer_usage_path"] = reducer_usage_path
-        result["intermediate_markdown_path"] = intermediate_markdown_path
-        result["rag_ready_markdown_path"] = rag_ready_markdown_path
-        result["markdown_path"] = rag_ready_markdown_path
-    if enable_knowledge_events:
-        paths = PipelinePaths(video_root=root)
-        result["knowledge_events_path"] = paths.knowledge_events_path(lesson_name)
-        result["knowledge_debug_path"] = paths.knowledge_debug_path(lesson_name)
-    if step4_ran:
-        paths = PipelinePaths(video_root=root)
-        result["evidence_index_path"] = paths.evidence_index_path(lesson_name)
-        result["evidence_debug_path"] = paths.evidence_debug_path(lesson_name)
-    if step5_ran:
-        paths = PipelinePaths(video_root=root)
-        result["rule_cards_path"] = paths.rule_cards_path(lesson_name)
-        result["rule_debug_path"] = paths.rule_debug_path(lesson_name)
+        maybe_add_output(result, "llm_debug_path", paths.llm_debug_path(lesson_name))
+        maybe_add_output(result, "reducer_usage_path", paths.reducer_usage_path(lesson_name))
+        maybe_add_output(result, "intermediate_markdown_path", paths.pass1_markdown_path(lesson_name))
+        maybe_add_output(result, "rag_ready_markdown_path", paths.rag_ready_markdown_path(lesson_name))
+        maybe_add_output(result, "markdown_path", paths.rag_ready_markdown_path(lesson_name))
     if render_ran:
-        result["review_markdown_path"] = output_intermediate_dir / f"{lesson_name}.review.md"
-        result["render_debug_path"] = output_intermediate_dir / f"{lesson_name}.render_debug.json"
-    if exporter_ran:
-        paths = PipelinePaths(video_root=root)
-        result["review_markdown_export_path"] = paths.review_markdown_path(lesson_name)
-        result["rag_ready_export_path"] = paths.rag_ready_export_path(lesson_name)
-        result["export_manifest_path"] = paths.output_review_dir / f"{lesson_name}.export_manifest.json"
+        maybe_add_output(result, "review_markdown_path", paths.output_intermediate_dir / f"{lesson_name}.review.md")
+        maybe_add_output(result, "render_debug_path", paths.output_intermediate_dir / f"{lesson_name}.render_debug.json")
     return result
 
 

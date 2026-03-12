@@ -152,6 +152,7 @@ def test_run_component2_pipeline_creates_inspection_and_same_output_keys(
     )
 
     expected_keys = {
+        "inspection_report_path",
         "filtered_events_path",
         "filtered_debug_path",
         "chunk_debug_path",

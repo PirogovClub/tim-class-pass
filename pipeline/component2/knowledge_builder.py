@@ -11,7 +11,14 @@ from typing import Any, Optional, Protocol
 
 from pydantic import BaseModel, Field
 
+from pipeline.io_utils import atomic_write_text, atomic_write_json
 from pipeline.component2.parser import seconds_to_mmss
+from pipeline.component2.visual_compaction import (
+    VisualCompactionConfig,
+    assert_no_raw_visual_blob_leak,
+    strip_raw_visual_blobs_from_metadata,
+    summarize_visual_events_for_extraction,
+)
 from pipeline.schemas import (
     ConfidenceLabel,
     KnowledgeEvent,
@@ -167,57 +174,6 @@ def adapt_chunks(
     ]
 
 
-# ----- Visual pre-summarization -----
-
-
-def summarize_single_visual_event(event: dict) -> str:
-    """One short trading-relevant line; prefer type, example_type, change_summary, etc."""
-    parts: list[str] = []
-    vtype = event.get("visual_representation_type")
-    if vtype:
-        parts.append(str(vtype).replace("_", " "))
-    etype = event.get("example_type")
-    if etype and str(etype).lower() != "unknown":
-        parts.append(str(etype).replace("_", " "))
-    change = event.get("change_summary")
-    if isinstance(change, list) and change:
-        parts.append("; ".join(str(c) for c in change[:2]))
-    elif isinstance(change, str) and change.strip():
-        parts.append(change.strip()[:120])
-    interp = event.get("trading_relevant_interpretation")
-    if isinstance(interp, str) and interp.strip():
-        parts.append(interp.strip()[:100])
-    current = event.get("current_state") or {}
-    if isinstance(current, dict):
-        ann = current.get("visible_annotations")
-        if ann:
-            parts.append(str(ann)[:80])
-        entities = current.get("extracted_entities")
-        if isinstance(entities, dict) and entities:
-            parts.append("entities: " + ", ".join(str(k) for k in list(entities.keys())[:3]))
-    if not parts:
-        return "Visual event (no summary)"
-    return ". ".join(parts)[:200]
-
-
-def summarize_visual_events_for_extraction(
-    visual_events: list[dict],
-    max_items: int = 5,
-) -> list[str]:
-    """Cap at max_items trading-relevant summaries per chunk."""
-    summaries: list[str] = []
-    seen: set[str] = set()
-    for event in visual_events:
-        if len(summaries) >= max_items:
-            break
-        s = summarize_single_visual_event(event)
-        key = s.strip().lower()[:50]
-        if key and key not in seen:
-            seen.add(key)
-            summaries.append(s)
-    return summaries
-
-
 # ----- Extraction models -----
 
 
@@ -286,11 +242,11 @@ def extract_chunk_knowledge(
     chunk: AdaptedChunk,
     llm_client: Any,
     max_visual_summaries: int = 5,
+    compaction_cfg: VisualCompactionConfig | None = None,
 ) -> tuple[ChunkExtractionResult, dict]:
     """Call LLM, parse JSON into ChunkExtractionResult, return result and debug payload."""
-    visual_summaries = summarize_visual_events_for_extraction(
-        chunk.visual_events, max_items=max_visual_summaries
-    )
+    cfg = compaction_cfg if compaction_cfg is not None else VisualCompactionConfig()
+    visual_summaries = summarize_visual_events_for_extraction(chunk.visual_events, cfg)
     prompt = build_knowledge_extraction_prompt(chunk, visual_summaries)
     system = "You are a trading knowledge extractor. Respond only with valid JSON."
     debug: dict = {
@@ -526,7 +482,7 @@ def extraction_result_to_knowledge_events(
                     confidence=label,
                     confidence_score=conf_score,
                     ambiguity_notes=st.ambiguity_notes or [],
-                    metadata=dict(meta),
+                    metadata=strip_raw_visual_blobs_from_metadata(meta),
                 )
                 events.append(ke)
             except Exception:
@@ -625,19 +581,12 @@ def build_knowledge_events_from_file(
 
 def save_knowledge_events(collection: KnowledgeEventCollection, output_path: Path) -> None:
     """Write KnowledgeEventCollection as JSON."""
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(
-        collection.model_dump_json(indent=2),
-        encoding="utf-8",
-    )
+    assert_no_raw_visual_blob_leak(collection.model_dump())
+    atomic_write_text(output_path, collection.model_dump_json(indent=2), encoding="utf-8")
     logger.info("Wrote %d events to %s", len(collection.events), output_path)
 
 
 def save_knowledge_debug(debug_rows: list[dict], output_path: Path) -> None:
     """Write debug records as JSON array."""
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(
-        json.dumps(debug_rows, indent=2, ensure_ascii=False),
-        encoding="utf-8",
-    )
+    atomic_write_json(output_path, debug_rows)
     logger.info("Wrote debug %d rows to %s", len(debug_rows), output_path)

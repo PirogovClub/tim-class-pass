@@ -11,7 +11,6 @@ from pipeline.component2.rule_reducer import (
     ATTACH_THRESHOLD,
     RuleCandidate,
     attach_evidence_to_candidates,
-    build_candidate_visual_summary,
     build_rule_cards,
     candidate_to_rule_card,
     choose_canonical_rule_text,
@@ -480,8 +479,12 @@ def test_simple_text_similarity() -> None:
     assert 0 <= simple_text_similarity("a b", "a c") <= 1.0
 
 
-def test_build_candidate_visual_summary_one_ref() -> None:
-    """One evidence ref with compact_visual_summary is used."""
+def test_summarize_evidence_for_rule_card_one_ref() -> None:
+    """One evidence ref with compact_visual_summary is used for rule card visual summary."""
+    from pipeline.component2.visual_compaction import (
+        VisualCompactionConfig,
+        summarize_evidence_for_rule_card,
+    )
     ref = EvidenceRef(
         lesson_id="L",
         evidence_id="e1",
@@ -496,7 +499,8 @@ def test_build_candidate_visual_summary_one_ref() -> None:
         title_hint=None,
         linked_evidence=[ref],
     )
-    summary = build_candidate_visual_summary(cand)
+    cfg = VisualCompactionConfig()
+    summary = summarize_evidence_for_rule_card(cand.linked_evidence, cfg)
     assert summary == "Chart showing level."
 
 

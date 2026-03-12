@@ -7,7 +7,15 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from pipeline.io_utils import atomic_write_text, atomic_write_json
 from pipeline.component2.parser import seconds_to_mmss, timestamp_to_seconds
+from pipeline.component2.visual_compaction import (
+    VisualCompactionConfig,
+    assert_no_raw_visual_blob_leak,
+    build_evidence_provenance_payload,
+    strip_raw_visual_blobs_from_metadata,
+    summarize_visual_candidate_for_evidence,
+)
 from pipeline.invalidation_filter import load_dense_analysis
 from pipeline.schemas import (
     EvidenceIndex,
@@ -286,25 +294,6 @@ def group_visual_events_into_candidates(
     return candidates
 
 
-def summarize_candidate(candidate: VisualEvidenceCandidate) -> str:
-    """Build 1–2 line compact summary from dominant type, change summary, concept hints."""
-    parts: list[str] = []
-    if candidate.visual_events:
-        types = [e.visual_representation_type for e in candidate.visual_events if e.visual_representation_type != "unknown"]
-        if types:
-            from collections import Counter
-            dominant_type = Counter(types).most_common(1)[0][0]
-            parts.append(dominant_type.replace("_", " "))
-        summaries = [e.change_summary for e in candidate.visual_events if e.change_summary]
-        if summaries:
-            parts.append(summaries[0][:120] + ("..." if len(summaries[0]) > 120 else ""))
-    if candidate.concept_hints:
-        parts.append("Concepts: " + ", ".join(candidate.concept_hints[:5]))
-    if not parts:
-        return "Visual evidence segment."
-    return " ".join(parts)[:300].strip()
-
-
 def infer_example_role(
     candidate: VisualEvidenceCandidate,
     linked_events: list[KnowledgeEvent],
@@ -390,12 +379,14 @@ def link_candidates_to_knowledge_events(
     candidates: list[VisualEvidenceCandidate],
     knowledge_events: list[KnowledgeEvent],
     threshold: float = 0.50,
+    compaction_cfg: VisualCompactionConfig | None = None,
 ) -> tuple[list[tuple[VisualEvidenceCandidate, list[KnowledgeEvent]]], list[dict]]:
     """For each candidate, link events with score >= threshold; return (pairs, debug_rows)."""
+    cfg = compaction_cfg if compaction_cfg is not None else VisualCompactionConfig()
     linked: list[tuple[VisualEvidenceCandidate, list[KnowledgeEvent]]] = []
     debug_rows: list[dict] = []
     for c in candidates:
-        c.compact_visual_summary = c.compact_visual_summary or summarize_candidate(c)
+        c.compact_visual_summary = c.compact_visual_summary or summarize_visual_candidate_for_evidence(c, cfg)
         scores: list[dict] = []
         best_events: list[KnowledgeEvent] = []
         for ev in knowledge_events:
@@ -444,8 +435,12 @@ def candidate_to_evidence_ref(
     linked_events: list[KnowledgeEvent],
     lesson_id: str,
     lesson_title: str | None = None,
+    video_root: Path | None = None,
+    compaction_cfg: VisualCompactionConfig | None = None,
 ) -> EvidenceRef:
     """Build EvidenceRef from candidate and linked events."""
+    cfg = compaction_cfg if compaction_cfg is not None else VisualCompactionConfig()
+    payload = build_evidence_provenance_payload(candidate, video_root, cfg)
     section: str | None = None
     subsection: str | None = None
     if linked_events:
@@ -457,6 +452,7 @@ def candidate_to_evidence_ref(
             subsection = subsections[0]
     ts_start_str = seconds_to_mmss(candidate.timestamp_start)
     ts_end_str = seconds_to_mmss(candidate.timestamp_end)
+    compact_visual_summary = candidate.compact_visual_summary or summarize_visual_candidate_for_evidence(candidate, cfg)
     return EvidenceRef(
         evidence_id=candidate.candidate_id,
         lesson_id=lesson_id,
@@ -465,15 +461,15 @@ def candidate_to_evidence_ref(
         subsection=subsection,
         timestamp_start=ts_start_str,
         timestamp_end=ts_end_str,
-        frame_ids=list(candidate.frame_keys),
-        screenshot_paths=[],  # optional; leave empty unless path convention is stable
+        frame_ids=payload["frame_ids"],
+        screenshot_paths=payload["screenshot_paths"],
         visual_type=_visual_type_to_schema(candidate.visual_type),
         example_role=_example_role_to_schema(candidate.example_role),
-        compact_visual_summary=candidate.compact_visual_summary,
+        compact_visual_summary=compact_visual_summary,
         linked_rule_ids=[],
-        raw_visual_event_ids=[f"ve_raw_{k}" for k in candidate.frame_keys],
+        raw_visual_event_ids=payload["raw_visual_event_ids"],
         source_event_ids=[e.event_id for e in linked_events],
-        metadata=candidate.metadata,
+        metadata=strip_raw_visual_blobs_from_metadata(candidate.metadata),
     )
 
 
@@ -484,18 +480,26 @@ def build_evidence_index(
     dense_analysis: dict[str, Any] | None = None,
     lesson_title: str | None = None,
     link_threshold: float = 0.50,
+    video_root: Path | None = None,
+    compaction_cfg: VisualCompactionConfig | None = None,
 ) -> tuple[EvidenceIndex, list[dict]]:
     """Adapt visuals from chunks, optionally enrich, group, link, convert to EvidenceRef; return (EvidenceIndex, debug_rows)."""
+    cfg = compaction_cfg if compaction_cfg is not None else VisualCompactionConfig()
     adapted = adapt_visual_events_from_chunks(chunks, lesson_id)
     if dense_analysis:
         adapted = [enrich_visual_event_from_dense_analysis(e, dense_analysis) for e in adapted]
     candidates = group_visual_events_into_candidates(adapted, lesson_id=lesson_id)
     linked_pairs, debug_rows = link_candidates_to_knowledge_events(
-        candidates, knowledge_events, threshold=link_threshold
+        candidates, knowledge_events, threshold=link_threshold, compaction_cfg=cfg
     )
     refs: list[EvidenceRef] = []
     for candidate, linked in linked_pairs:
-        refs.append(candidate_to_evidence_ref(candidate, linked, lesson_id, lesson_title))
+        refs.append(
+            candidate_to_evidence_ref(
+                candidate, linked, lesson_id, lesson_title,
+                video_root=video_root, compaction_cfg=cfg,
+            )
+        )
     index = EvidenceIndex(
         schema_version="1.0",
         lesson_id=lesson_id,
@@ -508,14 +512,10 @@ def build_evidence_index(
 
 def save_evidence_index(index: EvidenceIndex, output_path: Path) -> None:
     """Write EvidenceIndex as JSON."""
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(index.model_dump_json(indent=2), encoding="utf-8")
+    assert_no_raw_visual_blob_leak(index.model_dump())
+    atomic_write_text(output_path, index.model_dump_json(indent=2), encoding="utf-8")
 
 
 def save_evidence_debug(debug_rows: list[dict], output_path: Path) -> None:
     """Write debug rows as JSON array."""
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(
-        json.dumps(debug_rows, indent=2, ensure_ascii=False),
-        encoding="utf-8",
-    )
+    atomic_write_json(output_path, debug_rows)

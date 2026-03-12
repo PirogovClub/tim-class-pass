@@ -21,7 +21,10 @@ from pipeline.component2.evidence_linker import (
     save_evidence_debug,
     save_evidence_index,
     score_candidate_event_match,
-    summarize_candidate,
+)
+from pipeline.component2.visual_compaction import (
+    VisualCompactionConfig,
+    summarize_visual_candidate_for_evidence,
 )
 from pipeline.schemas import EvidenceIndex, KnowledgeEvent
 
@@ -522,8 +525,8 @@ def test_load_knowledge_events(tmp_path: Path) -> None:
     assert loaded[0].event_type == "definition"
 
 
-def test_summarize_candidate() -> None:
-    """summarize_candidate produces short summary from events and hints."""
+def test_summarize_visual_candidate_for_evidence() -> None:
+    """summarize_visual_candidate_for_evidence produces short summary from events and hints."""
     candidate = VisualEvidenceCandidate(
         candidate_id="c1",
         lesson_id="L",
@@ -536,6 +539,7 @@ def test_summarize_candidate() -> None:
         ],
         concept_hints=["level"],
     )
-    s = summarize_candidate(candidate)
+    cfg = VisualCompactionConfig()
+    s = summarize_visual_candidate_for_evidence(candidate, cfg)
     assert s
     assert len(s) <= 350

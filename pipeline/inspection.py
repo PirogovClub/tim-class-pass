@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Optional
 
 from pipeline.contracts import PipelinePaths
+from pipeline.io_utils import atomic_write_json
 from pipeline.stage_registry import STAGE_REGISTRY
 
 
@@ -150,4 +151,4 @@ def write_report(
         "backward_compatible": report.backward_compatible,
         "warnings": report.warnings,
     }
-    output_path.write_text(json.dumps(out, indent=2), encoding="utf-8")
+    atomic_write_json(output_path, out)

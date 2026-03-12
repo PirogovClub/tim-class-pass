@@ -3,11 +3,19 @@
 from __future__ import annotations
 
 import json
+import logging
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from pipeline.io_utils import atomic_write_text, atomic_write_json
+from pipeline.component2.visual_compaction import (
+    VisualCompactionConfig,
+    summarize_evidence_for_rag_markdown,
+    summarize_evidence_for_review_markdown,
+    validate_markdown_visual_compaction,
+)
 from pipeline.schemas import (
     EvidenceIndex,
     EvidenceRef,
@@ -16,6 +24,8 @@ from pipeline.schemas import (
     RuleCard,
     RuleCardCollection,
 )
+
+logger = logging.getLogger(__name__)
 
 # Confidence sort: high first, then medium, then low
 _CONFIDENCE_ORDER = {"high": 0, "medium": 1, "low": 2}
@@ -56,6 +66,7 @@ class ExportContext:
     knowledge_events: list[KnowledgeEvent] | None = None
     rules_by_id: dict[str, RuleCard] = field(default_factory=dict)
     evidence_by_id: dict[str, EvidenceRef] = field(default_factory=dict)
+    compaction_cfg: VisualCompactionConfig | None = None
 
 
 def build_export_context(
@@ -63,6 +74,7 @@ def build_export_context(
     evidence_index: EvidenceIndex,
     knowledge_events: KnowledgeEventCollection | None = None,
     lesson_title: str | None = None,
+    compaction_cfg: VisualCompactionConfig | None = None,
 ) -> ExportContext:
     """Build a normalized export context from collections."""
     rules = rule_cards.rules
@@ -81,6 +93,7 @@ def build_export_context(
         knowledge_events=events_list,
         rules_by_id=rules_by_id,
         evidence_by_id=evidence_by_id,
+        compaction_cfg=compaction_cfg,
     )
 
 
@@ -172,8 +185,13 @@ def _rule_source_events_compact(rule: RuleCard) -> str:
     return ", ".join(ids)
 
 
-def _review_rule_block(rule: RuleCard, evidence_by_id: dict[str, EvidenceRef]) -> str:
+def _review_rule_block(
+    rule: RuleCard,
+    evidence_by_id: dict[str, EvidenceRef],
+    compaction_cfg: VisualCompactionConfig | None = None,
+) -> str:
     """Single rule as review markdown block; omit empty sections."""
+    cfg = compaction_cfg or VisualCompactionConfig()
     parts: list[str] = []
     title = rule.title or "Rule"
     parts.append(f"### Rule: {clean_markdown_text(rule.rule_text)}")
@@ -208,9 +226,12 @@ def _review_rule_block(rule: RuleCard, evidence_by_id: dict[str, EvidenceRef]) -
         parts.append(block)
         parts.append("")
 
-    if rule.visual_summary:
+    refs = [evidence_by_id[eid] for eid in (rule.evidence_refs or []) if eid in evidence_by_id]
+    review_visuals = summarize_evidence_for_review_markdown(refs, cfg)
+    if review_visuals:
         parts.append("**Visual evidence**")
-        parts.append(f"- {clean_markdown_text(rule.visual_summary)}")
+        for line in review_visuals[: cfg.max_visual_bullets_review]:
+            parts.append(f"- {clean_markdown_text(line)}")
         parts.append("")
 
     ev_refs = _rule_evidence_refs_compact(rule, evidence_by_id)
@@ -234,15 +255,20 @@ def render_review_markdown_deterministic(ctx: ExportContext) -> str:
         lines.append(f"## Concept: {concept}")
         lines.append("")
         for rule in rules:
-            lines.append(_review_rule_block(rule, ctx.evidence_by_id))
+            lines.append(_review_rule_block(rule, ctx.evidence_by_id, ctx.compaction_cfg))
             lines.append("")
     while lines and lines[-1] == "":
         lines.pop()
     return "\n".join(lines) if lines else ""
 
 
-def _rag_rule_block(rule: RuleCard, evidence_by_id: dict[str, EvidenceRef]) -> str:
+def _rag_rule_block(
+    rule: RuleCard,
+    evidence_by_id: dict[str, EvidenceRef],
+    compaction_cfg: VisualCompactionConfig | None = None,
+) -> str:
     """Compact RAG rule block: no verbose provenance."""
+    cfg = compaction_cfg or VisualCompactionConfig()
     parts: list[str] = []
     sub = rule.subconcept or rule.title
     if sub:
@@ -261,9 +287,12 @@ def _rag_rule_block(rule: RuleCard, evidence_by_id: dict[str, EvidenceRef]) -> s
     if block:
         parts.append(block)
         parts.append("")
-    if rule.visual_summary:
+    refs = [evidence_by_id[eid] for eid in (rule.evidence_refs or []) if eid in evidence_by_id]
+    rag_visuals = summarize_evidence_for_rag_markdown(refs, cfg)
+    if rag_visuals:
         parts.append("Visual summary:")
-        parts.append(f"- {clean_markdown_text(rule.visual_summary)}")
+        for line in rag_visuals[: cfg.max_visual_bullets_rag]:
+            parts.append(f"- {clean_markdown_text(line)}")
     if parts and parts[-1] == "":
         parts.pop()
     return "\n".join(parts)
@@ -279,7 +308,7 @@ def render_rag_markdown_deterministic(ctx: ExportContext) -> str:
         lines.append(f"## {concept}")
         lines.append("")
         for rule in rules:
-            lines.append(_rag_rule_block(rule, ctx.evidence_by_id))
+            lines.append(_rag_rule_block(rule, ctx.evidence_by_id, ctx.compaction_cfg))
             lines.append("")
     while lines and lines[-1] == "":
         lines.pop()
@@ -352,31 +381,25 @@ def ensure_parent_dir(path: Path) -> None:
 def save_review_markdown(markdown: str, output_path: Path) -> None:
     """Write review markdown to file."""
     ensure_parent_dir(output_path)
-    output_path.write_text(markdown, encoding="utf-8")
+    atomic_write_text(output_path, markdown, encoding="utf-8")
 
 
 def save_rag_markdown(markdown: str, output_path: Path) -> None:
     """Write RAG markdown to file."""
     ensure_parent_dir(output_path)
-    output_path.write_text(markdown, encoding="utf-8")
+    atomic_write_text(output_path, markdown, encoding="utf-8")
 
 
 def save_export_debug(debug_rows: list[dict], output_path: Path) -> None:
     """Write debug rows as JSON."""
     ensure_parent_dir(output_path)
-    output_path.write_text(
-        json.dumps(debug_rows, indent=2, ensure_ascii=False),
-        encoding="utf-8",
-    )
+    atomic_write_json(output_path, debug_rows)
 
 
 def write_export_manifest(manifest_dict: dict[str, Any], path: Path) -> None:
     """Write export manifest JSON (lesson_id, paths, counts, LLM flags)."""
     ensure_parent_dir(path)
-    path.write_text(
-        json.dumps(manifest_dict, indent=2, ensure_ascii=False),
-        encoding="utf-8",
-    )
+    atomic_write_json(path, manifest_dict)
 
 
 # ----- Optional debug when LLM used -----
@@ -396,10 +419,7 @@ def _write_render_debug(
         "markdown_preview": preview,
     }
     ensure_parent_dir(path)
-    path.write_text(
-        json.dumps(payload, indent=2, ensure_ascii=False),
-        encoding="utf-8",
-    )
+    atomic_write_json(path, payload)
 
 
 # ----- Export orchestration -----
@@ -418,6 +438,7 @@ def export_review_markdown(
     model: str | None = None,
     provider: str | None = None,
     review_render_debug_path: Path | None = None,
+    compaction_cfg: VisualCompactionConfig | None = None,
 ) -> tuple[str, list[dict]]:
     """Load artifacts, build context, render review markdown, save. Returns (markdown, usage)."""
     rule_cards = load_rule_cards(rule_cards_path)
@@ -430,6 +451,7 @@ def export_review_markdown(
         evidence_index,
         knowledge_events=knowledge_events,
         lesson_title=lesson_title,
+        compaction_cfg=compaction_cfg,
     )
     md, usage = render_review_markdown(
         ctx,
@@ -438,6 +460,9 @@ def export_review_markdown(
         model=model,
         provider=provider,
     )
+    warnings = validate_markdown_visual_compaction(md)
+    if warnings:
+        logger.warning("Visual compaction warnings: %d", len(warnings))
     ensure_parent_dir(output_path)
     save_review_markdown(md, output_path)
     if use_llm and review_render_debug_path is not None:
@@ -463,6 +488,7 @@ def export_rag_markdown(
     model: str | None = None,
     provider: str | None = None,
     rag_render_debug_path: Path | None = None,
+    compaction_cfg: VisualCompactionConfig | None = None,
 ) -> tuple[str, list[dict]]:
     """Load artifacts, build context, render RAG markdown, save. Returns (markdown, usage)."""
     rule_cards = load_rule_cards(rule_cards_path)
@@ -475,6 +501,7 @@ def export_rag_markdown(
         evidence_index,
         knowledge_events=knowledge_events,
         lesson_title=lesson_title,
+        compaction_cfg=compaction_cfg,
     )
     md, usage = render_rag_markdown(
         ctx,
@@ -483,6 +510,9 @@ def export_rag_markdown(
         model=model,
         provider=provider,
     )
+    warnings = validate_markdown_visual_compaction(md)
+    if warnings:
+        logger.warning("Visual compaction warnings: %d", len(warnings))
     ensure_parent_dir(output_path)
     save_rag_markdown(md, output_path)
     if use_llm and rag_render_debug_path is not None:
