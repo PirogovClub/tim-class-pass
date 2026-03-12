@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from pipeline.io_utils import atomic_write_text, atomic_write_json
+from pipeline.component2.provenance import format_compact_provenance
 from pipeline.component2.visual_compaction import (
     VisualCompactionConfig,
     summarize_evidence_for_rag_markdown,
@@ -17,6 +18,7 @@ from pipeline.component2.visual_compaction import (
     validate_markdown_visual_compaction,
 )
 from pipeline.schemas import (
+    ConceptGraph,
     EvidenceIndex,
     EvidenceRef,
     KnowledgeEvent,
@@ -234,12 +236,9 @@ def _review_rule_block(
             parts.append(f"- {clean_markdown_text(line)}")
         parts.append("")
 
-    ev_refs = _rule_evidence_refs_compact(rule, evidence_by_id)
-    if ev_refs:
-        parts.append(f"**Evidence refs:** {ev_refs}")
-    src_ev = _rule_source_events_compact(rule)
-    if src_ev:
-        parts.append(f"**Source events:** {src_ev}")
+    prov_block = format_compact_provenance(rule)
+    if prov_block:
+        parts.append(prov_block)
     if parts and parts[-1] == "":
         parts.pop()
     return "\n".join(parts)
@@ -425,6 +424,19 @@ def _write_render_debug(
 # ----- Export orchestration -----
 
 
+def _format_concept_relationships_section(graph: ConceptGraph) -> str:
+    """Compact markdown lines for Concept relationships (Task 12 optional)."""
+    lines: list[str] = []
+    for r in graph.relations:
+        if r.relation_type == "contrasts_with":
+            lines.append(f"- {r.source_id} contrasts_with {r.target_id}")
+        else:
+            lines.append(f"- {r.source_id} -> {r.target_id} ({r.relation_type})")
+    if not lines:
+        return ""
+    return "\n\n## Concept relationships\n\n" + "\n".join(lines)
+
+
 def export_review_markdown(
     *,
     lesson_id: str,
@@ -432,6 +444,7 @@ def export_review_markdown(
     rule_cards_path: Path,
     evidence_index_path: Path,
     knowledge_events_path: Path | None = None,
+    concept_graph_path: Path | None = None,
     output_path: Path,
     use_llm: bool = False,
     video_id: str | None = None,
@@ -460,6 +473,13 @@ def export_review_markdown(
         model=model,
         provider=provider,
     )
+    if concept_graph_path and concept_graph_path.exists():
+        graph = ConceptGraph.model_validate_json(
+            concept_graph_path.read_text(encoding="utf-8")
+        )
+        extra = _format_concept_relationships_section(graph)
+        if extra:
+            md = md.rstrip() + "\n" + extra
     warnings = validate_markdown_visual_compaction(md)
     if warnings:
         logger.warning("Visual compaction warnings: %d", len(warnings))

@@ -112,6 +112,8 @@ uv run python -m pipeline.component2.main --help
 
 ## Output Files
 
+For the full layout (directories, per-lesson artifacts, legacy vs new filenames, and optional structured outputs), see **[docs/pipeline_structure_and_features.md](docs/pipeline_structure_and_features.md)**.
+
 ### Main pipeline
 
 ```
@@ -152,7 +154,7 @@ The structural compare artifacts are for inspection only. Step 2 still sends the
 
 ### Component 2 + Step 3 markdown pipeline
 
-Given a VTT and dense frame-analysis JSON, the markdown pipeline writes:
+Given a VTT and dense frame-analysis JSON, the markdown pipeline writes (at minimum):
 
 ```text
 <output-root>/
@@ -165,6 +167,35 @@ Given a VTT and dense frame-analysis JSON, the markdown pipeline writes:
 │   └── <lesson_name>.reducer_usage.json
 └── output_rag_ready/
     └── <lesson_name>.md
+```
+
+With optional flags (`--enable-knowledge-events`, `--enable-evidence-linking`, `--enable-rule-cards`, `--enable-concept-graph`, `--enable-exporters`) it also produces `*.knowledge_events.json`, `*.evidence_index.json`, `*.rule_cards.json`, `*.concept_graph.json`, `output_review/*.review_markdown.md`, `output_rag_ready/*.rag_ready.md`, and `*.export_manifest.json`. See [docs/pipeline_structure_and_features.md](docs/pipeline_structure_and_features.md).
+
+## Testing and coverage
+
+Tests use **pytest**; coverage uses **pytest-cov** (installed with the dev dependency group).
+
+```bash
+uv sync --group dev
+uv run pytest tests/ -m "not live_provider" -v
+```
+
+Coverage report (sources: `pipeline`, `helpers`; branch coverage enabled):
+
+```bash
+uv run pytest tests/ --cov --cov-report=term-missing -m "not live_provider"
+```
+
+HTML report:
+
+```bash
+uv run pytest tests/ --cov --cov-report=html -m "not live_provider"
+```
+
+Open `htmlcov/index.html` to browse. Optional live-provider tests (require API keys) run only with:
+
+```bash
+uv run pytest -m live_provider
 ```
 
 ## Running the Pipelines
@@ -305,6 +336,7 @@ uv run python -m pipeline.component2.main --help
 | `--model` | off | Gemini model override for synthesis |
 | `--target-duration-seconds` | `120.0` | Target chunk duration before semantic extension |
 | `--max-concurrency` | `5` | Max simultaneous Gemini chunk requests |
+| `--enable-concept-graph` | off | Task 12: build concept graph from rule cards → write `*.concept_graph.json` (requires rule_cards) |
 
 ---
 

@@ -122,6 +122,8 @@ def get_config_for_video(video_id: str) -> dict:
         "visual_include_screenshot_candidates": _parse_bool(os.getenv("VISUAL_INCLUDE_SCREENSHOT_CANDIDATES"), DEFAULT_VISUAL_INCLUDE_SCREENSHOT_CANDIDATES),
         "visual_store_raw_blobs": _parse_bool(os.getenv("VISUAL_STORE_RAW_BLOBS"), DEFAULT_VISUAL_STORE_RAW_BLOBS),
         "enable_visual_compaction_debug": _parse_bool(os.getenv("ENABLE_VISUAL_COMPACTION_DEBUG"), False),
+        "include_provenance_in_review_markdown": _parse_bool(os.getenv("INCLUDE_PROVENANCE_IN_REVIEW_MARKDOWN"), True),
+        "include_provenance_validation_in_debug": _parse_bool(os.getenv("INCLUDE_PROVENANCE_VALIDATION_IN_DEBUG"), True),
     }
     batch_env = os.getenv("BATCH_SIZE")
     if batch_env is not None:
@@ -173,6 +175,8 @@ def get_config_for_video(video_id: str) -> dict:
         "visual_include_screenshot_candidates",
         "visual_store_raw_blobs",
         "enable_visual_compaction_debug",
+        "include_provenance_in_review_markdown",
+        "include_provenance_validation_in_debug",
         *_provider_keys,
         *_model_keys,
     )

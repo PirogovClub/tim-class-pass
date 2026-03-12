@@ -1,0 +1,10 @@
+{
+  "000010": {
+    "material_change": true,
+    "visual_representation_type": "text_slide",
+    "example_type": "illustration",
+    "change_summary": ["Minimal change"],
+    "current_state": {},
+    "extracted_entities": {}
+  }
+}

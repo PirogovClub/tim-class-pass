@@ -9,6 +9,10 @@ from typing import Any
 
 from pipeline.io_utils import atomic_write_text, atomic_write_json
 from pipeline.component2.parser import seconds_to_mmss, timestamp_to_seconds
+from pipeline.component2.provenance import (
+    build_evidence_ref_provenance,
+    validate_evidence_ref_provenance,
+)
 from pipeline.component2.visual_compaction import (
     VisualCompactionConfig,
     assert_no_raw_visual_blob_leak,
@@ -441,6 +445,15 @@ def candidate_to_evidence_ref(
     """Build EvidenceRef from candidate and linked events."""
     cfg = compaction_cfg if compaction_cfg is not None else VisualCompactionConfig()
     payload = build_evidence_provenance_payload(candidate, video_root, cfg)
+    prov = build_evidence_ref_provenance(
+        lesson_id=lesson_id,
+        timestamp_start=candidate.timestamp_start,
+        timestamp_end=candidate.timestamp_end,
+        frame_ids=payload["frame_ids"],
+        screenshot_paths=payload["screenshot_paths"],
+        raw_visual_event_ids=payload["raw_visual_event_ids"],
+        source_event_ids=[e.event_id for e in linked_events],
+    )
     section: str | None = None
     subsection: str | None = None
     if linked_events:
@@ -453,7 +466,7 @@ def candidate_to_evidence_ref(
     ts_start_str = seconds_to_mmss(candidate.timestamp_start)
     ts_end_str = seconds_to_mmss(candidate.timestamp_end)
     compact_visual_summary = candidate.compact_visual_summary or summarize_visual_candidate_for_evidence(candidate, cfg)
-    return EvidenceRef(
+    evidence_ref = EvidenceRef(
         evidence_id=candidate.candidate_id,
         lesson_id=lesson_id,
         lesson_title=lesson_title,
@@ -461,16 +474,17 @@ def candidate_to_evidence_ref(
         subsection=subsection,
         timestamp_start=ts_start_str,
         timestamp_end=ts_end_str,
-        frame_ids=payload["frame_ids"],
-        screenshot_paths=payload["screenshot_paths"],
+        frame_ids=prov.get("frame_ids", []),
+        screenshot_paths=prov.get("screenshot_paths", []),
         visual_type=_visual_type_to_schema(candidate.visual_type),
         example_role=_example_role_to_schema(candidate.example_role),
         compact_visual_summary=compact_visual_summary,
         linked_rule_ids=[],
-        raw_visual_event_ids=payload["raw_visual_event_ids"],
-        source_event_ids=[e.event_id for e in linked_events],
+        raw_visual_event_ids=prov.get("raw_visual_event_ids", []),
+        source_event_ids=prov.get("source_event_ids", []),
         metadata=strip_raw_visual_blobs_from_metadata(candidate.metadata),
     )
+    return evidence_ref
 
 
 def build_evidence_index(
@@ -493,13 +507,13 @@ def build_evidence_index(
         candidates, knowledge_events, threshold=link_threshold, compaction_cfg=cfg
     )
     refs: list[EvidenceRef] = []
-    for candidate, linked in linked_pairs:
-        refs.append(
-            candidate_to_evidence_ref(
-                candidate, linked, lesson_id, lesson_title,
-                video_root=video_root, compaction_cfg=cfg,
-            )
+    for i, (candidate, linked) in enumerate(linked_pairs):
+        ref = candidate_to_evidence_ref(
+            candidate, linked, lesson_id, lesson_title,
+            video_root=video_root, compaction_cfg=cfg,
         )
+        refs.append(ref)
+        debug_rows[i]["provenance_warnings"] = validate_evidence_ref_provenance(ref)
     index = EvidenceIndex(
         schema_version="1.0",
         lesson_id=lesson_id,

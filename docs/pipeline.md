@@ -5,6 +5,8 @@ This document describes both runnable pipelines in this repository:
 1. The **main pipeline** run by `uv run tim-class-pass`
 2. The **standalone Component 2 + Step 3 markdown pipeline** run by `uv run python -m pipeline.component2.main`
 
+For **output layout, path contract, optional structured stages, and feature flags**, see **[pipeline_structure_and_features.md](pipeline_structure_and_features.md)**.
+
 ---
 
 ## Main pipeline overview
@@ -150,15 +152,19 @@ flowchart TB
 
 ## Step 0: Download (optional)
 
-**Script:** `downloader.py`  
+**Script:** `pipeline/downloader.py`  
+**Functions:** `extract_video_id(url)`, `download_video_and_transcript(url, video_id)`  
 **When:** Only if you pass `--url`; skipped when using `--video_id`.
 
-1. Extracts the video ID from the YouTube URL.
-2. Creates `data/<video_id>/` if needed.
-3. Runs **yt-dlp** to download:
-   - The video as `.mp4` (or first available format).
-   - Available subtitles/captions as `.vtt` (e.g. auto-generated or manual).
-4. Does not run if you already have the video and VTT in `data/<video_id>/`.
+1. **Extract video ID:** Uses **yt-dlp** in extract-only mode (`extract_flat=True`) to get the video ID from the YouTube URL. Returns the ID or `None` on failure.
+2. **Create directory:** Ensures `data/<video_id>/` exists (or the configured `DATA_DIR`).
+3. **Download with yt-dlp:** Runs `yt-dlp.YoutubeDL` with:
+   - Format: `bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best` so the primary output is MP4.
+   - Output template: `data/<video_id>/%(id)s.%(ext)s` for both video and subtitles.
+   - `writesubtitles=True`, `writeautomaticsub=True`, `subtitleslangs=['en', 'ru']`, `subtitlesformat='vtt'`.
+   - `noplaylist=True` so only the single video is downloaded.
+4. **Result:** On success, the video file is written as `data/<video_id>/<id>.mp4` (or similar) and subtitle files as `data/<video_id>/<id>.en.vtt`, `data/<video_id>/<id>.ru.vtt`, etc. The main pipeline later selects a `.vtt` from this folder (e.g. via config `vtt_file` or by convention).
+5. **Skip condition:** The main pipeline does not re-download if you invoke it with `--video_id` and the folder already contains the expected assets.
 
 **Outputs:** `data/<video_id>/<video>.mp4`, `data/<video_id>/*.vtt`.
 
@@ -173,10 +179,10 @@ flowchart TB
 1. **Clean:** Removes existing `frames_dense/` and `dense_index.json` if present (so the run is full re-extraction).
 2. **Resolve video file:** Uses `video_file_override` from pipeline config if set; otherwise the first `.mp4` in `data/<video_id>/`.
 3. **FFmpeg:** Runs FFmpeg to extract dense color frames:
-   - Default filter: `fps=0.5,scale=1280:-1` (width 1280, height auto).
+   - Default filter: `fps=0.5,scale=1280:-1` (0.5 fps, width 1280, height auto to preserve aspect).
    - Quality: `-qscale:v 2`.
-   - Output pattern: `frames_dense/frame_%06d.jpg`, then files are renamed/indexed to second-based keys (for example `frame_000002.jpg`, `frame_000004.jpg` at `0.5 fps`).
-4. **Parallel segments (when enabled):** If `max_workers > 1` and video duration is known and > 60s, it splits the video into ~60s segments, runs one FFmpeg process per segment in parallel, writes into `frames_dense_seg_XXX/`, then merges into `frames_dense/` with global renumbering.
+   - Output pattern: `frames_dense/frame_%06d.jpg`. The capturer then renames and re-indexes so that frame numbers align with second-based keys: at 0.5 fps, frame 1 → key `000001`, frame 2 → `000002`, etc., so each key corresponds to one sampled second.
+4. **Parallel segments (when enabled):** If `max_workers > 1` and video duration is known and > 60s, the video is split into ~60s segments. One FFmpeg process per segment runs in parallel (e.g. via `ProcessPoolExecutor` or similar), writing into temporary `frames_dense_seg_XXX/` directories. After all segments finish, frames are merged into `frames_dense/` with global second-based keys so the final index is contiguous and ordered.
 5. **Index:** Builds a mapping from frame number (as 6-digit string key, e.g. `"000001"`) to the path under the video dir, e.g. `frames_dense/frame_000001.jpg`.
 6. **Write:** Saves the index to `data/<video_id>/dense_index.json`.
 
@@ -196,9 +202,9 @@ flowchart TB
 2. **Config:** Reads `ssim_threshold` and `compare_blur_radius` from pipeline config (defaults `0.95` and `1.5`). Frames with SSIM above the threshold are considered “unchanged” relative to the previous frame.
 3. **Compare:** For each frame (except the first), optionally in parallel when `max_workers > 1`:
    - Loads previous and current color frames from `frames_dense/`.
-   - Converts them to grayscale, applies Gaussian blur, and calls `compare_images(prev_path, cur_path, threshold, blur_radius=...)`.
-   - Stores for that frame: `previous_key`, `score`, `is_significant` (True if score &lt; threshold), `threshold`, `metadata`, `compare_seconds`.
-   - First frame gets `score=1.0`, `is_significant=True`, `reason="first_frame"`.
+   - Converts them to grayscale, optionally resizes current to match baseline size, applies Gaussian blur (`compare_blur_radius` from config, default 1.5), and calls `compare_images(prev_path, cur_path, threshold, blur_radius=...)` from `helpers/utils/compare.py`. The comparison uses SSIM (structural similarity) via skimage.
+   - Stores for that frame: `previous_key`, `score`, `is_significant` (True if score &lt; threshold), `threshold`, `metadata`, `compare_seconds`. If `compare_artifacts_dir` is set in config, preprocessed grayscale/blur PNGs can be written for inspection.
+   - The first frame has no previous frame; it gets a synthetic result: `score=1.0`, `is_significant=True`, `reason="first_frame"`.
 4. **Rename (optional):** If `rename_with_diff=True` (default), for every frame:
    - Computes `diff = 1 - score` (e.g. `0.1014` for 10.14% difference).
    - Renames the file from e.g. `frame_000014.jpg` to `frame_000014_diff_0.1014.jpg`.
@@ -300,36 +306,172 @@ High-level flow:
 
 ---
 
-## Step 3: Component 2 + markdown synthesis
+## Step 3: Component 2 + markdown synthesis (detailed)
 
-**Script:** `pipeline/component2/main.py` and `pipeline/invalidation_filter.py`  
+**Script:** `pipeline/component2/main.py` (orchestration), `pipeline/invalidation_filter.py`, `pipeline/component2/parser.py`, `pipeline/component2/llm_processor.py`, `pipeline/component2/quant_reducer.py`, and optionally `knowledge_builder.py`, `evidence_linker.py`, `rule_reducer.py`, `exporters.py`.  
 **Function:** `run_component2_pipeline(...)`  
-**Depends on:** `dense_analysis.json` (from Step 2) and a `.vtt` transcript.
+**Depends on:** `dense_analysis.json` (from Step 2) and a `.vtt` transcript in the same output root (or paths passed to the standalone CLI).
 
-Summary:
+All paths are resolved via `PipelinePaths` in `pipeline/contracts.py`; output directories are created with `paths.ensure_output_dirs()`. The step runs in order below. Optional stages (knowledge extraction, evidence linking, rule cards, exporters) are gated by flags; see [pipeline_structure_and_features.md](pipeline_structure_and_features.md).
 
-1. Load `dense_analysis.json`.
-2. Run the invalidation filter:
-   - keep entries where `material_change == true`
-   - keep all known visual types
-   - keep selected `unknown` entries only when they still contain explicit instructional signals (for example annotations, drawings, structural patterns, or strong rule-oriented cues)
-3. Write `filtered_visual_events.json` and `filtered_visual_events.debug.json`.
-4. Parse the VTT and synchronize transcript lines with filtered visual events.
-5. Create semantic `LessonChunk` objects and write `output_intermediate/<lesson>.chunks.json`.
-6. Call the configured provider/model for Pass 1 literal-scribe markdown chunks.
-7. Write `output_intermediate/<lesson>.llm_debug.json`.
-8. Assemble Pass 1 markdown into `output_intermediate/<lesson>.md`.
-9. Run a whole-document reducer pass that reorganizes the lesson into topic-based RAG-ready markdown.
-10. Write the final result to `output_rag_ready/<lesson>.md` and reducer usage to `output_intermediate/<lesson>.reducer_usage.json`.
+---
 
-**Outputs:**  
-- `data/<video_id>/filtered_visual_events.json`  
-- `data/<video_id>/filtered_visual_events.debug.json`  
-- `data/<video_id>/output_intermediate/<lesson>.md`  
-- `data/<video_id>/output_intermediate/<lesson>.chunks.json`  
-- `data/<video_id>/output_intermediate/<lesson>.llm_debug.json`
-- `data/<video_id>/output_intermediate/<lesson>.reducer_usage.json`
-- `data/<video_id>/output_rag_ready/<lesson>.md`
+### Step 3.1 — Preflight and invalidation filter
+
+1. **Preflight (main pipeline only):** When Step 3 is invoked from the main pipeline, `prepare_component2_run()` runs first: it writes a pipeline inspection report to `pipeline_inspection.json` (path from `paths.inspection_report_path()`), which lists resolvable stages from `pipeline/stage_registry.py` and artifact checks. Standalone Component 2 CLI can skip or reuse this.
+
+2. **Load dense analysis:** Reads `dense_analysis.json` (or the path given as `visuals_json_path`). The file must be a JSON object keyed by frame key (e.g. `"000001"`); each value is a per-frame extraction dict with at least `material_change`, `visual_representation_type`, `change_summary`, `current_state`, `extracted_entities`, and optionally `educational_event_type`, `screen_type`, `frame_timestamp`.
+
+3. **Filter to instructional events:** `filter_visual_events(raw_analysis)` in `pipeline/invalidation_filter.py` iterates frames in sorted key order and keeps an entry only if `is_valid_visual_event(entry)` is true:
+   - **Requirement:** `entry["material_change"]` must be truthy; otherwise the frame is rejected with reason `"no_material_change"`.
+   - **Known visual types:** If `visual_representation_type` is not in the unknown set (`""`, `"n/a"`, `"na"`, `"none"`, `"null"`, `"unknown"`), the entry is kept.
+   - **Unknown type:** If the type is unknown, the entry is kept only if `_has_instructional_signal(entry)` returns true. That function:
+     - Rejects if `change_summary` (or similar text) contains any of `NEGATIVE_INSTRUCTIONAL_PHRASES` (e.g. "no direct trading information", "generic transition") unless the entry also has explicit markup: non-empty `visible_annotations`, `drawn_objects`, `structural_pattern_visible`, or non-empty `extracted_entities`.
+     - Keeps if `change_summary` or `educational_event_type` contains any of `INSTRUCTIONAL_CHANGE_KEYWORDS` (e.g. "annot", "arrow", "diagram", "draw", "highlight", "label", "slide", "text", "trendline").
+     - Keeps if `current_state` has non-empty `visible_annotations`, `drawn_objects`, or `structural_pattern_visible`.
+     - Keeps if `cursor_or_highlight` contains an instructional keyword.
+     - Keeps if `extracted_entities` has meaningful content.
+     - Keeps if `screen_type` is one of `slides`, `chart_with_annotation`, `chart`, `browser`, `platform` and one of the above markup or `visual_facts` conditions holds.
+   - Each kept entry is normalized to a `VisualEvent` (timestamp_seconds, frame_key, visual_representation_type, example_type, change_summary, current_state, extracted_entities) via `_normalize_visual_event`.
+
+4. **Debug report:** `build_debug_report(raw_analysis, events)` produces a dict with `input_frames`, `kept_events`, `rejected_frames`, `kept_frame_keys`, `rejected_frame_keys` (map of frame_key → rejection_reason).
+
+5. **Write:** Filtered events are written to `paths.filtered_visuals_path` (`filtered_visual_events.json`) and the debug report to `paths.filtered_visuals_debug_path` (`filtered_visual_events.debug.json`), using atomic writes from `pipeline/io_utils.py`.
+
+---
+
+### Step 3.2 — Parse VTT and synchronize with visual events
+
+1. **Parse VTT:** `parse_vtt(vtt_path)` in `pipeline/component2/parser.py` loads the transcript. It tries the `webvtt` library first; on failure it falls back to `_parse_vtt_manually`, which scans the file for lines matching `HH:MM:SS.mmm --> HH:MM:SS.mmm` and collects the following non-empty lines as caption text. Each segment becomes a `TranscriptLine` (start_seconds, end_seconds, text). Timestamps are converted to float seconds; caption text is cleaned (WebVTT tags removed, entities normalized, whitespace collapsed).
+
+2. **Load filtered events:** `parse_filtered_visual_events(events_path)` reads `filtered_visual_events.json`, validates it as a JSON array, deserializes each item to `VisualEvent`, and sorts by `(timestamp_seconds, frame_key)`.
+
+3. **Create lesson chunks:** `create_lesson_chunks(vtt_lines, visual_events, target_duration_seconds)` (default 120.0) builds semantic chunks:
+   - Iterates over transcript lines in order. For each chunk it accumulates lines until a cut condition is met.
+   - **Cut when:** (a) there is no next line, or (b) the current chunk duration is at least `target_duration_seconds` and either the current line ends a sentence (terminal punctuation like `.` `!` `?` …) or the gap to the next line is greater than 1.5 seconds. This keeps chunks roughly target-length while respecting sentence and pause boundaries.
+   - For each chunk it computes `chunk_start` and `chunk_end` from the first and last line. It assigns every visual event whose `timestamp_seconds` lies in `[chunk_start, chunk_end]` to that chunk. The last event’s `current_state` is carried forward as `previous_visual_state` for the next chunk.
+   - Each chunk is a `LessonChunk`: chunk_index, start_time_seconds, end_time_seconds, transcript_lines, visual_events, previous_visual_state.
+
+4. **Write chunks:** The list of chunks is written to `paths.lesson_chunks_path(lesson_name)` (`output_intermediate/<lesson>.chunks.json`) as a JSON array of serialized `LessonChunk`s.
+
+---
+
+### Step 3.3 — Optional: Knowledge extraction (step3_2b)
+
+**When:** `--enable-knowledge-events` (or equivalent flag). Requires chunks to exist.
+
+1. **Adapt chunks:** Raw chunks (from the previous step) are adapted to `AdaptedChunk` format (lesson_id, chunk_index, section, transcript_text, visual_events, etc.) via `adapt_chunks()` in `pipeline/component2/knowledge_builder.py`. Transcript text is built from transcript lines; time bounds and metadata are attached.
+
+2. **Extract per chunk:** For each adapted chunk, the pipeline calls the LLM in knowledge-extraction mode (`process_chunks_knowledge_extract` in `llm_processor.py`). Visual events are summarized (with optional compaction) and passed along with transcript text in a structured prompt. The model returns a `ChunkExtractionResult` (e.g. statements with text, concept, subconcept, provenance). Concurrency is capped by `max_concurrency`; progress is reported per chunk.
+
+3. **Build knowledge events:** `build_knowledge_events_from_extraction_results()` maps extraction results to a `KnowledgeEventCollection`. It infers concept/subconcept from text and visuals where missing, scores event confidence, normalizes statement text, dedupes statements, and attaches provenance (chunk index, timestamps, source event IDs). Each event gets a stable `event_id`.
+
+4. **Write:** The collection is written to `paths.knowledge_events_path(lesson_name)` and debug rows to `paths.knowledge_debug_path(lesson_name)`.
+
+---
+
+### Step 3.4 — Optional: Evidence linking (step4)
+
+**When:** `--enable-evidence-linking`. Requires knowledge events (from this run or an existing file).
+
+1. **Load:** Knowledge events are loaded from `paths.knowledge_events_path(lesson_name)` if not already in memory. Chunks are already in memory (or reloaded from `paths.lesson_chunks_path(lesson_name)`).
+
+2. **Adapt and enrich visuals:** `adapt_visual_events_from_chunks(chunks, lesson_id)` builds a list of visual events with chunk context. If `dense_analysis` is provided, `enrich_visual_event_from_dense_analysis()` merges in per-frame fields (e.g. change_summary, current_state) from the dense analysis so each candidate has full context.
+
+3. **Group into candidates:** `group_visual_events_into_candidates()` groups consecutive visual events that belong to the same chunk and are close in time (or split on chunk boundary / large time gap). Each group becomes a `VisualEvidenceCandidate` (time range, compact summary, metadata, raw event IDs).
+
+4. **Link to knowledge events:** `link_candidates_to_knowledge_events(candidates, knowledge_events, threshold)` scores each candidate against each knowledge event (e.g. by time overlap, concept hint overlap, text similarity). Pairs above the link threshold are kept. Each candidate is converted to an `EvidenceRef` (evidence_id, compact_visual_summary, linked knowledge event IDs, source event IDs, metadata) via `candidate_to_evidence_ref()`; visual summaries are compacted to avoid leaking raw blobs.
+
+5. **Write:** An `EvidenceIndex` (schema_version, lesson_id, lesson_title, evidence_refs) is written to `paths.evidence_index_path(lesson_name)` and debug rows to `paths.evidence_debug_path(lesson_name)`.
+
+---
+
+### Step 3.5 — Optional: Rule cards (step4b)
+
+**When:** `--enable-rule-cards`. Requires knowledge events and evidence index.
+
+1. **Load:** `KnowledgeEventCollection` from `paths.knowledge_events_path(lesson_name)` and `EvidenceIndex` from `paths.evidence_index_path(lesson_name)`.
+
+2. **Group events into rule candidates:** `group_events_into_rule_candidates(events, evidence_index, threshold)` clusters knowledge events that share concept/subconcept and similar time/chunk context. Events are classified as primary (rule-like), condition, invalidation, exception, etc., and routed into `RuleCandidate` objects. Compatibility is based on role and text similarity.
+
+3. **Attach evidence:** `attach_evidence_to_candidates(candidates, evidence_index)` links each candidate to the evidence refs whose source event IDs overlap the candidate’s event IDs.
+
+4. **Merge and split:** Duplicate primary events within a candidate are merged. Candidates that are too broad (e.g. multiple subconcepts or low similarity) are split via `split_overbroad_candidate()` into smaller candidates.
+
+5. **Convert to rule cards:** For each final candidate, `candidate_to_rule_card()` builds a `RuleCard`: canonical rule text (chosen from primary events), conditions, invalidation, exceptions, algorithm notes, example refs, confidence score, evidence_refs, concept, subconcept, etc. Visual summaries are trimmed via compaction config.
+
+6. **Write:** A `RuleCardCollection` is written to `paths.rule_cards_path(lesson_name)` and debug rows to `paths.rule_debug_path(lesson_name)`.
+
+---
+
+### Step 3.55 — Optional: Concept graph (step12)
+
+**When:** `--enable-concept-graph`. Requires rule cards (from run or existing file).
+
+1. **Load:** `RuleCardCollection` from `paths.rule_cards_path(lesson_name)` (or use in-memory rule_cards if step4b just ran).
+
+2. **Build graph:** `build_concept_graph(rule_cards)` in `pipeline/component2/concept_graph.py` creates nodes from unique concepts and subconcepts, then adds typed relations: `parent_of`/`child_of` from concept–subconcept pairs, `related_to` for sibling subconcepts, `precedes` from source chunk order within a concept family, `depends_on` from dependency cues in text, `contrasts_with` from name pairs and comparison cues, `supports` from support-like subconcept names. All relation creation is conservative and deterministic.
+
+3. **Write:** A `ConceptGraph` (lesson_id, nodes, relations) is written to `paths.concept_graph_path(lesson_name)` and debug rows to `paths.concept_graph_debug_path(lesson_name)`.
+
+When exporters run and the concept graph file exists, the review markdown can include an optional "## Concept relationships" section (one line per relation).
+
+---
+
+### Step 3.6 — Optional: Exporters (step5)
+
+**When:** `--enable-exporters`. Requires rule cards and evidence index.
+
+1. **Load:** Rule cards from `paths.rule_cards_path(lesson_name)` and evidence index from `paths.evidence_index_path(lesson_name)`. Optionally knowledge events for context.
+
+2. **Build export context:** `build_export_context()` builds an `ExportContext`: lesson_id, lesson_title, rule_cards, evidence_refs, evidence_by_id map, compaction config.
+
+3. **Render review markdown:** By default `render_review_markdown_deterministic(ctx)` builds the review document: title, then for each concept group (from `group_rule_cards_for_export`), sorted rule cards and for each rule a block with rule text, conditions, invalidation, evidence refs, and compact provenance. Empty sections are omitted. If `--use-llm-review-render` is set, an LLM can be used to render the review markdown instead.
+
+4. **Render RAG markdown:** `render_rag_markdown_deterministic(ctx)` builds a compact RAG document: title, then concept groups and for each rule a short block (subconcept, rule text, conditions, invalidation, algorithm notes, visual summary bullets). No verbose provenance. If `--use-llm-rag-render` is set, an LLM can render the RAG markdown.
+
+5. **Write:** Review markdown is written to `paths.review_markdown_path(lesson_name)` (`output_review/<lesson>.review_markdown.md`), RAG markdown to `paths.rag_ready_export_path(lesson_name)` (`output_rag_ready/<lesson>.rag_ready.md`). Optional render debug JSON is written when LLM render was used. The export manifest is built with `build_export_manifest()` (only existing artifact paths included) and written to `paths.export_manifest_path(lesson_name)` via `write_artifact_manifest()`.
+
+---
+
+### Step 3.7 — Legacy: Pass 1 literal-scribe markdown
+
+**When:** Default (or unless `--no-preserve-legacy-markdown`). Always runs after chunks are written unless legacy is disabled.
+
+1. **Per-chunk prompt:** For each `LessonChunk`, `build_legacy_markdown_prompt(chunk)` (in `llm_processor.py`) builds the user message: `<previous_visual_state>` (JSON), `<transcript>` (lines with `[MM:SS]` prefix), `<visual_events>` (per-event timestamp, example_type, visual_representation_type, change_summary, current_state, extracted_entities). The system prompt is the Literal Scribe: translate to English, preserve chronology and information density, integrate visual deltas, output structured JSON.
+
+2. **Call provider:** Each chunk is processed (e.g. via `process_chunks()`) with the configured provider and model; the response is parsed as `EnrichedMarkdownChunk` (synthesized_markdown, metadata_tags). Concurrency is limited by `max_concurrency`; order is preserved.
+
+3. **Assemble Pass 1 document:** `assemble_video_markdown(lesson_name, processed_chunks)` sorts by chunk_index, formats each chunk’s markdown (and appends "**Tags:** " + metadata_tags if present), joins with "---", and prepends a "# {lesson_name}" header.
+
+4. **Write:** The assembled markdown is written to `paths.pass1_markdown_path(lesson_name)` (`output_intermediate/<lesson>.md`). Per-chunk debug (chunk index, times, result, request_usage) is written to `paths.llm_debug_path(lesson_name)` (`output_intermediate/<lesson>.llm_debug.json`).
+
+---
+
+### Step 3.8 — Legacy: Pass 2 quant reducer
+
+**When:** Same as Pass 1 (legacy flow enabled).
+
+1. **Single document call:** `synthesize_full_document(raw_markdown, video_id, model, provider)` in `pipeline/component2/quant_reducer.py` sends the full Pass 1 markdown to the reducer model (resolved via config/env, default e.g. `gemini-2.5-flash-lite`). The system prompt (`QUANT_SYSTEM_PROMPT`) instructs the model to act as Quantitative Trading Architect: discard narrative fluff, reorganize by trading topics (## headers), synthesize visual clusters, preserve verification timestamps, and output YAML frontmatter with deduplicated tags.
+
+2. **Response:** The model returns a single markdown string (topic-grouped, rule-oriented). Usage records are collected.
+
+3. **Write:** The reduced markdown is written to `paths.rag_ready_markdown_path(lesson_name)` (`output_rag_ready/<lesson>.md`). Reducer usage is written to `paths.reducer_usage_path(lesson_name)` (`output_intermediate/<lesson>.reducer_usage.json`). The pipeline may also update `ai_usage_summary.json` in the video root.
+
+---
+
+### Step 3.9 — Result and manifest
+
+The orchestrator builds the return dict of output paths using `maybe_add_output()`: only paths that exist are included (e.g. inspection_report_path, filtered_events_path, chunk_debug_path, knowledge_events_path, evidence_index_path, rule_cards_path, concept_graph_path, concept_graph_debug_path, review_markdown_path, rag_ready_markdown_path, rag_ready_export_path, export_manifest_path, plus legacy paths when applicable). When exporters ran, the export manifest was already written with only existing artifacts.
+
+**Outputs (depending on flags):**  
+- `filtered_visual_events.json`, `filtered_visual_events.debug.json`  
+- `output_intermediate/<lesson>.chunks.json`  
+- `output_intermediate/<lesson>.md`, `output_intermediate/<lesson>.llm_debug.json`, `output_intermediate/<lesson>.reducer_usage.json` (legacy)  
+- `output_rag_ready/<lesson>.md` (legacy RAG-ready)  
+- Optional: `output_intermediate/<lesson>.knowledge_events.json`, `*.knowledge_debug.json`, `*.evidence_index.json`, `*.evidence_debug.json`, `*.rule_cards.json`, `*.rule_debug.json`, `*.concept_graph.json`, `*.concept_graph_debug.json`  
+- Optional: `output_review/<lesson>.review_markdown.md`, `output_rag_ready/<lesson>.rag_ready.md`, `output_review/<lesson>.export_manifest.json`  
+- Optional: `pipeline_inspection.json`
 
 ---
 
@@ -337,7 +479,7 @@ Summary:
 
 | Path | Step | Description |
 |------|------|-------------|
-| `data/<video_id>/*.mp4`, `*.vtt` | 0 | Video and source transcripts. |
+| `data/<video_id>/*.mp4`, `*.vtt` | 0 | Video and source transcripts (yt-dlp). |
 | `data/<video_id>/frames_dense/frame_*_diff_*.jpg` | 1, 1.5 | Dense color frames; filenames include SSIM diff. |
 | `data/<video_id>/dense_index.json` | 1, 1.5 | Frame key → path to JPG. |
 | `data/<video_id>/structural_index.json` | 1.5 | Per-frame SSIM score and `is_significant`. |
@@ -348,13 +490,25 @@ Summary:
 | `data/<video_id>/ai_usage_summary.json` | 2, 3 | Aggregated request/token summary from inline usage records. |
 | `data/<video_id>/frames_dense/frame_*.json` | 2 | Per-frame extraction JSON. |
 | `data/<video_id>/batches/dense_batch_*`, `last_agent_task.json` | 2 | Batch prompts/responses and batch-agent state. |
+| `data/<video_id>/pipeline_inspection.json` | 3 | Preflight: stage registry and artifact checks. |
 | `data/<video_id>/filtered_visual_events.json` | 3 | Filtered instructional visual events. |
 | `data/<video_id>/filtered_visual_events.debug.json` | 3 | Filter report and rejected frame reasons. |
+| `data/<video_id>/output_intermediate/*.chunks.json` | 3 | Synchronized lesson chunks (transcript + visual events). |
 | `data/<video_id>/output_intermediate/*.md` | 3 | Pass 1 literal-scribe markdown. |
-| `data/<video_id>/output_intermediate/*.chunks.json` | 3 | Chunk debug output. |
 | `data/<video_id>/output_intermediate/*.llm_debug.json` | 3 | LLM result debug output with per-chunk request usage. |
 | `data/<video_id>/output_intermediate/*.reducer_usage.json` | 3 | Pass 2 reducer request usage. |
-| `data/<video_id>/output_rag_ready/*.md` | 3 | Final topic-grouped RAG-ready markdown. |
+| `data/<video_id>/output_rag_ready/*.md` | 3 | Legacy final topic-grouped RAG-ready markdown. |
+| `data/<video_id>/output_intermediate/*.knowledge_events.json` | 3 | Optional: atomic knowledge events (--enable-knowledge-events). |
+| `data/<video_id>/output_intermediate/*.knowledge_debug.json` | 3 | Optional: knowledge extraction debug. |
+| `data/<video_id>/output_intermediate/*.evidence_index.json` | 3 | Optional: evidence linked to knowledge events (--enable-evidence-linking). |
+| `data/<video_id>/output_intermediate/*.evidence_debug.json` | 3 | Optional: evidence linking debug. |
+| `data/<video_id>/output_intermediate/*.rule_cards.json` | 3 | Optional: rule cards from events + evidence (--enable-rule-cards). |
+| `data/<video_id>/output_intermediate/*.rule_debug.json` | 3 | Optional: rule card build debug. |
+| `data/<video_id>/output_intermediate/*.concept_graph.json` | 3 | Optional: lesson-level concept graph (--enable-concept-graph). |
+| `data/<video_id>/output_intermediate/*.concept_graph_debug.json` | 3 | Optional: concept graph relation debug. |
+| `data/<video_id>/output_review/*.review_markdown.md` | 3 | Optional: review markdown from exporters (--enable-exporters). |
+| `data/<video_id>/output_rag_ready/*.rag_ready.md` | 3 | Optional: RAG markdown from exporters (--enable-exporters). |
+| `data/<video_id>/output_review/*.export_manifest.json` | 3 | Optional: export manifest (existing artifacts only). |
 
 ---
 
@@ -440,8 +594,17 @@ uv run python -m pipeline.component2.main \
 | `--provider` | Optional markdown provider override |
 | `--reducer-model` | Optional reducer model override |
 | `--reducer-provider` | Optional reducer provider override |
-| `--target-duration-seconds` | Target semantic chunk size before extending to a sentence boundary |
-| `--max-concurrency` | Max simultaneous Gemini chunk requests |
+| `--target-duration-seconds` | Target semantic chunk size (seconds) before extending to a sentence boundary; default 120 |
+| `--max-concurrency` | Max simultaneous LLM chunk requests (Pass 1 and knowledge extraction) |
+| `--enable-knowledge-events` | Run knowledge extraction from chunks → write `*.knowledge_events.json` |
+| `--enable-evidence-linking` | Link visual evidence to knowledge events → write `*.evidence_index.json` (requires knowledge events) |
+| `--enable-rule-cards` | Build rule cards from knowledge_events + evidence_index → write `*.rule_cards.json` |
+| `--enable-concept-graph` | Build concept graph from rule_cards (Task 12) → write `*.concept_graph.json` (requires rule_cards) |
+| `--enable-exporters` | Render `*.review_markdown.md` and `*.rag_ready.md` from rule_cards + evidence (requires rule_cards and evidence_index) |
+| `--no-preserve-legacy-markdown` | Skip legacy Pass 1 + Pass 2 markdown synthesis (Steps 3.3–3.5) |
+| `--enable-new-markdown-render` | Alternative render from rule_cards + evidence to `output_intermediate/*.review.md` |
+| `--use-llm-review-render` | Use LLM to render review markdown when exporters are enabled |
+| `--use-llm-rag-render` | Use LLM to render RAG markdown when exporters are enabled |
 
 ### Model selection
 

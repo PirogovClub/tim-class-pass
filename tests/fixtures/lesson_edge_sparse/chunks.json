@@ -1,0 +1,22 @@
+[
+  {
+    "chunk_index": 0,
+    "start_time_seconds": 0.0,
+    "end_time_seconds": 60.0,
+    "transcript_lines": [
+      {"start_seconds": 0.0, "end_seconds": 3.0, "text": "Short."}
+    ],
+    "visual_events": [
+      {
+        "timestamp_seconds": 10,
+        "frame_key": "000010",
+        "visual_representation_type": "unknown",
+        "example_type": "unknown",
+        "change_summary": ["Minimal change"],
+        "current_state": {},
+        "extracted_entities": {}
+      }
+    ],
+    "previous_visual_state": null
+  }
+]

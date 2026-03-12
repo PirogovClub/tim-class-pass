@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "lesson_id": "lesson_minimal",
+  "lesson_title": "Lesson minimal",
+  "evidence_refs": [
+    {
+      "evidence_id": "evid_lesson_minimal_0_0",
+      "lesson_id": "lesson_minimal",
+      "source_event_ids": ["ke_lesson_minimal_0_rule_statement_0", "ke_lesson_minimal_0_rule_statement_1"],
+      "frame_ids": ["000010"],
+      "screenshot_paths": [],
+      "visual_type": "annotated_chart",
+      "example_role": "positive_example",
+      "compact_visual_summary": "Level marked with horizontal line.",
+      "linked_rule_ids": ["rule_minimal_1"],
+      "raw_visual_event_ids": [],
+      "metadata": {}
+    }
+  ],
+  "metadata": {}
+}
