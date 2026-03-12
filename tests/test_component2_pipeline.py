@@ -289,7 +289,7 @@ def test_run_component2_pipeline_writes_outputs(monkeypatch, tmp_path: Path) -> 
     assert llm_debug[0]["request_usage"][0]["total_tokens"] == 17
     assert reducer_usage[0]["total_tokens"] == 39
     assert reducer_calls[0]["model"] == "gemini-2.5-pro"
-    assert any("[+00:00] Step 3.1/5" in message for message in progress_messages)
+    assert any("Step 3.1/5" in message for message in progress_messages)
     assert any("Chunk 1/1 complete" in message and "chunk_time=0.2s" in message for message in progress_messages)
     assert any("Step 3.5/5 complete" in message for message in progress_messages)
 
