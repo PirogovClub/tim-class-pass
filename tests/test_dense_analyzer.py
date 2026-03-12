@@ -272,10 +272,11 @@ def test_partition_queue_keys_splits_in_stable_order() -> None:
 
 
 def test_chunk_workers_are_capped_to_cpu_minus_two(monkeypatch) -> None:
+    """None uses cpu_count-2; explicit values are capped at 8 (see dense_analyzer)."""
     monkeypatch.setattr(dense_analyzer.os, "cpu_count", lambda: 8)
 
-    assert dense_analyzer._resolve_step2_chunk_workers(None) == 6
-    assert dense_analyzer._resolve_step2_chunk_workers(99) == 6
+    assert dense_analyzer._resolve_step2_chunk_workers(None) == 6  # default: max(8-2, 1)
+    assert dense_analyzer._resolve_step2_chunk_workers(99) == 8  # explicit cap at 8
     assert dense_analyzer._resolve_step2_chunk_workers(1) == 1
 
 

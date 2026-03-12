@@ -41,7 +41,7 @@ def prepare_component2_run(
     """Run preflight inspection, write pipeline_inspection.json, return artifact paths."""
     config.output_root.mkdir(parents=True, exist_ok=True)
     paths = PipelinePaths(video_root=config.output_root)
-    inspection_report_path = config.output_root / "pipeline_inspection.json"
+    inspection_report_path = paths.inspection_report_path()
     write_report(config.output_root, inspection_report_path, lesson_name=lesson_name)
 
     return Component2RunArtifacts(

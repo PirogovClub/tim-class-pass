@@ -87,6 +87,18 @@ class PipelinePaths:
     def concept_graph_path(self, lesson_name: str) -> Path:
         return self.output_intermediate_dir / f"{lesson_name}.concept_graph.json"
 
+    def export_manifest_path(self, lesson_name: str) -> Path:
+        return self.output_review_dir / f"{lesson_name}.export_manifest.json"
+
+    def inspection_report_path(self) -> Path:
+        return self.video_root / "pipeline_inspection.json"
+
+    def ensure_output_dirs(self) -> None:
+        """Create output_intermediate, output_review, output_rag_ready if needed."""
+        self.output_intermediate_dir.mkdir(parents=True, exist_ok=True)
+        self.output_review_dir.mkdir(parents=True, exist_ok=True)
+        self.output_rag_ready_dir.mkdir(parents=True, exist_ok=True)
+
 
 @dataclass
 class PipelineFeatureFlags:

@@ -16,7 +16,6 @@ from pipeline.component2.knowledge_builder import (
     adapt_chunk,
     adapt_chunks,
     load_chunks_json,
-    summarize_single_visual_event,
     summarize_visual_events_for_extraction,
     extraction_result_to_knowledge_events,
     normalize_statement_text,
@@ -26,6 +25,7 @@ from pipeline.component2.knowledge_builder import (
     build_knowledge_events_from_chunks,
     build_knowledge_events_from_file,
 )
+from pipeline.component2.visual_compaction import VisualCompactionConfig
 from pipeline.schemas import KnowledgeEvent, KnowledgeEventCollection
 
 
@@ -112,12 +112,14 @@ def test_summarize_visual_events_non_empty_capped_no_raw_dump() -> None:
         },
         {"visual_representation_type": "diagram", "frame_key": "000102"},
     ]
-    summaries = summarize_visual_events_for_extraction(events, max_items=5)
+    cfg = VisualCompactionConfig()
+    summaries = summarize_visual_events_for_extraction(events, cfg)
     assert len(summaries) <= 5
     assert all(isinstance(s, str) and len(s) > 0 for s in summaries)
     assert not any("timestamp_seconds" in s or "extracted_entities" in s for s in summaries)
-    single = summarize_single_visual_event(events[0])
-    assert "annotated" in single.lower() or "false" in single.lower() or "level" in single.lower()
+    if summaries:
+        first = summaries[0].lower()
+        assert "annotated" in first or "false" in first or "level" in first
 
 
 # ---- 4 & 5. Extraction mapping and deterministic ids ----

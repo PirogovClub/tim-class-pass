@@ -7,6 +7,14 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from pipeline.io_utils import atomic_write_text, atomic_write_json
+from pipeline.component2.visual_compaction import (
+    VisualCompactionConfig,
+    assert_no_raw_visual_blob_leak,
+    strip_raw_visual_blobs_from_metadata,
+    summarize_evidence_for_rule_card,
+    trim_rule_card_visual_refs,
+)
 from pipeline.schemas import (
     EvidenceIndex,
     EvidenceRef,
@@ -527,24 +535,6 @@ def make_rule_id(
     return f"rule_{_slug(lesson_id)}_{_slug(concept)}_{_slug(subconcept)}_{candidate_index}"
 
 
-# ----- Visual summary -----
-
-
-def build_candidate_visual_summary(candidate: RuleCandidate) -> str | None:
-    """One short line from linked evidence; max 1-2 lines."""
-    refs = candidate.linked_evidence
-    if not refs:
-        return None
-    summaries = [r.compact_visual_summary for r in refs if r.compact_visual_summary]
-    if not summaries:
-        return None
-    if len(summaries) == 1:
-        s = summaries[0].strip()
-        return s[:300] if len(s) > 300 else s
-    best = max(summaries, key=len)
-    return best.strip()[:300]
-
-
 # ----- Example refs -----
 
 
@@ -598,8 +588,13 @@ def score_rule_candidate_confidence(candidate: RuleCandidate) -> tuple[str, floa
 # ----- RuleCard build -----
 
 
-def candidate_to_rule_card(candidate: RuleCandidate, candidate_index: int) -> RuleCard:
+def candidate_to_rule_card(
+    candidate: RuleCandidate,
+    candidate_index: int,
+    compaction_cfg: VisualCompactionConfig | None = None,
+) -> RuleCard:
     """Convert RuleCandidate to RuleCard."""
+    cfg = compaction_cfg if compaction_cfg is not None else VisualCompactionConfig()
     concept = (candidate.concept or "unknown").strip() or "unknown"
     rule_id = make_rule_id(candidate.lesson_id, candidate.concept, candidate.subconcept, candidate_index)
     rule_text = choose_canonical_rule_text(candidate)
@@ -618,7 +613,9 @@ def candidate_to_rule_card(candidate: RuleCandidate, candidate_index: int) -> Ru
             )
         }
     )
-    evidence_refs = [r.evidence_id for r in candidate.linked_evidence]
+    evidence_refs = trim_rule_card_visual_refs(
+        [r.evidence_id for r in candidate.linked_evidence], max_refs=3
+    )
     section = None
     subsection = None
     if candidate.primary_events:
@@ -643,14 +640,14 @@ def candidate_to_rule_card(candidate: RuleCandidate, candidate_index: int) -> Ru
         exceptions=collect_exception_texts(candidate),
         comparisons=collect_comparison_texts(candidate),
         algorithm_notes=collect_algorithm_notes(candidate),
-        visual_summary=build_candidate_visual_summary(candidate),
+        visual_summary=summarize_evidence_for_rule_card(candidate.linked_evidence, cfg),
         evidence_refs=evidence_refs,
         confidence=conf_label,
         confidence_score=conf_score,
         positive_example_refs=example_map["positive_example_refs"],
         negative_example_refs=example_map["negative_example_refs"],
         ambiguous_example_refs=example_map["ambiguous_example_refs"],
-        metadata=dict(candidate.metadata),
+        metadata=strip_raw_visual_blobs_from_metadata(candidate.metadata),
     )
 
 
@@ -662,6 +659,7 @@ def build_rule_cards(
     evidence_index: EvidenceIndex,
     *,
     attach_threshold: float = ATTACH_THRESHOLD,
+    compaction_cfg: VisualCompactionConfig | None = None,
 ) -> tuple[RuleCardCollection, list[dict]]:
     """Group → attach evidence → merge duplicates → split → convert to RuleCards; return collection and debug rows."""
     events = list(knowledge_collection.events)
@@ -675,7 +673,7 @@ def build_rule_cards(
     cards: list[RuleCard] = []
     debug_rows: list[dict] = []
     for i, cand in enumerate(all_candidates):
-        card = candidate_to_rule_card(cand, i)
+        card = candidate_to_rule_card(cand, i, compaction_cfg=compaction_cfg)
         cards.append(card)
         debug_rows.append(
             {
@@ -701,11 +699,10 @@ def build_rule_cards(
 
 def save_rule_cards(collection: RuleCardCollection, output_path: Path) -> None:
     """Write RuleCardCollection to JSON."""
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(collection.model_dump_json(indent=2), encoding="utf-8")
+    assert_no_raw_visual_blob_leak(collection.model_dump())
+    atomic_write_text(output_path, collection.model_dump_json(indent=2), encoding="utf-8")
 
 
 def save_rule_debug(debug_rows: list[dict], output_path: Path) -> None:
     """Write debug rows to JSON."""
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(debug_rows, indent=2, ensure_ascii=False), encoding="utf-8")
+    atomic_write_json(output_path, debug_rows)

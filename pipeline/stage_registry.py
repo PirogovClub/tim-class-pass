@@ -91,4 +91,44 @@ STAGE_REGISTRY: list[StageSpec] = [
         outputs=["output_rag_ready/*.md", "output_intermediate/*.reducer_usage.json"],
         legacy_stage=True,
     ),
+    StageSpec(
+        stage_id="step3_2b_knowledge_events",
+        description="Extract atomic knowledge events",
+        callable_path="pipeline.component2.knowledge_builder.build_knowledge_events_from_extraction_results",
+        required_inputs=["output_intermediate/*.chunks.json"],
+        outputs=["output_intermediate/*.knowledge_events.json"],
+    ),
+    StageSpec(
+        stage_id="step4_evidence_linking",
+        description="Link compact evidence to knowledge events",
+        callable_path="pipeline.component2.evidence_linker.build_evidence_index",
+        required_inputs=[
+            "output_intermediate/*.knowledge_events.json",
+            "output_intermediate/*.chunks.json",
+        ],
+        outputs=["output_intermediate/*.evidence_index.json"],
+    ),
+    StageSpec(
+        stage_id="step4b_rule_cards",
+        description="Normalize knowledge events into rule cards",
+        callable_path="pipeline.component2.rule_reducer.build_rule_cards",
+        required_inputs=[
+            "output_intermediate/*.knowledge_events.json",
+            "output_intermediate/*.evidence_index.json",
+        ],
+        outputs=["output_intermediate/*.rule_cards.json"],
+    ),
+    StageSpec(
+        stage_id="step5_exporters",
+        description="Render review and RAG markdown from rule cards",
+        callable_path="pipeline.component2.exporters.export_review_markdown",
+        required_inputs=[
+            "output_intermediate/*.rule_cards.json",
+            "output_intermediate/*.evidence_index.json",
+        ],
+        outputs=[
+            "output_review/*.review_markdown.md",
+            "output_rag_ready/*.rag_ready.md",
+        ],
+    ),
 ]

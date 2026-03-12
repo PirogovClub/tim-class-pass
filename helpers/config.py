@@ -13,6 +13,15 @@ DEFAULT_CAPTURE_FPS = 0.5
 DEFAULT_LLM_QUEUE_DIFF_THRESHOLD = 0.025
 DEFAULT_COMPARE_BLUR_RADIUS = 1.5
 
+# Task 8: visual compaction (config-driven, no broad CLI switch)
+DEFAULT_VISUAL_EXTRACT_MAX_SUMMARIES = 5
+DEFAULT_VISUAL_EVIDENCE_SUMMARY_MAX_CHARS = 240
+DEFAULT_VISUAL_RULE_SUMMARY_MAX_CHARS = 180
+DEFAULT_VISUAL_REVIEW_MAX_BULLETS = 2
+DEFAULT_VISUAL_RAG_MAX_BULLETS = 1
+DEFAULT_VISUAL_INCLUDE_SCREENSHOT_CANDIDATES = True
+DEFAULT_VISUAL_STORE_RAW_BLOBS = False
+
 
 def _default_pipeline_workers() -> int:
     return max((os.cpu_count() or 1) // 2, 1)
@@ -105,6 +114,14 @@ def get_config_for_video(video_id: str) -> dict:
         "step2_chunk_workers": _parse_int(os.getenv("STEP2_CHUNK_WORKERS"), _default_step2_chunk_workers()),
         "model_component2_reducer": os.getenv("MODEL_COMPONENT2_REDUCER") or os.getenv("MODEL_COMPONENT2") or os.getenv("MODEL_NAME"),
         "telemetry_enabled": _parse_bool(os.getenv("TELEMETRY_ENABLED"), True),
+        "visual_extract_max_summaries": _parse_int(os.getenv("VISUAL_EXTRACT_MAX_SUMMARIES"), DEFAULT_VISUAL_EXTRACT_MAX_SUMMARIES),
+        "visual_evidence_summary_max_chars": _parse_int(os.getenv("VISUAL_EVIDENCE_SUMMARY_MAX_CHARS"), DEFAULT_VISUAL_EVIDENCE_SUMMARY_MAX_CHARS),
+        "visual_rule_summary_max_chars": _parse_int(os.getenv("VISUAL_RULE_SUMMARY_MAX_CHARS"), DEFAULT_VISUAL_RULE_SUMMARY_MAX_CHARS),
+        "visual_review_max_bullets": _parse_int(os.getenv("VISUAL_REVIEW_MAX_BULLETS"), DEFAULT_VISUAL_REVIEW_MAX_BULLETS),
+        "visual_rag_max_bullets": _parse_int(os.getenv("VISUAL_RAG_MAX_BULLETS"), DEFAULT_VISUAL_RAG_MAX_BULLETS),
+        "visual_include_screenshot_candidates": _parse_bool(os.getenv("VISUAL_INCLUDE_SCREENSHOT_CANDIDATES"), DEFAULT_VISUAL_INCLUDE_SCREENSHOT_CANDIDATES),
+        "visual_store_raw_blobs": _parse_bool(os.getenv("VISUAL_STORE_RAW_BLOBS"), DEFAULT_VISUAL_STORE_RAW_BLOBS),
+        "enable_visual_compaction_debug": _parse_bool(os.getenv("ENABLE_VISUAL_COMPACTION_DEBUG"), False),
     }
     batch_env = os.getenv("BATCH_SIZE")
     if batch_env is not None:
@@ -148,6 +165,14 @@ def get_config_for_video(video_id: str) -> dict:
         "step2_chunk_size",
         "step2_chunk_workers",
         "telemetry_enabled",
+        "visual_extract_max_summaries",
+        "visual_evidence_summary_max_chars",
+        "visual_rule_summary_max_chars",
+        "visual_review_max_bullets",
+        "visual_rag_max_bullets",
+        "visual_include_screenshot_candidates",
+        "visual_store_raw_blobs",
+        "enable_visual_compaction_debug",
         *_provider_keys,
         *_model_keys,
     )
@@ -168,6 +193,10 @@ def get_config_for_video(video_id: str) -> dict:
                 value = _parse_int(value, result["step2_chunk_workers"])
             if key in {"capture_fps", "llm_queue_diff_threshold", "compare_blur_radius"} and isinstance(value, str):
                 value = _parse_float(value, result[key])
+            if key in {"visual_extract_max_summaries", "visual_evidence_summary_max_chars", "visual_rule_summary_max_chars", "visual_review_max_bullets", "visual_rag_max_bullets"} and isinstance(value, str):
+                value = _parse_int(value, result.get(key))
+            if key in {"visual_include_screenshot_candidates", "visual_store_raw_blobs", "enable_visual_compaction_debug"} and isinstance(value, str):
+                value = _parse_bool(value, result.get(key, False))
             result[key] = value
     if isinstance(result["batch_size"], str):
         try:

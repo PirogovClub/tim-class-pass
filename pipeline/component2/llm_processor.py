@@ -11,12 +11,14 @@ from pydantic import BaseModel, Field
 
 from helpers import config as pipeline_config
 from helpers.clients.providers import get_provider, resolve_model_for_stage, resolve_provider_for_stage
-from pipeline.component2.knowledge_builder import (
-    AdaptedChunk,
-    ChunkExtractionResult,
-    summarize_visual_events_for_extraction,
-)
+from pipeline.component2.knowledge_builder import AdaptedChunk, ChunkExtractionResult
 from pipeline.component2.models import EnrichedMarkdownChunk, LessonChunk
+from pipeline.component2 import visual_compaction
+from pipeline.component2.visual_compaction import (
+    VisualCompactionConfig,
+    assert_no_raw_visual_blob_leak,
+    from_pipeline_config as visual_compaction_from_pipeline_config,
+)
 from pipeline.component2.parser import seconds_to_mmss
 from pipeline.schemas import EvidenceRef, RuleCard
 
@@ -358,8 +360,16 @@ async def process_chunk_knowledge_extract(
     video_id: str | None = None,
     model: str | None = None,
     provider: str | None = None,
+    compaction_cfg: VisualCompactionConfig | None = None,
 ) -> tuple[ChunkExtractionResult, list[dict]]:
-    visual_summaries = summarize_visual_events_for_extraction(chunk.visual_events)
+    if compaction_cfg is None and video_id:
+        cfg_dict = pipeline_config.get_config_for_video(video_id)
+        compaction_cfg = visual_compaction_from_pipeline_config(cfg_dict)
+    if compaction_cfg is None:
+        compaction_cfg = VisualCompactionConfig()
+    visual_summaries = visual_compaction.summarize_visual_events_for_extraction(
+        chunk.visual_events, compaction_cfg
+    )
     prompt = build_knowledge_extract_prompt(
         lesson_id=chunk.lesson_id,
         chunk_index=chunk.chunk_index,
@@ -427,6 +437,11 @@ def process_rule_cards_markdown_render(
     model: str | None = None,
     provider: str | None = None,
 ) -> tuple[MarkdownRenderResult, list[dict]]:
+    # Only rule_cards and evidence_refs (already compact) are passed to the LLM.
+    rule_dumps = [r.model_dump() if hasattr(r, "model_dump") else r for r in rule_cards]
+    ref_dumps = [r.model_dump() if hasattr(r, "model_dump") else r for r in evidence_refs]
+    assert_no_raw_visual_blob_leak(rule_dumps)
+    assert_no_raw_visual_blob_leak(ref_dumps)
     prompt = build_markdown_render_prompt(
         lesson_id=lesson_id,
         lesson_title=lesson_title,
