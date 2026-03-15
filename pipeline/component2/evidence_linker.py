@@ -27,7 +27,10 @@ from pipeline.schemas import (
     ExampleRole,
     KnowledgeEvent,
     KnowledgeEventCollection,
+    RuleCardCollection,
     VisualType,
+    normalize_text as schemas_normalize_text,
+    validate_evidence_ref,
 )
 
 
@@ -61,6 +64,7 @@ class VisualEvidenceCandidate:
     example_role: str = "unknown"
     concept_hints: list[str] = field(default_factory=list)
     subconcept_hints: list[str] = field(default_factory=list)
+    source_event_ids: list[str] = field(default_factory=list)  # optional; used by tests and chunk-wide check
     metadata: dict[str, Any] = field(default_factory=dict)
 
 
@@ -298,30 +302,184 @@ def group_visual_events_into_candidates(
     return candidates
 
 
+def _dedupe_preserve_order(items: list[str]) -> list[str]:
+    seen: set[str] = set()
+    out: list[str] = []
+    for item in items:
+        if item in seen:
+            continue
+        seen.add(item)
+        out.append(item)
+    return out
+
+
+def backfill_knowledge_event_evidence_refs(
+    knowledge_collection: KnowledgeEventCollection,
+    evidence_index: EvidenceIndex,
+) -> KnowledgeEventCollection:
+    event_to_evidence: dict[str, list[str]] = {}
+
+    for ref in evidence_index.evidence_refs:
+        for event_id in ref.source_event_ids or []:
+            event_to_evidence.setdefault(event_id, []).append(ref.evidence_id)
+
+    updated_events: list[KnowledgeEvent] = []
+    for event in knowledge_collection.events:
+        existing = list(event.evidence_refs or [])
+        incoming = event_to_evidence.get(event.event_id, [])
+        updated_events.append(
+            event.model_copy(
+                update={
+                    "evidence_refs": _dedupe_preserve_order(existing + incoming),
+                }
+            )
+        )
+
+    return knowledge_collection.model_copy(update={"events": updated_events})
+
+
+def backfill_evidence_linked_rule_ids(
+    evidence_index: EvidenceIndex,
+    rule_cards: RuleCardCollection,
+) -> EvidenceIndex:
+    evidence_to_rules: dict[str, list[str]] = {}
+
+    for rule in rule_cards.rules:
+        for evidence_id in rule.evidence_refs or []:
+            evidence_to_rules.setdefault(evidence_id, []).append(rule.rule_id)
+
+    updated_refs: list[EvidenceRef] = []
+    for ref in evidence_index.evidence_refs:
+        existing = list(ref.linked_rule_ids or [])
+        incoming = evidence_to_rules.get(ref.evidence_id, [])
+        updated_refs.append(
+            ref.model_copy(
+                update={
+                    "linked_rule_ids": _dedupe_preserve_order(existing + incoming),
+                }
+            )
+        )
+
+    return evidence_index.model_copy(update={"evidence_refs": updated_refs})
+
+
+# Generic teaching visual markers (06-phase1: do not label as counterexample)
+GENERIC_VISUAL_MARKERS = {
+    "intro",
+    "introduction slide",
+    "intro slide",
+    "title",
+    "logo",
+    "instructor",
+    "speaker",
+    "overlay",
+    "text overlay",
+    "hand drawing",
+    "diagram",
+    "sketch",
+    "abstract diagram",
+    "concept explanation",
+    "level area",
+    "horizontal line",
+    "candlestick sketch",
+}
+
+# Explicit negative/failure markers (06-phase1: required for counterexample)
+NEGATIVE_VISUAL_MARKERS = {
+    "failed breakout",
+    "false breakout",
+    "did not hold",
+    "failure",
+    "invalid",
+    "invalidation",
+    "rejected",
+    "rejection",
+    "trap",
+    "mistake",
+    "broke and reversed",
+    "pierced and returned",
+}
+
+
+def _norm_text(text: str | None) -> str:
+    return (text or "").strip().lower()
+
+
+def _contains_any(text: str, phrases: set[str]) -> bool:
+    return any(p in text for p in phrases)
+
+
+def _is_generic_teaching_visual(candidate: VisualEvidenceCandidate, linked_events: list[KnowledgeEvent]) -> bool:
+    content = " ".join(
+        [
+            _norm_text(getattr(candidate, "compact_visual_summary", "")),
+            " ".join(_norm_text(x) for x in getattr(candidate, "concept_hints", []) or []),
+            " ".join(
+                _norm_text(getattr(evt, "change_summary", ""))
+                for evt in getattr(candidate, "visual_events", []) or []
+            ),
+        ]
+    ).strip()
+
+    event_types = [getattr(e, "event_type", "") for e in linked_events]
+
+    generic_visual = _contains_any(content, GENERIC_VISUAL_MARKERS)
+    negative_visual = _contains_any(content, NEGATIVE_VISUAL_MARKERS)
+
+    if generic_visual and not negative_visual:
+        return True
+
+    if len(linked_events) >= 6:
+        if any(t in event_types for t in ("definition", "comparison", "algorithm_hint")):
+            return True
+
+    return False
+
+
+def _has_explicit_negative_semantics(candidate: VisualEvidenceCandidate, linked_events: list[KnowledgeEvent]) -> bool:
+    content = " ".join(
+        [
+            _norm_text(getattr(candidate, "compact_visual_summary", "")),
+            " ".join(_norm_text(x) for x in getattr(candidate, "concept_hints", []) or []),
+            " ".join(
+                _norm_text(getattr(evt, "change_summary", ""))
+                for evt in getattr(candidate, "visual_events", []) or []
+            ),
+        ]
+    ).strip()
+
+    event_types = [getattr(e, "event_type", "") for e in linked_events]
+
+    negative_from_events = any(
+        t in event_types for t in ("invalidation", "exception", "warning")
+    )
+    negative_from_visual = _contains_any(content, NEGATIVE_VISUAL_MARKERS)
+
+    return negative_from_events or negative_from_visual
+
+
 def infer_example_role(
     candidate: VisualEvidenceCandidate,
     linked_events: list[KnowledgeEvent],
 ) -> str:
-    """Heuristic example role from linked events and candidate content."""
-    content_lower = " ".join(
-        (candidate.compact_visual_summary or "")
-        + " "
-        + " ".join(candidate.concept_hints)
-        + " "
-        + " ".join(e.change_summary or "" for e in candidate.visual_events)
-    ).lower()
-    counter_indicators = ["failure", "false", "trap", "mistake", "invalid", "counter"]
-    if any(x in content_lower for x in counter_indicators):
-        return "counterexample"
-    event_types = [e.event_type for e in linked_events]
-    if any(t in event_types for t in ("invalidation", "exception", "warning")):
-        return "counterexample"
-    if any(t in event_types for t in ("rule_statement", "condition")):
-        return "positive_example"
-    if any(t in event_types for t in ("definition", "comparison")):
+    """Heuristic example role (06-phase1). Counterexample only with explicit negative semantics and non-generic visual."""
+    event_types = [getattr(e, "event_type", "") for e in linked_events]
+
+    if _is_generic_teaching_visual(candidate, linked_events):
         return "illustration"
-    if not linked_events or (len(linked_events) == 1 and linked_events[0].event_type == "example"):
-        return "ambiguous_example"
+
+    if _has_explicit_negative_semantics(candidate, linked_events):
+        return "counterexample"
+
+    if any(t in event_types for t in ("rule_statement", "condition", "example")):
+        return "positive_example"
+
+    if any(t in event_types for t in ("definition", "comparison", "process_step")):
+        return "illustration"
+
+    if not linked_events:
+        return "illustration"
+
     return "illustration"
 
 
@@ -403,6 +561,10 @@ def link_candidates_to_knowledge_events(
             })
         role = infer_example_role(c, best_events)
         c.example_role = role
+        if _is_generic_teaching_visual(c, best_events):
+            c.metadata.setdefault("semantic_warnings", []).append(
+                "downgraded_to_illustration_due_to_generic_teaching_visual"
+            )
         linked.append((c, best_events))
         debug_rows.append({
             "candidate_id": c.candidate_id,
@@ -466,6 +628,11 @@ def candidate_to_evidence_ref(
     ts_start_str = seconds_to_mmss(candidate.timestamp_start)
     ts_end_str = seconds_to_mmss(candidate.timestamp_end)
     compact_visual_summary = candidate.compact_visual_summary or summarize_visual_candidate_for_evidence(candidate, cfg)
+    # Phase 1: cap compact_visual_summary to 300 chars
+    if compact_visual_summary:
+        normalized = schemas_normalize_text(compact_visual_summary)
+        if len(normalized) > 300:
+            compact_visual_summary = normalized[:297] + "..."
     evidence_ref = EvidenceRef(
         evidence_id=candidate.candidate_id,
         lesson_id=lesson_id,
@@ -512,8 +679,17 @@ def build_evidence_index(
             candidate, linked, lesson_id, lesson_title,
             video_root=video_root, compaction_cfg=cfg,
         )
-        refs.append(ref)
-        debug_rows[i]["provenance_warnings"] = validate_evidence_ref_provenance(ref)
+        errs = validate_evidence_ref(ref, allow_unlinked_rules=True)
+        if errs:
+            debug_rows[i]["validation_errors"] = errs
+            debug_rows[i]["rejected"] = True
+            debug_rows[i]["stage"] = "evidence_linker"
+            debug_rows[i]["entity_type"] = "evidence_ref"
+            debug_rows[i]["entity_id"] = ref.evidence_id
+            debug_rows[i]["reason_rejected"] = errs
+        else:
+            refs.append(ref)
+            debug_rows[i]["provenance_warnings"] = validate_evidence_ref_provenance(ref)
     index = EvidenceIndex(
         schema_version="1.0",
         lesson_id=lesson_id,

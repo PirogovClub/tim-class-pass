@@ -18,6 +18,7 @@ from pipeline.component2.llm_processor import (
     build_legacy_markdown_prompt,
     build_markdown_render_prompt,
     legacy_debug_rows,
+    parse_knowledge_extraction,
     parse_legacy_enriched_markdown_chunk,
     process_chunk,
     process_chunk_knowledge_extract,
@@ -84,6 +85,55 @@ def test_build_knowledge_extract_prompt_contains_transcript_and_visuals() -> Non
     assert "v1" in result or "v2" in result
     assert "literal-scribe" not in result.lower()
     assert "Literal Scribe" not in result
+
+
+def test_build_knowledge_extract_prompt_renders_numbered_transcript_lines() -> None:
+    chunk_lines = [
+        TranscriptLine(start_seconds=1.0, end_seconds=3.0, text="Price reacts from the level."),
+        TranscriptLine(start_seconds=3.0, end_seconds=5.0, text="Then it returns below the level."),
+    ]
+    prompt = build_knowledge_extract_prompt(
+        lesson_id="L2",
+        chunk_index=0,
+        transcript_text="ignored when transcript_lines exist",
+        transcript_lines=chunk_lines,
+        visual_summaries=["Annotated chart with level"],
+        start_time_seconds=1.0,
+        end_time_seconds=5.0,
+    )
+    assert "[L0 00:01-00:03] Price reacts from the level." in prompt
+    assert "[L1 00:03-00:05] Then it returns below the level." in prompt
+
+
+def test_parse_knowledge_extraction_accepts_source_line_indices_and_source_quote() -> None:
+    payload = """
+    {
+      "definitions": [
+        {
+          "text": "A level is a price area of repeated reaction.",
+          "concept": "level",
+          "subconcept": null,
+          "source_type": "explicit",
+          "ambiguity_notes": [],
+          "source_line_indices": [0, 1],
+          "source_quote": "price reacts from the same area several times"
+        }
+      ],
+      "rule_statements": [],
+      "conditions": [],
+      "invalidations": [],
+      "exceptions": [],
+      "comparisons": [],
+      "warnings": [],
+      "process_steps": [],
+      "algorithm_hints": [],
+      "examples": [],
+      "global_notes": []
+    }
+    """
+    parsed = parse_knowledge_extraction(payload)
+    assert parsed.definitions[0].source_line_indices == [0, 1]
+    assert parsed.definitions[0].source_quote is not None
 
 
 # ----- 3. build_markdown_render_prompt -----

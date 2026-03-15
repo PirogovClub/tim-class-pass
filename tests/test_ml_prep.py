@@ -18,6 +18,7 @@ from pipeline.component2.ml_prep import (
     enrich_rule_card_for_ml,
     enrich_rule_card_collection_for_ml,
     infer_candidate_features,
+    is_evidence_ml_eligible,
     save_ml_manifest,
 )
 
@@ -33,6 +34,7 @@ def test_infer_candidate_features_level_rating() -> None:
         concept="level",
         subconcept="level_rating",
         rule_text="A level becomes stronger when price reacts to it multiple times.",
+        source_event_ids=["ke_0"],
     )
 
     features = infer_candidate_features(rule)
@@ -46,7 +48,7 @@ def test_infer_candidate_features_level_rating() -> None:
 
 
 def test_distribute_example_refs_for_ml() -> None:
-    """Evidence refs with positive, counterexample, ambiguous, illustration map to correct buckets; illustration not in positive."""
+    """Evidence refs: only positive and counterexample (with explicit negative) in buckets (06-phase1)."""
     rule = RuleCard(
         rule_id="r1",
         lesson_id="lesson1",
@@ -58,21 +60,30 @@ def test_distribute_example_refs_for_ml() -> None:
             evidence_id="e1",
             lesson_id="lesson1",
             example_role="positive_example",
+            linked_rule_ids=["r1"],
+            source_event_ids=["ke1"],
         ),
         EvidenceRef(
             evidence_id="e2",
             lesson_id="lesson1",
             example_role="counterexample",
+            linked_rule_ids=["r1"],
+            source_event_ids=["ke1"],
+            compact_visual_summary="Chart shows failed breakout, rejection, and return below level.",
         ),
         EvidenceRef(
             evidence_id="e3",
             lesson_id="lesson1",
             example_role="ambiguous_example",
+            linked_rule_ids=["r1"],
+            source_event_ids=["ke1"],
         ),
         EvidenceRef(
             evidence_id="e4",
             lesson_id="lesson1",
             example_role="illustration",
+            linked_rule_ids=["r1"],
+            source_event_ids=["ke1"],
         ),
     ]
 
@@ -80,10 +91,10 @@ def test_distribute_example_refs_for_ml() -> None:
 
     assert buckets["positive_example_refs"] == ["e1"]
     assert buckets["negative_example_refs"] == ["e2"]
-    assert buckets["ambiguous_example_refs"] == ["e3"]
+    assert buckets["ambiguous_example_refs"] == []  # 06-phase1: ambiguous not in ML buckets
     assert "e4" not in buckets["positive_example_refs"]
     assert "e4" not in buckets["negative_example_refs"]
-    assert "e4" not in buckets["ambiguous_example_refs"]
+    assert "e3" not in buckets["ambiguous_example_refs"]
 
 
 # ----- 3. Labeling guidance generated -----
@@ -96,6 +107,7 @@ def test_build_labeling_guidance() -> None:
         lesson_id="lesson1",
         concept="false_breakout",
         rule_text="A false breakout fails to hold beyond the level.",
+        source_event_ids=["ke_0"],
         conditions=[
             "price moves beyond the level",
             "price fails to hold beyond it",
@@ -130,6 +142,8 @@ def test_enrich_rule_card_for_ml_preserves_provenance() -> None:
             evidence_id="e1",
             lesson_id="lesson1",
             example_role="positive_example",
+            linked_rule_ids=["r1"],
+            source_event_ids=["ke1"],
         ),
     ]
 
@@ -287,19 +301,22 @@ def test_feature_flag_safe_no_ml_prep(tmp_path: Path) -> None:
 
 
 def test_enrich_rule_card_collection_for_ml() -> None:
-    """Whole-collection enrichment returns new collection with enriched rules."""
+    """Whole-collection enrichment returns new collection with enriched rules. Evidence must be ML-eligible (04-phase1)."""
     rule = RuleCard(
         rule_id="r1",
         lesson_id="lesson1",
         concept="level",
         subconcept="level_rating",
         rule_text="Reactions matter.",
+        source_event_ids=["ke_0"],
         evidence_refs=["e1"],
     )
     evidence = EvidenceRef(
         evidence_id="e1",
         lesson_id="lesson1",
         example_role="positive_example",
+        linked_rule_ids=["r1"],
+        source_event_ids=["ke1"],
     )
     rules = RuleCardCollection(lesson_id="lesson1", rules=[rule])
     index = EvidenceIndex(
@@ -334,3 +351,175 @@ def test_build_evidence_lookup() -> None:
 
     assert lookup["e1"].evidence_id == "e1"
     assert lookup["e1"].example_role == "positive_example"
+
+
+# ----- 04-phase1: ML eligibility gate -----
+
+
+def test_is_evidence_ml_eligible_false_when_empty_linked_rule_ids() -> None:
+    """Ref with empty linked_rule_ids is not ML-eligible."""
+    rule = RuleCard(rule_id="r1", lesson_id="lesson1", concept="level", rule_text="Rule.")
+    ref = EvidenceRef(
+        evidence_id="e1",
+        lesson_id="lesson1",
+        example_role="positive_example",
+        linked_rule_ids=[],
+        source_event_ids=["ke1"],
+    )
+    assert is_evidence_ml_eligible(ref, rule) is False
+
+
+def test_is_evidence_ml_eligible_false_when_empty_source_event_ids() -> None:
+    """Ref with empty source_event_ids is not ML-eligible."""
+    rule = RuleCard(rule_id="r1", lesson_id="lesson1", concept="level", rule_text="Rule.")
+    ref = EvidenceRef(
+        evidence_id="e1",
+        lesson_id="lesson1",
+        example_role="positive_example",
+        linked_rule_ids=["r1"],
+        source_event_ids=[],
+    )
+    assert is_evidence_ml_eligible(ref, rule) is False
+
+
+def test_is_evidence_ml_eligible_false_when_illustration_role() -> None:
+    """Ref with example_role illustration is not ML-eligible."""
+    rule = RuleCard(rule_id="r1", lesson_id="lesson1", concept="level", rule_text="Rule.")
+    ref = EvidenceRef(
+        evidence_id="e1",
+        lesson_id="lesson1",
+        example_role="illustration",
+        linked_rule_ids=["r1"],
+        source_event_ids=["ke1"],
+    )
+    assert is_evidence_ml_eligible(ref, rule) is False
+
+
+def test_is_evidence_ml_eligible_true_when_eligible_positive_example() -> None:
+    """Ref with positive_example, linked to rule, non-empty source_event_ids, non-intro summary → eligible."""
+    rule = RuleCard(rule_id="r1", lesson_id="lesson1", concept="level", rule_text="Rule.")
+    ref = EvidenceRef(
+        evidence_id="e1",
+        lesson_id="lesson1",
+        example_role="positive_example",
+        linked_rule_ids=["r1"],
+        source_event_ids=["ke1"],
+        compact_visual_summary="Price holds beyond the level.",
+    )
+    assert is_evidence_ml_eligible(ref, rule) is True
+
+
+def test_is_evidence_ml_eligible_false_when_intro_summary() -> None:
+    """Ref with intro-like compact_visual_summary is not ML-eligible."""
+    rule = RuleCard(rule_id="r1", lesson_id="lesson1", concept="level", rule_text="Rule.")
+    ref = EvidenceRef(
+        evidence_id="e1",
+        lesson_id="lesson1",
+        example_role="positive_example",
+        linked_rule_ids=["r1"],
+        source_event_ids=["ke1"],
+        compact_visual_summary="Intro to the topic and key concepts.",
+    )
+    assert is_evidence_ml_eligible(ref, rule) is False
+
+
+def test_distribute_example_refs_for_ml_excludes_ineligible_counterexample() -> None:
+    """Counterexample ref without linked_rule_ids is not placed in negative_example_refs."""
+    rule = RuleCard(rule_id="r1", lesson_id="lesson1", concept="level", rule_text="Rule.")
+    evidence = [
+        EvidenceRef(
+            evidence_id="e1",
+            lesson_id="lesson1",
+            example_role="counterexample",
+            linked_rule_ids=[],
+            source_event_ids=["ke1"],
+        ),
+    ]
+    buckets = distribute_example_refs_for_ml(rule, evidence)
+    assert buckets["negative_example_refs"] == []
+
+
+def test_distribute_example_refs_for_ml_includes_eligible_counterexample() -> None:
+    """Eligible counterexample ref (explicit negative in summary) is placed in negative_example_refs (06-phase1)."""
+    rule = RuleCard(rule_id="r1", lesson_id="lesson1", concept="level", rule_text="Rule.")
+    evidence = [
+        EvidenceRef(
+            evidence_id="e1",
+            lesson_id="lesson1",
+            example_role="counterexample",
+            linked_rule_ids=["r1"],
+            source_event_ids=["ke1"],
+            compact_visual_summary="Chart shows failed breakout, rejection, and return below level.",
+        ),
+    ]
+    buckets = distribute_example_refs_for_ml(rule, evidence)
+    assert buckets["negative_example_refs"] == ["e1"]
+
+
+def test_generic_teaching_visual_not_ml_eligible() -> None:
+    """06-phase1: illustration with generic intro summary is not ML eligible."""
+    ref = EvidenceRef(
+        lesson_id="lesson1",
+        evidence_id="ev1",
+        source_event_ids=["ke1"],
+        linked_rule_ids=["r1"],
+        frame_ids=["000001"],
+        example_role="illustration",
+        compact_visual_summary="Introduction slide with instructor and title overlay.",
+    )
+
+    rule = RuleCard(
+        lesson_id="lesson1",
+        rule_id="r1",
+        concept="Trend Break Level",
+        rule_text="A trend break level forms after a strong move and reversal.",
+        source_event_ids=["ke1"],
+    )
+
+    assert is_evidence_ml_eligible(ref, rule) is False
+
+
+def test_generic_visual_marked_counterexample_is_rejected_by_ml_gate() -> None:
+    """06-phase1: counterexample with generic intro summary is rejected by ML gate."""
+    ref = EvidenceRef(
+        lesson_id="lesson1",
+        evidence_id="ev2",
+        source_event_ids=["ke1"],
+        linked_rule_ids=["r1"],
+        frame_ids=["000001"],
+        example_role="counterexample",
+        compact_visual_summary="Introduction slide with instructor and logo.",
+    )
+
+    rule = RuleCard(
+        lesson_id="lesson1",
+        rule_id="r1",
+        concept="Trend Break Level",
+        rule_text="A trend break level forms after a strong move and reversal.",
+        source_event_ids=["ke1"],
+    )
+
+    assert is_evidence_ml_eligible(ref, rule) is False
+
+
+def test_explicit_negative_evidence_is_ml_eligible() -> None:
+    """06-phase1: counterexample with explicit negative in summary is ML eligible."""
+    ref = EvidenceRef(
+        lesson_id="lesson1",
+        evidence_id="ev3",
+        source_event_ids=["ke10"],
+        linked_rule_ids=["r1"],
+        frame_ids=["000010"],
+        example_role="counterexample",
+        compact_visual_summary="Chart shows failed breakout, rejection, and return below level.",
+    )
+
+    rule = RuleCard(
+        lesson_id="lesson1",
+        rule_id="r1",
+        concept="Breakout",
+        rule_text="A clean breakout should hold above the level.",
+        source_event_ids=["ke10"],
+    )
+
+    assert is_evidence_ml_eligible(ref, rule) is True

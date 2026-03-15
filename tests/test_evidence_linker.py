@@ -11,11 +11,14 @@ from pipeline.component2.evidence_linker import (
     AdaptedVisualEvent,
     VisualEvidenceCandidate,
     adapt_visual_events_from_chunks,
+    backfill_evidence_linked_rule_ids,
+    backfill_knowledge_event_evidence_refs,
     build_evidence_index,
     candidate_to_evidence_ref,
     enrich_visual_event_from_dense_analysis,
     extract_visual_concept_hints,
     group_visual_events_into_candidates,
+    infer_example_role,
     load_chunks_json,
     load_knowledge_events,
     save_evidence_debug,
@@ -26,7 +29,14 @@ from pipeline.component2.visual_compaction import (
     VisualCompactionConfig,
     summarize_visual_candidate_for_evidence,
 )
-from pipeline.schemas import EvidenceIndex, KnowledgeEvent
+from pipeline.schemas import (
+    EvidenceIndex,
+    EvidenceRef,
+    KnowledgeEvent,
+    KnowledgeEventCollection,
+    RuleCard,
+    RuleCardCollection,
+)
 
 
 # ----- 1. Adapt chunk visual events -----
@@ -543,3 +553,245 @@ def test_summarize_visual_candidate_for_evidence() -> None:
     s = summarize_visual_candidate_for_evidence(candidate, cfg)
     assert s
     assert len(s) <= 350
+
+
+# ----- Backfill and infer_example_role (03-phase1) -----
+
+
+def test_backfill_knowledge_event_evidence_refs_populates_events() -> None:
+    event1 = KnowledgeEvent(
+        lesson_id="lesson1",
+        event_id="ke1",
+        event_type="rule_statement",
+        raw_text="A rule.",
+        normalized_text="A rule.",
+        metadata={"chunk_index": 0},
+    )
+    event2 = KnowledgeEvent(
+        lesson_id="lesson1",
+        event_id="ke2",
+        event_type="definition",
+        raw_text="A definition.",
+        normalized_text="A definition.",
+        metadata={"chunk_index": 0},
+    )
+
+    knowledge = KnowledgeEventCollection(
+        lesson_id="lesson1",
+        events=[event1, event2],
+    )
+
+    evidence = EvidenceIndex(
+        lesson_id="lesson1",
+        evidence_refs=[
+            EvidenceRef(
+                lesson_id="lesson1",
+                evidence_id="ev1",
+                frame_ids=["001"],
+                source_event_ids=["ke1", "ke2"],
+            )
+        ],
+    )
+
+    result = backfill_knowledge_event_evidence_refs(knowledge, evidence)
+    by_id = {e.event_id: e for e in result.events}
+
+    assert by_id["ke1"].evidence_refs == ["ev1"]
+    assert by_id["ke2"].evidence_refs == ["ev1"]
+
+
+def test_backfill_evidence_linked_rule_ids_populates_evidence() -> None:
+    evidence = EvidenceIndex(
+        lesson_id="lesson1",
+        evidence_refs=[
+            EvidenceRef(
+                lesson_id="lesson1",
+                evidence_id="ev1",
+                frame_ids=["001"],
+                source_event_ids=["ke1"],
+            )
+        ],
+    )
+
+    rules = RuleCardCollection(
+        lesson_id="lesson1",
+        rules=[
+            RuleCard(
+                lesson_id="lesson1",
+                rule_id="r1",
+                concept="level",
+                rule_text="A valid rule.",
+                source_event_ids=["ke1"],
+                evidence_refs=["ev1"],
+            )
+        ],
+    )
+
+    result = backfill_evidence_linked_rule_ids(evidence, rules)
+    assert result.evidence_refs[0].linked_rule_ids == ["r1"]
+
+
+def test_infer_example_role_unlinked_generic_defaults_to_illustration() -> None:
+    candidate = VisualEvidenceCandidate(
+        candidate_id="ev1",
+        lesson_id="lesson1",
+        chunk_index=0,
+        timestamp_start=0.0,
+        timestamp_end=10.0,
+        compact_visual_summary="Intro chart with highlighted level area.",
+        concept_hints=["level"],
+        visual_events=[],
+    )
+    role = infer_example_role(candidate, [])
+    assert role == "illustration"
+
+
+# ----- 04-phase1: conservative role (intro/diagram → illustration; counterexample only with evidence) -----
+
+
+def test_infer_example_role_intro_or_setup_returns_illustration() -> None:
+    """Candidate with intro/overview in summary or hints gets illustration, not counterexample."""
+    candidate = VisualEvidenceCandidate(
+        candidate_id="ev1",
+        lesson_id="lesson1",
+        chunk_index=0,
+        timestamp_start=0.0,
+        timestamp_end=10.0,
+        compact_visual_summary="Intro to the topic and level concepts.",
+        concept_hints=["level"],
+        visual_events=[],
+    )
+    linked = [
+        KnowledgeEvent.model_construct(
+            event_id="ke1",
+            lesson_id="lesson1",
+            event_type="rule_statement",
+            raw_text="Rule.",
+            normalized_text="Rule.",
+        ),
+    ]
+    role = infer_example_role(candidate, linked)
+    assert role == "illustration"
+
+
+def test_infer_example_role_diagram_without_invalidation_returns_illustration() -> None:
+    """Diagram/hand_drawing visual with definition-linked events and no strong invalidation content → illustration."""
+    candidate = VisualEvidenceCandidate(
+        candidate_id="ev1",
+        lesson_id="lesson1",
+        chunk_index=1,
+        timestamp_start=30.0,
+        timestamp_end=45.0,
+        compact_visual_summary="Schematic diagram of support and resistance.",
+        concept_hints=["level"],
+        visual_type="diagram",
+        visual_events=[],
+    )
+    linked = [
+        KnowledgeEvent.model_construct(
+            event_id="ke1",
+            lesson_id="lesson1",
+            event_type="definition",
+            raw_text="A level is support or resistance.",
+            normalized_text="A level is support or resistance.",
+        ),
+    ]
+    role = infer_example_role(candidate, linked)
+    assert role == "illustration"
+
+
+def test_infer_example_role_counterexample_only_with_invalidation_event() -> None:
+    """Counterexample assigned when linked event has invalidation/exception/warning type."""
+    candidate = VisualEvidenceCandidate(
+        candidate_id="ev1",
+        lesson_id="lesson1",
+        chunk_index=1,
+        timestamp_start=60.0,
+        timestamp_end=90.0,
+        compact_visual_summary="Price fails to hold beyond the level.",
+        concept_hints=["level"],
+        visual_events=[],
+    )
+    linked_invalidation = [
+        KnowledgeEvent.model_construct(
+            event_id="ke1",
+            lesson_id="lesson1",
+            event_type="invalidation",
+            raw_text="Invalid breakout when price reverses.",
+            normalized_text="Invalid breakout when price reverses.",
+        ),
+    ]
+    role = infer_example_role(candidate, linked_invalidation)
+    assert role == "counterexample"
+
+
+def test_intro_slide_with_overlay_is_illustration_not_counterexample() -> None:
+    """06-phase1: intro slide with overlay stays illustration, not counterexample."""
+    candidate = VisualEvidenceCandidate(
+        candidate_id="ev1",
+        lesson_id="lesson1",
+        chunk_index=0,
+        timestamp_start=2.0,
+        timestamp_end=8.0,
+        compact_visual_summary=(
+            "First frame: introduction slide with logo and title. "
+            "Instructor is visible. The screen shows an overlay with text "
+            "and a horizontal level line."
+        ),
+        concept_hints=["trend break level"],
+        visual_events=[],
+        source_event_ids=["ke1", "ke2", "ke3", "ke4", "ke5", "ke6"],
+    )
+
+    linked_events = [
+        KnowledgeEvent(
+            lesson_id="lesson1",
+            event_id="ke1",
+            event_type="definition",
+            raw_text="Definition text",
+            normalized_text="Definition text",
+            metadata={"chunk_index": 0},
+        ),
+        KnowledgeEvent(
+            lesson_id="lesson1",
+            event_id="ke2",
+            event_type="rule_statement",
+            raw_text="Rule text",
+            normalized_text="Rule text",
+            metadata={"chunk_index": 0},
+        ),
+    ]
+
+    role = infer_example_role(candidate, linked_events)
+    assert role == "illustration"
+
+
+def test_explicit_failed_breakout_can_be_counterexample() -> None:
+    """06-phase1: explicit failed breakout with invalidation event can be counterexample."""
+    candidate = VisualEvidenceCandidate(
+        candidate_id="ev2",
+        lesson_id="lesson1",
+        chunk_index=1,
+        timestamp_start=30.0,
+        timestamp_end=35.0,
+        compact_visual_summary=(
+            "Chart shows failed breakout above level, rejection, and return below the level."
+        ),
+        concept_hints=["failed breakout"],
+        visual_events=[],
+        source_event_ids=["ke10"],
+    )
+
+    linked_events = [
+        KnowledgeEvent(
+            lesson_id="lesson1",
+            event_id="ke10",
+            event_type="invalidation",
+            raw_text="The breakout failed and returned under the level.",
+            normalized_text="The breakout failed and returned under the level.",
+            metadata={"chunk_index": 1},
+        ),
+    ]
+
+    role = infer_example_role(candidate, linked_events)
+    assert role == "counterexample"

@@ -13,6 +13,7 @@ from pipeline.schemas import (
     EvidenceRef,
     RuleCard,
     RuleCardCollection,
+    validate_rule_card_for_export,
 )
 
 
@@ -138,6 +139,8 @@ def sentence_join(items: list[str]) -> str:
 
 def infer_candidate_features(rule: RuleCard) -> list[str]:
     """Derive candidate algorithmic feature names from rule concept, subconcept, and text."""
+    if validate_rule_card_for_export(rule):
+        return []
     features: list[str] = []
 
     family_key = get_rule_family_key(rule)
@@ -195,6 +198,94 @@ def get_linked_evidence_for_rule(
     return [evidence_lookup[eid] for eid in evidence_refs if eid in evidence_lookup]
 
 
+# ----- ML eligibility gate (06-phase1: generic visuals and counterexample require explicit negative) -----
+
+GENERIC_EVIDENCE_MARKERS = {
+    "intro",
+    "introduction slide",
+    "intro slide",
+    "title",
+    "logo",
+    "instructor",
+    "speaker",
+    "overlay",
+    "hand drawing",
+    "diagram",
+    "sketch",
+    "concept explanation",
+    "abstract diagram",
+}
+
+
+def _norm_text(text: str | None) -> str:
+    """Strip and lower for marker checks; avoid clash with normalize_text in this module."""
+    return (text or "").strip().lower()
+
+
+def _contains_any(text: str, phrases: set[str]) -> bool:
+    return any(p in text for p in phrases)
+
+
+def is_generic_evidence(ref: EvidenceRef) -> bool:
+    summary = _norm_text(getattr(ref, "compact_visual_summary", ""))
+    return _contains_any(summary, GENERIC_EVIDENCE_MARKERS)
+
+
+def has_explicit_negative_evidence(ref: EvidenceRef) -> bool:
+    summary = _norm_text(getattr(ref, "compact_visual_summary", ""))
+    return any(
+        phrase in summary
+        for phrase in (
+            "failed breakout",
+            "false breakout",
+            "did not hold",
+            "invalid",
+            "rejected",
+            "rejection",
+            "trap",
+            "mistake",
+            "pierced and returned",
+            "broke and reversed",
+        )
+    )
+
+
+def is_evidence_ml_eligible(ref: EvidenceRef, rule: RuleCard) -> bool:
+    """True iff this evidence ref should be used for ML (06-phase1: no generic visuals; counterexample requires explicit negative)."""
+    if not (getattr(ref, "linked_rule_ids", []) or []):
+        return False
+    if not (getattr(ref, "source_event_ids", []) or []):
+        return False
+    if getattr(rule, "rule_id", None) not in (getattr(ref, "linked_rule_ids", []) or []):
+        return False
+
+    role = getattr(ref, "example_role", None)
+    if role not in {"positive_example", "counterexample"}:
+        return False
+
+    if is_generic_evidence(ref):
+        return False
+
+    if role == "counterexample" and not has_explicit_negative_evidence(ref):
+        return False
+
+    return True
+
+
+def should_emit_labeling_task(ref: EvidenceRef, rule: RuleCard) -> bool:
+    """True iff we should emit a labeling task for this ref (06-phase1: counterexample requires explicit negative)."""
+    if not is_evidence_ml_eligible(ref, rule):
+        return False
+
+    if ref.example_role == "counterexample":
+        return has_explicit_negative_evidence(ref)
+
+    if ref.example_role == "positive_example":
+        return True
+
+    return False
+
+
 # ----- Example-role distribution (conservative: illustration not in positive) -----
 
 
@@ -202,26 +293,19 @@ def distribute_example_refs_for_ml(
     rule: RuleCard,
     evidence_refs: list[EvidenceRef],
 ) -> dict[str, list[str]]:
-    """Map evidence roles into ML buckets. Do not put illustration into positive."""
+    """Map evidence roles into ML buckets (06-phase1). Only positive_example and counterexample; illustration/ambiguous not in buckets."""
     positive: list[str] = []
     negative: list[str] = []
     ambiguous: list[str] = []
 
     for evidence in evidence_refs:
-        role = normalize_text(
-            getattr(evidence, "example_role", None) or "unknown"
-        ).lower()
+        if not is_evidence_ml_eligible(evidence, rule):
+            continue
 
-        if role == "positive_example":
+        if evidence.example_role == "positive_example":
             positive.append(evidence.evidence_id)
-        elif role in {"negative_example", "counterexample"}:
+        elif evidence.example_role == "counterexample":
             negative.append(evidence.evidence_id)
-        elif role == "ambiguous_example":
-            ambiguous.append(evidence.evidence_id)
-        elif role == "illustration":
-            continue
-        else:
-            continue
 
     return {
         "positive_example_refs": dedupe_preserve_order(positive),
@@ -235,6 +319,9 @@ def distribute_example_refs_for_ml(
 
 def build_labeling_guidance(rule: RuleCard) -> str | None:
     """Generate compact deterministic labeling instruction from conditions + invalidation + rule_text."""
+    errors = validate_rule_card_for_export(rule)
+    if errors:
+        return None
     rule_text = normalize_text(rule.rule_text)
     conditions = pick_top_items(rule.conditions or [], limit=2)
     invalidation = pick_top_items(rule.invalidation or [], limit=1)
@@ -270,20 +357,27 @@ def enrich_rule_card_for_ml(
     evidence_refs: list[EvidenceRef],
 ) -> RuleCard:
     """Enrich a single rule with candidate_features, example buckets, and labeling_guidance. Preserves provenance."""
+    errors = validate_rule_card_for_export(rule)
+    if errors:
+        return rule.model_copy(update={
+            "candidate_features": [],
+            "positive_example_refs": [],
+            "negative_example_refs": [],
+            "ambiguous_example_refs": [],
+            "labeling_guidance": None,
+        })
+
     feature_list = infer_candidate_features(rule)
     example_buckets = distribute_example_refs_for_ml(rule, evidence_refs)
     labeling_guidance = build_labeling_guidance(rule)
 
-    updated = rule.model_copy(
-        update={
-            "candidate_features": feature_list,
-            "positive_example_refs": example_buckets["positive_example_refs"],
-            "negative_example_refs": example_buckets["negative_example_refs"],
-            "ambiguous_example_refs": example_buckets["ambiguous_example_refs"],
-            "labeling_guidance": labeling_guidance,
-        }
-    )
-    return updated
+    return rule.model_copy(update={
+        "candidate_features": feature_list,
+        "positive_example_refs": example_buckets["positive_example_refs"],
+        "negative_example_refs": example_buckets["negative_example_refs"],
+        "ambiguous_example_refs": example_buckets["ambiguous_example_refs"],
+        "labeling_guidance": labeling_guidance,
+    })
 
 
 def enrich_rule_card_collection_for_ml(
@@ -323,6 +417,13 @@ def build_ml_manifest(
     used_evidence_ids: set[str] = set()
 
     for rule in rule_cards.rules:
+        if validate_rule_card_for_export(rule):
+            debug_rows.append({
+                "rule_id": rule.rule_id,
+                "skipped_from_manifest": True,
+                "reason": validate_rule_card_for_export(rule),
+            })
+            continue
         linked_evidence = get_linked_evidence_for_rule(rule, evidence_lookup)
         used_evidence_ids.update(e.evidence_id for e in linked_evidence)
 
@@ -379,6 +480,8 @@ def build_labeling_manifest(
     tasks: list[dict[str, Any]] = []
 
     for rule in rule_cards.rules:
+        if validate_rule_card_for_export(rule):
+            continue
         for evidence_id in (
             (rule.positive_example_refs or [])
             + (rule.negative_example_refs or [])
@@ -387,6 +490,8 @@ def build_labeling_manifest(
             if evidence_id not in evidence_lookup:
                 continue
             evidence = evidence_lookup[evidence_id]
+            if not should_emit_labeling_task(evidence, rule):
+                continue
             tasks.append({
                 "rule_id": rule.rule_id,
                 "concept": rule.concept,

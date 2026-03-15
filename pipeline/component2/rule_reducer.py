@@ -26,6 +26,7 @@ from pipeline.schemas import (
     KnowledgeEventCollection,
     RuleCard,
     RuleCardCollection,
+    validate_rule_card,
 )
 
 
@@ -688,6 +689,20 @@ def build_rule_cards(
     debug_rows: list[dict] = []
     for i, cand in enumerate(all_candidates):
         card = candidate_to_rule_card(cand, i, compaction_cfg=compaction_cfg)
+        warnings = validate_rule_card(card)
+        if warnings:
+            debug_rows.append({
+                "stage": "rule_reducer",
+                "entity_type": "rule_card",
+                "entity_id": card.rule_id,
+                "rule_id": card.rule_id,
+                "reason_rejected": warnings,
+                "source_event_ids": list(card.source_event_ids or []),
+                "concept": cand.concept,
+                "subconcept": cand.subconcept,
+                "provenance_warnings": validate_rule_card_provenance(card),
+            })
+            continue
         cards.append(card)
         debug_rows.append(
             {

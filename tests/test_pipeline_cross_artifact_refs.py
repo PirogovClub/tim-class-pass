@@ -50,6 +50,59 @@ def test_cross_artifact_references_validator_consistent_returns_empty(
     assert errors == []
 
 
+def test_knowledge_event_source_event_ids_are_not_required_for_cross_artifact_integrity() -> None:
+    """Events can be roots; evidence and rules point to them. Empty KnowledgeEvent.source_event_ids is valid (05-phase1)."""
+    knowledge_events = KnowledgeEventCollection(
+        schema_version="1.0",
+        lesson_id="test",
+        events=[
+            KnowledgeEvent(
+                event_id="e1",
+                lesson_id="test",
+                event_type="rule_statement",
+                raw_text="A rule.",
+                normalized_text="A rule.",
+                source_event_ids=[],
+                metadata={"chunk_index": 0},
+                timestamp_start="00:01",
+                timestamp_end="00:05",
+            ),
+        ],
+    )
+    evidence_index = EvidenceIndex(
+        schema_version="1.0",
+        lesson_id="test",
+        evidence_refs=[
+            EvidenceRef(
+                evidence_id="ev1",
+                lesson_id="test",
+                source_event_ids=["e1"],
+                linked_rule_ids=["r1"],
+                frame_ids=["f1"],
+            ),
+        ],
+    )
+    rule_cards = RuleCardCollection(
+        schema_version="1.0",
+        lesson_id="test",
+        rules=[
+            RuleCard(
+                rule_id="r1",
+                lesson_id="test",
+                concept="level",
+                rule_text="Valid rule.",
+                source_event_ids=["e1"],
+                evidence_refs=["ev1"],
+            ),
+        ],
+    )
+
+    errors = validate_cross_artifact_references(
+        knowledge_events, evidence_index, rule_cards
+    )
+    assert errors == []
+
+
 # --- Evidence source_event_ids resolve to knowledge_events ---
 
 

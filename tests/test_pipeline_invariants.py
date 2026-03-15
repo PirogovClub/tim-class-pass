@@ -44,6 +44,23 @@ def test_every_knowledge_event_has_event_id(lesson_minimal_root: Path) -> None:
         assert ev.event_id, f"KnowledgeEvent missing event_id: {ev}"
 
 
+def test_every_knowledge_event_has_phase1_provenance_fields(lesson_minimal_root: Path) -> None:
+    """KnowledgeEvent provenance in Phase 1 is event_id + lesson_id + chunk_index + timestamps, not source_event_ids."""
+    root = _load_lesson_minimal_root(lesson_minimal_root)
+    path = root / "knowledge_events.json"
+    collection = KnowledgeEventCollection.model_validate_json(path.read_text(encoding="utf-8"))
+
+    for ev in collection.events:
+        assert ev.event_id, f"KnowledgeEvent missing event_id: {ev}"
+        assert ev.lesson_id, f"KnowledgeEvent {ev.event_id} missing lesson_id"
+        assert (ev.metadata or {}).get("chunk_index") is not None, (
+            f"KnowledgeEvent {ev.event_id} missing metadata.chunk_index"
+        )
+        assert ev.timestamp_start, f"KnowledgeEvent {ev.event_id} missing timestamp_start"
+        assert ev.timestamp_end, f"KnowledgeEvent {ev.event_id} missing timestamp_end"
+        assert ev.normalized_text, f"KnowledgeEvent {ev.event_id} missing normalized_text"
+
+
 def test_every_evidence_ref_has_evidence_id(lesson_minimal_root: Path) -> None:
     """Load evidence_index.json; assert every evidence_ref has evidence_id."""
     root = _load_lesson_minimal_root(lesson_minimal_root)

@@ -26,7 +26,117 @@ from pipeline.component2.knowledge_builder import (
     build_knowledge_events_from_file,
 )
 from pipeline.component2.visual_compaction import VisualCompactionConfig
-from pipeline.schemas import KnowledgeEvent, KnowledgeEventCollection
+from pipeline.schemas import KnowledgeEvent, KnowledgeEventCollection, TranscriptAnchor
+
+
+# ---- Phase 2A: line anchors and timestamps ----
+
+
+def test_extraction_result_to_knowledge_events_uses_line_indices_for_tighter_timestamps() -> None:
+    chunk = AdaptedChunk(
+        lesson_id="L2",
+        lesson_title=None,
+        chunk_index=0,
+        section=None,
+        subsection=None,
+        start_time_seconds=1.0,
+        end_time_seconds=20.0,
+        transcript_lines=[
+            {"start_seconds": 1.0, "end_seconds": 4.0, "text": "Intro line."},
+            {"start_seconds": 4.0, "end_seconds": 7.0, "text": "A level forms after repeated reactions."},
+            {"start_seconds": 7.0, "end_seconds": 10.0, "text": "This level becomes important for entries."},
+        ],
+        transcript_text="Intro line.\nA level forms after repeated reactions.\nThis level becomes important for entries.",
+        visual_events=[],
+    )
+    extraction = ChunkExtractionResult(
+        definitions=[
+            ExtractedStatement(
+                text="A level forms after repeated reactions.",
+                concept="level",
+                source_line_indices=[1, 2],
+                source_quote="repeated reactions",
+            )
+        ]
+    )
+    events, rejected = extraction_result_to_knowledge_events(extraction, chunk)
+    assert rejected == []
+    assert len(events) == 1
+    ev = events[0]
+    assert ev.timestamp_start == "00:04"
+    assert ev.timestamp_end == "00:10"
+    assert ev.timestamp_confidence == "line"
+    assert ev.source_line_start == 1
+    assert ev.source_line_end == 2
+    assert len(ev.transcript_anchors) == 2
+
+
+def test_extraction_result_to_knowledge_events_falls_back_to_source_quote_match() -> None:
+    chunk = AdaptedChunk(
+        lesson_id="L2",
+        lesson_title=None,
+        chunk_index=0,
+        section=None,
+        subsection=None,
+        start_time_seconds=1.0,
+        end_time_seconds=20.0,
+        transcript_lines=[
+            {"start_seconds": 1.0, "end_seconds": 4.0, "text": "Intro line."},
+            {"start_seconds": 4.0, "end_seconds": 7.0, "text": "A false breakout returns below the level."},
+        ],
+        transcript_text="Intro line.\nA false breakout returns below the level.",
+        visual_events=[],
+    )
+    extraction = ChunkExtractionResult(
+        invalidations=[
+            ExtractedStatement(
+                text="A false breakout is invalid when price returns below the level.",
+                concept="false_breakout",
+                source_line_indices=[],
+                source_quote="returns below the level",
+            )
+        ]
+    )
+    events, rejected = extraction_result_to_knowledge_events(extraction, chunk)
+    assert rejected == []
+    ev = events[0]
+    assert ev.timestamp_confidence == "line"
+    assert ev.source_line_start == 1
+    assert ev.source_line_end == 1
+    assert len(ev.transcript_anchors) == 1
+
+
+def test_extraction_result_to_knowledge_events_invalid_line_indices_fall_back_to_chunk_bounds() -> None:
+    chunk = AdaptedChunk(
+        lesson_id="L2",
+        lesson_title=None,
+        chunk_index=0,
+        section=None,
+        subsection=None,
+        start_time_seconds=1.0,
+        end_time_seconds=20.0,
+        transcript_lines=[
+            {"start_seconds": 1.0, "end_seconds": 4.0, "text": "One line."},
+        ],
+        transcript_text="One line.",
+        visual_events=[],
+    )
+    extraction = ChunkExtractionResult(
+        definitions=[
+            ExtractedStatement(
+                text="One line.",
+                source_line_indices=[99],
+                source_quote=None,
+            )
+        ]
+    )
+    events, rejected = extraction_result_to_knowledge_events(extraction, chunk)
+    assert rejected == []
+    ev = events[0]
+    assert ev.timestamp_confidence == "chunk"
+    assert ev.source_line_start is None
+    assert ev.source_line_end is None
+    assert ev.transcript_anchors == []
 
 
 # ---- 1. Adapt chunk from real shape ----
@@ -164,13 +274,13 @@ def test_extraction_mapping_and_deterministic_ids() -> None:
         global_notes=[],
     )
     chunk = _sample_adapted_chunk()
-    events = extraction_result_to_knowledge_events(extraction, chunk)
+    events, _ = extraction_result_to_knowledge_events(extraction, chunk)
     assert len(events) >= 2
     event_types = {e.event_type for e in events}
     assert "definition" in event_types
     assert "rule_statement" in event_types
     ids_first = [e.event_id for e in events]
-    events2 = extraction_result_to_knowledge_events(extraction, chunk)
+    events2, _ = extraction_result_to_knowledge_events(extraction, chunk)
     ids_second = [e.event_id for e in events2]
     assert ids_first == ids_second
 
@@ -193,7 +303,7 @@ def test_provenance_metadata_present() -> None:
         global_notes=[],
     )
     chunk = _sample_adapted_chunk()
-    events = extraction_result_to_knowledge_events(extraction, chunk)
+    events, _ = extraction_result_to_knowledge_events(extraction, chunk)
     assert len(events) == 1
     meta = events[0].metadata
     assert meta.get("chunk_index") == 1
@@ -220,7 +330,7 @@ def test_collection_serialization_roundtrip() -> None:
         examples=[],
         global_notes=[],
     )
-    events = extraction_result_to_knowledge_events(extraction, chunk)
+    events, _ = extraction_result_to_knowledge_events(extraction, chunk)
     collection = KnowledgeEventCollection(
         schema_version="1.0",
         lesson_id=chunk.lesson_id,
@@ -271,7 +381,7 @@ def test_blank_and_short_statements_skipped() -> None:
         global_notes=[],
     )
     chunk = _sample_adapted_chunk()
-    events = extraction_result_to_knowledge_events(extraction, chunk)
+    events, _ = extraction_result_to_knowledge_events(extraction, chunk)
     assert len(events) == 1
     assert events[0].normalized_text == "Valid definition here."
 
@@ -304,6 +414,87 @@ def test_load_chunks_json(tmp_path: Path) -> None:
     assert loaded[0]["chunk_index"] == 2
 
 
+def test_save_knowledge_events_preserves_phase2a_fields(tmp_path: Path) -> None:
+    """Phase 2A fields survive save/load round-trip."""
+    collection = KnowledgeEventCollection(
+        lesson_id="L2",
+        lesson_title="Lesson 2",
+        events=[
+            KnowledgeEvent(
+                event_id="ke1",
+                lesson_id="L2",
+                event_type="definition",
+                raw_text="A level is a repeated reaction area.",
+                normalized_text="A level is a repeated reaction area.",
+                timestamp_start="00:04",
+                timestamp_end="00:07",
+                source_chunk_index=0,
+                source_line_start=1,
+                source_line_end=2,
+                source_quote="repeated reaction area",
+                transcript_anchors=[
+                    TranscriptAnchor(
+                        line_index=1,
+                        text="A level is a repeated reaction area.",
+                        timestamp_start="00:04",
+                        timestamp_end="00:07",
+                        match_source="llm_line_indices",
+                    )
+                ],
+                timestamp_confidence="line",
+                metadata={"chunk_index": 0},
+            )
+        ],
+    )
+    out = tmp_path / "knowledge_events.json"
+    save_knowledge_events(collection, out)
+    payload = json.loads(out.read_text(encoding="utf-8"))
+    ev = payload["events"][0]
+    assert ev["source_chunk_index"] == 0
+    assert ev["source_line_start"] == 1
+    assert ev["source_line_end"] == 2
+    assert ev["source_quote"] == "repeated reaction area"
+    assert ev["timestamp_confidence"] == "line"
+    assert len(ev["transcript_anchors"]) == 1
+
+
+def test_extraction_result_to_knowledge_events_emits_phase2a_fields() -> None:
+    """Builder populates Phase 2A fields on KnowledgeEvent."""
+    chunk = AdaptedChunk(
+        lesson_id="L2",
+        lesson_title=None,
+        chunk_index=0,
+        section=None,
+        subsection=None,
+        start_time_seconds=1.0,
+        end_time_seconds=10.0,
+        transcript_lines=[
+            {"start_seconds": 1.0, "end_seconds": 3.0, "text": "Intro."},
+            {"start_seconds": 3.0, "end_seconds": 5.0, "text": "A level forms after repeated reactions."},
+        ],
+        transcript_text="Intro.\nA level forms after repeated reactions.",
+        visual_events=[],
+    )
+    extraction = ChunkExtractionResult(
+        definitions=[
+            ExtractedStatement(
+                text="A level forms after repeated reactions.",
+                source_line_indices=[1],
+                source_quote="repeated reactions",
+            )
+        ]
+    )
+    events, rejected = extraction_result_to_knowledge_events(extraction, chunk)
+    assert rejected == []
+    ev = events[0]
+    assert hasattr(ev, "source_chunk_index")
+    assert hasattr(ev, "source_line_start")
+    assert hasattr(ev, "source_line_end")
+    assert hasattr(ev, "source_quote")
+    assert hasattr(ev, "transcript_anchors")
+    assert hasattr(ev, "timestamp_confidence")
+
+
 def test_save_knowledge_events_and_debug(tmp_path: Path) -> None:
     chunk = _sample_adapted_chunk()
     extraction = ChunkExtractionResult(
@@ -319,7 +510,7 @@ def test_save_knowledge_events_and_debug(tmp_path: Path) -> None:
         examples=[],
         global_notes=[],
     )
-    events = extraction_result_to_knowledge_events(extraction, chunk)
+    events, _ = extraction_result_to_knowledge_events(extraction, chunk)
     collection = KnowledgeEventCollection(schema_version="1.0", lesson_id=chunk.lesson_id, events=events)
     ke_path = tmp_path / "knowledge_events.json"
     save_knowledge_events(collection, ke_path)

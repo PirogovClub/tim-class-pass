@@ -12,6 +12,31 @@ from typing import Optional
 
 
 @dataclass(frozen=True)
+class ValidationPolicy:
+    """Phase 1: policy for validity gates. Defaults enforce strict final artifacts."""
+
+    allow_unlinked_evidence_pre_reduction: bool = True
+    reject_placeholder_rule_text: bool = True
+    require_rule_source_event_ids: bool = True
+    require_event_normalized_text: bool = True
+
+
+STRICT_FINAL_EXPORT_POLICY = ValidationPolicy(
+    allow_unlinked_evidence_pre_reduction=True,
+    reject_placeholder_rule_text=True,
+    require_rule_source_event_ids=True,
+    require_event_normalized_text=True,
+)
+
+RELAXED_PRE_REDUCTION_POLICY = ValidationPolicy(
+    allow_unlinked_evidence_pre_reduction=True,
+    reject_placeholder_rule_text=False,
+    require_rule_source_event_ids=False,
+    require_event_normalized_text=True,
+)
+
+
+@dataclass(frozen=True)
 class PipelinePaths:
     video_root: Path
     vtt_path: Optional[Path] = None

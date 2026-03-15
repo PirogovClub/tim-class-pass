@@ -45,6 +45,7 @@ def build_video_usage_summary(video_dir: Path | str) -> dict[str, Any]:
         candidates.append(targets_json)
     candidates.extend(sorted((root / "output_intermediate").glob("*.llm_debug.json")))
     candidates.extend(sorted((root / "output_intermediate").glob("*.reducer_usage.json")))
+    candidates.extend(sorted((root / "output_intermediate").glob("*.knowledge_debug.json")))
 
     for path in candidates:
         payload = _load_json(path)

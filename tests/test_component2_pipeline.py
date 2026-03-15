@@ -4,10 +4,25 @@ from pathlib import Path
 import pytest
 from click.testing import CliRunner
 
+from pipeline.schemas import (
+    EvidenceIndex,
+    EvidenceRef,
+    KnowledgeEvent,
+    KnowledgeEventCollection,
+    RuleCard,
+    RuleCardCollection,
+)
 from pipeline.component2.llm_processor import (
     assemble_video_markdown,
     build_user_prompt,
     parse_enriched_markdown_chunk,
+)
+from pipeline.component2.knowledge_builder import (
+    AdaptedChunk,
+    ChunkExtractionResult,
+    ExtractedStatement,
+    build_knowledge_events_from_extraction_results,
+    save_knowledge_events,
 )
 from pipeline.component2.main import main, run_component2_pipeline
 from pipeline.component2.models import EnrichedMarkdownChunk, LessonChunk, TranscriptLine, VisualEvent
@@ -302,3 +317,239 @@ def test_component2_main_help() -> None:
     assert "Run the standalone Component 2 + Step 3 markdown synthesis pipeline." in result.output
     assert "--visuals-json" in result.output
     assert "--reducer-model" in result.output
+
+
+# ----- Phase 2A: knowledge_events.json preserves line anchors -----
+
+
+def test_pipeline_written_knowledge_events_contains_phase2a_fields() -> None:
+    """Saved knowledge_events.json from a pipeline run contains Phase 2A fields (run after full Component 2)."""
+    root = Path(__file__).resolve().parents[1] / "data" / "Lesson 2. Levels part 1" / "output_intermediate"
+    ke_path = root / "Lesson 2. Levels part 1.knowledge_events.json"
+    if not ke_path.is_file():
+        pytest.skip("knowledge_events.json not found; run Component 2 for Lesson 2 first")
+    payload = json.loads(ke_path.read_text(encoding="utf-8"))
+    assert payload.get("events"), "knowledge_events.json is empty"
+    first = payload["events"][0]
+    assert "timestamp_confidence" in first
+    assert "transcript_anchors" in first
+
+
+def test_knowledge_events_json_preserves_line_anchors(tmp_path: Path) -> None:
+    """Build collection with source_line_indices, save to knowledge_events.json, assert line-anchored event."""
+    chunk = AdaptedChunk(
+        lesson_id="L2",
+        lesson_title=None,
+        chunk_index=0,
+        section=None,
+        subsection=None,
+        start_time_seconds=1.0,
+        end_time_seconds=20.0,
+        transcript_lines=[
+            {"start_seconds": 1.0, "end_seconds": 4.0, "text": "Intro."},
+            {"start_seconds": 4.0, "end_seconds": 8.0, "text": "A level forms after repeated reactions."},
+            {"start_seconds": 8.0, "end_seconds": 12.0, "text": "This level becomes important."},
+        ],
+        transcript_text="Intro.\nA level forms after repeated reactions.\nThis level becomes important.",
+        visual_events=[],
+    )
+    extraction = ChunkExtractionResult(
+        definitions=[
+            ExtractedStatement(
+                text="A level forms after repeated reactions.",
+                concept="level",
+                source_line_indices=[1, 2],
+                source_quote="repeated reactions",
+            )
+        ]
+    )
+    collection, _ = build_knowledge_events_from_extraction_results(
+        [chunk], [extraction], lesson_id="L2", lesson_title=None
+    )
+    ke_path = tmp_path / "knowledge_events.json"
+    save_knowledge_events(collection, ke_path)
+    data = json.loads(ke_path.read_text(encoding="utf-8"))
+    events = data.get("events", [])
+    assert len(events) >= 1
+    line_anchored = [e for e in events if e.get("timestamp_confidence") == "line"]
+    assert len(line_anchored) >= 1
+    ev = line_anchored[0]
+    assert ev.get("source_line_start") is not None
+    assert ev.get("source_line_end") is not None
+    assert len(ev.get("transcript_anchors", [])) > 0
+
+
+# ----- 03-phase1: final saved knowledge has evidence_refs, evidence has linked_rule_ids -----
+
+
+def test_final_saved_knowledge_events_contain_evidence_refs_after_evidence_linking(
+    monkeypatch, tmp_path: Path
+) -> None:
+    """After evidence linking, backfill overwrites knowledge_events.json with evidence_refs populated."""
+    lesson_dir = tmp_path / "lesson"
+    lesson_dir.mkdir()
+    vtt_path = lesson_dir / "lesson.vtt"
+    visuals_path = lesson_dir / "dense.json"
+    vtt_path.write_text(
+        "WEBVTT\n\n1\n00:00:01.000 --> 00:00:03.000\nFirst.\n\n",
+        encoding="utf-8",
+    )
+    visuals_path.write_text(
+        json.dumps(
+            {
+                "000001": {
+                    "frame_timestamp": "000001",
+                    "material_change": True,
+                    "visual_representation_type": "annotated_chart",
+                    "example_type": "abstract_teaching_example",
+                    "change_summary": ["Chart"],
+                    "current_state": {},
+                    "extracted_entities": {},
+                },
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+
+    def fake_build_knowledge(adapted, extraction_results, lesson_id, lesson_title):
+        event = KnowledgeEvent(
+            lesson_id=lesson_id,
+            event_id="ke1",
+            event_type="rule_statement",
+            raw_text="A rule.",
+            normalized_text="A rule.",
+            metadata={"chunk_index": 0},
+        )
+        return (KnowledgeEventCollection(lesson_id=lesson_id, events=[event]), [])
+
+    def fake_build_evidence(*, lesson_id, **kwargs):
+        ref = EvidenceRef(
+            lesson_id=lesson_id,
+            evidence_id="ev1",
+            frame_ids=["001"],
+            source_event_ids=["ke1"],
+        )
+        return (EvidenceIndex(lesson_id=lesson_id, evidence_refs=[ref]), [])
+
+    async def fake_knowledge_extract(adapted, **kwargs):
+        return [(c, {}, []) for c in adapted]
+
+    monkeypatch.setattr(
+        "pipeline.component2.main.build_knowledge_events_from_extraction_results",
+        fake_build_knowledge,
+    )
+    monkeypatch.setattr("pipeline.component2.main.build_evidence_index", fake_build_evidence)
+    monkeypatch.setattr("pipeline.component2.main.process_chunks_knowledge_extract", fake_knowledge_extract)
+
+    from pipeline.component2.main import run_component2_pipeline
+
+    run_component2_pipeline(
+        vtt_path=vtt_path,
+        visuals_json_path=visuals_path,
+        output_root=lesson_dir,
+        enable_knowledge_events=True,
+        enable_evidence_linking=True,
+    )
+
+    ke_path = lesson_dir / "output_intermediate" / "lesson.knowledge_events.json"
+    assert ke_path.exists()
+    data = json.loads(ke_path.read_text(encoding="utf-8"))
+    events = data.get("events", [])
+    assert len(events) >= 1
+    ke1 = next((e for e in events if e.get("event_id") == "ke1"), None)
+    assert ke1 is not None
+    assert ke1.get("evidence_refs") == ["ev1"]
+
+
+def test_final_saved_evidence_contains_linked_rule_ids_after_rule_build(
+    monkeypatch, tmp_path: Path
+) -> None:
+    """After rule cards are built, backfill overwrites evidence_index.json with linked_rule_ids populated."""
+    lesson_dir = tmp_path / "lesson"
+    lesson_dir.mkdir()
+    vtt_path = lesson_dir / "lesson.vtt"
+    visuals_path = lesson_dir / "dense.json"
+    vtt_path.write_text(
+        "WEBVTT\n\n1\n00:00:01.000 --> 00:00:03.000\nFirst.\n\n",
+        encoding="utf-8",
+    )
+    visuals_path.write_text(
+        json.dumps(
+            {
+                "000001": {
+                    "frame_timestamp": "000001",
+                    "material_change": True,
+                    "visual_representation_type": "annotated_chart",
+                    "example_type": "abstract_teaching_example",
+                    "change_summary": ["Chart"],
+                    "current_state": {},
+                    "extracted_entities": {},
+                },
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+
+    def fake_build_knowledge(adapted, extraction_results, lesson_id, lesson_title):
+        event = KnowledgeEvent(
+            lesson_id=lesson_id,
+            event_id="ke1",
+            event_type="rule_statement",
+            raw_text="A rule.",
+            normalized_text="A rule.",
+            metadata={"chunk_index": 0},
+        )
+        return (KnowledgeEventCollection(lesson_id=lesson_id, events=[event]), [])
+
+    def fake_build_evidence(*, lesson_id, **kwargs):
+        ref = EvidenceRef(
+            lesson_id=lesson_id,
+            evidence_id="ev1",
+            frame_ids=["001"],
+            source_event_ids=["ke1"],
+        )
+        return (EvidenceIndex(lesson_id=lesson_id, evidence_refs=[ref]), [])
+
+    def fake_build_rule_cards(*, knowledge_collection, evidence_index, **kwargs):
+        rule = RuleCard(
+            lesson_id=knowledge_collection.lesson_id,
+            rule_id="r1",
+            concept="level",
+            rule_text="A valid rule.",
+            source_event_ids=["ke1"],
+            evidence_refs=["ev1"],
+        )
+        return (RuleCardCollection(lesson_id=knowledge_collection.lesson_id, rules=[rule]), [])
+
+    async def fake_knowledge_extract(adapted, **kwargs):
+        return [(c, {}, []) for c in adapted]
+
+    monkeypatch.setattr(
+        "pipeline.component2.main.build_knowledge_events_from_extraction_results",
+        fake_build_knowledge,
+    )
+    monkeypatch.setattr("pipeline.component2.main.build_evidence_index", fake_build_evidence)
+    monkeypatch.setattr("pipeline.component2.main.build_rule_cards", fake_build_rule_cards)
+    monkeypatch.setattr("pipeline.component2.main.process_chunks_knowledge_extract", fake_knowledge_extract)
+
+    from pipeline.component2.main import run_component2_pipeline
+
+    run_component2_pipeline(
+        vtt_path=vtt_path,
+        visuals_json_path=visuals_path,
+        output_root=lesson_dir,
+        enable_knowledge_events=True,
+        enable_evidence_linking=True,
+        enable_rule_cards=True,
+    )
+
+    ei_path = lesson_dir / "output_intermediate" / "lesson.evidence_index.json"
+    assert ei_path.exists()
+    data = json.loads(ei_path.read_text(encoding="utf-8"))
+    refs = data.get("evidence_refs", [])
+    assert len(refs) >= 1
+    ev1 = next((r for r in refs if r.get("evidence_id") == "ev1"), None)
+    assert ev1 is not None
+    assert ev1.get("linked_rule_ids") == ["r1"]

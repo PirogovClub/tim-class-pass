@@ -12,6 +12,7 @@ from pipeline.schemas import (
     KnowledgeEventCollection,
     RuleCard,
     RuleCardCollection,
+    is_placeholder_text,
 )
 
 VALID_CONFIDENCE_LABELS = frozenset({"low", "medium", "high"})
@@ -95,6 +96,8 @@ def validate_rule_card_collection_integrity(collection: RuleCardCollection) -> l
             seen_ids.add(rule.rule_id)
         if not rule.source_event_ids:
             errors.append(f"RuleCard {rule.rule_id} missing source_event_ids")
+        if is_placeholder_text(rule.rule_text):
+            errors.append(f"RuleCard {rule.rule_id} has placeholder rule_text")
         if rule.confidence_score is not None and not (0.0 <= rule.confidence_score <= 1.0):
             errors.append(f"RuleCard {rule.rule_id} has invalid confidence_score: {rule.confidence_score}")
         if rule.confidence not in VALID_CONFIDENCE_LABELS:

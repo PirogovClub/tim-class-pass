@@ -11,6 +11,8 @@ import click
 
 from helpers.usage_report import write_video_usage_summary
 from pipeline.component2.evidence_linker import (
+    backfill_evidence_linked_rule_ids,
+    backfill_knowledge_event_evidence_refs,
     build_evidence_index,
     load_knowledge_events,
     save_evidence_debug,
@@ -64,7 +66,13 @@ from pipeline.io_utils import (
     build_export_manifest,
     write_artifact_manifest,
 )
-from pipeline.schemas import RuleCardCollection
+from pipeline.schemas import (
+    RuleCardCollection,
+    validate_evidence_index_for_export,
+    validate_knowledge_event_collection_for_export,
+    validate_rule_card_collection_for_export,
+)
+from pipeline.component2.provenance import validate_rule_card_for_final_provenance
 from helpers import config as pipeline_config
 from pipeline.component2.visual_compaction import from_pipeline_config
 from pipeline.component2.visual_policy_debug import write_visual_compaction_debug
@@ -110,6 +118,18 @@ def require_artifact(path: Path, stage_name: str, hint: str) -> bool:
     return False
 
 
+def _merge_rule_debug_rows(
+    base_rows: list[dict],
+    extra_rows: list[dict],
+) -> list[dict]:
+    """Merge debug row lists; either may be empty."""
+    if not base_rows:
+        return list(extra_rows)
+    if not extra_rows:
+        return list(base_rows)
+    return [*base_rows, *extra_rows]
+
+
 def run_component2_pipeline(
     *,
     vtt_path: Path | str,
@@ -133,6 +153,7 @@ def run_component2_pipeline(
     use_llm_review_render: bool = False,
     use_llm_rag_render: bool = False,
     progress_callback: Callable[[str], None] | None = None,
+    max_knowledge_chunks: int | None = None,
 ) -> dict[str, Path]:
     """Run Component 2 pipeline: filter, chunk, optional knowledge/evidence/rule-cards/concept-graph/exporters, legacy markdown. Returns dict of written paths."""
     pipeline_started_at = time.perf_counter()
@@ -204,6 +225,9 @@ def run_component2_pipeline(
         _emit("Step 3.2b: Extracting structured knowledge events...")
         raw_chunks = [c.model_dump() for c in chunks]
         adapted = adapt_chunks(raw_chunks, lesson_id=lesson_name, lesson_title=None)
+        if max_knowledge_chunks is not None and max_knowledge_chunks > 0:
+            adapted = adapted[:max_knowledge_chunks]
+            _emit(f"  (limited to first {len(adapted)} chunk(s) by max_knowledge_chunks={max_knowledge_chunks})")
 
         def _on_extraction_progress(
             completed: int, total: int, chunk, chunk_elapsed_seconds: float
@@ -232,12 +256,25 @@ def run_component2_pipeline(
         for i, row in enumerate(debug_rows):
             if i < len(results):
                 row["request_usage"] = results[i][2]
-        save_knowledge_events(knowledge_collection, paths.knowledge_events_path(lesson_name))
+        ke_path = paths.knowledge_events_path(lesson_name)
+        if knowledge_collection.events:
+            sample = knowledge_collection.events[0]
+            _emit("KNOWLEDGE_EVENT_MODEL_KEYS " + ",".join(sorted(sample.model_dump().keys())))
+        save_knowledge_events(knowledge_collection, ke_path)
         assert knowledge_collection is not None
+        saved = json.loads(ke_path.read_text(encoding="utf-8"))
+        if saved.get("events"):
+            _emit("KNOWLEDGE_EVENT_JSON_KEYS " + ",".join(sorted(saved["events"][0].keys())))
         save_knowledge_debug(debug_rows, paths.knowledge_debug_path(lesson_name))
+        write_video_usage_summary(root)
+        line_level_count = sum(
+            1 for ev in knowledge_collection.events
+            if getattr(ev, "timestamp_confidence", None) == "line"
+        )
         _emit(
-            f"Step 3.2b complete: wrote {len(knowledge_collection.events)} events to "
-            f"{paths.knowledge_events_path(lesson_name).name}, debug to {paths.knowledge_debug_path(lesson_name).name}."
+            f"Step 3.2b complete: wrote {len(knowledge_collection.events)} events "
+            f"({line_level_count} line-anchored) to {paths.knowledge_events_path(lesson_name).name}, "
+            f"debug to {paths.knowledge_debug_path(lesson_name).name}."
         )
 
     if enable_evidence_linking:
@@ -261,6 +298,40 @@ def run_component2_pipeline(
                 video_root=paths.video_root,
                 compaction_cfg=compaction_cfg,
             )
+
+            # Backfill event -> evidence_refs and overwrite knowledge_events with validated export
+            knowledge_collection_for_export = load_knowledge_events_collection(
+                paths.knowledge_events_path(lesson_name)
+            )
+            if knowledge_collection_for_export is not None:
+                knowledge_collection_for_export = backfill_knowledge_event_evidence_refs(
+                    knowledge_collection_for_export,
+                    evidence_index,
+                )
+                validated_knowledge_collection, knowledge_export_rejects = (
+                    validate_knowledge_event_collection_for_export(knowledge_collection_for_export)
+                )
+                existing_knowledge_debug: list = []
+                if paths.knowledge_debug_path(lesson_name).exists():
+                    existing_knowledge_debug = json.loads(
+                        paths.knowledge_debug_path(lesson_name).read_text(encoding="utf-8")
+                    )
+                combined_knowledge_debug = [*existing_knowledge_debug]
+                if knowledge_export_rejects:
+                    combined_knowledge_debug.append({
+                        "stage": "export_validation",
+                        "entity_type": "knowledge_event_collection",
+                        "rejected_events": knowledge_export_rejects,
+                    })
+                save_knowledge_events(
+                    validated_knowledge_collection,
+                    paths.knowledge_events_path(lesson_name),
+                )
+                save_knowledge_debug(
+                    combined_knowledge_debug,
+                    paths.knowledge_debug_path(lesson_name),
+                )
+
             save_evidence_index(evidence_index, paths.evidence_index_path(lesson_name))
             save_evidence_debug(evidence_debug, paths.evidence_debug_path(lesson_name))
             if enable_visual_compaction_debug and evidence_index is not None:
@@ -300,8 +371,52 @@ def run_component2_pipeline(
                 evidence_index=evidence_index,
                 compaction_cfg=compaction_cfg,
             )
+            validated_rule_cards, export_rejects = validate_rule_card_collection_for_export(rule_cards)
+
+            final_rules: list = []
+            provenance_rejects: list[dict] = []
+            for rule in validated_rule_cards.rules:
+                prov_warnings = validate_rule_card_for_final_provenance(rule)
+                if prov_warnings:
+                    provenance_rejects.append({
+                        "stage": "export_validation",
+                        "entity_type": "rule_card",
+                        "entity_id": rule.rule_id,
+                        "rule_id": rule.rule_id,
+                        "reason_rejected": prov_warnings,
+                        "source_event_ids": list(rule.source_event_ids or []),
+                        "concept": rule.concept,
+                        "subconcept": rule.subconcept,
+                    })
+                    continue
+                final_rules.append(rule)
+
+            rule_cards = RuleCardCollection(
+                schema_version=validated_rule_cards.schema_version,
+                lesson_id=validated_rule_cards.lesson_id,
+                rules=final_rules,
+            )
+            rule_debug = _merge_rule_debug_rows(rule_debug, export_rejects)
+            rule_debug = _merge_rule_debug_rows(rule_debug, provenance_rejects)
+
             save_rule_cards(rule_cards, paths.rule_cards_path(lesson_name))
             save_rule_debug(rule_debug, paths.rule_debug_path(lesson_name))
+
+            if evidence_index is not None:
+                evidence_index = backfill_evidence_linked_rule_ids(evidence_index, rule_cards)
+                validated_evidence_index, evidence_export_rejects = validate_evidence_index_for_export(
+                    evidence_index
+                )
+                existing_evidence_debug = []
+                if paths.evidence_debug_path(lesson_name).exists():
+                    existing_evidence_debug = json.loads(
+                        paths.evidence_debug_path(lesson_name).read_text(encoding="utf-8")
+                    )
+                combined_evidence_debug = [*existing_evidence_debug, *evidence_export_rejects]
+                evidence_index = validated_evidence_index
+                save_evidence_index(evidence_index, paths.evidence_index_path(lesson_name))
+                save_evidence_debug(combined_evidence_debug, paths.evidence_debug_path(lesson_name))
+
             step5_ran = True
             _emit(
                 f"Step 4b complete: wrote {len(rule_cards.rules)} rule cards to "
@@ -345,8 +460,60 @@ def run_component2_pipeline(
             enriched_rule_cards = enrich_rule_card_collection_for_ml(
                 rule_cards, evidence_index
             )
+            validated_enriched_rule_cards, ml_export_rejects = validate_rule_card_collection_for_export(
+                enriched_rule_cards
+            )
+
+            final_enriched_rules: list = []
+            ml_provenance_rejects: list[dict] = []
+            for rule in validated_enriched_rule_cards.rules:
+                prov_warnings = validate_rule_card_for_final_provenance(rule)
+                if prov_warnings:
+                    ml_provenance_rejects.append({
+                        "stage": "ml_export_validation",
+                        "entity_type": "rule_card",
+                        "entity_id": rule.rule_id,
+                        "rule_id": rule.rule_id,
+                        "reason_rejected": prov_warnings,
+                        "source_event_ids": list(rule.source_event_ids or []),
+                        "concept": rule.concept,
+                        "subconcept": rule.subconcept,
+                    })
+                    continue
+                final_enriched_rules.append(rule)
+
+            enriched_rule_cards = RuleCardCollection(
+                schema_version=validated_enriched_rule_cards.schema_version,
+                lesson_id=validated_enriched_rule_cards.lesson_id,
+                rules=final_enriched_rules,
+            )
+
+            existing_rule_debug: list[dict] = []
+            if paths.rule_debug_path(lesson_name).exists():
+                existing_rule_debug = json.loads(
+                    paths.rule_debug_path(lesson_name).read_text(encoding="utf-8")
+                )
+            combined_rule_debug = _merge_rule_debug_rows(existing_rule_debug, ml_export_rejects)
+            combined_rule_debug = _merge_rule_debug_rows(combined_rule_debug, ml_provenance_rejects)
+
             save_rule_cards(enriched_rule_cards, paths.rule_cards_path(lesson_name))
+            save_rule_debug(combined_rule_debug, paths.rule_debug_path(lesson_name))
             rule_cards = enriched_rule_cards
+
+            evidence_index = backfill_evidence_linked_rule_ids(evidence_index, rule_cards)
+            validated_evidence_index, evidence_export_rejects = validate_evidence_index_for_export(
+                evidence_index
+            )
+            existing_evidence_debug = []
+            if paths.evidence_debug_path(lesson_name).exists():
+                existing_evidence_debug = json.loads(
+                    paths.evidence_debug_path(lesson_name).read_text(encoding="utf-8")
+                )
+            combined_evidence_debug = [*existing_evidence_debug, *evidence_export_rejects]
+            evidence_index = validated_evidence_index
+            save_evidence_index(evidence_index, paths.evidence_index_path(lesson_name))
+            save_evidence_debug(combined_evidence_debug, paths.evidence_debug_path(lesson_name))
+
             ml_manifest, _ = build_ml_manifest(
                 lesson_id=lesson_name,
                 rule_cards=enriched_rule_cards,
@@ -691,6 +858,12 @@ def run_component2_pipeline(
     help="Run structured knowledge extraction and write knowledge_events.json + knowledge_debug.json.",
 )
 @click.option(
+    "--max-knowledge-chunks",
+    type=int,
+    default=None,
+    help="If set, run knowledge extraction only for the first N chunks (for testing).",
+)
+@click.option(
     "--enable-evidence-linking",
     is_flag=True,
     default=False,
@@ -757,6 +930,7 @@ def main(
     target_duration_seconds: float,
     max_concurrency: int,
     enable_knowledge_events: bool,
+    max_knowledge_chunks: int | None,
     enable_evidence_linking: bool,
     enable_rule_cards: bool,
     enable_concept_graph: bool,
@@ -783,6 +957,7 @@ def main(
         target_duration_seconds=target_duration_seconds,
         max_concurrency=max_concurrency,
         enable_knowledge_events=enable_knowledge_events,
+        max_knowledge_chunks=max_knowledge_chunks,
         enable_evidence_linking=enable_evidence_linking,
         enable_rule_cards=enable_rule_cards,
         enable_concept_graph=enable_concept_graph,

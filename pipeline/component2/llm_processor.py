@@ -178,9 +178,120 @@ LEGACY_LITERAL_SCRIBE_SYSTEM_PROMPT = """You are the Literal Scribe for a tradin
 
 SYSTEM_PROMPT = LEGACY_LITERAL_SCRIBE_SYSTEM_PROMPT
 
-KNOWLEDGE_EXTRACT_SYSTEM_PROMPT = """You are a trading knowledge extractor. Extract only atomic trading knowledge from the given lesson chunk. Respond with valid JSON only.
+KNOWLEDGE_EXTRACT_SYSTEM_PROMPT = """You are a trading knowledge extraction engine.
 
-Use these sections: definitions, rule_statements, conditions, invalidations, exceptions, comparisons, warnings, process_steps, algorithm_hints, examples, global_notes. Split distinct ideas into separate entries. Avoid prose and frame-by-frame narration. Preserve uncertainty in ambiguity_notes where applicable. Use visuals as supporting context only. Do not invent rules or facts. Keep statements short and normalized. Output a single JSON object with the exact keys listed; use empty lists for missing buckets. No markdown, no explanation."""
+Your task is to extract only atomic, reusable trading knowledge from the provided lesson chunk.
+The lesson chunk may contain transcript text, chart screenshots, drawings, annotations, or other visual teaching aids.
+
+Return valid JSON only.
+Return exactly one JSON object.
+Do not include markdown.
+Do not include commentary.
+Do not include any text before or after the JSON.
+
+OUTPUT SCHEMA
+
+Return exactly these top-level keys:
+{
+  "definitions": [],
+  "rule_statements": [],
+  "conditions": [],
+  "invalidations": [],
+  "exceptions": [],
+  "comparisons": [],
+  "warnings": [],
+  "process_steps": [],
+  "algorithm_hints": [],
+  "examples": [],
+  "global_notes": []
+}
+
+ITEM FORMAT
+
+For every bucket except "global_notes", each item must be an object with exactly these fields:
+{
+  "text": "string",
+  "concept": "string or null",
+  "subconcept": "string or null",
+  "source_type": "explicit | inferred | mixed",
+  "ambiguity_notes": ["string", "..."],
+  "source_line_indices": [0, 1],
+  "source_quote": "string or null"
+}
+
+For "global_notes", each item must be a short string.
+
+ANCHOR RULES
+
+- source_line_indices must use chunk-local zero-based transcript line indices.
+- If the statement is supported by one line, return a one-element array.
+- If it spans multiple adjacent transcript lines, return all relevant indices.
+- If the exact line indices are unclear, return an empty array and use source_quote when possible.
+- source_quote should be a short verbatim or near-verbatim anchor from the transcript, not a paraphrase.
+- If neither line indices nor a short quote can be identified confidently, use [] and null.
+
+CORE EXTRACTION RULES
+
+1. Extract only trading knowledge that is actually supported by the lesson content.
+2. Do not invent rules, terminology, definitions, steps, conditions, or conclusions.
+3. Keep entries atomic: one entry = one idea; do not combine multiple rules into one entry.
+4. Keep entries normalized, short, and reusable.
+5. Do not write summaries of the lesson. Do not write prose explanations.
+6. Do not repeat the same idea across multiple buckets. If the same idea appears multiple times, keep only one clean normalized version.
+7. Prefer extracting generalizable trading knowledge over narration.
+8. Preserve uncertainty instead of resolving it by guessing.
+
+HOW TO USE VISUALS
+
+1. Visuals are supporting evidence, not the main output.
+2. Use visuals only when they materially help identify a teaching point.
+3. Do not describe charts frame by frame. Do not describe decorative or irrelevant visual details.
+4. If a visual suggests a rule but the lesson does not clearly teach it, mark source_type as "inferred" and explain the uncertainty in ambiguity_notes.
+
+BUCKET DEFINITIONS
+
+- definitions: Use for explicit meanings of terms, setups, structures, or concepts.
+- rule_statements: Use for direct trading principles, pattern rules, or decision rules.
+- conditions: Use for prerequisites, confirming factors, contextual requirements, or "only when" statements.
+- invalidations: Use for signals that a setup, read, or expectation is no longer valid.
+- exceptions: Use for stated cases where a normal rule does not apply.
+- comparisons: Use for meaningful distinctions between two concepts, patterns, contexts, or outcomes.
+- warnings: Use for cautionary guidance, common mistakes, traps, or misuse.
+- process_steps: Use for ordered or semi-ordered procedural actions a trader should take.
+- algorithm_hints: Use for ideas that could help encode the knowledge into programmatic logic. Keep them faithful to the source. Do not invent quantitative thresholds unless explicitly stated.
+- examples: Use for concrete positive or negative examples taught in the lesson. Keep them short and abstracted when possible.
+- global_notes: Use only for important lesson-level notes that do not fit the other buckets and are still atomic and useful. Do not use this as a dump bucket.
+
+SOURCE_TYPE RULES
+
+- "explicit" = directly stated or clearly taught in the lesson
+- "inferred" = inferred from example or visual, but not directly stated
+- "mixed" = partly stated and partly inferred
+
+AMBIGUITY RULES
+
+1. ambiguity_notes must be an array. Use an empty array when there is no ambiguity.
+2. Record uncertainty when: wording is vague; the visual suggests something but does not prove it; the example is partial; a threshold is implied but not stated; a term could have multiple interpretations.
+3. Do not use ambiguity_notes for general commentary.
+
+NORMALIZATION RULES
+
+1. Rewrite statements into clean, reusable knowledge units.
+2. Remove filler language, motivational language, and teaching rhetoric.
+3. Convert conversational phrasing into structured trading language. Keep the original meaning intact.
+4. Do not make the statement stronger than the source supports.
+
+IMPORTANT EXCLUSIONS
+
+Do NOT extract: motivational talk; storytelling with no trading rule; repeated filler; frame-by-frame narration; purely decorative chart description; unsupported assumptions; your own market knowledge; knowledge that is common in trading but not present in the lesson.
+
+QUALITY BAR
+
+Before producing the JSON, check: Is each entry atomic? Is each entry supported by the lesson? Is each entry placed in the best single bucket? Did I avoid duplication? Did I preserve uncertainty honestly? Did I keep only reusable trading knowledge?
+
+If a bucket has no valid items, return an empty array.
+
+Return JSON only."""
 
 MARKDOWN_RENDER_SYSTEM_PROMPT = """You render human-readable markdown from normalized rule cards and evidence references. Preserve the structure of rules, conditions, invalidations, and compact visual evidence. Do not invent rules or add content not present in the input. Keep rules, conditions, invalidations and compact visual evidence distinct. Support render_mode: use "review" for human review (clear sections, readable) or "rag" for RAG-oriented compact output."""
 
@@ -193,32 +304,54 @@ def build_knowledge_extract_prompt(
     chunk_index: int,
     section: str | None = None,
     transcript_text: str,
+    transcript_lines: list | None = None,
     visual_summaries: list[str],
     concept_context: str | None = None,
+    start_time_seconds: float | None = None,
+    end_time_seconds: float | None = None,
 ) -> str:
+    """Build minimal user prompt: content-focused, no instruction block (instructions are in system prompt)."""
+    if transcript_lines:
+        rendered_lines = []
+        for idx, line in enumerate(transcript_lines):
+            if isinstance(line, dict):
+                start_s = float(line.get("start_seconds", 0) or 0)
+                end_s = float(line.get("end_seconds", 0) or 0)
+                text = (line.get("text") or "").strip()
+            else:
+                start_s = float(getattr(line, "start_seconds", None) or 0)
+                end_s = float(getattr(line, "end_seconds", None) or 0)
+                text = (getattr(line, "text", None) or "").strip()
+            if not text:
+                continue
+            start = seconds_to_mmss(start_s)
+            end = seconds_to_mmss(end_s)
+            rendered_lines.append(f"[L{idx} {start}-{end}] {text}")
+        transcript_block = "\n".join(rendered_lines) if rendered_lines else "(empty)"
+    else:
+        transcript_block = transcript_text or "(empty)"
     parts = [
+        "Extract knowledge from this lesson chunk:",
+        "",
         f"Lesson ID: {lesson_id}",
         f"Chunk index: {chunk_index}",
     ]
+    if start_time_seconds is not None and end_time_seconds is not None:
+        parts.append(f"Time range: {seconds_to_mmss(start_time_seconds)} - {seconds_to_mmss(end_time_seconds)}")
     if section:
         parts.append(f"Section: {section}")
     if concept_context:
         parts.append(f"Concept context: {concept_context}")
-    header = "\n".join(parts)
+    parts.append("")
+    parts.append("<transcript>")
+    parts.append(transcript_block)
+    parts.append("</transcript>")
+    parts.append("")
     visual_block = "\n".join(f"- {s}" for s in visual_summaries) if visual_summaries else "(none)"
-    return f"""Extract atomic trading knowledge from this lesson chunk. Output valid JSON only. Split distinct ideas into separate entries. Prefer explicit teaching rules over narration. Keep statements short and normalized. Use visuals as supporting evidence only. Do not describe frame-by-frame. Do not summarize the whole lesson. Do not invent absent information. Leave concept/subconcept null when unclear; note ambiguity in ambiguity_notes.
-
-{header}
-
-<transcript>
-{transcript_text or "(empty)"}
-</transcript>
-
-<compact_visual_summaries>
-{visual_block}
-</compact_visual_summaries>
-
-Output a single JSON object with exactly these keys (each a list of objects with text, optional concept, optional subconcept, optional ambiguity_notes list): definitions, rule_statements, conditions, invalidations, exceptions, comparisons, warnings, process_steps, algorithm_hints, examples, global_notes (list of strings). Use empty lists for missing buckets. No markdown, no prose."""
+    parts.append("<compact_visual_summaries>")
+    parts.append(visual_block)
+    parts.append("</compact_visual_summaries>")
+    return "\n".join(parts)
 
 
 def build_markdown_render_prompt(
@@ -373,9 +506,13 @@ async def process_chunk_knowledge_extract(
     prompt = build_knowledge_extract_prompt(
         lesson_id=chunk.lesson_id,
         chunk_index=chunk.chunk_index,
-        section=chunk.section,
+        section=getattr(chunk, "section", None),
         transcript_text=chunk.transcript_text or "",
+        transcript_lines=getattr(chunk, "transcript_lines", None),
         visual_summaries=visual_summaries,
+        concept_context=getattr(chunk, "concept_context", None),
+        start_time_seconds=chunk.start_time_seconds,
+        end_time_seconds=chunk.end_time_seconds,
     )
     parsed, usage = _call_provider_for_mode(
         mode="knowledge_extract",
@@ -399,6 +536,7 @@ async def process_chunks_knowledge_extract(
     provider: str | None = None,
     max_concurrency: int = 5,
     progress_callback: Callable[[int, int, AdaptedChunk, float], None] | None = None,
+    compaction_cfg: VisualCompactionConfig | None = None,
 ) -> list[tuple[AdaptedChunk, ChunkExtractionResult, list[dict]]]:
     semaphore = asyncio.Semaphore(max(1, max_concurrency))
     ordered_results: list[tuple[AdaptedChunk, ChunkExtractionResult, list[dict]] | None] = [
@@ -412,7 +550,7 @@ async def process_chunks_knowledge_extract(
         async with semaphore:
             started_at = time.perf_counter()
             result, usage_records = await process_chunk_knowledge_extract(
-                c, video_id=video_id, model=model, provider=provider
+                c, video_id=video_id, model=model, provider=provider, compaction_cfg=compaction_cfg
             )
             ordered_results[c.chunk_index] = (c, result, usage_records)
             if progress_callback is not None:

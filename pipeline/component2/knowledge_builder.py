@@ -7,9 +7,9 @@ import logging
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Optional, Protocol
+from typing import Any, Literal, Optional, Protocol
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from pipeline.io_utils import atomic_write_text, atomic_write_json
 from pipeline.component2.parser import seconds_to_mmss
@@ -27,6 +27,9 @@ from pipeline.schemas import (
     ConfidenceLabel,
     KnowledgeEvent,
     KnowledgeEventCollection,
+    TranscriptAnchor,
+    is_placeholder_text,
+    normalize_text as schemas_normalize_text,
 )
 
 logger = logging.getLogger(__name__)
@@ -117,6 +120,24 @@ def build_transcript_text(transcript_lines: list[dict]) -> str:
     return "\n".join(parts) if parts else ""
 
 
+def build_numbered_transcript_text(transcript_lines: list[dict]) -> str:
+    """
+    Render transcript lines with chunk-local zero-based indices and mm:ss spans.
+    Example:
+    [L0 00:01-00:04] Price reacts from the level.
+    [L1 00:04-00:07] A false breakout returns under the level.
+    """
+    rendered: list[str] = []
+    for idx, line in enumerate(transcript_lines or []):
+        text = normalize_statement_text((line.get("text") or "").strip())
+        if not text:
+            continue
+        start = seconds_to_mmss(float(line.get("start_seconds", 0.0)))
+        end = seconds_to_mmss(float(line.get("end_seconds", 0.0)))
+        rendered.append(f"[L{idx} {start}-{end}] {text}")
+    return "\n".join(rendered)
+
+
 def get_transcript_time_bounds(
     transcript_lines: list[dict], fallback_start: float, fallback_end: float
 ) -> tuple[float, float]:
@@ -181,11 +202,28 @@ def adapt_chunks(
 # ----- Extraction models -----
 
 
+SourceType = Literal["explicit", "inferred", "mixed"]
+
+
 class ExtractedStatement(BaseModel):
     text: str
     concept: Optional[str] = None
     subconcept: Optional[str] = None
+    source_type: SourceType = "explicit"
     ambiguity_notes: list[str] = Field(default_factory=list)
+    source_line_indices: list[int] = Field(default_factory=list)
+    source_quote: Optional[str] = None
+
+    @field_validator("source_line_indices")
+    @classmethod
+    def normalize_source_line_indices(cls, value: list[int]) -> list[int]:
+        cleaned = []
+        seen = set()
+        for item in value or []:
+            if isinstance(item, int) and item >= 0 and item not in seen:
+                seen.add(item)
+                cleaned.append(item)
+        return sorted(cleaned)
 
 
 class ChunkExtractionResult(BaseModel):
@@ -301,8 +339,9 @@ def extract_chunk_knowledge(
         parsed = ChunkExtractionResult()
     debug["parsed_extraction"] = parsed.model_dump()
 
-    events = extraction_result_to_knowledge_events(parsed, chunk)
+    events, rejected = extraction_result_to_knowledge_events(parsed, chunk)
     debug["emitted_event_ids"] = [e.event_id for e in events]
+    debug["rejected_candidates"] = rejected
     debug["provenance_warnings"] = [
         w for e in events for w in validate_knowledge_event_provenance(e)
     ]
@@ -426,19 +465,137 @@ def dedupe_statements(statements: list[ExtractedStatement]) -> list[ExtractedSta
 # ----- Map to KnowledgeEvent -----
 
 
+def clamp_line_indices(indices: list[int], transcript_lines: list[dict]) -> list[int]:
+    if not transcript_lines:
+        return []
+    max_idx = len(transcript_lines) - 1
+    valid = [i for i in indices if 0 <= i <= max_idx]
+    return sorted(dict.fromkeys(valid))
+
+
+def find_line_indices_by_quote(source_quote: str | None, transcript_lines: list[dict]) -> list[int]:
+    quote = normalize_statement_text(source_quote or "").lower()
+    if not quote or not transcript_lines:
+        return []
+    matches: list[int] = []
+    for idx, line in enumerate(transcript_lines):
+        text = normalize_statement_text((line.get("text") or "")).lower()
+        if not text:
+            continue
+        if quote in text or text in quote:
+            matches.append(idx)
+    return matches
+
+
+def build_transcript_anchors(
+    line_indices: list[int],
+    transcript_lines: list[dict],
+    *,
+    match_source: str,
+) -> list[TranscriptAnchor]:
+    anchors: list[TranscriptAnchor] = []
+    for idx in line_indices:
+        line = transcript_lines[idx]
+        anchors.append(
+            TranscriptAnchor(
+                line_index=idx,
+                text=normalize_statement_text(line.get("text") or ""),
+                timestamp_start=seconds_to_mmss(float(line.get("start_seconds", 0.0))),
+                timestamp_end=seconds_to_mmss(float(line.get("end_seconds", 0.0))),
+                match_source=match_source,
+            )
+        )
+    return anchors
+
+
+def derive_event_timestamps_from_line_indices(
+    line_indices: list[int],
+    transcript_lines: list[dict],
+    *,
+    fallback_start_seconds: float,
+    fallback_end_seconds: float,
+) -> tuple[str, str, str, int | None, int | None]:
+    """
+    Returns:
+      timestamp_start, timestamp_end, timestamp_confidence, source_line_start, source_line_end
+    """
+    resolved = clamp_line_indices(line_indices, transcript_lines)
+    if not resolved:
+        return (
+            seconds_to_mmss(fallback_start_seconds),
+            seconds_to_mmss(fallback_end_seconds),
+            "chunk",
+            None,
+            None,
+        )
+    start_seconds = float(transcript_lines[resolved[0]].get("start_seconds", fallback_start_seconds))
+    end_seconds = float(transcript_lines[resolved[-1]].get("end_seconds", fallback_end_seconds))
+    return (
+        seconds_to_mmss(start_seconds),
+        seconds_to_mmss(end_seconds),
+        "line",
+        resolved[0],
+        resolved[-1],
+    )
+
+
+def resolve_statement_anchors(
+    statement: ExtractedStatement,
+    chunk: AdaptedChunk,
+) -> tuple[list[int], list[TranscriptAnchor], str | None, str, int | None, int | None, str, str]:
+    """
+    Returns:
+      resolved_line_indices,
+      transcript_anchors,
+      source_quote,
+      timestamp_confidence,
+      source_line_start,
+      source_line_end,
+      timestamp_start,
+      timestamp_end
+    """
+    transcript_lines = chunk.transcript_lines or []
+    line_indices = clamp_line_indices(statement.source_line_indices or [], transcript_lines)
+    match_source = "llm_line_indices"
+    if not line_indices and statement.source_quote:
+        line_indices = find_line_indices_by_quote(statement.source_quote, transcript_lines)
+        if line_indices:
+            match_source = "llm_source_quote"
+    ts_start, ts_end, ts_conf, src_line_start, src_line_end = derive_event_timestamps_from_line_indices(
+        line_indices,
+        transcript_lines,
+        fallback_start_seconds=chunk.start_time_seconds,
+        fallback_end_seconds=chunk.end_time_seconds,
+    )
+    anchors: list[TranscriptAnchor] = []
+    if line_indices:
+        anchors = build_transcript_anchors(line_indices, transcript_lines, match_source=match_source)
+    return (
+        line_indices,
+        anchors,
+        statement.source_quote,
+        ts_conf,
+        src_line_start,
+        src_line_end,
+        ts_start,
+        ts_end,
+    )
+
+
 def extraction_result_to_knowledge_events(
     extraction: ChunkExtractionResult,
     chunk: AdaptedChunk,
-) -> list[KnowledgeEvent]:
-    """Map extraction buckets to KnowledgeEvents with provenance and deterministic ids."""
+) -> tuple[list[KnowledgeEvent], list[dict]]:
+    """Map extraction buckets to KnowledgeEvents with provenance and deterministic ids.
+    Returns (events, rejected_candidates) for Phase 1 validity gate; rejected have placeholder/empty text."""
     slug = _lesson_slug(chunk.lesson_id)
-    t_start, t_end = get_transcript_time_bounds(
+    chunk_t_start, chunk_t_end = get_transcript_time_bounds(
         chunk.transcript_lines,
         chunk.start_time_seconds,
         chunk.end_time_seconds,
     )
-    ts_start = seconds_to_mmss(t_start)
-    ts_end = seconds_to_mmss(t_end)
+    chunk_ts_start = seconds_to_mmss(chunk_t_start)
+    chunk_ts_end = seconds_to_mmss(chunk_t_end)
     metadata = build_knowledge_event_provenance(
         lesson_id=chunk.lesson_id,
         chunk_index=chunk.chunk_index,
@@ -450,15 +607,58 @@ def extraction_result_to_knowledge_events(
         candidate_example_types=chunk.candidate_example_types,
     )
     events: list[KnowledgeEvent] = []
+    rejected: list[dict] = []
 
     for bucket_name, event_type in BUCKET_TO_EVENT_TYPE.items():
         statements: list[ExtractedStatement] = getattr(extraction, bucket_name, []) or []
         statements = dedupe_statements(statements)
         for i, st in enumerate(statements):
             raw = (st.text or "").strip()
-            norm = normalize_statement_text(raw)
-            if not raw or len(norm) < MIN_NORMALIZED_LENGTH:
+            norm = schemas_normalize_text(raw)
+            if not raw:
+                raw = ""
+            if not norm or len(norm) < MIN_NORMALIZED_LENGTH:
+                rejected.append({
+                    "stage": "knowledge_builder",
+                    "entity_type": "knowledge_event_candidate",
+                    "entity_id": f"ke_{slug}_{chunk.chunk_index}_{event_type}_{i}_rej",
+                    "candidate_text": raw or "(empty)",
+                    "reason_rejected": "empty or too short after normalize",
+                    "chunk_index": chunk.chunk_index,
+                    "section": chunk.section,
+                    "subsection": chunk.subsection,
+                    "timestamp_start": chunk_ts_start,
+                    "timestamp_end": chunk_ts_end,
+                    "source_line_indices": st.source_line_indices or [],
+                    "source_quote": st.source_quote,
+                })
                 continue
+            if is_placeholder_text(norm) or is_placeholder_text(raw):
+                rejected.append({
+                    "stage": "knowledge_builder",
+                    "entity_type": "knowledge_event_candidate",
+                    "entity_id": f"ke_{slug}_{chunk.chunk_index}_{event_type}_{i}_rej",
+                    "candidate_text": raw or norm,
+                    "reason_rejected": "placeholder or empty text",
+                    "chunk_index": chunk.chunk_index,
+                    "section": chunk.section,
+                    "subsection": chunk.subsection,
+                    "timestamp_start": chunk_ts_start,
+                    "timestamp_end": chunk_ts_end,
+                    "source_line_indices": st.source_line_indices or [],
+                    "source_quote": st.source_quote,
+                })
+                continue
+            (
+                resolved_line_indices,
+                transcript_anchors,
+                source_quote,
+                timestamp_confidence,
+                source_line_start,
+                source_line_end,
+                ts_start,
+                ts_end,
+            ) = resolve_statement_anchors(st, chunk)
             concept, subconcept = resolve_concept(
                 st.concept, st.subconcept, chunk, raw
             )
@@ -480,17 +680,37 @@ def extraction_result_to_knowledge_events(
                     normalized_text=norm,
                     concept=concept,
                     subconcept=subconcept,
-                    source_event_ids=[],
+                    source_event_ids=[],  # Phase 1: KnowledgeEvent is the primary extracted unit; no upstream lineage ids yet.
                     evidence_refs=[],
                     confidence=label,
                     confidence_score=conf_score,
                     ambiguity_notes=st.ambiguity_notes or [],
+                    source_chunk_index=chunk.chunk_index,
+                    source_line_start=source_line_start,
+                    source_line_end=source_line_end,
+                    source_quote=source_quote,
+                    transcript_anchors=transcript_anchors,
+                    timestamp_confidence=timestamp_confidence,
                     metadata=strip_raw_visual_blobs_from_metadata(metadata),
                 )
                 events.append(ke)
             except Exception:
+                rejected.append({
+                    "stage": "knowledge_builder",
+                    "entity_type": "knowledge_event_candidate",
+                    "entity_id": f"ke_{slug}_{chunk.chunk_index}_{event_type}_{i}_rej",
+                    "candidate_text": raw,
+                    "reason_rejected": "validation or build error",
+                    "chunk_index": chunk.chunk_index,
+                    "section": chunk.section,
+                    "subsection": chunk.subsection,
+                    "timestamp_start": chunk_ts_start,
+                    "timestamp_end": chunk_ts_end,
+                    "source_line_indices": st.source_line_indices or [],
+                    "source_quote": st.source_quote,
+                })
                 continue
-    return events
+    return (events, rejected)
 
 
 # ----- Collection build and save -----
@@ -511,7 +731,7 @@ def build_knowledge_events_from_extraction_results(
     all_events: list[KnowledgeEvent] = []
     debug_rows: list[dict] = []
     for chunk, extraction in zip(adapted_chunks, extraction_results):
-        events = extraction_result_to_knowledge_events(extraction, chunk)
+        events, rejected = extraction_result_to_knowledge_events(extraction, chunk)
         all_events.extend(events)
         row: dict = {
             "chunk_index": chunk.chunk_index,
@@ -519,6 +739,7 @@ def build_knowledge_events_from_extraction_results(
             "end_time_seconds": chunk.end_time_seconds,
             "num_events_emitted": len(events),
             "emitted_event_ids": [e.event_id for e in events],
+            "rejected_candidates": rejected,
             "provenance_warnings": [
                 w for e in events for w in validate_knowledge_event_provenance(e)
             ],
@@ -551,7 +772,7 @@ def build_knowledge_events_from_chunks(
         )
         if debug:
             debug_rows.append(debug_payload)
-        events = extraction_result_to_knowledge_events(extraction, chunk)
+        events, _ = extraction_result_to_knowledge_events(extraction, chunk)
         if not debug_payload.get("error"):
             success_count += 1
         all_events.extend(events)
@@ -587,9 +808,11 @@ def build_knowledge_events_from_file(
 
 
 def save_knowledge_events(collection: KnowledgeEventCollection, output_path: Path) -> None:
-    """Write KnowledgeEventCollection as JSON."""
+    """Write KnowledgeEventCollection as JSON. Uses full model_dump so Phase 2A and diagnostic fields are preserved."""
     assert_no_raw_visual_blob_leak(collection.model_dump())
-    atomic_write_text(output_path, collection.model_dump_json(indent=2), encoding="utf-8")
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    payload = collection.model_dump(mode="json", exclude_none=False)
+    atomic_write_text(output_path, json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     logger.info("Wrote %d events to %s", len(collection.events), output_path)
 
 

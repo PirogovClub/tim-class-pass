@@ -250,6 +250,23 @@ def validate_rule_card_provenance(rule: Any) -> list[str]:
     return warnings
 
 
+def validate_rule_card_for_final_provenance(rule: Any) -> list[str]:
+    """Return hard errors from provenance warnings; use at final export to reject rules."""
+    warnings = validate_rule_card_provenance(rule)
+    hard_errors: list[str] = []
+
+    for warning in warnings:
+        if warning in {
+            "missing lesson_id",
+            "missing source_event_ids",
+            "missing concept",
+            "visual_summary present but evidence_refs missing",
+        }:
+            hard_errors.append(warning)
+
+    return hard_errors
+
+
 def compute_provenance_coverage(
     *,
     knowledge_events: list[Any],
