@@ -100,7 +100,8 @@ def test_extraction_result_to_knowledge_events_falls_back_to_source_quote_match(
     events, rejected = extraction_result_to_knowledge_events(extraction, chunk)
     assert rejected == []
     ev = events[0]
-    assert ev.timestamp_confidence == "line"
+    # Quote-matched anchors get "span" (not "line"); only explicit llm_line_indices can get "line"
+    assert ev.timestamp_confidence == "span"
     assert ev.source_line_start == 1
     assert ev.source_line_end == 1
     assert len(ev.transcript_anchors) == 1
@@ -493,6 +494,121 @@ def test_extraction_result_to_knowledge_events_emits_phase2a_fields() -> None:
     assert hasattr(ev, "source_quote")
     assert hasattr(ev, "transcript_anchors")
     assert hasattr(ev, "timestamp_confidence")
+
+
+def test_compact_explicit_anchor_gets_line_confidence() -> None:
+    chunk = AdaptedChunk(
+        lesson_id="L2",
+        lesson_title=None,
+        chunk_index=0,
+        section=None,
+        subsection=None,
+        start_time_seconds=1.0,
+        end_time_seconds=20.0,
+        transcript_lines=[
+            {"start_seconds": 1.0, "end_seconds": 3.0, "text": "Intro."},
+            {"start_seconds": 3.0, "end_seconds": 5.0, "text": "A level forms after repeated reactions."},
+            {"start_seconds": 5.0, "end_seconds": 7.0, "text": "That level becomes important for entries."},
+        ],
+        transcript_text="Intro.\nA level forms after repeated reactions.\nThat level becomes important for entries.",
+        visual_events=[],
+    )
+    extraction = ChunkExtractionResult(
+        definitions=[
+            ExtractedStatement(
+                text="A level forms after repeated reactions.",
+                source_line_indices=[1, 2],
+                source_quote="repeated reactions",
+            )
+        ]
+    )
+    events, rejected = extraction_result_to_knowledge_events(extraction, chunk)
+    assert rejected == []
+    ev = events[0]
+    assert ev.timestamp_confidence == "line"
+    assert ev.anchor_match_source == "llm_line_indices"
+    assert ev.anchor_line_count == 2
+    assert ev.anchor_span_width == 2
+    assert ev.anchor_density == 1.0
+
+
+def test_broader_local_anchor_gets_span_confidence() -> None:
+    chunk = AdaptedChunk(
+        lesson_id="L2",
+        lesson_title=None,
+        chunk_index=0,
+        section=None,
+        subsection=None,
+        start_time_seconds=0.0,
+        end_time_seconds=30.0,
+        transcript_lines=[
+            {"start_seconds": 0.0, "end_seconds": 2.0, "text": "L0"},
+            {"start_seconds": 2.0, "end_seconds": 4.0, "text": "L1"},
+            {"start_seconds": 4.0, "end_seconds": 6.0, "text": "L2"},
+            {"start_seconds": 6.0, "end_seconds": 8.0, "text": "L3"},
+            {"start_seconds": 8.0, "end_seconds": 10.0, "text": "L4"},
+            {"start_seconds": 10.0, "end_seconds": 12.0, "text": "L5"},
+        ],
+        transcript_text="...",
+        visual_events=[],
+    )
+    extraction = ChunkExtractionResult(
+        process_steps=[
+            ExtractedStatement(
+                text="A process spans multiple nearby lines.",
+                source_line_indices=[0, 1, 2, 3, 4, 5],
+                source_quote="multiple nearby lines",
+            )
+        ]
+    )
+    events, rejected = extraction_result_to_knowledge_events(extraction, chunk)
+    assert rejected == []
+    ev = events[0]
+    assert ev.timestamp_confidence == "span"
+    assert ev.anchor_match_source == "llm_line_indices"
+    assert ev.anchor_line_count == 6
+    assert ev.anchor_span_width == 6
+
+
+def test_sparse_anchor_downgrades_to_chunk() -> None:
+    chunk = AdaptedChunk(
+        lesson_id="L2",
+        lesson_title=None,
+        chunk_index=0,
+        section=None,
+        subsection=None,
+        start_time_seconds=0.0,
+        end_time_seconds=30.0,
+        transcript_lines=[
+            {"start_seconds": 0.0, "end_seconds": 2.0, "text": "L0"},
+            {"start_seconds": 2.0, "end_seconds": 4.0, "text": "L1"},
+            {"start_seconds": 4.0, "end_seconds": 6.0, "text": "L2"},
+            {"start_seconds": 6.0, "end_seconds": 8.0, "text": "L3"},
+            {"start_seconds": 8.0, "end_seconds": 10.0, "text": "L4"},
+            {"start_seconds": 10.0, "end_seconds": 12.0, "text": "L5"},
+            {"start_seconds": 12.0, "end_seconds": 14.0, "text": "L6"},
+        ],
+        transcript_text="...",
+        visual_events=[],
+    )
+    extraction = ChunkExtractionResult(
+        warnings=[
+            ExtractedStatement(
+                text="This warning is only loosely supported across the chunk.",
+                source_line_indices=[0, 3, 6],
+                source_quote="loosely supported",
+            )
+        ]
+    )
+    events, rejected = extraction_result_to_knowledge_events(extraction, chunk)
+    assert rejected == []
+    ev = events[0]
+    assert ev.timestamp_confidence == "chunk"
+    assert ev.anchor_match_source == "chunk_fallback"
+    assert ev.source_line_start is None
+    assert ev.source_line_end is None
+    assert ev.transcript_anchors == []
+    assert ev.anchor_line_count == 3
 
 
 def test_save_knowledge_events_and_debug(tmp_path: Path) -> None:

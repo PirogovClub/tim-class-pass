@@ -98,7 +98,7 @@ AnchorMatchSource = Literal[
     "heuristic_quote_match",
     "chunk_fallback",
 ]
-TimestampConfidence = Literal["chunk", "line"]
+TimestampConfidence = Literal["chunk", "span", "line"]
 
 
 class TranscriptAnchor(SchemaBase):
@@ -235,11 +235,31 @@ def validate_knowledge_event(event: KnowledgeEvent) -> List[str]:
         errors.append("raw_text is placeholder or empty")
     if event.confidence_score is not None and not (0.0 <= event.confidence_score <= 1.0):
         errors.append("confidence_score must be in [0, 1]")
-    if event.timestamp_confidence == "line":
+
+    if event.timestamp_confidence in {"line", "span"}:
         if event.source_line_start is None or event.source_line_end is None:
-            errors.append("timestamp_confidence='line' requires source_line_start/source_line_end")
+            errors.append(
+                f"timestamp_confidence='{event.timestamp_confidence}' requires source_line_start/source_line_end"
+            )
         if not event.transcript_anchors:
-            errors.append("timestamp_confidence='line' requires transcript_anchors")
+            errors.append(
+                f"timestamp_confidence='{event.timestamp_confidence}' requires transcript_anchors"
+            )
+
+    if event.timestamp_confidence == "line":
+        if event.anchor_match_source is None:
+            errors.append("timestamp_confidence='line' requires anchor_match_source")
+        if event.anchor_line_count is None:
+            errors.append("timestamp_confidence='line' requires anchor_line_count")
+        if event.anchor_span_width is None:
+            errors.append("timestamp_confidence='line' requires anchor_span_width")
+        if event.anchor_density is None:
+            errors.append("timestamp_confidence='line' requires anchor_density")
+        if event.anchor_span_width is not None and event.anchor_span_width > 4:
+            errors.append("timestamp_confidence='line' cannot have anchor_span_width > 4")
+        if event.anchor_density is not None and event.anchor_density < 0.75:
+            errors.append("timestamp_confidence='line' requires anchor_density >= 0.75")
+
     return errors
 
 

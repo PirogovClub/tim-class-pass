@@ -48,6 +48,11 @@ BUCKET_TO_EVENT_TYPE: dict[str, str] = {
     "examples": "example",
 }
 
+MAX_LINE_CONFIDENCE_WIDTH = 4
+MAX_SPAN_CONFIDENCE_WIDTH = 10
+MIN_LINE_DENSITY = 0.75
+MIN_SPAN_DENSITY = 0.50
+
 
 # ----- Chunk adapter -----
 
@@ -508,6 +513,65 @@ def build_transcript_anchors(
     return anchors
 
 
+def compute_anchor_span_width(line_indices: list[int]) -> int:
+    if not line_indices:
+        return 0
+    ordered = sorted(set(line_indices))
+    return (ordered[-1] - ordered[0]) + 1
+
+
+def compute_anchor_density(line_indices: list[int]) -> float:
+    if not line_indices:
+        return 0.0
+    width = compute_anchor_span_width(line_indices)
+    if width <= 0:
+        return 0.0
+    return len(set(line_indices)) / float(width)
+
+
+def is_near_contiguous(line_indices: list[int], *, max_gap: int = 1) -> bool:
+    ordered = sorted(set(line_indices))
+    if len(ordered) <= 1:
+        return True
+    for left, right in zip(ordered, ordered[1:]):
+        if right - left > (max_gap + 1):
+            return False
+    return True
+
+
+def classify_timestamp_confidence(
+    *,
+    resolved_line_indices: list[int],
+    match_source: str,
+) -> tuple[str, int | None, int | None, int, float]:
+    """
+    Returns:
+      timestamp_confidence, source_line_start, source_line_end, span_width, density
+    """
+    if not resolved_line_indices:
+        return ("chunk", None, None, 0, 0.0)
+    ordered = sorted(set(resolved_line_indices))
+    source_line_start = ordered[0]
+    source_line_end = ordered[-1]
+    span_width = compute_anchor_span_width(ordered)
+    density = compute_anchor_density(ordered)
+    near_contiguous = is_near_contiguous(ordered, max_gap=1)
+    if (
+        match_source == "llm_line_indices"
+        and near_contiguous
+        and span_width <= MAX_LINE_CONFIDENCE_WIDTH
+        and density >= MIN_LINE_DENSITY
+    ):
+        return ("line", source_line_start, source_line_end, span_width, density)
+    if (
+        near_contiguous
+        and span_width <= MAX_SPAN_CONFIDENCE_WIDTH
+        and density >= MIN_SPAN_DENSITY
+    ):
+        return ("span", source_line_start, source_line_end, span_width, density)
+    return ("chunk", None, None, span_width, density)
+
+
 def derive_event_timestamps_from_line_indices(
     line_indices: list[int],
     transcript_lines: list[dict],
@@ -542,43 +606,87 @@ def derive_event_timestamps_from_line_indices(
 def resolve_statement_anchors(
     statement: ExtractedStatement,
     chunk: AdaptedChunk,
-) -> tuple[list[int], list[TranscriptAnchor], str | None, str, int | None, int | None, str, str]:
+) -> tuple[
+    list[int],
+    list[TranscriptAnchor],
+    str | None,
+    str,
+    str,
+    int | None,
+    int | None,
+    str,
+    str,
+    int,
+    float,
+]:
     """
     Returns:
       resolved_line_indices,
       transcript_anchors,
       source_quote,
+      anchor_match_source,
       timestamp_confidence,
       source_line_start,
       source_line_end,
       timestamp_start,
-      timestamp_end
+      timestamp_end,
+      anchor_span_width,
+      anchor_density,
     """
     transcript_lines = chunk.transcript_lines or []
-    line_indices = clamp_line_indices(statement.source_line_indices or [], transcript_lines)
-    match_source = "llm_line_indices"
-    if not line_indices and statement.source_quote:
-        line_indices = find_line_indices_by_quote(statement.source_quote, transcript_lines)
-        if line_indices:
-            match_source = "llm_source_quote"
-    ts_start, ts_end, ts_conf, src_line_start, src_line_end = derive_event_timestamps_from_line_indices(
-        line_indices,
+    resolved_line_indices = clamp_line_indices(
+        statement.source_line_indices or [],
         transcript_lines,
-        fallback_start_seconds=chunk.start_time_seconds,
-        fallback_end_seconds=chunk.end_time_seconds,
     )
-    anchors: list[TranscriptAnchor] = []
-    if line_indices:
-        anchors = build_transcript_anchors(line_indices, transcript_lines, match_source=match_source)
+    anchor_match_source = "llm_line_indices"
+    if not resolved_line_indices and statement.source_quote:
+        resolved_line_indices = find_line_indices_by_quote(
+            statement.source_quote,
+            transcript_lines,
+        )
+        if resolved_line_indices:
+            anchor_match_source = "llm_source_quote"
+    (
+        timestamp_confidence,
+        source_line_start,
+        source_line_end,
+        anchor_span_width,
+        anchor_density,
+    ) = classify_timestamp_confidence(
+        resolved_line_indices=resolved_line_indices,
+        match_source=anchor_match_source,
+    )
+    if timestamp_confidence in {"line", "span"} and source_line_start is not None and source_line_end is not None:
+        start_seconds = float(
+            transcript_lines[source_line_start].get("start_seconds", chunk.start_time_seconds)
+        )
+        end_seconds = float(
+            transcript_lines[source_line_end].get("end_seconds", chunk.end_time_seconds)
+        )
+        timestamp_start = seconds_to_mmss(start_seconds)
+        timestamp_end = seconds_to_mmss(end_seconds)
+        transcript_anchors = build_transcript_anchors(
+            resolved_line_indices,
+            transcript_lines,
+            match_source=anchor_match_source,
+        )
+    else:
+        timestamp_start = seconds_to_mmss(chunk.start_time_seconds)
+        timestamp_end = seconds_to_mmss(chunk.end_time_seconds)
+        transcript_anchors = []
+        anchor_match_source = "chunk_fallback"
     return (
-        line_indices,
-        anchors,
+        resolved_line_indices,
+        transcript_anchors,
         statement.source_quote,
-        ts_conf,
-        src_line_start,
-        src_line_end,
-        ts_start,
-        ts_end,
+        anchor_match_source,
+        timestamp_confidence,
+        source_line_start,
+        source_line_end,
+        timestamp_start,
+        timestamp_end,
+        anchor_span_width,
+        anchor_density,
     )
 
 
@@ -630,7 +738,13 @@ def extraction_result_to_knowledge_events(
                     "timestamp_start": chunk_ts_start,
                     "timestamp_end": chunk_ts_end,
                     "source_line_indices": st.source_line_indices or [],
+                    "resolved_line_indices": st.source_line_indices or [],
                     "source_quote": st.source_quote,
+                    "anchor_match_source": None,
+                    "timestamp_confidence": None,
+                    "anchor_line_count": len(st.source_line_indices or []),
+                    "anchor_span_width": None,
+                    "anchor_density": None,
                 })
                 continue
             if is_placeholder_text(norm) or is_placeholder_text(raw):
@@ -646,18 +760,27 @@ def extraction_result_to_knowledge_events(
                     "timestamp_start": chunk_ts_start,
                     "timestamp_end": chunk_ts_end,
                     "source_line_indices": st.source_line_indices or [],
+                    "resolved_line_indices": st.source_line_indices or [],
                     "source_quote": st.source_quote,
+                    "anchor_match_source": None,
+                    "timestamp_confidence": None,
+                    "anchor_line_count": len(st.source_line_indices or []),
+                    "anchor_span_width": None,
+                    "anchor_density": None,
                 })
                 continue
             (
                 resolved_line_indices,
                 transcript_anchors,
                 source_quote,
+                anchor_match_source,
                 timestamp_confidence,
                 source_line_start,
                 source_line_end,
                 ts_start,
                 ts_end,
+                anchor_span_width,
+                anchor_density,
             ) = resolve_statement_anchors(st, chunk)
             concept, subconcept = resolve_concept(
                 st.concept, st.subconcept, chunk, raw
@@ -691,6 +814,10 @@ def extraction_result_to_knowledge_events(
                     source_quote=source_quote,
                     transcript_anchors=transcript_anchors,
                     timestamp_confidence=timestamp_confidence,
+                    anchor_match_source=anchor_match_source,
+                    anchor_line_count=len(resolved_line_indices),
+                    anchor_span_width=anchor_span_width,
+                    anchor_density=anchor_density,
                     metadata=strip_raw_visual_blobs_from_metadata(metadata),
                 )
                 events.append(ke)
@@ -707,7 +834,13 @@ def extraction_result_to_knowledge_events(
                     "timestamp_start": chunk_ts_start,
                     "timestamp_end": chunk_ts_end,
                     "source_line_indices": st.source_line_indices or [],
+                    "resolved_line_indices": resolved_line_indices,
                     "source_quote": st.source_quote,
+                    "anchor_match_source": anchor_match_source,
+                    "timestamp_confidence": timestamp_confidence,
+                    "anchor_line_count": len(resolved_line_indices),
+                    "anchor_span_width": anchor_span_width,
+                    "anchor_density": anchor_density,
                 })
                 continue
     return (events, rejected)

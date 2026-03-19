@@ -335,6 +335,18 @@ def test_pipeline_written_knowledge_events_contains_phase2a_fields() -> None:
     assert "transcript_anchors" in first
 
 
+def test_pipeline_outputs_not_all_events_are_line_confidence() -> None:
+    """Pipeline output has a mix of line/span/chunk confidence (run after full Component 2)."""
+    root = Path(__file__).resolve().parents[1] / "data" / "Lesson 2. Levels part 1" / "output_intermediate"
+    ke_path = root / "Lesson 2. Levels part 1.knowledge_events.json"
+    if not ke_path.is_file():
+        pytest.skip("knowledge_events.json not found; run Component 2 for Lesson 2 first")
+    collection = KnowledgeEventCollection.model_validate_json(ke_path.read_text(encoding="utf-8"))
+    confidences = [ev.timestamp_confidence for ev in collection.events]
+    assert "line" in confidences
+    assert any(c in {"span", "chunk"} for c in confidences)
+
+
 def test_knowledge_events_json_preserves_line_anchors(tmp_path: Path) -> None:
     """Build collection with source_line_indices, save to knowledge_events.json, assert line-anchored event."""
     chunk = AdaptedChunk(

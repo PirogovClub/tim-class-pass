@@ -12,6 +12,7 @@ from pipeline.schemas import (
     KnowledgeEvent,
     LessonKnowledgeBundle,
     RuleCard,
+    TranscriptAnchor,
     validate_knowledge_event,
 )
 
@@ -32,6 +33,36 @@ def test_knowledge_event_with_line_confidence_requires_anchor_fields() -> None:
     )
     errors = validate_knowledge_event(event)
     assert any("timestamp_confidence='line'" in e for e in errors)
+
+
+def test_line_confidence_requires_anchor_diagnostics() -> None:
+    event = KnowledgeEvent(
+        event_id="ke1",
+        lesson_id="L2",
+        event_type="definition",
+        raw_text="A level is a repeated reaction area.",
+        normalized_text="A level is a repeated reaction area.",
+        timestamp_confidence="line",
+        source_line_start=0,
+        source_line_end=1,
+        transcript_anchors=[
+            TranscriptAnchor(
+                line_index=0,
+                text="A level is a repeated reaction area.",
+                match_source="llm_line_indices",
+            )
+        ],
+        anchor_match_source=None,
+        anchor_line_count=None,
+        anchor_span_width=None,
+        anchor_density=None,
+        metadata={"chunk_index": 0},
+    )
+    errors = validate_knowledge_event(event)
+    assert any("anchor_match_source" in e for e in errors)
+    assert any("anchor_line_count" in e for e in errors)
+    assert any("anchor_span_width" in e for e in errors)
+    assert any("anchor_density" in e for e in errors)
 
 
 def test_valid_knowledge_event() -> None:
