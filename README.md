@@ -198,6 +198,14 @@ Open `htmlcov/index.html` to browse. Optional live-provider tests (require API k
 uv run pytest -m live_provider
 ```
 
+Unit vs integration (12-phase2): run only fast unit tests, or include slow integration tests that read Lesson 2 artifacts:
+
+```bash
+uv run pytest tests/unit -q
+uv run pytest tests/integration -m integration -q
+uv run pytest tests/unit tests/integration -m integration -q
+```
+
 ## Running the Pipelines
 
 ### Main pipeline: from a new YouTube URL

@@ -255,10 +255,10 @@ def validate_knowledge_event(event: KnowledgeEvent) -> List[str]:
             errors.append("timestamp_confidence='line' requires anchor_span_width")
         if event.anchor_density is None:
             errors.append("timestamp_confidence='line' requires anchor_density")
-        if event.anchor_span_width is not None and event.anchor_span_width > 4:
-            errors.append("timestamp_confidence='line' cannot have anchor_span_width > 4")
-        if event.anchor_density is not None and event.anchor_density < 0.75:
-            errors.append("timestamp_confidence='line' requires anchor_density >= 0.75")
+        if event.anchor_span_width is not None and event.anchor_span_width > 3:
+            errors.append("timestamp_confidence='line' cannot have anchor_span_width > 3")
+        if event.anchor_density is not None and event.anchor_density < 0.60:
+            errors.append("timestamp_confidence='line' requires anchor_density >= 0.60")
 
     return errors
 

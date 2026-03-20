@@ -12,6 +12,7 @@ from pipeline.component2.ml_prep import (
     build_evidence_lookup,
     build_labeling_guidance,
     build_labeling_manifest,
+    build_ml_examples,
     build_ml_manifest,
     compute_ml_readiness_coverage,
     distribute_example_refs_for_ml,
@@ -19,6 +20,7 @@ from pipeline.component2.ml_prep import (
     enrich_rule_card_collection_for_ml,
     infer_candidate_features,
     is_evidence_ml_eligible,
+    is_evidence_ml_eligible_for_rule,
     save_ml_manifest,
 )
 
@@ -91,10 +93,9 @@ def test_distribute_example_refs_for_ml() -> None:
 
     assert buckets["positive_example_refs"] == ["e1"]
     assert buckets["negative_example_refs"] == ["e2"]
-    assert buckets["ambiguous_example_refs"] == []  # 06-phase1: ambiguous not in ML buckets
+    assert buckets["ambiguous_example_refs"] == ["e3"]  # 11-phase2: ambiguous_example is ML-eligible
     assert "e4" not in buckets["positive_example_refs"]
     assert "e4" not in buckets["negative_example_refs"]
-    assert "e3" not in buckets["ambiguous_example_refs"]
 
 
 # ----- 3. Labeling guidance generated -----
@@ -178,6 +179,7 @@ def test_build_ml_manifest() -> None:
         evidence_id="e1",
         lesson_id="lesson1",
         example_role="positive_example",
+        linked_rule_ids=["r1"],
         frame_ids=["001"],
         screenshot_paths=["/tmp/frame_001.jpg"],
         source_event_ids=["ke1"],
@@ -366,7 +368,7 @@ def test_is_evidence_ml_eligible_false_when_empty_linked_rule_ids() -> None:
         linked_rule_ids=[],
         source_event_ids=["ke1"],
     )
-    assert is_evidence_ml_eligible(ref, rule) is False
+    assert is_evidence_ml_eligible_for_rule(ref, rule) is False
 
 
 def test_is_evidence_ml_eligible_false_when_empty_source_event_ids() -> None:
@@ -379,7 +381,7 @@ def test_is_evidence_ml_eligible_false_when_empty_source_event_ids() -> None:
         linked_rule_ids=["r1"],
         source_event_ids=[],
     )
-    assert is_evidence_ml_eligible(ref, rule) is False
+    assert is_evidence_ml_eligible_for_rule(ref, rule) is False
 
 
 def test_is_evidence_ml_eligible_false_when_illustration_role() -> None:
@@ -392,7 +394,7 @@ def test_is_evidence_ml_eligible_false_when_illustration_role() -> None:
         linked_rule_ids=["r1"],
         source_event_ids=["ke1"],
     )
-    assert is_evidence_ml_eligible(ref, rule) is False
+    assert is_evidence_ml_eligible_for_rule(ref, rule) is False
 
 
 def test_is_evidence_ml_eligible_true_when_eligible_positive_example() -> None:
@@ -406,11 +408,11 @@ def test_is_evidence_ml_eligible_true_when_eligible_positive_example() -> None:
         source_event_ids=["ke1"],
         compact_visual_summary="Price holds beyond the level.",
     )
-    assert is_evidence_ml_eligible(ref, rule) is True
+    assert is_evidence_ml_eligible_for_rule(ref, rule) is True
 
 
 def test_is_evidence_ml_eligible_false_when_intro_summary() -> None:
-    """Ref with intro-like compact_visual_summary is not ML-eligible."""
+    """11-phase2: intro summary no longer gated; positive_example with links is eligible."""
     rule = RuleCard(rule_id="r1", lesson_id="lesson1", concept="level", rule_text="Rule.")
     ref = EvidenceRef(
         evidence_id="e1",
@@ -420,7 +422,7 @@ def test_is_evidence_ml_eligible_false_when_intro_summary() -> None:
         source_event_ids=["ke1"],
         compact_visual_summary="Intro to the topic and key concepts.",
     )
-    assert is_evidence_ml_eligible(ref, rule) is False
+    assert is_evidence_ml_eligible_for_rule(ref, rule) is True
 
 
 def test_distribute_example_refs_for_ml_excludes_ineligible_counterexample() -> None:
@@ -476,11 +478,11 @@ def test_generic_teaching_visual_not_ml_eligible() -> None:
         source_event_ids=["ke1"],
     )
 
-    assert is_evidence_ml_eligible(ref, rule) is False
+    assert is_evidence_ml_eligible_for_rule(ref, rule) is False
 
 
 def test_generic_visual_marked_counterexample_is_rejected_by_ml_gate() -> None:
-    """06-phase1: counterexample with generic intro summary is rejected by ML gate."""
+    """11-phase2: counterexample with links is eligible (generic summary no longer gated)."""
     ref = EvidenceRef(
         lesson_id="lesson1",
         evidence_id="ev2",
@@ -499,7 +501,7 @@ def test_generic_visual_marked_counterexample_is_rejected_by_ml_gate() -> None:
         source_event_ids=["ke1"],
     )
 
-    assert is_evidence_ml_eligible(ref, rule) is False
+    assert is_evidence_ml_eligible_for_rule(ref, rule) is True
 
 
 def test_explicit_negative_evidence_is_ml_eligible() -> None:
@@ -522,4 +524,75 @@ def test_explicit_negative_evidence_is_ml_eligible() -> None:
         source_event_ids=["ke10"],
     )
 
-    assert is_evidence_ml_eligible(ref, rule) is True
+    assert is_evidence_ml_eligible_for_rule(ref, rule) is True
+
+
+# ----- 11-phase2: dict-based ML eligibility and trainable-only manifests -----
+
+
+def test_illustration_is_not_ml_eligible() -> None:
+    """11-phase2: illustration is not ML-eligible (brief dict-based)."""
+    ev = {
+        "example_role": "illustration",
+        "linked_rule_ids": ["r1"],
+        "source_event_ids": ["e1"],
+    }
+    assert is_evidence_ml_eligible(ev) is False
+
+
+def test_positive_example_is_ml_eligible() -> None:
+    """11-phase2: positive_example with links is ML-eligible (brief dict-based)."""
+    ev = {
+        "example_role": "positive_example",
+        "linked_rule_ids": ["r1"],
+        "source_event_ids": ["e1"],
+    }
+    assert is_evidence_ml_eligible(ev) is True
+
+
+def test_labeling_manifest_empty_when_only_illustrations() -> None:
+    """11-phase2: labeling manifest has no tasks when all evidence is illustration."""
+    evidence_ref = EvidenceRef(
+        evidence_id="ev1",
+        lesson_id="lesson1",
+        example_role="illustration",
+        linked_rule_ids=["r1"],
+        source_event_ids=["e1"],
+    )
+    evidence_index = EvidenceIndex(
+        schema_version="1.0",
+        lesson_id="lesson1",
+        evidence_refs=[evidence_ref],
+    )
+    rule = RuleCard(
+        rule_id="r1",
+        lesson_id="lesson1",
+        concept="level",
+        rule_text="A level matters.",
+        evidence_refs=["ev1"],
+        source_event_ids=["e1"],
+    )
+    rule_cards = RuleCardCollection(lesson_id="lesson1", rules=[rule])
+    enriched = enrich_rule_card_collection_for_ml(rule_cards, evidence_index)
+    manifest = build_labeling_manifest("lesson1", enriched, evidence_index)
+    assert manifest.get("tasks", []) == []
+
+
+def test_ml_examples_excludes_illustrations() -> None:
+    """11-phase2: build_ml_examples excludes illustration (brief)."""
+    evidence_refs = [
+        {
+            "evidence_id": "ev1",
+            "example_role": "illustration",
+            "linked_rule_ids": ["r1"],
+            "source_event_ids": ["e1"],
+        },
+        {
+            "evidence_id": "ev2",
+            "example_role": "positive_example",
+            "linked_rule_ids": ["r1"],
+            "source_event_ids": ["e2"],
+        },
+    ]
+    examples = build_ml_examples(evidence_refs)
+    assert [x["evidence_id"] for x in examples] == ["ev2"]

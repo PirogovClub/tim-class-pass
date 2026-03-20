@@ -519,12 +519,12 @@ def run_component2_pipeline(
                 rule_cards=enriched_rule_cards,
                 evidence_index=evidence_index,
             )
-            save_ml_manifest(ml_manifest, paths.ml_manifest_path(lesson_name))
             labeling_manifest = build_labeling_manifest(
                 lesson_id=lesson_name,
                 rule_cards=enriched_rule_cards,
                 evidence_index=evidence_index,
             )
+            save_ml_manifest(ml_manifest, paths.ml_manifest_path(lesson_name))
             save_ml_manifest(
                 labeling_manifest,
                 paths.labeling_manifest_path(lesson_name),

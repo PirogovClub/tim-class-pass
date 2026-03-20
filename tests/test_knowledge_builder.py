@@ -18,6 +18,7 @@ from pipeline.component2.knowledge_builder import (
     load_chunks_json,
     summarize_visual_events_for_extraction,
     extraction_result_to_knowledge_events,
+    finalize_anchor_provenance,
     normalize_statement_text,
     dedupe_statements,
     save_knowledge_events,
@@ -609,6 +610,39 @@ def test_sparse_anchor_downgrades_to_chunk() -> None:
     assert ev.source_line_end is None
     assert ev.transcript_anchors == []
     assert ev.anchor_line_count == 3
+
+
+def test_line_confidence_for_compact_dense_span() -> None:
+    """11-phase2: span_width <= 3 and density >= 0.60 -> line."""
+    event = finalize_anchor_provenance(
+        source_line_start=10,
+        source_line_end=12,
+        transcript_anchors=["a", "b"],
+        anchor_density=0.67,
+    )
+    assert event["timestamp_confidence"] == "line"
+
+
+def test_span_confidence_for_width_four() -> None:
+    """11-phase2: span_width >= 4 -> span."""
+    event = finalize_anchor_provenance(
+        source_line_start=10,
+        source_line_end=13,
+        transcript_anchors=["a", "b"],
+        anchor_density=0.50,
+    )
+    assert event["timestamp_confidence"] == "span"
+
+
+def test_chunk_confidence_without_line_bounds() -> None:
+    """11-phase2: no line bounds -> chunk."""
+    event = finalize_anchor_provenance(
+        source_line_start=None,
+        source_line_end=None,
+        transcript_anchors=[],
+        anchor_density=0.0,
+    )
+    assert event["timestamp_confidence"] == "chunk"
 
 
 def test_save_knowledge_events_and_debug(tmp_path: Path) -> None:

@@ -198,7 +198,52 @@ def get_linked_evidence_for_rule(
     return [evidence_lookup[eid] for eid in evidence_refs if eid in evidence_lookup]
 
 
-# ----- ML eligibility gate (06-phase1: generic visuals and counterexample require explicit negative) -----
+# ----- ML eligibility gate (11-phase2: trainable-only; illustration not eligible) -----
+
+ML_ELIGIBLE_ROLES = {
+    "positive_example",
+    "negative_example",
+    "counterexample",
+    "ambiguous_example",
+}
+
+
+def is_evidence_ml_eligible(evidence: dict) -> bool:
+    """True iff evidence has an ML-eligible role and required links (brief 11-phase2)."""
+    role = (evidence.get("example_role") or "").strip()
+    if role not in ML_ELIGIBLE_ROLES:
+        return False
+    if not evidence.get("linked_rule_ids"):
+        return False
+    if not evidence.get("source_event_ids"):
+        return False
+    return True
+
+
+def _evidence_ref_to_dict(ref: EvidenceRef) -> dict[str, Any]:
+    """Convert EvidenceRef to dict for is_evidence_ml_eligible and build_ml_examples."""
+    role = getattr(ref, "example_role", None)
+    return {
+        "evidence_id": ref.evidence_id,
+        "example_role": str(role) if role is not None else "unknown",
+        "linked_rule_ids": getattr(ref, "linked_rule_ids", None) or [],
+        "source_event_ids": getattr(ref, "source_event_ids", None) or [],
+        "frame_ids": getattr(ref, "frame_ids", None) or [],
+        "screenshot_paths": getattr(ref, "screenshot_paths", None) or [],
+        "timestamp_start": getattr(ref, "timestamp_start", None),
+        "timestamp_end": getattr(ref, "timestamp_end", None),
+    }
+
+
+def is_evidence_ml_eligible_for_rule(ref: EvidenceRef, rule: RuleCard) -> bool:
+    """Adapter: EvidenceRef + RuleCard -> dict then brief's is_evidence_ml_eligible."""
+    ev = _evidence_ref_to_dict(ref)
+    if getattr(rule, "rule_id", None) not in ev.get("linked_rule_ids", []):
+        return False
+    return is_evidence_ml_eligible(ev)
+
+
+# ----- Legacy helpers (generic evidence etc.; not used for ML eligibility gate) -----
 
 GENERIC_EVIDENCE_MARKERS = {
     "intro",
@@ -250,40 +295,9 @@ def has_explicit_negative_evidence(ref: EvidenceRef) -> bool:
     )
 
 
-def is_evidence_ml_eligible(ref: EvidenceRef, rule: RuleCard) -> bool:
-    """True iff this evidence ref should be used for ML (06-phase1: no generic visuals; counterexample requires explicit negative)."""
-    if not (getattr(ref, "linked_rule_ids", []) or []):
-        return False
-    if not (getattr(ref, "source_event_ids", []) or []):
-        return False
-    if getattr(rule, "rule_id", None) not in (getattr(ref, "linked_rule_ids", []) or []):
-        return False
-
-    role = getattr(ref, "example_role", None)
-    if role not in {"positive_example", "counterexample"}:
-        return False
-
-    if is_generic_evidence(ref):
-        return False
-
-    if role == "counterexample" and not has_explicit_negative_evidence(ref):
-        return False
-
-    return True
-
-
 def should_emit_labeling_task(ref: EvidenceRef, rule: RuleCard) -> bool:
-    """True iff we should emit a labeling task for this ref (06-phase1: counterexample requires explicit negative)."""
-    if not is_evidence_ml_eligible(ref, rule):
-        return False
-
-    if ref.example_role == "counterexample":
-        return has_explicit_negative_evidence(ref)
-
-    if ref.example_role == "positive_example":
-        return True
-
-    return False
+    """True iff we should emit a labeling task for this ref (11-phase2: ML-eligible only)."""
+    return is_evidence_ml_eligible_for_rule(ref, rule)
 
 
 # ----- Example-role distribution (conservative: illustration not in positive) -----
@@ -293,19 +307,21 @@ def distribute_example_refs_for_ml(
     rule: RuleCard,
     evidence_refs: list[EvidenceRef],
 ) -> dict[str, list[str]]:
-    """Map evidence roles into ML buckets (06-phase1). Only positive_example and counterexample; illustration/ambiguous not in buckets."""
+    """Map evidence roles into ML buckets (11-phase2: ML_ELIGIBLE_ROLES only; illustration excluded)."""
     positive: list[str] = []
     negative: list[str] = []
     ambiguous: list[str] = []
 
     for evidence in evidence_refs:
-        if not is_evidence_ml_eligible(evidence, rule):
+        if not is_evidence_ml_eligible_for_rule(evidence, rule):
             continue
-
-        if evidence.example_role == "positive_example":
+        role = getattr(evidence, "example_role", None)
+        if role == "positive_example":
             positive.append(evidence.evidence_id)
-        elif evidence.example_role == "counterexample":
+        elif role in {"negative_example", "counterexample"}:
             negative.append(evidence.evidence_id)
+        elif role == "ambiguous_example":
+            ambiguous.append(evidence.evidence_id)
 
     return {
         "positive_example_refs": dedupe_preserve_order(positive),
@@ -399,7 +415,59 @@ def enrich_rule_card_collection_for_ml(
     )
 
 
-# ----- ML manifest -----
+# ----- ML manifest (11-phase2: trainable-only; build_ml_examples / attach_rule_example_refs) -----
+
+
+def build_ml_examples(evidence_refs: list[dict]) -> list[dict]:
+    """Only export eligible evidence rows (brief 11-phase2)."""
+    examples = []
+    for ev in evidence_refs:
+        if not is_evidence_ml_eligible(ev):
+            continue
+        examples.append({
+            "evidence_id": ev["evidence_id"],
+            "example_role": ev["example_role"],
+            "frame_ids": ev.get("frame_ids", []),
+            "screenshot_paths": ev.get("screenshot_paths", []),
+            "timestamp_start": ev.get("timestamp_start"),
+            "timestamp_end": ev.get("timestamp_end"),
+            "source_event_ids": ev.get("source_event_ids", []),
+            "linked_rule_ids": ev.get("linked_rule_ids", []),
+        })
+    return examples
+
+
+def attach_rule_example_refs(rule: dict, evidence_refs: list[dict]) -> dict:
+    """Only eligible evidence may populate rule example refs (brief 11-phase2)."""
+    positive = []
+    negative = []
+    ambiguous = []
+    for ev in evidence_refs:
+        if not is_evidence_ml_eligible(ev):
+            continue
+        if rule["rule_id"] not in ev.get("linked_rule_ids", []):
+            continue
+        role = ev["example_role"]
+        if role == "positive_example":
+            positive.append(ev["evidence_id"])
+        elif role in {"negative_example", "counterexample"}:
+            negative.append(ev["evidence_id"])
+        elif role == "ambiguous_example":
+            ambiguous.append(ev["evidence_id"])
+    rule["positive_example_refs"] = sorted(set(positive))
+    rule["negative_example_refs"] = sorted(set(negative))
+    rule["ambiguous_example_refs"] = sorted(set(ambiguous))
+    return rule
+
+
+def build_labeling_tasks(evidence_refs: list[dict]) -> list[dict]:
+    """Return tasks only for ML-eligible evidence (12-phase2 unit-test helper)."""
+    tasks = []
+    for ev in evidence_refs:
+        if not is_evidence_ml_eligible(ev):
+            continue
+        tasks.append({"evidence_id": ev["evidence_id"]})
+    return tasks
 
 
 def build_ml_manifest(
@@ -407,14 +475,13 @@ def build_ml_manifest(
     rule_cards: RuleCardCollection,
     evidence_index: EvidenceIndex,
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
-    """Build lesson-level ML manifest (rules + examples) and optional debug rows."""
+    """Build lesson-level ML manifest (rules + examples); 11-phase2: trainable-only, no illustration."""
     evidence_lookup = build_evidence_lookup(evidence_index)
+    all_evidence_dicts = [_evidence_ref_to_dict(ref) for ref in evidence_index.evidence_refs]
+    examples_payload = build_ml_examples(all_evidence_dicts)
 
     rules_payload: list[dict[str, Any]] = []
-    examples_payload: list[dict[str, Any]] = []
     debug_rows: list[dict[str, Any]] = []
-
-    used_evidence_ids: set[str] = set()
 
     for rule in rule_cards.rules:
         if validate_rule_card_for_export(rule):
@@ -424,10 +491,7 @@ def build_ml_manifest(
                 "reason": validate_rule_card_for_export(rule),
             })
             continue
-        linked_evidence = get_linked_evidence_for_rule(rule, evidence_lookup)
-        used_evidence_ids.update(e.evidence_id for e in linked_evidence)
-
-        rules_payload.append({
+        rule_dict = {
             "rule_id": rule.rule_id,
             "concept": rule.concept,
             "subconcept": rule.subconcept,
@@ -435,30 +499,19 @@ def build_ml_manifest(
             "confidence_score": rule.confidence_score,
             "candidate_features": rule.candidate_features or [],
             "labeling_guidance": rule.labeling_guidance,
-            "positive_example_refs": rule.positive_example_refs or [],
-            "negative_example_refs": rule.negative_example_refs or [],
-            "ambiguous_example_refs": rule.ambiguous_example_refs or [],
+            "positive_example_refs": [],
+            "negative_example_refs": [],
+            "ambiguous_example_refs": [],
             "source_event_ids": rule.source_event_ids or [],
-        })
-
+        }
+        attach_rule_example_refs(rule_dict, all_evidence_dicts)
+        rules_payload.append(rule_dict)
         debug_rows.append({
             "rule_id": rule.rule_id,
-            "linked_evidence_count": len(linked_evidence),
-            "positive_count": len(rule.positive_example_refs or []),
-            "negative_count": len(rule.negative_example_refs or []),
-            "ambiguous_count": len(rule.ambiguous_example_refs or []),
-        })
-
-    for evidence_id in sorted(used_evidence_ids):
-        evidence = evidence_lookup[evidence_id]
-        examples_payload.append({
-            "evidence_id": evidence.evidence_id,
-            "example_role": evidence.example_role,
-            "frame_ids": evidence.frame_ids or [],
-            "screenshot_paths": evidence.screenshot_paths or [],
-            "timestamp_start": evidence.timestamp_start,
-            "timestamp_end": evidence.timestamp_end,
-            "source_event_ids": evidence.source_event_ids or [],
+            "linked_evidence_count": len(get_linked_evidence_for_rule(rule, evidence_lookup)),
+            "positive_count": len(rule_dict["positive_example_refs"]),
+            "negative_count": len(rule_dict["negative_example_refs"]),
+            "ambiguous_count": len(rule_dict["ambiguous_example_refs"]),
         })
 
     manifest: dict[str, Any] = {

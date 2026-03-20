@@ -48,9 +48,9 @@ BUCKET_TO_EVENT_TYPE: dict[str, str] = {
     "examples": "example",
 }
 
-MAX_LINE_CONFIDENCE_WIDTH = 4
+MAX_LINE_CONFIDENCE_WIDTH = 3
 MAX_SPAN_CONFIDENCE_WIDTH = 10
-MIN_LINE_DENSITY = 0.75
+MIN_LINE_DENSITY = 0.60
 MIN_SPAN_DENSITY = 0.50
 
 
@@ -537,6 +537,46 @@ def is_near_contiguous(line_indices: list[int], *, max_gap: int = 1) -> bool:
         if right - left > (max_gap + 1):
             return False
     return True
+
+
+def compute_timestamp_confidence(
+    source_line_start: int | None,
+    source_line_end: int | None,
+    transcript_anchors: list[Any],
+    anchor_density: float | None,
+) -> str:
+    """Return line/span/chunk from line bounds and density (brief 11-phase2)."""
+    anchors = transcript_anchors or []
+    if source_line_start is None or source_line_end is None:
+        return "chunk"
+    span_width = source_line_end - source_line_start + 1
+    density = float(anchor_density or 0.0)
+    if not anchors:
+        return "chunk"
+    if span_width <= 3 and density >= 0.60:
+        return "line"
+    if span_width >= 4:
+        return "span"
+    if density > 0:
+        return "span"
+    return "chunk"
+
+
+def finalize_anchor_provenance(
+    source_line_start: int | None,
+    source_line_end: int | None,
+    transcript_anchors: list[Any],
+    anchor_density: float | None,
+) -> dict[str, Any]:
+    """Return dict with timestamp_confidence for tests (brief 11-phase2)."""
+    return {
+        "timestamp_confidence": compute_timestamp_confidence(
+            source_line_start,
+            source_line_end,
+            transcript_anchors,
+            anchor_density,
+        ),
+    }
 
 
 def classify_timestamp_confidence(
