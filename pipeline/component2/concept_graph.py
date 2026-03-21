@@ -9,11 +9,13 @@ from pathlib import Path
 from pipeline.io_utils import atomic_write_json, atomic_write_text
 from pipeline.schemas import (
     ConceptGraph,
+    ConceptGraphStats,
     ConceptNode,
     ConceptRelation,
     RuleCard,
     RuleCardCollection,
 )
+from pipeline.component2.canonical_lexicon import lookup_canonical
 
 # ----- Cue words for relation inference -----
 
@@ -55,6 +57,9 @@ CONTRAST_NAME_PAIRS = [
     ("weak_level", "strong_level"),
 ]
 
+MAX_SECONDARY_NODE_LEN = 120
+CO_OCCURRENCE_THRESHOLD = 2
+
 
 # ----- Normalization -----
 
@@ -73,6 +78,15 @@ def normalize_concept_id(name: str) -> str:
     text = re.sub(r"[^a-z0-9а-яё]+", "_", text)
     text = re.sub(r"_+", "_", text).strip("_")
     return text or "unknown"
+
+
+def _derive_canonical_label(name: str) -> str | None:
+    """Return a canonical English-like label for a concept name via lexicon lookup.
+
+    Returns None if no canonical label is found (i.e. the name is already English
+    or not in the lexicon).
+    """
+    return lookup_canonical(name.strip())
 
 
 # ----- Rule-level accessors -----
@@ -117,6 +131,24 @@ def get_rule_source_subsections(rule: RuleCard) -> list[str]:
     return [normalize_text(v) for v in values if normalize_text(v)]
 
 
+def _is_short_reusable_text(text: str) -> bool:
+    """True if text is short, non-empty, and likely reusable (not a long prose paragraph)."""
+    normalized = normalize_text(text)
+    if not normalized or len(normalized) > MAX_SECONDARY_NODE_LEN:
+        return False
+    if normalized.lower() in ("none", "n/a", "unknown", "not applicable"):
+        return False
+    return True
+
+
+def _owning_node_id(rule: RuleCard) -> str:
+    """Return the most specific owning node id for secondary nodes: subconcept if present, else concept."""
+    subconcept = get_rule_subconcept(rule)
+    if subconcept:
+        return normalize_concept_id(subconcept)
+    return normalize_concept_id(get_rule_concept(rule) or "unknown")
+
+
 # ----- Node builders -----
 
 
@@ -138,6 +170,19 @@ def collect_concept_names(rules: list[RuleCard]) -> tuple[dict[str, str], dict[s
             subconcept_map.setdefault(subconcept_id, subconcept)
 
     return concept_map, subconcept_map
+
+
+def _collect_source_rule_ids_for_concept(concept_id: str, rules: list[RuleCard]) -> list[str]:
+    """Return sorted rule_ids that reference the given concept_id."""
+    result: set[str] = set()
+    for rule in rules:
+        c = get_rule_concept(rule)
+        sc = get_rule_subconcept(rule)
+        if c and normalize_concept_id(c) == concept_id:
+            result.add(rule.rule_id)
+        if sc and normalize_concept_id(sc) == concept_id:
+            result.add(rule.rule_id)
+    return sorted(result)
 
 
 def infer_parent_concept_id_for_subconcept(
@@ -162,7 +207,7 @@ def infer_parent_concept_id_for_subconcept(
 
 
 def dedupe_nodes(nodes: list[ConceptNode]) -> list[ConceptNode]:
-    """Merge nodes by concept_id; merge aliases and metadata for duplicates."""
+    """Merge nodes by concept_id; merge aliases, source_rule_ids, and metadata for duplicates."""
     seen: dict[str, ConceptNode] = {}
     for node in nodes:
         if node.concept_id not in seen:
@@ -171,6 +216,7 @@ def dedupe_nodes(nodes: list[ConceptNode]) -> list[ConceptNode]:
 
         existing = seen[node.concept_id]
         merged_aliases = sorted(set(existing.aliases + node.aliases))
+        merged_rule_ids = sorted(set(existing.source_rule_ids + node.source_rule_ids))
         merged_metadata = {**existing.metadata, **node.metadata}
 
         seen[node.concept_id] = ConceptNode(
@@ -179,6 +225,8 @@ def dedupe_nodes(nodes: list[ConceptNode]) -> list[ConceptNode]:
             type=existing.type or node.type,
             parent_id=existing.parent_id or node.parent_id,
             aliases=merged_aliases,
+            source_rule_ids=merged_rule_ids,
+            canonical_label=existing.canonical_label or node.canonical_label,
             metadata=merged_metadata,
         )
     return list(seen.values())
@@ -197,6 +245,8 @@ def create_concept_nodes(rules: list[RuleCard]) -> list[ConceptNode]:
                 type="concept",
                 parent_id=None,
                 aliases=[],
+                source_rule_ids=_collect_source_rule_ids_for_concept(concept_id, rules),
+                canonical_label=_derive_canonical_label(concept_name),
                 metadata={},
             )
         )
@@ -210,11 +260,110 @@ def create_concept_nodes(rules: list[RuleCard]) -> list[ConceptNode]:
                 type="subconcept",
                 parent_id=parent_id,
                 aliases=[],
+                source_rule_ids=_collect_source_rule_ids_for_concept(subconcept_id, rules),
+                canonical_label=_derive_canonical_label(subconcept_name),
                 metadata={},
             )
         )
 
     return dedupe_nodes(nodes)
+
+
+def create_secondary_nodes(rules: list[RuleCard]) -> list[ConceptNode]:
+    """Create condition, invalidation, and exception nodes from rule cards.
+
+    Only creates nodes for short, non-empty, reusable text (not long prose).
+    """
+    nodes: list[ConceptNode] = []
+    seen: dict[str, ConceptNode] = {}
+
+    for rule in rules:
+        for cond_text in rule.conditions:
+            if not _is_short_reusable_text(cond_text):
+                continue
+            node_id = f"condition:{normalize_concept_id(cond_text)}"
+            if node_id not in seen:
+                seen[node_id] = ConceptNode(
+                    concept_id=node_id,
+                    name=normalize_text(cond_text),
+                    type="condition",
+                    parent_id=_owning_node_id(rule),
+                    aliases=[],
+                    source_rule_ids=[rule.rule_id],
+                    canonical_label=_derive_canonical_label(cond_text),
+                    metadata={},
+                )
+            else:
+                existing = seen[node_id]
+                seen[node_id] = ConceptNode(
+                    concept_id=existing.concept_id,
+                    name=existing.name,
+                    type=existing.type,
+                    parent_id=existing.parent_id,
+                    aliases=existing.aliases,
+                    source_rule_ids=sorted(set(existing.source_rule_ids + [rule.rule_id])),
+                    canonical_label=existing.canonical_label,
+                    metadata=existing.metadata,
+                )
+
+        for inv_text in rule.invalidation:
+            if not _is_short_reusable_text(inv_text):
+                continue
+            node_id = f"invalidation:{normalize_concept_id(inv_text)}"
+            if node_id not in seen:
+                seen[node_id] = ConceptNode(
+                    concept_id=node_id,
+                    name=normalize_text(inv_text),
+                    type="invalidation",
+                    parent_id=_owning_node_id(rule),
+                    aliases=[],
+                    source_rule_ids=[rule.rule_id],
+                    canonical_label=_derive_canonical_label(inv_text),
+                    metadata={},
+                )
+            else:
+                existing = seen[node_id]
+                seen[node_id] = ConceptNode(
+                    concept_id=existing.concept_id,
+                    name=existing.name,
+                    type=existing.type,
+                    parent_id=existing.parent_id,
+                    aliases=existing.aliases,
+                    source_rule_ids=sorted(set(existing.source_rule_ids + [rule.rule_id])),
+                    canonical_label=existing.canonical_label,
+                    metadata=existing.metadata,
+                )
+
+        for exc_text in rule.exceptions:
+            if not _is_short_reusable_text(exc_text):
+                continue
+            node_id = f"exception:{normalize_concept_id(exc_text)}"
+            if node_id not in seen:
+                seen[node_id] = ConceptNode(
+                    concept_id=node_id,
+                    name=normalize_text(exc_text),
+                    type="exception",
+                    parent_id=_owning_node_id(rule),
+                    aliases=[],
+                    source_rule_ids=[rule.rule_id],
+                    canonical_label=_derive_canonical_label(exc_text),
+                    metadata={},
+                )
+            else:
+                existing = seen[node_id]
+                seen[node_id] = ConceptNode(
+                    concept_id=existing.concept_id,
+                    name=existing.name,
+                    type=existing.type,
+                    parent_id=existing.parent_id,
+                    aliases=existing.aliases,
+                    source_rule_ids=sorted(set(existing.source_rule_ids + [rule.rule_id])),
+                    canonical_label=existing.canonical_label,
+                    metadata=existing.metadata,
+                )
+
+    nodes.extend(seen.values())
+    return nodes
 
 
 # ----- Relation helpers -----
@@ -226,7 +375,10 @@ def make_relation_id(source_id: str, relation_type: str, target_id: str) -> str:
 
 
 def create_parent_child_relations(rules: list[RuleCard]) -> list[ConceptRelation]:
-    """Add parent_of and child_of relations for each rule that has both concept and subconcept."""
+    """Add has_subconcept relation for each rule that has both concept and subconcept.
+
+    Task 17: single direction only (no mirrored parent_of/child_of).
+    """
     relations: list[ConceptRelation] = []
 
     for rule in rules:
@@ -241,20 +393,13 @@ def create_parent_child_relations(rules: list[RuleCard]) -> list[ConceptRelation
 
         relations.append(
             ConceptRelation(
-                relation_id=make_relation_id(concept_id, "parent_of", subconcept_id),
+                relation_id=make_relation_id(concept_id, "has_subconcept", subconcept_id),
                 source_id=concept_id,
                 target_id=subconcept_id,
-                relation_type="parent_of",
-                metadata={"source_rule_ids": [rule.rule_id], "reason": "concept-subconcept pair"},
-            )
-        )
-        relations.append(
-            ConceptRelation(
-                relation_id=make_relation_id(subconcept_id, "child_of", concept_id),
-                source_id=subconcept_id,
-                target_id=concept_id,
-                relation_type="child_of",
-                metadata={"source_rule_ids": [rule.rule_id], "reason": "concept-subconcept pair"},
+                relation_type="has_subconcept",
+                weight=1,
+                source_rule_ids=[rule.rule_id],
+                metadata={"reason": "concept-subconcept pair"},
             )
         )
 
@@ -286,10 +431,9 @@ def create_sibling_related_relations(rules: list[RuleCard]) -> list[ConceptRelat
                         source_id=left,
                         target_id=right,
                         relation_type="related_to",
-                        metadata={
-                            "reason": f"shared parent concept {concept_id}",
-                            "score": 0.9,
-                        },
+                        weight=1,
+                        source_rule_ids=[],
+                        metadata={"reason": f"shared parent concept {concept_id}"},
                     )
                 )
                 relations.append(
@@ -298,14 +442,108 @@ def create_sibling_related_relations(rules: list[RuleCard]) -> list[ConceptRelat
                         source_id=right,
                         target_id=left,
                         relation_type="related_to",
-                        metadata={
-                            "reason": f"shared parent concept {concept_id}",
-                            "score": 0.9,
-                        },
+                        weight=1,
+                        source_rule_ids=[],
+                        metadata={"reason": f"shared parent concept {concept_id}"},
                     )
                 )
 
     return dedupe_relations(relations)
+
+
+def create_secondary_edges(rules: list[RuleCard]) -> list[ConceptRelation]:
+    """Create has_condition, has_invalidation, has_exception edges from rule cards."""
+    relations: list[ConceptRelation] = []
+
+    for rule in rules:
+        owner_id = _owning_node_id(rule)
+
+        for cond_text in rule.conditions:
+            if not _is_short_reusable_text(cond_text):
+                continue
+            target_id = f"condition:{normalize_concept_id(cond_text)}"
+            relations.append(
+                ConceptRelation(
+                    relation_id=make_relation_id(owner_id, "has_condition", target_id),
+                    source_id=owner_id,
+                    target_id=target_id,
+                    relation_type="has_condition",
+                    weight=1,
+                    source_rule_ids=[rule.rule_id],
+                    metadata={"reason": "rule condition attachment"},
+                )
+            )
+
+        for inv_text in rule.invalidation:
+            if not _is_short_reusable_text(inv_text):
+                continue
+            target_id = f"invalidation:{normalize_concept_id(inv_text)}"
+            relations.append(
+                ConceptRelation(
+                    relation_id=make_relation_id(owner_id, "has_invalidation", target_id),
+                    source_id=owner_id,
+                    target_id=target_id,
+                    relation_type="has_invalidation",
+                    weight=1,
+                    source_rule_ids=[rule.rule_id],
+                    metadata={"reason": "rule invalidation attachment"},
+                )
+            )
+
+        for exc_text in rule.exceptions:
+            if not _is_short_reusable_text(exc_text):
+                continue
+            target_id = f"exception:{normalize_concept_id(exc_text)}"
+            relations.append(
+                ConceptRelation(
+                    relation_id=make_relation_id(owner_id, "has_exception", target_id),
+                    source_id=owner_id,
+                    target_id=target_id,
+                    relation_type="has_exception",
+                    weight=1,
+                    source_rule_ids=[rule.rule_id],
+                    metadata={"reason": "rule exception attachment"},
+                )
+            )
+
+    return dedupe_relations(relations)
+
+
+def create_co_occurs_with_relations(rules: list[RuleCard]) -> list[ConceptRelation]:
+    """Add co_occurs_with edges between concept/subconcept pairs that appear together in >= CO_OCCURRENCE_THRESHOLD rules."""
+    pair_counts: dict[tuple[str, str], list[str]] = defaultdict(list)
+
+    for rule in rules:
+        node_ids: set[str] = set()
+        concept = get_rule_concept(rule)
+        subconcept = get_rule_subconcept(rule)
+        if concept:
+            node_ids.add(normalize_concept_id(concept))
+        if subconcept:
+            node_ids.add(normalize_concept_id(subconcept))
+
+        ordered = sorted(node_ids)
+        for i, left in enumerate(ordered):
+            for right in ordered[i + 1:]:
+                pair_counts[(left, right)].append(rule.rule_id)
+
+    relations: list[ConceptRelation] = []
+    for (left, right), rule_ids in sorted(pair_counts.items()):
+        if len(rule_ids) < CO_OCCURRENCE_THRESHOLD:
+            continue
+        relations.append(
+            ConceptRelation(
+                relation_id=make_relation_id(left, "co_occurs_with", right),
+                source_id=left,
+                target_id=right,
+                relation_type="co_occurs_with",
+                weight=len(rule_ids),
+                source_rule_ids=sorted(set(rule_ids)),
+                metadata={"reason": "co-occurrence in rule cards"},
+            )
+        )
+
+    return relations
 
 
 def average_source_chunk_index(rule: RuleCard) -> float | None:
@@ -369,10 +607,9 @@ def create_precedes_relations(rules: list[RuleCard]) -> list[ConceptRelation]:
                         source_id=left_id,
                         target_id=right_id,
                         relation_type="precedes",
-                        metadata={
-                            "reason": "source chunk order within concept family",
-                            "score": 0.8,
-                        },
+                        weight=1,
+                        source_rule_ids=[],
+                        metadata={"reason": "source chunk order within concept family"},
                     )
                 )
 
@@ -408,10 +645,9 @@ def create_depends_on_relations(rules: list[RuleCard]) -> list[ConceptRelation]:
                     source_id=source_id,
                     target_id=concept_id,
                     relation_type="depends_on",
-                    metadata={
-                        "reason": "dependency cue in rule/comparison/context text",
-                        "score": 0.82,
-                    },
+                    weight=1,
+                    source_rule_ids=[rule.rule_id],
+                    metadata={"reason": "dependency cue in rule/comparison/context text"},
                 )
             )
 
@@ -429,7 +665,6 @@ def create_contrasts_with_relations(rules: list[RuleCard]) -> list[ConceptRelati
     relations: list[ConceptRelation] = []
     seen_pairs: set[tuple[str, str]] = set()
 
-    # 1. lexical/name-based contrast
     all_ids: set[str] = set()
     for rule in rules:
         for value in [get_rule_concept(rule), get_rule_subconcept(rule)]:
@@ -441,7 +676,6 @@ def create_contrasts_with_relations(rules: list[RuleCard]) -> list[ConceptRelati
             seen_pairs.add((left, right))
             seen_pairs.add((right, left))
 
-    # 2. comparison-text-based contrast
     for rule in rules:
         texts = [rule.rule_text] + (rule.comparisons or [])
         combined = " ".join(normalize_text(t) for t in texts if normalize_text(t))
@@ -464,7 +698,9 @@ def create_contrasts_with_relations(rules: list[RuleCard]) -> list[ConceptRelati
                 source_id=source_id,
                 target_id=target_id,
                 relation_type="contrasts_with",
-                metadata={"reason": "name pair or comparison cue", "score": 0.85},
+                weight=1,
+                source_rule_ids=[],
+                metadata={"reason": "name pair or comparison cue"},
             )
         )
 
@@ -504,10 +740,9 @@ def create_supports_relations(rules: list[RuleCard]) -> list[ConceptRelation]:
                     source_id=subconcept_id,
                     target_id=concept_id,
                     relation_type="supports",
-                    metadata={
-                        "reason": "support-like subconcept naming",
-                        "score": 0.75,
-                    },
+                    weight=1,
+                    source_rule_ids=[rule.rule_id],
+                    metadata={"reason": "support-like subconcept naming"},
                 )
             )
 
@@ -515,7 +750,7 @@ def create_supports_relations(rules: list[RuleCard]) -> list[ConceptRelation]:
 
 
 def dedupe_relations(relations: list[ConceptRelation]) -> list[ConceptRelation]:
-    """Merge relations by (source_id, relation_type, target_id); merge list metadata."""
+    """Merge relations by (source_id, relation_type, target_id); combine weight and source_rule_ids."""
     seen: dict[tuple[str, str, str], ConceptRelation] = {}
 
     for rel in relations:
@@ -525,6 +760,8 @@ def dedupe_relations(relations: list[ConceptRelation]) -> list[ConceptRelation]:
             continue
 
         existing = seen[key]
+        merged_rule_ids = sorted(set(existing.source_rule_ids + rel.source_rule_ids))
+        merged_weight = existing.weight + rel.weight
         merged_meta = {**existing.metadata}
         if rel.metadata:
             for k, v in rel.metadata.items():
@@ -538,10 +775,29 @@ def dedupe_relations(relations: list[ConceptRelation]) -> list[ConceptRelation]:
             source_id=existing.source_id,
             target_id=existing.target_id,
             relation_type=existing.relation_type,
+            weight=merged_weight,
+            source_rule_ids=merged_rule_ids,
             metadata=merged_meta,
         )
 
     return list(seen.values())
+
+
+ALLOWED_RELATION_TYPES = {
+    "has_subconcept",
+    "has_condition",
+    "has_invalidation",
+    "has_exception",
+    "co_occurs_with",
+}
+
+
+def _filter_provenance_backed(relations: list[ConceptRelation]) -> list[ConceptRelation]:
+    """Keep only relations with non-empty source_rule_ids and allowed types (Task 17)."""
+    return [
+        r for r in relations
+        if r.source_rule_ids and r.relation_type in ALLOWED_RELATION_TYPES
+    ]
 
 
 # ----- Public API -----
@@ -554,7 +810,9 @@ def build_concept_graph(
     rules = rule_cards.rules
     debug_rows: list[dict] = []
 
-    nodes = create_concept_nodes(rules)
+    concept_nodes = create_concept_nodes(rules)
+    secondary_nodes = create_secondary_nodes(rules)
+    all_nodes = dedupe_nodes(concept_nodes + secondary_nodes)
 
     relations: list[ConceptRelation] = []
     relations.extend(create_parent_child_relations(rules))
@@ -563,8 +821,11 @@ def build_concept_graph(
     relations.extend(create_depends_on_relations(rules))
     relations.extend(create_contrasts_with_relations(rules))
     relations.extend(create_supports_relations(rules))
+    relations.extend(create_secondary_edges(rules))
+    relations.extend(create_co_occurs_with_relations(rules))
 
     relations = dedupe_relations(relations)
+    relations = _filter_provenance_backed(relations)
 
     for rel in relations:
         debug_rows.append(
@@ -573,14 +834,21 @@ def build_concept_graph(
                 "source_id": rel.source_id,
                 "target_id": rel.target_id,
                 "relation_type": rel.relation_type,
+                "weight": rel.weight,
+                "source_rule_ids": rel.source_rule_ids,
                 "metadata": rel.metadata,
             }
         )
 
     graph = ConceptGraph(
         lesson_id=rule_cards.lesson_id,
-        nodes=nodes,
+        graph_version="1.0",
+        nodes=all_nodes,
         relations=relations,
+        stats=ConceptGraphStats(
+            node_count=len(all_nodes),
+            edge_count=len(relations),
+        ),
     )
     return graph, debug_rows
 

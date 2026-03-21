@@ -15,15 +15,18 @@ from pipeline.component2.evidence_linker import (
     backfill_knowledge_event_evidence_refs,
     build_evidence_index,
     candidate_to_evidence_ref,
+    classify_promotion_reason,
     enrich_visual_event_from_dense_analysis,
     extract_visual_concept_hints,
     group_visual_events_into_candidates,
     infer_example_role,
+    link_candidates_to_knowledge_events,
     load_chunks_json,
     load_knowledge_events,
     save_evidence_debug,
     save_evidence_index,
     score_candidate_event_match,
+    should_promote_to_positive_example,
 )
 from pipeline.component2.visual_compaction import (
     VisualCompactionConfig,
@@ -795,3 +798,163 @@ def test_explicit_failed_breakout_can_be_counterexample() -> None:
 
     role = infer_example_role(candidate, linked_events)
     assert role == "counterexample"
+
+
+# ----- 13-phase2: strict positive-example promotion gating -----
+
+
+def test_generic_qa_slide_does_not_promote() -> None:
+    """Q&A slide with 'Ответы на вопросы' stays illustration even when linked to rule_statement."""
+    candidate = VisualEvidenceCandidate(
+        candidate_id="ev1",
+        lesson_id="lesson1",
+        chunk_index=12,
+        timestamp_start=1690.0,
+        timestamp_end=1695.0,
+        compact_visual_summary=(
+            "new slide displayed with text 'Ответы на вопросы'. "
+            "concepts: abstract_teaching_example, atr_values, entry_values"
+        ),
+        concept_hints=["atr_values", "entry_values"],
+        visual_events=[],
+        source_event_ids=["ke1"],
+    )
+    linked = [
+        KnowledgeEvent.model_construct(
+            event_id="ke1",
+            lesson_id="lesson1",
+            event_type="rule_statement",
+            raw_text="ATR-based entry rule.",
+            normalized_text="ATR-based entry rule.",
+        ),
+    ]
+    role = infer_example_role(candidate, linked)
+    assert role == "illustration"
+
+
+def test_annotated_chart_can_promote() -> None:
+    """Chart with annotations and concrete terms (chart, level, entry) gets promoted."""
+    candidate = VisualEvidenceCandidate(
+        candidate_id="ev2",
+        lesson_id="lesson1",
+        chunk_index=10,
+        timestamp_start=1364.0,
+        timestamp_end=1370.0,
+        compact_visual_summary=(
+            "New chart displayed with annotations. "
+            "concepts: atr_values, entry_values, level"
+        ),
+        concept_hints=["atr_values", "entry_values", "level"],
+        visual_events=[],
+        source_event_ids=["ke1"],
+    )
+    linked = [
+        KnowledgeEvent.model_construct(
+            event_id="ke1",
+            lesson_id="lesson1",
+            event_type="rule_statement",
+            raw_text="Entry must be confirmed by ATR.",
+            normalized_text="Entry must be confirmed by ATR.",
+        ),
+    ]
+    role = infer_example_role(candidate, linked)
+    assert role == "positive_example"
+
+
+def test_title_slide_does_not_promote() -> None:
+    """Title/abstract slide stays illustration."""
+    candidate = VisualEvidenceCandidate(
+        candidate_id="ev3",
+        lesson_id="lesson1",
+        chunk_index=0,
+        timestamp_start=0.0,
+        timestamp_end=5.0,
+        compact_visual_summary=(
+            "Title slide displayed. concepts: abstract_teaching_example, lesson_intro"
+        ),
+        concept_hints=[],
+        visual_events=[],
+        source_event_ids=["ke1"],
+    )
+    linked = [
+        KnowledgeEvent.model_construct(
+            event_id="ke1",
+            lesson_id="lesson1",
+            event_type="rule_statement",
+            raw_text="Level recognition.",
+            normalized_text="Level recognition.",
+        ),
+    ]
+    role = infer_example_role(candidate, linked)
+    assert role == "illustration"
+
+
+def test_no_linked_events_means_no_promotion() -> None:
+    """Candidate with no linked events cannot become positive_example."""
+    candidate = VisualEvidenceCandidate(
+        candidate_id="ev4",
+        lesson_id="lesson1",
+        chunk_index=5,
+        timestamp_start=100.0,
+        timestamp_end=110.0,
+        compact_visual_summary="Annotated chart with entry and level",
+        concept_hints=["level"],
+        visual_events=[],
+    )
+    role = infer_example_role(candidate, [])
+    assert role == "illustration"
+
+
+def test_overlinked_needs_stronger_signals() -> None:
+    """>2 linked events with only 2 concrete hits stays illustration; 3+ hits promotes."""
+    base_summary_weak = "Chart with annotated data"
+    base_summary_strong = "Chart with annotated level and entry data"
+
+    def _make_candidate(summary: str) -> VisualEvidenceCandidate:
+        return VisualEvidenceCandidate(
+            candidate_id="ev5",
+            lesson_id="lesson1",
+            chunk_index=3,
+            timestamp_start=200.0,
+            timestamp_end=210.0,
+            compact_visual_summary=summary,
+            concept_hints=["level"],
+            visual_events=[],
+            source_event_ids=["ke1", "ke2", "ke3"],
+        )
+
+    linked_3 = [
+        KnowledgeEvent.model_construct(
+            event_id=f"ke{i}",
+            lesson_id="lesson1",
+            event_type="rule_statement",
+            raw_text="Rule.",
+            normalized_text="Rule.",
+        )
+        for i in range(3)
+    ]
+
+    role_weak = infer_example_role(_make_candidate(base_summary_weak), linked_3)
+    assert role_weak == "illustration", "Only 2 concrete hits with >2 linked events should stay illustration"
+
+    role_strong = infer_example_role(_make_candidate(base_summary_strong), linked_3)
+    assert role_strong == "positive_example", "3+ concrete hits with >2 linked events should promote"
+
+
+def test_promotion_reason_debug_metadata() -> None:
+    """classify_promotion_reason returns expected labels for different summaries."""
+    assert classify_promotion_reason(
+        "new slide displayed with text 'Ответы на вопросы'", ["r1"]
+    ) == "generic_teaching_visual"
+
+    assert classify_promotion_reason(
+        "Chart with annotated level and entry price and breakout", ["r1"]
+    ) == "strong_concrete_visual"
+
+    assert classify_promotion_reason(
+        "Chart with annotated data", ["r1"]
+    ) == "concrete_visual"
+
+    assert classify_promotion_reason(
+        "Some unclear visual", ["r1"]
+    ) == "insufficient_visual_specificity"

@@ -1,0 +1,152 @@
+[
+  {
+    "query": "Как определить уровень для стоп-лосса?",
+    "category": "direct_rule",
+    "expected_unit": "rule_card",
+    "expected_concept": "Stop Loss"
+  },
+  {
+    "query": "Правила постановки тейк-профита",
+    "category": "direct_rule",
+    "expected_unit": "rule_card",
+    "expected_concept": "Take Profit"
+  },
+  {
+    "query": "Что такое BPU в Price Action?",
+    "category": "direct_rule",
+    "expected_unit": "rule_card",
+    "expected_concept": "BPU"
+  },
+  {
+    "query": "Как работает накопление возле уровня?",
+    "category": "direct_rule",
+    "expected_unit": "rule_card",
+    "expected_concept": "Accumulation"
+  },
+  {
+    "query": "Правила входа после ложного пробоя",
+    "category": "direct_rule",
+    "expected_unit": "rule_card",
+    "expected_concept": "Movement near levels"
+  },
+  {
+    "query": "Когда правило стоп-лосса не работает?",
+    "category": "invalidation",
+    "expected_unit": "rule_card",
+    "expected_concept": "Stop Loss"
+  },
+  {
+    "query": "Исключения из правил управления позицией",
+    "category": "invalidation",
+    "expected_unit": "rule_card",
+    "expected_concept": "Trade Management"
+  },
+  {
+    "query": "Условия отмены входа в позицию",
+    "category": "invalidation",
+    "expected_unit": "rule_card",
+    "expected_concept": "Trade Management"
+  },
+  {
+    "query": "Разница между техническим и обычным стоп-лоссом",
+    "category": "concept_comparison",
+    "expected_unit": "rule_card",
+    "expected_concept": "Technical Stop Loss"
+  },
+  {
+    "query": "BPU versus обычный бар",
+    "category": "concept_comparison",
+    "expected_unit": "rule_card",
+    "expected_concept": "BPU"
+  },
+  {
+    "query": "Сравнение стоп-лосса и тейк-профита",
+    "category": "concept_comparison",
+    "expected_unit": "rule_card",
+    "expected_concept": "Stop Loss"
+  },
+  {
+    "query": "Покажи пример накопления на графике",
+    "category": "evidence_lookup",
+    "expected_unit": "evidence_ref",
+    "expected_concept": "Accumulation"
+  },
+  {
+    "query": "Визуальный пример ложного пробоя уровня",
+    "category": "evidence_lookup",
+    "expected_unit": "evidence_ref",
+    "expected_concept": "Movement near levels"
+  },
+  {
+    "query": "Пример постановки стоп-лосса",
+    "category": "evidence_lookup",
+    "expected_unit": "evidence_ref",
+    "expected_concept": "Stop Loss"
+  },
+  {
+    "query": "Какие концепции рассматривались в уроке?",
+    "category": "lesson_coverage",
+    "expected_unit": "knowledge_event",
+    "expected_concept": null
+  },
+  {
+    "query": "О чем рассказывал урок про Price Action?",
+    "category": "lesson_coverage",
+    "expected_unit": "knowledge_event",
+    "expected_concept": "Price Action"
+  },
+  {
+    "query": "Связь между уровнями и стоп-лоссом",
+    "category": "graph_query",
+    "expected_unit": "concept_relation",
+    "expected_concept": "Stop Loss"
+  },
+  {
+    "query": "Какие правила связаны с анализом таймфреймов?",
+    "category": "graph_query",
+    "expected_unit": "rule_card",
+    "expected_concept": "Анализ таймфреймов"
+  },
+  {
+    "query": "Концепции связанные с волатильностью",
+    "category": "graph_query",
+    "expected_unit": "concept_node",
+    "expected_concept": "Волатильность"
+  },
+  {
+    "query": "Как определить дневной уровень?",
+    "category": "timeframe",
+    "expected_unit": "rule_card",
+    "expected_concept": null
+  },
+  {
+    "query": "Правила торговли на разных таймфреймах",
+    "category": "timeframe",
+    "expected_unit": "rule_card",
+    "expected_concept": "Анализ таймфреймов"
+  },
+  {
+    "query": "Stop loss placement rules",
+    "category": "multilingual",
+    "expected_unit": "rule_card",
+    "expected_concept": "Stop Loss"
+  },
+  {
+    "query": "Take profit strategy",
+    "category": "multilingual",
+    "expected_unit": "rule_card",
+    "expected_concept": "Take Profit"
+  },
+  {
+    "query": "БСУ бар строительный упорный",
+    "category": "alias",
+    "expected_unit": "rule_card",
+    "expected_concept": "BPU"
+  },
+  {
+    "query": "Re-test уровня после пробоя",
+    "category": "alias",
+    "expected_unit": "rule_card",
+    "expected_concept": "Re-test"
+  }
+]

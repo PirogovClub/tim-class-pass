@@ -78,7 +78,9 @@ def run_lesson2_pipeline(lesson2_output_dir: Path):
             "--enable-knowledge-events",
             "--enable-evidence-linking",
             "--enable-rule-cards",
+            "--enable-concept-graph",
             "--enable-ml-prep",
+            "--enable-exporters",
         ]
         subprocess.run(cmd, check=True, cwd=str(PROJECT_ROOT))
 

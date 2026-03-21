@@ -7,7 +7,7 @@ import time
 from pathlib import Path
 from typing import Callable
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 
 from helpers import config as pipeline_config
 from helpers.clients.providers import get_provider, resolve_model_for_stage, resolve_provider_for_stage
@@ -188,6 +188,7 @@ Return exactly one JSON object.
 Do not include markdown.
 Do not include commentary.
 Do not include any text before or after the JSON.
+The transcript is in Russian. All extracted text must remain in Russian.
 
 OUTPUT SCHEMA
 
@@ -279,7 +280,8 @@ NORMALIZATION RULES
 1. Rewrite statements into clean, reusable knowledge units.
 2. Remove filler language, motivational language, and teaching rhetoric.
 3. Convert conversational phrasing into structured trading language. Keep the original meaning intact.
-4. Do not make the statement stronger than the source supports.
+4. LANGUAGE: The transcript is in Russian. ALL output text fields (text, concept, subconcept, source_quote) MUST be in Russian. Do not translate to English. Keep trading terminology in the original Russian form as used by the instructor.
+5. Do not make the statement stronger than the source supports.
 
 IMPORTANT EXCLUSIONS
 
@@ -451,6 +453,34 @@ parse_enriched_markdown_chunk = parse_legacy_enriched_markdown_chunk
 
 # ----- Generic provider call -----
 
+def _max_tokens_for_llm_mode(mode: str, attempt: int) -> int | None:
+    """Cap model output. Large knowledge JSON can exceed provider defaults and truncate mid-string."""
+    if mode == "knowledge_extract":
+        base = int(os.environ.get("KNOWLEDGE_EXTRACT_MAX_OUTPUT_TOKENS", "65536"))
+        if attempt == 0:
+            return max(4096, base)
+        return min(max(base * 2, 131072), 131072)
+    if mode == "markdown_render":
+        # Single-field "markdown" can be huge (hundreds of rules × sections).
+        base = int(os.environ.get("MARKDOWN_RENDER_MAX_OUTPUT_TOKENS", "65536"))
+        if attempt == 0:
+            return max(8192, base)
+        return min(max(base * 2, 131072), 131072)
+    return None
+
+
+def _is_truncated_json_validation_error(exc: ValidationError) -> bool:
+    for item in exc.errors():
+        if item.get("type") != "json_invalid":
+            continue
+        ctx = item.get("ctx") or {}
+        err_obj = ctx.get("error")
+        msg = str(err_obj) if err_obj is not None else str(item.get("msg", ""))
+        if "EOF" in msg or "end of input" in msg.lower():
+            return True
+    return False
+
+
 def _call_provider_for_mode(
     *,
     mode: str,
@@ -466,23 +496,43 @@ def _call_provider_for_mode(
     resolved_stage = _stage_for_llm_mode(mode)
     resolved_provider = _resolve_provider_for_llm_mode(mode, video_id=video_id, provider=provider)
     resolved_model = _resolve_model_for_llm_mode(mode, video_id=video_id, model=model)
-    response = get_provider(resolved_provider).generate_text(
-        model=resolved_model,
-        user_text=user_text,
-        system_instruction=system_instruction,
-        response_mime_type="application/json",
-        response_schema=response_schema,
-        temperature=temperature,
-        stage=resolved_stage,
-        frame_key=frame_key,
-    )
-    raw_text = (response.text or "").strip()
-    if not raw_text:
-        raise ValueError(
-            f"{resolved_provider} returned empty response for mode={mode}."
+    usage_accum: list[dict] = []
+    last_raw = ""
+    for attempt in range(2):
+        max_tokens = _max_tokens_for_llm_mode(mode, attempt)
+        response = get_provider(resolved_provider).generate_text(
+            model=resolved_model,
+            user_text=user_text,
+            system_instruction=system_instruction,
+            response_mime_type="application/json",
+            response_schema=response_schema,
+            temperature=temperature,
+            max_tokens=max_tokens,
+            stage=resolved_stage,
+            frame_key=frame_key,
         )
-    parsed = response_schema.model_validate_json(raw_text)
-    return (parsed, response.usage_records)
+        usage_accum.extend(response.usage_records)
+        raw_text = (response.text or "").strip()
+        last_raw = raw_text
+        if not raw_text:
+            raise ValueError(
+                f"{resolved_provider} returned empty response for mode={mode}."
+            )
+        try:
+            parsed = response_schema.model_validate_json(raw_text)
+            return (parsed, usage_accum)
+        except ValidationError as e:
+            if attempt == 0 and _is_truncated_json_validation_error(e):
+                continue
+            raise ValueError(
+                f"{resolved_provider} JSON parse failed for mode={mode} after "
+                f"max_output_tokens={max_tokens}: {e}\n"
+                f"Response tail (500 chars): ...{raw_text[-500:]!r}"
+            ) from e
+    raise ValueError(
+        f"{resolved_provider} JSON still invalid after retry for mode={mode}. "
+        f"Response tail: ...{last_raw[-500:]!r}"
+    )
 
 
 # ----- Public APIs: Extraction -----

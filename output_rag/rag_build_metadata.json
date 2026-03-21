@@ -1,0 +1,13 @@
+{
+  "corpus_contract_version": "1.0.0",
+  "source_corpus_root": "output_corpus",
+  "retrieval_doc_counts": {
+    "concept_node": 223,
+    "concept_relation": 223,
+    "evidence_ref": 92,
+    "knowledge_event": 835,
+    "rule_card": 218
+  },
+  "total_retrieval_docs": 1591,
+  "build_timestamp": "2026-03-21T20:01:44.034263+00:00"
+}

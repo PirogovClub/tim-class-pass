@@ -1,0 +1,402 @@
+[
+  {
+    "query": "Как определить уровень для стоп-лосса?",
+    "category": "direct_rule",
+    "expected_unit": "rule_card",
+    "expected_concept": "Stop Loss",
+    "recall_at_k": {
+      "5": 0.0,
+      "10": 0.0
+    },
+    "mrr": 0.0,
+    "concept_detected": false,
+    "evidence_rate": 0.9,
+    "hit_count": 10,
+    "top_hit_unit_type": "knowledge_event",
+    "top_hit_score": 0.4503
+  },
+  {
+    "query": "Правила постановки тейк-профита",
+    "category": "direct_rule",
+    "expected_unit": "rule_card",
+    "expected_concept": "Take Profit",
+    "recall_at_k": {
+      "5": 1.0,
+      "10": 1.0
+    },
+    "mrr": 1.0,
+    "concept_detected": false,
+    "evidence_rate": 0.5,
+    "hit_count": 10,
+    "top_hit_unit_type": "rule_card",
+    "top_hit_score": 0.5046
+  },
+  {
+    "query": "Что такое BPU в Price Action?",
+    "category": "direct_rule",
+    "expected_unit": "rule_card",
+    "expected_concept": "BPU",
+    "recall_at_k": {
+      "5": 0.0,
+      "10": 1.0
+    },
+    "mrr": 0.1111111111111111,
+    "concept_detected": true,
+    "evidence_rate": 0.4,
+    "hit_count": 10,
+    "top_hit_unit_type": "knowledge_event",
+    "top_hit_score": 0.7269
+  },
+  {
+    "query": "Как работает накопление возле уровня?",
+    "category": "direct_rule",
+    "expected_unit": "rule_card",
+    "expected_concept": "Accumulation",
+    "recall_at_k": {
+      "5": 1.0,
+      "10": 1.0
+    },
+    "mrr": 0.5,
+    "concept_detected": false,
+    "evidence_rate": 0.7,
+    "hit_count": 10,
+    "top_hit_unit_type": "knowledge_event",
+    "top_hit_score": 0.5896
+  },
+  {
+    "query": "Правила входа после ложного пробоя",
+    "category": "direct_rule",
+    "expected_unit": "rule_card",
+    "expected_concept": "Movement near levels",
+    "recall_at_k": {
+      "5": 1.0,
+      "10": 1.0
+    },
+    "mrr": 0.2,
+    "concept_detected": false,
+    "evidence_rate": 0.2,
+    "hit_count": 10,
+    "top_hit_unit_type": "knowledge_event",
+    "top_hit_score": 0.7078
+  },
+  {
+    "query": "Когда правило стоп-лосса не работает?",
+    "category": "invalidation",
+    "expected_unit": "rule_card",
+    "expected_concept": "Stop Loss",
+    "recall_at_k": {
+      "5": 1.0,
+      "10": 1.0
+    },
+    "mrr": 0.3333333333333333,
+    "concept_detected": false,
+    "evidence_rate": 0.7,
+    "hit_count": 10,
+    "top_hit_unit_type": "knowledge_event",
+    "top_hit_score": 0.6217
+  },
+  {
+    "query": "Исключения из правил управления позицией",
+    "category": "invalidation",
+    "expected_unit": "rule_card",
+    "expected_concept": "Trade Management",
+    "recall_at_k": {
+      "5": 0.0,
+      "10": 1.0
+    },
+    "mrr": 0.1111111111111111,
+    "concept_detected": false,
+    "evidence_rate": 0.6,
+    "hit_count": 10,
+    "top_hit_unit_type": "knowledge_event",
+    "top_hit_score": 0.7642
+  },
+  {
+    "query": "Условия отмены входа в позицию",
+    "category": "invalidation",
+    "expected_unit": "rule_card",
+    "expected_concept": "Trade Management",
+    "recall_at_k": {
+      "5": 0.0,
+      "10": 0.0
+    },
+    "mrr": 0.0,
+    "concept_detected": false,
+    "evidence_rate": 0.8,
+    "hit_count": 10,
+    "top_hit_unit_type": "knowledge_event",
+    "top_hit_score": 0.5586
+  },
+  {
+    "query": "Разница между техническим и обычным стоп-лоссом",
+    "category": "concept_comparison",
+    "expected_unit": "rule_card",
+    "expected_concept": "Technical Stop Loss",
+    "recall_at_k": {
+      "5": 0.0,
+      "10": 1.0
+    },
+    "mrr": 0.1,
+    "concept_detected": false,
+    "evidence_rate": 0.9,
+    "hit_count": 10,
+    "top_hit_unit_type": "knowledge_event",
+    "top_hit_score": 0.6898
+  },
+  {
+    "query": "BPU versus обычный бар",
+    "category": "concept_comparison",
+    "expected_unit": "rule_card",
+    "expected_concept": "BPU",
+    "recall_at_k": {
+      "5": 1.0,
+      "10": 1.0
+    },
+    "mrr": 1.0,
+    "concept_detected": true,
+    "evidence_rate": 0.1,
+    "hit_count": 10,
+    "top_hit_unit_type": "rule_card",
+    "top_hit_score": 0.7618
+  },
+  {
+    "query": "Сравнение стоп-лосса и тейк-профита",
+    "category": "concept_comparison",
+    "expected_unit": "rule_card",
+    "expected_concept": "Stop Loss",
+    "recall_at_k": {
+      "5": 1.0,
+      "10": 1.0
+    },
+    "mrr": 0.3333333333333333,
+    "concept_detected": false,
+    "evidence_rate": 0.8,
+    "hit_count": 10,
+    "top_hit_unit_type": "knowledge_event",
+    "top_hit_score": 0.5894
+  },
+  {
+    "query": "Покажи пример накопления на графике",
+    "category": "evidence_lookup",
+    "expected_unit": "evidence_ref",
+    "expected_concept": "Accumulation",
+    "recall_at_k": {
+      "5": 0.0,
+      "10": 0.0
+    },
+    "mrr": 0.0,
+    "concept_detected": false,
+    "evidence_rate": 0.9,
+    "hit_count": 10,
+    "top_hit_unit_type": "knowledge_event",
+    "top_hit_score": 0.6377
+  },
+  {
+    "query": "Визуальный пример ложного пробоя уровня",
+    "category": "evidence_lookup",
+    "expected_unit": "evidence_ref",
+    "expected_concept": "Movement near levels",
+    "recall_at_k": {
+      "5": 0.0,
+      "10": 0.0
+    },
+    "mrr": 0.0,
+    "concept_detected": false,
+    "evidence_rate": 0.6,
+    "hit_count": 10,
+    "top_hit_unit_type": "knowledge_event",
+    "top_hit_score": 0.6956
+  },
+  {
+    "query": "Пример постановки стоп-лосса",
+    "category": "evidence_lookup",
+    "expected_unit": "evidence_ref",
+    "expected_concept": "Stop Loss",
+    "recall_at_k": {
+      "5": 0.0,
+      "10": 0.0
+    },
+    "mrr": 0.0,
+    "concept_detected": false,
+    "evidence_rate": 0.8,
+    "hit_count": 10,
+    "top_hit_unit_type": "knowledge_event",
+    "top_hit_score": 0.5549
+  },
+  {
+    "query": "Какие концепции рассматривались в уроке?",
+    "category": "lesson_coverage",
+    "expected_unit": "knowledge_event",
+    "expected_concept": null,
+    "recall_at_k": {
+      "5": 1.0,
+      "10": 1.0
+    },
+    "mrr": 1.0,
+    "concept_detected": true,
+    "evidence_rate": 0.7,
+    "hit_count": 10,
+    "top_hit_unit_type": "knowledge_event",
+    "top_hit_score": 0.4022
+  },
+  {
+    "query": "О чем рассказывал урок про Price Action?",
+    "category": "lesson_coverage",
+    "expected_unit": "knowledge_event",
+    "expected_concept": "Price Action",
+    "recall_at_k": {
+      "5": 1.0,
+      "10": 1.0
+    },
+    "mrr": 1.0,
+    "concept_detected": true,
+    "evidence_rate": 0.6,
+    "hit_count": 10,
+    "top_hit_unit_type": "knowledge_event",
+    "top_hit_score": 0.7269
+  },
+  {
+    "query": "Связь между уровнями и стоп-лоссом",
+    "category": "graph_query",
+    "expected_unit": "concept_relation",
+    "expected_concept": "Stop Loss",
+    "recall_at_k": {
+      "5": 0.0,
+      "10": 0.0
+    },
+    "mrr": 0.0,
+    "concept_detected": false,
+    "evidence_rate": 0.6,
+    "hit_count": 10,
+    "top_hit_unit_type": "knowledge_event",
+    "top_hit_score": 0.6875
+  },
+  {
+    "query": "Какие правила связаны с анализом таймфреймов?",
+    "category": "graph_query",
+    "expected_unit": "rule_card",
+    "expected_concept": "Анализ таймфреймов",
+    "recall_at_k": {
+      "5": 1.0,
+      "10": 1.0
+    },
+    "mrr": 0.5,
+    "concept_detected": false,
+    "evidence_rate": 0.6,
+    "hit_count": 10,
+    "top_hit_unit_type": "knowledge_event",
+    "top_hit_score": 0.6834
+  },
+  {
+    "query": "Концепции связанные с волатильностью",
+    "category": "graph_query",
+    "expected_unit": "concept_node",
+    "expected_concept": "Волатильность",
+    "recall_at_k": {
+      "5": 1.0,
+      "10": 1.0
+    },
+    "mrr": 0.25,
+    "concept_detected": true,
+    "evidence_rate": 0.4,
+    "hit_count": 10,
+    "top_hit_unit_type": "rule_card",
+    "top_hit_score": 0.4942
+  },
+  {
+    "query": "Как определить дневной уровень?",
+    "category": "timeframe",
+    "expected_unit": "rule_card",
+    "expected_concept": null,
+    "recall_at_k": {
+      "5": 0.0,
+      "10": 0.0
+    },
+    "mrr": 0.0,
+    "concept_detected": true,
+    "evidence_rate": 0.6,
+    "hit_count": 10,
+    "top_hit_unit_type": "concept_relation",
+    "top_hit_score": 0.6167
+  },
+  {
+    "query": "Правила торговли на разных таймфреймах",
+    "category": "timeframe",
+    "expected_unit": "rule_card",
+    "expected_concept": "Анализ таймфреймов",
+    "recall_at_k": {
+      "5": 0.0,
+      "10": 0.0
+    },
+    "mrr": 0.0,
+    "concept_detected": false,
+    "evidence_rate": 0.3,
+    "hit_count": 10,
+    "top_hit_unit_type": "knowledge_event",
+    "top_hit_score": 0.4592
+  },
+  {
+    "query": "Stop loss placement rules",
+    "category": "multilingual",
+    "expected_unit": "rule_card",
+    "expected_concept": "Stop Loss",
+    "recall_at_k": {
+      "5": 0.0,
+      "10": 0.0
+    },
+    "mrr": 0.0,
+    "concept_detected": true,
+    "evidence_rate": 0.0,
+    "hit_count": 10,
+    "top_hit_unit_type": "concept_relation",
+    "top_hit_score": 0.7667
+  },
+  {
+    "query": "Take profit strategy",
+    "category": "multilingual",
+    "expected_unit": "rule_card",
+    "expected_concept": "Take Profit",
+    "recall_at_k": {
+      "5": 0.0,
+      "10": 0.0
+    },
+    "mrr": 0.0,
+    "concept_detected": true,
+    "evidence_rate": 0.5,
+    "hit_count": 10,
+    "top_hit_unit_type": "concept_relation",
+    "top_hit_score": 0.7507
+  },
+  {
+    "query": "БСУ бар строительный упорный",
+    "category": "alias",
+    "expected_unit": "rule_card",
+    "expected_concept": "BPU",
+    "recall_at_k": {
+      "5": 1.0,
+      "10": 1.0
+    },
+    "mrr": 0.2,
+    "concept_detected": false,
+    "evidence_rate": 0.3,
+    "hit_count": 10,
+    "top_hit_unit_type": "knowledge_event",
+    "top_hit_score": 0.6597
+  },
+  {
+    "query": "Re-test уровня после пробоя",
+    "category": "alias",
+    "expected_unit": "rule_card",
+    "expected_concept": "Re-test",
+    "recall_at_k": {
+      "5": 1.0,
+      "10": 1.0
+    },
+    "mrr": 0.3333333333333333,
+    "concept_detected": true,
+    "evidence_rate": 0.7,
+    "hit_count": 10,
+    "top_hit_unit_type": "concept_node",
+    "top_hit_score": 0.7118
+  }
+]

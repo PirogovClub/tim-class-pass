@@ -139,14 +139,16 @@ def test_ambiguous_examples_do_not_become_positive() -> None:
             lesson_id=lesson_id,
             frame_ids=["000010"],
             example_role="ambiguous_example",
-            source_event_ids=[],
+            source_event_ids=["ke1"],
+            linked_rule_ids=["rule_ambiguous_0"],
         ),
         EvidenceRef(
             evidence_id=pos_evidence_id,
             lesson_id=lesson_id,
             frame_ids=["000020"],
             example_role="positive_example",
-            source_event_ids=[],
+            source_event_ids=["ke2"],
+            linked_rule_ids=["rule_ambiguous_0"],
         ),
     ]
     evidence_index = EvidenceIndex(
@@ -161,6 +163,7 @@ def test_ambiguous_examples_do_not_become_positive() -> None:
         concept="level",
         subconcept=None,
         rule_text="A level is a price zone where the market reacted.",
+        source_event_ids=["ke1", "ke2"],
         evidence_refs=[amb_evidence_id, pos_evidence_id],
         positive_example_refs=[],
         negative_example_refs=[],

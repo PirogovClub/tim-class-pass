@@ -9,15 +9,18 @@ import pytest
 
 from pipeline.schemas import EvidenceIndex, EvidenceRef, RuleCard, RuleCardCollection
 from pipeline.component2.ml_prep import (
+    attach_rule_example_refs,
     build_evidence_lookup,
     build_labeling_guidance,
     build_labeling_manifest,
+    build_labeling_tasks,
     build_ml_examples,
     build_ml_manifest,
     compute_ml_readiness_coverage,
     distribute_example_refs_for_ml,
     enrich_rule_card_for_ml,
     enrich_rule_card_collection_for_ml,
+    has_weak_visual_specificity,
     infer_candidate_features,
     is_evidence_ml_eligible,
     is_evidence_ml_eligible_for_rule,
@@ -596,3 +599,101 @@ def test_ml_examples_excludes_illustrations() -> None:
     ]
     examples = build_ml_examples(evidence_refs)
     assert [x["evidence_id"] for x in examples] == ["ev2"]
+
+
+# ---------------------------------------------------------------------------
+# 14-phase2: weak visual specificity ML-eligibility safety gate
+# ---------------------------------------------------------------------------
+
+
+def test_insufficient_visual_specificity_blocks_ml_eligibility():
+    """Counterexample with promotion_reason == 'insufficient_visual_specificity' is NOT ML-eligible."""
+    ev = {
+        "evidence_id": "ev_weak",
+        "example_role": "counterexample",
+        "linked_rule_ids": ["r1"],
+        "source_event_ids": ["e1"],
+        "metadata": {"promotion_reason": "insufficient_visual_specificity"},
+    }
+    assert has_weak_visual_specificity(ev) is True
+    assert is_evidence_ml_eligible(ev) is False
+
+
+def test_generic_teaching_visual_blocks_ml_eligibility():
+    """Counterexample with promotion_reason == 'generic_teaching_visual' is NOT ML-eligible."""
+    ev = {
+        "evidence_id": "ev_generic",
+        "example_role": "counterexample",
+        "linked_rule_ids": ["r1"],
+        "source_event_ids": ["e1"],
+        "metadata": {"promotion_reason": "generic_teaching_visual"},
+    }
+    assert has_weak_visual_specificity(ev) is True
+    assert is_evidence_ml_eligible(ev) is False
+
+
+def test_concrete_counterexample_remains_ml_eligible():
+    """Counterexample with strong concrete visual passes ML-eligibility."""
+    ev = {
+        "evidence_id": "ev_strong",
+        "example_role": "counterexample",
+        "linked_rule_ids": ["r1"],
+        "source_event_ids": ["e1"],
+        "metadata": {"promotion_reason": "strong_concrete_visual"},
+    }
+    assert has_weak_visual_specificity(ev) is False
+    assert is_evidence_ml_eligible(ev) is True
+
+
+def test_build_ml_examples_excludes_weak_specificity():
+    """Only strong evidence appears in build_ml_examples output."""
+    evidence_refs = [
+        {
+            "evidence_id": "ev_weak",
+            "example_role": "counterexample",
+            "linked_rule_ids": ["r1"],
+            "source_event_ids": ["e1"],
+            "metadata": {"promotion_reason": "insufficient_visual_specificity"},
+        },
+        {
+            "evidence_id": "ev_strong",
+            "example_role": "positive_example",
+            "linked_rule_ids": ["r1"],
+            "source_event_ids": ["e2"],
+            "metadata": {"promotion_reason": "strong_concrete_visual"},
+        },
+    ]
+    examples = build_ml_examples(evidence_refs)
+    assert len(examples) == 1
+    assert examples[0]["evidence_id"] == "ev_strong"
+
+
+def test_attach_rule_example_refs_ignores_weak_specificity():
+    """Weak counterexample does not populate negative_example_refs on a rule."""
+    rule = {"rule_id": "r1", "positive_example_refs": [], "negative_example_refs": [], "ambiguous_example_refs": []}
+    evidence_refs = [
+        {
+            "evidence_id": "ev_weak",
+            "example_role": "counterexample",
+            "linked_rule_ids": ["r1"],
+            "source_event_ids": ["e1"],
+            "metadata": {"promotion_reason": "insufficient_visual_specificity"},
+        },
+    ]
+    result = attach_rule_example_refs(rule, evidence_refs)
+    assert result["negative_example_refs"] == []
+
+
+def test_labeling_tasks_excludes_weak_specificity():
+    """Weak counterexample produces no labeling tasks."""
+    evidence_refs = [
+        {
+            "evidence_id": "ev_weak",
+            "example_role": "counterexample",
+            "linked_rule_ids": ["r1"],
+            "source_event_ids": ["e1"],
+            "metadata": {"promotion_reason": "insufficient_visual_specificity"},
+        },
+    ]
+    tasks = build_labeling_tasks(evidence_refs)
+    assert tasks == []

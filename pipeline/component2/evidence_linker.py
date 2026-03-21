@@ -3,12 +3,29 @@
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
 from pipeline.io_utils import atomic_write_text, atomic_write_json
 from pipeline.component2.parser import seconds_to_mmss, timestamp_to_seconds
+
+_CYRILLIC_RE = re.compile(r"[А-Яа-яЁё]")
+_LATIN_RE = re.compile(r"[A-Za-z]")
+
+
+def detect_summary_language(text: str | None) -> str | None:
+    """Return 'ru' if mostly Cyrillic, 'en' if mostly Latin, None otherwise."""
+    if not text:
+        return None
+    cyr = len(_CYRILLIC_RE.findall(text))
+    lat = len(_LATIN_RE.findall(text))
+    if cyr > lat and cyr > 0:
+        return "ru"
+    if lat > cyr and lat > 0:
+        return "en"
+    return None
 from pipeline.component2.provenance import (
     build_evidence_ref_provenance,
     validate_evidence_ref_provenance,
@@ -400,6 +417,43 @@ NEGATIVE_VISUAL_MARKERS = {
     "pierced and returned",
 }
 
+# 13-phase2: regex patterns for generic teaching/Q&A/title/summary slides
+GENERIC_SLIDE_PATTERNS: list[str] = [
+    r"\bq&a\b",
+    r"\bqa\b",
+    r"\bquestions?\b",
+    r"\banswers?\b",
+    r"\bответы?\b",
+    r"\bвопросы?\b",
+    r"\bsummary\b",
+    r"\bagenda\b",
+    r"\bintro\b",
+    r"\bintroduction\b",
+    r"\btitle\s*slide\b",
+    r"\bnew slide displayed\b",
+    r"\babstract_teaching_example\b",
+    r"\bconcept explanation\b",
+]
+
+# 13-phase2: regex patterns for concrete market/setup visual signals
+CONCRETE_MARKET_VISUAL_PATTERNS: list[str] = [
+    r"\bchart\b",
+    r"\bcandles?\b",
+    r"\bannotated\b",
+    r"\blevel\b",
+    r"\bentry\b",
+    r"\batr\b",
+    r"\bbreakout\b",
+    r"\bfalse breakout\b",
+    r"\bconsolidation\b",
+    r"\btouch(?:es)?\b",
+    r"\bprice\b",
+    r"\bwick\b",
+    r"\bbars?\b",
+    r"\bstop[- ]?loss\b",
+    r"\breward[- ]?to[- ]?risk\b",
+]
+
 
 def _norm_text(text: str | None) -> str:
     return (text or "").strip().lower()
@@ -458,21 +512,107 @@ def _has_explicit_negative_semantics(candidate: VisualEvidenceCandidate, linked_
     return negative_from_events or negative_from_visual
 
 
+# ----- 13-phase2: strict positive-example promotion gate -----
+
+
+def is_generic_teaching_visual_strict(summary: str | None) -> bool:
+    """Return True if summary matches any generic slide pattern (Q&A, title, intro, etc.)."""
+    text = _norm_text(summary)
+    if not text:
+        return True
+    for pat in GENERIC_SLIDE_PATTERNS:
+        if re.search(pat, text, flags=re.IGNORECASE):
+            return True
+    return False
+
+
+def concrete_visual_hit_count(summary: str | None) -> int:
+    """Count distinct concrete market/setup signal patterns matched in summary."""
+    text = _norm_text(summary)
+    if not text:
+        return 0
+    hits = 0
+    for pat in CONCRETE_MARKET_VISUAL_PATTERNS:
+        if re.search(pat, text, flags=re.IGNORECASE):
+            hits += 1
+    return hits
+
+
+def should_promote_to_positive_example(
+    compact_visual_summary: str | None,
+    linked_rule_ids: list[str] | None,
+    source_event_ids: list[str] | None,
+) -> bool:
+    """Return True only if evidence has strong concrete visual signals and required links."""
+    rules = linked_rule_ids or []
+    events = source_event_ids or []
+
+    if not rules or not events:
+        return False
+
+    if is_generic_teaching_visual_strict(compact_visual_summary):
+        return False
+
+    hit_count = concrete_visual_hit_count(compact_visual_summary)
+
+    if len(rules) > 2:
+        return hit_count >= 3
+
+    return hit_count >= 2
+
+
+def classify_promotion_reason(
+    summary: str | None,
+    linked_rule_ids: list[str] | None,
+) -> str:
+    """Return a short label explaining why promotion was granted or denied."""
+    if is_generic_teaching_visual_strict(summary):
+        return "generic_teaching_visual"
+    hit_count = concrete_visual_hit_count(summary)
+    if hit_count >= 3:
+        return "strong_concrete_visual"
+    if hit_count >= 2:
+        return "concrete_visual"
+    return "insufficient_visual_specificity"
+
+
 def infer_example_role(
     candidate: VisualEvidenceCandidate,
     linked_events: list[KnowledgeEvent],
 ) -> str:
-    """Heuristic example role (06-phase1). Counterexample only with explicit negative semantics and non-generic visual."""
+    """Heuristic example role (13-phase2, 14-phase2).
+
+    Positive only with concrete market visuals; counterexample only with
+    explicit negative *event types* (invalidation/exception/warning).
+    Visual-only negative markers in a teaching context (rule_statement/
+    condition/example) go through the positive-promotion gate instead.
+    """
     event_types = [getattr(e, "event_type", "") for e in linked_events]
 
     if _is_generic_teaching_visual(candidate, linked_events):
         return "illustration"
 
+    has_teaching_events = any(
+        t in event_types for t in ("rule_statement", "condition", "example")
+    )
+    has_negative_event_types = any(
+        t in event_types for t in ("invalidation", "exception", "warning")
+    )
+
+    if has_teaching_events:
+        if has_negative_event_types:
+            return "counterexample"
+        rule_count_proxy = [f"proxy_{i}" for i in range(len(linked_events))]
+        if should_promote_to_positive_example(
+            compact_visual_summary=candidate.compact_visual_summary,
+            linked_rule_ids=rule_count_proxy,
+            source_event_ids=candidate.source_event_ids or [e.event_id for e in linked_events],
+        ):
+            return "positive_example"
+        return "illustration"
+
     if _has_explicit_negative_semantics(candidate, linked_events):
         return "counterexample"
-
-    if any(t in event_types for t in ("rule_statement", "condition", "example")):
-        return "positive_example"
 
     if any(t in event_types for t in ("definition", "comparison", "process_step")):
         return "illustration"
@@ -565,6 +705,10 @@ def link_candidates_to_knowledge_events(
             c.metadata.setdefault("semantic_warnings", []).append(
                 "downgraded_to_illustration_due_to_generic_teaching_visual"
             )
+        rule_proxy = [f"proxy_{i}" for i in range(len(best_events))]
+        c.metadata["promotion_reason"] = classify_promotion_reason(
+            c.compact_visual_summary, rule_proxy,
+        )
         linked.append((c, best_events))
         debug_rows.append({
             "candidate_id": c.candidate_id,
@@ -633,6 +777,7 @@ def candidate_to_evidence_ref(
         normalized = schemas_normalize_text(compact_visual_summary)
         if len(normalized) > 300:
             compact_visual_summary = normalized[:297] + "..."
+    summary_lang = detect_summary_language(compact_visual_summary)
     evidence_ref = EvidenceRef(
         evidence_id=candidate.candidate_id,
         lesson_id=lesson_id,
@@ -650,6 +795,10 @@ def candidate_to_evidence_ref(
         raw_visual_event_ids=prov.get("raw_visual_event_ids", []),
         source_event_ids=prov.get("source_event_ids", []),
         metadata=strip_raw_visual_blobs_from_metadata(candidate.metadata),
+        summary_primary=compact_visual_summary if compact_visual_summary else None,
+        summary_language=summary_lang,
+        summary_ru=compact_visual_summary if summary_lang == "ru" else None,
+        summary_en=compact_visual_summary if summary_lang == "en" else None,
     )
     return evidence_ref
 

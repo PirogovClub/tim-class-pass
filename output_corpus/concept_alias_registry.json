@@ -1,0 +1,1796 @@
+{
+  "node:accumulation": {
+    "name": "Accumulation",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:adaptatsiya_urovney": {
+    "name": "Адаптация уровней",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:adaptatsiya_urovnya": {
+    "name": "адаптация уровня",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:analiz": {
+    "name": "анализ",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:analiz_obema": {
+    "name": "анализ объема",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:analiz_taymfreymov": {
+    "name": "Анализ таймфреймов",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:bar": {
+    "name": "Бар",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:bary": {
+    "name": "Бары",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:bezubytok": {
+    "name": "безубыток",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:bpu": {
+    "name": "BPU",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:bpu_bsu": {
+    "name": "BPU/БСУ",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:bsu": {
+    "name": "БСУ",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:byt_gotovym_k_tomu_chto_instrument_libo_ochen_bystro_otstopit_libo_bystro_dast_teyk_pri_ispolzovanii_korotkikh_stopov": {
+    "name": "Быть готовым к тому, что инструмент либо очень быстро отстопит, либо быстро даст тейк при использовании коротких стопов.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:chistaya": {
+    "name": "Чистая",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:chistaya_zona": {
+    "name": "Чистая зона",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:chtoby_vash_stop_pomeshchalsya_za_dnevnyy_uroven": {
+    "name": "Чтобы ваш стоп помещался за Дневный уровень.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:dalneyshee_dvizhenie": {
+    "name": "Дальнейшее движение",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:deystviya_krupnogo_igroka": {
+    "name": "Действия крупного игрока",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:dinamichnaya_pyatiminutka": {
+    "name": "Динамичная пятиминутка",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:distributsiya": {
+    "name": "дистрибуция",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:dlya_prodolzheniya_dvizheniya_posle_lozhnogo_proboya_dolzhna_byt_protorgovka_i_zatem_lozhnyy_proboy": {
+    "name": "Для продолжения движения после ложного пробоя, должна быть проторговка и затем ложный пробой.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:dlya_tekh_kto_torguet_s_korotkim_stopom_pri_uvelichenii_stopa_do_10_15_ot_atar_vremya_v_sdelke_u_nego_uvelichivaetsya": {
+    "name": "Для тех, кто торгует с коротким стопом, при увеличении стопа до 10-15% от АТАР время в сделке у него увеличивается.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:dlya_torgovli_na_prodolzhenie_dvizheniya_v_long_ot_nizhnego_urovnya_esli_vse_bary_zakryvalis_kazhdyy_raz_nizhe_urovnya": {
+    "name": "Для торговли на продолжение движения в лонг от нижнего уровня, если все бары закрывались каждый раз ниже уровня.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:dlya_torgovli_nizhnego_urovnya_cherez_otboynuyu_model": {
+    "name": "Для торговли нижнего уровня через отбойную модель.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:dlya_vkhoda_v_long_po_lozhnomu_proboyu_neobkhodimo_chtoby_tsena_zakrylas_vblizi_urovnya": {
+    "name": "Для входа в лонг по ложному пробою необходимо, чтобы цена закрылась вблизи уровня.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:dlya_vkhoda_v_tochku_urovnya_limitnogo_igroka_s_korotkim_stopom_u_vas_dolzhen_byt_bolshoy_zapas_khoda": {
+    "name": "Для входа в точку уровня лимитного игрока с коротким стопом, у вас должен быть большой запас хода.",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "condition"
+  },
+  "node:dlya_vzyatiya_bolshogo_teyka_bolee_3_k_1_neobkhodimo_orientirovatsya_na_zerkalnye_urovni_i_stavit_teyk_do_nikh": {
+    "name": "Для взятия большого тейка (более 3 к 1) необходимо ориентироваться на зеркальные уровни и ставить тейк до них.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:dva_bara_byutsya_v_odin_uroven": {
+    "name": "Два бара бьются в один уровень.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:ekstremumy": {
+    "name": "Экстремумы",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "subconcept"
+  },
+  "node:esli_by_u_vas_byl_ochen_korotkiy_stop_to_est_u_vas_by_vyneslo": {
+    "name": "Если бы у вас был очень короткий стоп, то есть у вас бы вынесло.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:esli_est_kakie_to_vstrechnye_urovni_to_oni_yavlyayutsya_zapasom_khoda": {
+    "name": "Если есть какие-то встречные уровни, то они являются запасом хода.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:esli_eto_nachalo_vykhoda_iz_nakopleniya_ili_konsolidatsii_instrument_mozhet_idti_daleko": {
+    "name": "Если это начало выхода из накопления или консолидации, инструмент может идти далеко.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:esli_instrument_podkhodit_k_urovnyu_na_paranormalnykh_barakh_eto_povod_dlya_vykhoda_iz_pozitsii": {
+    "name": "Если инструмент подходит к уровню на паранормальных барах, это повод для выхода из позиции.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:esli_ispolzuetsya_20_ot_atr_dlya_teyka_to_stop_stavitsya_tekhnicheskiy_pryachetsya_za_otkat": {
+    "name": "Если используется 20% от АТР для тейка, то стоп ставится технический, прячется за откат.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:esli_khvost_paranormalnogo_bara_nakhoditsya_v_nashey_zone_interesa_napravlen_v_storonu_nakopleniya": {
+    "name": "Если хвост паранормального бара находится в нашей зоне интереса (направлен в сторону накопления).",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:esli_stop_dostatochno_bolshoy_vremya_v_sdelke_uvelichivaetsya": {
+    "name": "Если стоп достаточно большой, время в сделке увеличивается.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:esli_stop_loss_dostatochno_bolshoy_vam_tozhe_pridetsya_sidet_krayne_dolgo": {
+    "name": "Если стоп-лосс достаточно большой, вам тоже придется сидеть крайне долго.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:esli_u_vas_bolshoy_teyk_nuzhno_sidet_v_sdelke_dolshe": {
+    "name": "Если у вас большой тейк, нужно сидеть в сделке дольше.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:esli_uroven_limitnogo_igroka_probit_on_soberet_vse_stopy_i_uletit": {
+    "name": "Если уровень лимитного игрока пробит, он соберет все стопы и улетит.",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "invalidation"
+  },
+  "node:esli_vy_zakhodili_vot_zdes_to_est_libo_zdes_zdes_kak_raz_eshche_i_otboynaya_otlichnaya_model": {
+    "name": "Если вы заходили вот здесь, то есть либо здесь, здесь как раз еще и отбойная отличная модель.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:esli_za_urovnem_nichego_net_to_nichto_ne_meshaet_instrumentu_idti_dalshe": {
+    "name": "Если за уровнем ничего нет, то ничто не мешает инструменту идти дальше.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:est_pokupatel_est_krupnyy_igrok_kotoryy_budet_dalshe_idti": {
+    "name": "Есть покупатель, есть крупный игрок, который будет дальше идти.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:est_predposylki_dlya_razvorota": {
+    "name": "Есть предпосылки для разворота.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:fiksatsiya_i_razvorot": {
+    "name": "Фиксация и разворот",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:high_low_ipo": {
+    "name": "High-Low IPO",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "subconcept"
+  },
+  "node:instrument": {
+    "name": "Инструмент",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "concept"
+  },
+  "node:instrument_pokazyvaet_chto_dalshe_v_short_on_ne_gotov_idti_risuet_dazhe_kakoe_to_zakruglenie": {
+    "name": "Инструмент показывает, что дальше в шорт он не готов идти, рисует даже какое-то закругление.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:ipo": {
+    "name": "IPO",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "concept"
+  },
+  "node:ispolzovanie_srednikh_tarov": {
+    "name": "Использование средних таров",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:ispolzovat_korotkie_stopy": {
+    "name": "Использовать короткие стопы.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:istinnyy_proboy": {
+    "name": "Истинный пробой",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:istoricheskie_urovni": {
+    "name": "исторические уровни",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi",
+      "lesson_2_levels_part_1"
+    ],
+    "type": "subconcept"
+  },
+  "node:istoricheskiy_uroven": {
+    "name": "Исторический уровень",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "subconcept"
+  },
+  "node:izlom_trenda": {
+    "name": "излом тренда",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:kharakteristiki": {
+    "name": "Характеристики",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:khvost": {
+    "name": "Хвост",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:khvost_lozhnogo_proboya": {
+    "name": "Хвост ложного пробоя",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:khvosty": {
+    "name": "Хвосты",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:komponenty": {
+    "name": "Компоненты",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:konsolidatsiya": {
+    "name": "Консолидация",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:kratkosrochnaya_torgovlya": {
+    "name": "краткосрочная торговля",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:limitnyy_igrok": {
+    "name": "Лимитный игрок",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "concept"
+  },
+  "node:long": {
+    "name": "Лонг",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:lozhnyy_proboy": {
+    "name": "Ложный пробой",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi",
+      "lesson_2_levels_part_1"
+    ],
+    "type": "concept"
+  },
+  "node:lozhnyy_proboy_i_paranormalnyy_bar": {
+    "name": "Ложный пробой и паранормальный бар",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:lozhnyy_proboy_opredelyaetsya_postfaktum": {
+    "name": "Ложный пробой определяется постфактум.",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "condition"
+  },
+  "node:movement_near_levels": {
+    "name": "Movement near levels",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:nakoplenie": {
+    "name": "Накопление",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:nalozhennyy_proboy": {
+    "name": "наложенный пробой",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:neobkhodimo_ponimat_kakie_predposylki_sformirovalis_dlya_togo_chtoby_torgovat_tot_ili_inoy_uroven": {
+    "name": "Необходимо понимать, какие предпосылки сформировались для того, чтобы торговать тот или иной уровень.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:nervnyy_instrument": {
+    "name": "Нервный инструмент",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "subconcept"
+  },
+  "node:net_nikakikh_protivorechiy_po_chasoviku": {
+    "name": "Нет никаких противоречий по часовику.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:obem": {
+    "name": "объем",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:obem_v_instrumente_kratno_uvelichilsya_otnositelno_predydushchikh_dney": {
+    "name": "Объем в инструменте кратно увеличился относительно предыдущих дней.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:obnovit_high_low": {
+    "name": "Обновить high/low",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "concept"
+  },
+  "node:obyom": {
+    "name": "Объём",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "concept"
+  },
+  "node:opredelenie": {
+    "name": "определение",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi",
+      "lesson_2_levels_part_1"
+    ],
+    "type": "subconcept"
+  },
+  "node:opredelenie_lozhnogo_proboya": {
+    "name": "Определение ложного пробоя",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "subconcept"
+  },
+  "node:opredelenie_urovney": {
+    "name": "Определение уровней",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "subconcept"
+  },
+  "node:order": {
+    "name": "ордер",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:ostanovka_instrumenta": {
+    "name": "Остановка инструмента",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:otboy_ot_urovnya": {
+    "name": "Отбой от уровня",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:otboynaya_model": {
+    "name": "Отбойная модель",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:paranormalnye_bary": {
+    "name": "Паранормальные бары",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "subconcept"
+  },
+  "node:paranormalnyy_bar": {
+    "name": "Паранормальный бар",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:paranormalnyy_obem": {
+    "name": "паранормальный объем",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:perekrytie_zony": {
+    "name": "Перекрытие зоны",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:perezakhod": {
+    "name": "Перезаход",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:pervyy_retest": {
+    "name": "Первый ретест",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:podkhod_k_urovnyu": {
+    "name": "Подход к уровню",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:podtverzhdenie": {
+    "name": "подтверждение",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:podtverzhdenie_lozhnogo_proboya": {
+    "name": "Подтверждение ложного пробоя",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:podtverzhdenie_urovnya": {
+    "name": "Подтверждение уровня",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "concept"
+  },
+  "node:poisk_bolee_silnykh_urovney": {
+    "name": "Поиск более сильных уровней",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:povedenie_krupnykh_igrokov": {
+    "name": "Поведение крупных игроков",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "concept"
+  },
+  "node:povedenie_tseny": {
+    "name": "Поведение цены",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:povtornoe_testirovanie_urovnya": {
+    "name": "Повторное тестирование уровня",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "subconcept"
+  },
+  "node:pravilo": {
+    "name": "правило",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:predposylki": {
+    "name": "предпосылки",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:pri_podkhode_k_silnomu_pryamomu_urovnyu": {
+    "name": "При подходе к сильному прямому уровню.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:pri_ponizhennoy_volatilnosti_ispolzuetsya_korotkiy_stop": {
+    "name": "При пониженной волатильности используется короткий стоп.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:pri_vkhode_ot_urovnya_limitnogo_igroka_stop_dolzhen_byt_namnogo_koroche_chem_v_standartnoy_situatsii": {
+    "name": "При входе от уровня лимитного игрока стоп должен быть намного короче, чем в стандартной ситуации.",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "condition"
+  },
+  "node:price_action": {
+    "name": "Price Action",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:primenenie": {
+    "name": "применение",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:probitie": {
+    "name": "Пробитие",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:probitie_urovney": {
+    "name": "Пробитие уровней",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "concept"
+  },
+  "node:proboy": {
+    "name": "пробой",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:proboy_urovnya": {
+    "name": "Пробой уровня",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:prodolzhenie_dvizheniya": {
+    "name": "Продолжение движения",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:protivorechiya": {
+    "name": "Противоречия",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:protrogovka": {
+    "name": "Протроговка",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:raschet_potentsiala_dvizheniya": {
+    "name": "Расчет потенциала движения",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:raschetnyy_stop_loss": {
+    "name": "Расчетный стоп-лосс",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:rassmotrenie_na_razvorot": {
+    "name": "Рассмотрение на разворот",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:razmer_stop_lossa": {
+    "name": "Размер стоп-лосса",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:razmer_stopa": {
+    "name": "размер стопа",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:razmer_stopa_dolzhen_pomeshchatsya_za_dnevnoy_uroven": {
+    "name": "Размер стопа должен помещаться за дневной уровень.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:razmeshchenie": {
+    "name": "Размещение",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:razmeshchenie_ordera": {
+    "name": "Размещение ордера",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:razvorot": {
+    "name": "Разворот",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:razvorotnyy_uroven": {
+    "name": "Разворотный уровень",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:re_test": {
+    "name": "Re-test",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:reaktsiya_na_lozhnyy_proboy": {
+    "name": "Реакция на ложный пробой",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:reaktsiya_na_proboy_urovnya": {
+    "name": "Реакция на пробой уровня",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:reaktsiya_na_vykup": {
+    "name": "Реакция на выкуп",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:realizatsiya_lozhnogo_proboya": {
+    "name": "Реализация ложного пробоя",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:rynochnaya_struktura": {
+    "name": "Рыночная структура",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:sharty": {
+    "name": "Шарты",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:short": {
+    "name": "шорт",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:shortovyy_trend": {
+    "name": "Шортовый тренд",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:signal_dlya_vkhoda": {
+    "name": "Сигнал для входа",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:sila_urovnya": {
+    "name": "Сила уровня",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "subconcept"
+  },
+  "node:silnyy_limitnyy_igrok": {
+    "name": "Сильный лимитный игрок",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "subconcept"
+  },
+  "node:silnyy_uroven": {
+    "name": "Сильный уровень",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:skorost_dvizheniya": {
+    "name": "Скорость движения",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:slozhnyy_op": {
+    "name": "сложный ОП",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:soglasovannost_taymfreymov": {
+    "name": "Согласованность таймфреймов",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi",
+      "lesson_2_levels_part_1"
+    ],
+    "type": "subconcept"
+  },
+  "node:sootnoshenie_risk_pribyl": {
+    "name": "Соотношение риск/прибыль",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:stop_limitnyy_order": {
+    "name": "Стоп-лимитный ордер",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:stop_loss": {
+    "name": "Stop Loss",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:svoystva": {
+    "name": "Свойства",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:svoystvo": {
+    "name": "свойство",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:take_profit": {
+    "name": "Take Profit",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:taymfreym": {
+    "name": "таймфрейм",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:taymfreymy": {
+    "name": "Таймфреймы",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "subconcept"
+  },
+  "node:technical_stop_loss": {
+    "name": "Technical Stop Loss",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:tekhnicheskiy_stop_i_teyk": {
+    "name": "Технический стоп и тейк",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:tekhnicheskiy_stop_loss": {
+    "name": "Технический стоп-лосс",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:teyk_profit": {
+    "name": "тейк-профит",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:tochka_izloma_trenda": {
+    "name": "Точка излома тренда",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "subconcept"
+  },
+  "node:tochka_razvorota_trenda": {
+    "name": "Точка разворота тренда",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "subconcept"
+  },
+  "node:tochka_vkhoda": {
+    "name": "Точка входа",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:torgovaya_strategiya": {
+    "name": "Торговая стратегия",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:torgovaya_ustanovka": {
+    "name": "торговая установка",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:torgovlya": {
+    "name": "торговля",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi",
+      "lesson_2_levels_part_1"
+    ],
+    "type": "concept"
+  },
+  "node:torgovlya_lozhnym_proboem": {
+    "name": "Торговля ложным пробоем",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:torgovlya_na_proboy": {
+    "name": "Торговля на пробой",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:torgovlya_na_prodolzhenie_dvizheniya": {
+    "name": "торговля на продолжение движения",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:torgovlya_na_razvorot": {
+    "name": "Торговля на разворот",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:torgovlya_nervnymi_instrumentami": {
+    "name": "Торговля нервными инструментами",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "subconcept"
+  },
+  "node:torgovlya_ot_adaptirovannogo_urovnya": {
+    "name": "Торговля от адаптированного уровня",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:torgovlya_ot_nizhnego_urovnya": {
+    "name": "Торговля от нижнего уровня",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:torgovlya_ot_urovney": {
+    "name": "Торговля от уровней",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:torgovlya_ot_urovnya": {
+    "name": "торговля от уровня",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:torgovlya_ot_verkhnego_urovnya": {
+    "name": "Торговля от верхнего уровня",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:torgovlya_ot_zerkalnogo_urovnya": {
+    "name": "Торговля от зеркального уровня",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:torgovlya_po_lozhnym_proboyam": {
+    "name": "Торговля по ложным пробоям",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:torgovlya_po_urovnyam": {
+    "name": "Торговля по уровням",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:torgovlya_po_zakrytiyu_bara": {
+    "name": "Торговля по закрытию бара",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:torgovlya_pri_pilyashchemsya_urovne": {
+    "name": "Торговля при пилящемся уровне",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:torgovlya_protiv_vstrechnykh_urovney": {
+    "name": "Торговля против встречных уровней",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:torgovlya_u_urovney": {
+    "name": "торговля у уровней",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:torgovlya_v_razvorot": {
+    "name": "Торговля в разворот",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:torgovlya_v_short": {
+    "name": "Торговля в шорт",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:trade_management": {
+    "name": "Trade Management",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:tvkh": {
+    "name": "ТВХ",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:tvkh_tochka_vkhoda": {
+    "name": "ТВХ (точка входа)",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:u_nas_zdes_budet_paranormalnyy_obem_no_zakrytie_u_nas_ne_ochen_khoroshee": {
+    "name": "У нас здесь будет паранормальный объем, но закрытие у нас не очень хорошее.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:uderzhanie_po_faktoru_zony": {
+    "name": "Удержание по фактору зоны",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:uderzhanie_pozitsii": {
+    "name": "Удержание позиции",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:uderzhanie_teykov_10_k_1_vozmozhno_esli_volatilnost_pozvolyaet_vzyat_takoe_sootnoshenie": {
+    "name": "Удержание тейков 10 к 1 возможно, если волатильность позволяет взять такое соотношение.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:upravlenie_kapitalom": {
+    "name": "управление капиталом",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:upravlenie_orderami": {
+    "name": "Управление ордерами",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:upravlenie_pozitsiey": {
+    "name": "управление позицией",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:upravlenie_riskom": {
+    "name": "Управление риском",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi",
+      "lesson_2_levels_part_1"
+    ],
+    "type": "concept"
+  },
+  "node:uroven": {
+    "name": "Уровень",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi",
+      "lesson_2_levels_part_1"
+    ],
+    "type": "concept"
+  },
+  "node:uroven_adaptiruetsya_kogda_on_chasto_proshivaetsya": {
+    "name": "Уровень адаптируется, когда он часто прошивается.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:uroven_dolzhen_byt_silnym_chtoby_krupnyak_ego_zashchishchal": {
+    "name": "Уровень должен быть сильным, чтобы крупняк его защищал.",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "condition"
+  },
+  "node:uroven_limitnogo_igroka": {
+    "name": "Уровень лимитного игрока",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "subconcept"
+  },
+  "node:uroven_lozhnogo_proboya": {
+    "name": "Уровень ложного пробоя",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "subconcept"
+  },
+  "node:uroven_ostanovki_padeniya": {
+    "name": "Уровень остановки падения",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "subconcept"
+  },
+  "node:uroven_protorgovki": {
+    "name": "Уровень проторговки",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:uroven_schitaetsya_khoroshim_esli_na_nem_est_protorgovka_podtverzhdennaya_lozhnym_proboem": {
+    "name": "Уровень считается хорошим, если на нем есть проторговка, подтвержденная ложным пробоем.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:urovni": {
+    "name": "Уровни",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi",
+      "lesson_2_levels_part_1"
+    ],
+    "type": "concept"
+  },
+  "node:urovni_ipo": {
+    "name": "Уровни IPO",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "concept"
+  },
+  "node:usloviya_dlya_nakopleniya": {
+    "name": "Условия для накопления",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:usloviya_dlya_vkhoda": {
+    "name": "Условия для входа",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:uvelichenie_obema": {
+    "name": "увеличение объема",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:vazhnost_tselostnosti_grafika": {
+    "name": "Важность целостности графика",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "subconcept"
+  },
+  "node:vkhod_posle_lozhnogo_proboya": {
+    "name": "Вход после ложного пробоя",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:vkhod_v_sdelku": {
+    "name": "вход в сделку",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:vliyanie_na_stop_loss": {
+    "name": "Влияние на стоп-лосс",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:volatilnost": {
+    "name": "Волатильность",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:vstrechnye_urovni": {
+    "name": "Встречные уровни",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:vybor_urovney": {
+    "name": "Выбор уровней",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "concept"
+  },
+  "node:vybor_urovnya_dlya_torgovli": {
+    "name": "выбор уровня для торговли",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:vykhod_iz_nakopleniya": {
+    "name": "Выход из накопления",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:vykhod_iz_pozitsii": {
+    "name": "Выход из позиции",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:vykup": {
+    "name": "Выкуп",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:zakreplenie": {
+    "name": "закрепление",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi",
+      "lesson_2_levels_part_1"
+    ],
+    "type": "subconcept"
+  },
+  "node:zakruglenie": {
+    "name": "Закругление",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:zakrytie_pozitsii_u_urovnya": {
+    "name": "Закрытие позиции у уровня",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:zakrytie_sdelki": {
+    "name": "закрытие сделки",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:zapas_khoda": {
+    "name": "запас хода",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:zarazhennaya_zona": {
+    "name": "Зараженная зона",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:zashchita_urovney": {
+    "name": "Защита уровней",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_2_levels_part_1"
+    ],
+    "type": "subconcept"
+  },
+  "node:zavisimost_ot_razmera_stopa": {
+    "name": "Зависимость от размера стопа",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:zerkalnyy_uroven": {
+    "name": "Зеркальный уровень",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi",
+      "lesson_2_levels_part_1"
+    ],
+    "type": "concept"
+  },
+  "node:zona": {
+    "name": "Зона",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  },
+  "node:zona_dlya_torgovli": {
+    "name": "Зона для торговли",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:zona_protorgovki": {
+    "name": "зона проторговки",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "subconcept"
+  },
+  "node:zona_yavlyaetsya_protorgovkoy_i_silnym_zerkalnym_urovnem": {
+    "name": "Зона является проторговкой и сильным зеркальным уровнем.",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "condition"
+  },
+  "node:zona_za_urovnem": {
+    "name": "Зона за уровнем",
+    "aliases": [],
+    "source_lessons": [
+      "2025_09_29_sviatoslav_chornyi"
+    ],
+    "type": "concept"
+  }
+}

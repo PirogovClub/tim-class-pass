@@ -434,6 +434,72 @@ def test_deterministic_export_does_not_require_raw_chunks() -> None:
     md = render_review_markdown_deterministic(ctx)
     assert "# Lesson:" in md
     assert "Level" in md
-    # ExportContext has no transcript/chunk fields; this test documents that we never pass them
     assert not hasattr(ctx, "chunks")
     assert not hasattr(ctx, "transcript_lines")
+
+
+# ----- Task 17: RAG timestamps -----
+
+
+def test_rag_timestamp_rendered_when_available() -> None:
+    """Task 17: [MM:SS] timestamps appear in RAG markdown when source events have timestamps."""
+    from pipeline.schemas import KnowledgeEvent, KnowledgeEventCollection
+
+    rule = RuleCard(
+        lesson_id="lesson1",
+        rule_id="r1",
+        concept="Level",
+        rule_text="A level becomes stronger.",
+        source_event_ids=["ke1", "ke2"],
+    )
+    ke1 = KnowledgeEvent(
+        event_id="ke1",
+        lesson_id="lesson1",
+        event_type="rule_statement",
+        raw_text="text1",
+        normalized_text="text1",
+        timestamp_start="05:30",
+        timestamp_end="06:00",
+    )
+    ke2 = KnowledgeEvent(
+        event_id="ke2",
+        lesson_id="lesson1",
+        event_type="condition",
+        raw_text="text2",
+        normalized_text="text2",
+        timestamp_start="03:15",
+        timestamp_end="04:00",
+    )
+    rule_cards = RuleCardCollection(lesson_id="lesson1", rules=[rule])
+    evidence_index = EvidenceIndex(lesson_id="lesson1", evidence_refs=[])
+    ke_coll = KnowledgeEventCollection(lesson_id="lesson1", events=[ke1, ke2])
+    ctx = build_export_context(rule_cards, evidence_index, knowledge_events=ke_coll)
+    md = render_rag_markdown_deterministic(ctx)
+    assert "[03:15]" in md
+
+
+def test_rag_no_timestamp_when_missing() -> None:
+    """Task 17: no [00:00] or timestamp when source events have no timestamps."""
+    rule = RuleCard(
+        lesson_id="lesson1",
+        rule_id="r1",
+        concept="Level",
+        rule_text="Rule text here.",
+        source_event_ids=["ke1"],
+    )
+    from pipeline.schemas import KnowledgeEvent, KnowledgeEventCollection
+
+    ke1 = KnowledgeEvent(
+        event_id="ke1",
+        lesson_id="lesson1",
+        event_type="rule_statement",
+        raw_text="text",
+        normalized_text="text",
+    )
+    rule_cards = RuleCardCollection(lesson_id="lesson1", rules=[rule])
+    evidence_index = EvidenceIndex(lesson_id="lesson1", evidence_refs=[])
+    ke_coll = KnowledgeEventCollection(lesson_id="lesson1", events=[ke1])
+    ctx = build_export_context(rule_cards, evidence_index, knowledge_events=ke_coll)
+    md = render_rag_markdown_deterministic(ctx)
+    assert "[00:00]" not in md
+    assert "Rule: Rule text here." in md

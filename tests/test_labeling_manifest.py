@@ -18,6 +18,7 @@ def test_labeling_manifest_skips_generic_intro_counterexample() -> None:
         frame_ids=["000001"],
         example_role="counterexample",
         compact_visual_summary="Introduction slide with title and instructor.",
+        metadata={"promotion_reason": "generic_teaching_visual"},
     )
 
     rule = RuleCard(

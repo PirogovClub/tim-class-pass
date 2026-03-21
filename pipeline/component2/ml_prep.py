@@ -15,6 +15,10 @@ from pipeline.schemas import (
     RuleCardCollection,
     validate_rule_card_for_export,
 )
+from pipeline.component2.rule_compat import (
+    is_evidence_safe_for_ml,
+    is_positive_example_compatible,
+)
 
 
 # ----- Feature vocabulary (concept/subconcept → candidate feature names) -----
@@ -207,15 +211,37 @@ ML_ELIGIBLE_ROLES = {
     "ambiguous_example",
 }
 
+WEAK_VISUAL_MARKERS = [
+    "insufficient_visual_specificity",
+    "weak visual grounding",
+    "generic teaching visual",
+    "generic_teaching_visual",
+    "low visual specificity",
+    "not concrete enough",
+]
+
+
+def has_weak_visual_specificity(evidence: dict) -> bool:
+    """True if evidence metadata indicates weak visual grounding (14-phase2)."""
+    metadata = evidence.get("metadata") or {}
+    promotion_reason = (metadata.get("promotion_reason") or "").strip().lower()
+    if any(marker in promotion_reason for marker in WEAK_VISUAL_MARKERS):
+        return True
+    semantic_warnings = metadata.get("semantic_warnings") or []
+    warning_text = " ".join(str(x).lower() for x in semantic_warnings)
+    return any(marker in warning_text for marker in WEAK_VISUAL_MARKERS)
+
 
 def is_evidence_ml_eligible(evidence: dict) -> bool:
-    """True iff evidence has an ML-eligible role and required links (brief 11-phase2)."""
+    """True iff evidence has an ML-eligible role, required links, and sufficient visual specificity."""
     role = (evidence.get("example_role") or "").strip()
     if role not in ML_ELIGIBLE_ROLES:
         return False
     if not evidence.get("linked_rule_ids"):
         return False
     if not evidence.get("source_event_ids"):
+        return False
+    if has_weak_visual_specificity(evidence):
         return False
     return True
 
@@ -232,6 +258,8 @@ def _evidence_ref_to_dict(ref: EvidenceRef) -> dict[str, Any]:
         "screenshot_paths": getattr(ref, "screenshot_paths", None) or [],
         "timestamp_start": getattr(ref, "timestamp_start", None),
         "timestamp_end": getattr(ref, "timestamp_end", None),
+        "metadata": getattr(ref, "metadata", None) or {},
+        "compact_visual_summary": getattr(ref, "compact_visual_summary", None),
     }
 
 
@@ -306,17 +334,32 @@ def should_emit_labeling_task(ref: EvidenceRef, rule: RuleCard) -> bool:
 def distribute_example_refs_for_ml(
     rule: RuleCard,
     evidence_refs: list[EvidenceRef],
+    all_rules: list[RuleCard] | None = None,
 ) -> dict[str, list[str]]:
-    """Map evidence roles into ML buckets (11-phase2: ML_ELIGIBLE_ROLES only; illustration excluded)."""
+    """Map evidence roles into ML buckets (11-phase2: ML_ELIGIBLE_ROLES only; illustration excluded).
+
+    Task 17: positive examples are blocked when the evidence is linked to
+    rules with conflicting directional meaning.
+    """
     positive: list[str] = []
     negative: list[str] = []
     ambiguous: list[str] = []
 
+    rules_by_id: dict[str, dict] = {}
+    if all_rules:
+        rules_by_id = {r.rule_id: r.model_dump() for r in all_rules}
+    rule_dict = rule.model_dump() if hasattr(rule, "model_dump") else {}
+
     for evidence in evidence_refs:
         if not is_evidence_ml_eligible_for_rule(evidence, rule):
             continue
+        ev_dict = _evidence_ref_to_dict(evidence)
+        if rules_by_id and not is_evidence_safe_for_ml(ev_dict, rules_by_id):
+            continue
         role = getattr(evidence, "example_role", None)
         if role == "positive_example":
+            if rules_by_id and not is_positive_example_compatible(rule_dict, ev_dict, rules_by_id):
+                continue
             positive.append(evidence.evidence_id)
         elif role in {"negative_example", "counterexample"}:
             negative.append(evidence.evidence_id)
@@ -371,6 +414,7 @@ def build_labeling_guidance(rule: RuleCard) -> str | None:
 def enrich_rule_card_for_ml(
     rule: RuleCard,
     evidence_refs: list[EvidenceRef],
+    all_rules: list[RuleCard] | None = None,
 ) -> RuleCard:
     """Enrich a single rule with candidate_features, example buckets, and labeling_guidance. Preserves provenance."""
     errors = validate_rule_card_for_export(rule)
@@ -384,7 +428,7 @@ def enrich_rule_card_for_ml(
         })
 
     feature_list = infer_candidate_features(rule)
-    example_buckets = distribute_example_refs_for_ml(rule, evidence_refs)
+    example_buckets = distribute_example_refs_for_ml(rule, evidence_refs, all_rules=all_rules)
     labeling_guidance = build_labeling_guidance(rule)
 
     return rule.model_copy(update={
@@ -402,11 +446,12 @@ def enrich_rule_card_collection_for_ml(
 ) -> RuleCardCollection:
     """Enrich all rules in the collection for ML; return new collection."""
     evidence_lookup = build_evidence_lookup(evidence_index)
+    all_rules = list(rules.rules)
     enriched_rules: list[RuleCard] = []
 
     for rule in rules.rules:
         linked_evidence = get_linked_evidence_for_rule(rule, evidence_lookup)
-        enriched_rules.append(enrich_rule_card_for_ml(rule, linked_evidence))
+        enriched_rules.append(enrich_rule_card_for_ml(rule, linked_evidence, all_rules=all_rules))
 
     return RuleCardCollection(
         schema_version=rules.schema_version,
@@ -418,12 +463,31 @@ def enrich_rule_card_collection_for_ml(
 # ----- ML manifest (11-phase2: trainable-only; build_ml_examples / attach_rule_example_refs) -----
 
 
-def build_ml_examples(evidence_refs: list[dict]) -> list[dict]:
-    """Only export eligible evidence rows (brief 11-phase2)."""
+def build_ml_examples(
+    evidence_refs: list[dict],
+    rules_by_id: dict[str, dict] | None = None,
+) -> list[dict]:
+    """Only export eligible evidence rows (brief 11-phase2).
+
+    Task 17: additionally gate on cross-rule directional safety.
+    """
+    _rbi = rules_by_id or {}
     examples = []
     for ev in evidence_refs:
         if not is_evidence_ml_eligible(ev):
             continue
+        if _rbi and not is_evidence_safe_for_ml(ev, _rbi):
+            continue
+        role = ev.get("example_role", "")
+        if role == "positive_example" and _rbi:
+            compatible_with_any = False
+            for rid in ev.get("linked_rule_ids", []):
+                r = _rbi.get(rid)
+                if r and is_positive_example_compatible(r, ev, _rbi):
+                    compatible_with_any = True
+                    break
+            if not compatible_with_any:
+                continue
         examples.append({
             "evidence_id": ev["evidence_id"],
             "example_role": ev["example_role"],
@@ -437,8 +501,16 @@ def build_ml_examples(evidence_refs: list[dict]) -> list[dict]:
     return examples
 
 
-def attach_rule_example_refs(rule: dict, evidence_refs: list[dict]) -> dict:
-    """Only eligible evidence may populate rule example refs (brief 11-phase2)."""
+def attach_rule_example_refs(
+    rule: dict,
+    evidence_refs: list[dict],
+    rules_by_id: dict[str, dict] | None = None,
+) -> dict:
+    """Only eligible evidence may populate rule example refs (brief 11-phase2).
+
+    Task 17: block positive examples that conflict directionally with this rule.
+    """
+    _rbi = rules_by_id or {}
     positive = []
     negative = []
     ambiguous = []
@@ -447,8 +519,12 @@ def attach_rule_example_refs(rule: dict, evidence_refs: list[dict]) -> dict:
             continue
         if rule["rule_id"] not in ev.get("linked_rule_ids", []):
             continue
+        if _rbi and not is_evidence_safe_for_ml(ev, _rbi):
+            continue
         role = ev["example_role"]
         if role == "positive_example":
+            if _rbi and not is_positive_example_compatible(rule, ev, _rbi):
+                continue
             positive.append(ev["evidence_id"])
         elif role in {"negative_example", "counterexample"}:
             negative.append(ev["evidence_id"])
@@ -460,11 +536,20 @@ def attach_rule_example_refs(rule: dict, evidence_refs: list[dict]) -> dict:
     return rule
 
 
-def build_labeling_tasks(evidence_refs: list[dict]) -> list[dict]:
-    """Return tasks only for ML-eligible evidence (12-phase2 unit-test helper)."""
+def build_labeling_tasks(
+    evidence_refs: list[dict],
+    rules_by_id: dict[str, dict] | None = None,
+) -> list[dict]:
+    """Return tasks only for ML-eligible evidence (12-phase2 unit-test helper).
+
+    Task 17: additionally gate on cross-rule directional safety.
+    """
+    _rbi = rules_by_id or {}
     tasks = []
     for ev in evidence_refs:
         if not is_evidence_ml_eligible(ev):
+            continue
+        if _rbi and not is_evidence_safe_for_ml(ev, _rbi):
             continue
         tasks.append({"evidence_id": ev["evidence_id"]})
     return tasks
@@ -475,10 +560,14 @@ def build_ml_manifest(
     rule_cards: RuleCardCollection,
     evidence_index: EvidenceIndex,
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
-    """Build lesson-level ML manifest (rules + examples); 11-phase2: trainable-only, no illustration."""
+    """Build lesson-level ML manifest (rules + examples); 11-phase2: trainable-only, no illustration.
+
+    Task 17: thread rules_by_id for cross-rule directional safety checks.
+    """
     evidence_lookup = build_evidence_lookup(evidence_index)
     all_evidence_dicts = [_evidence_ref_to_dict(ref) for ref in evidence_index.evidence_refs]
-    examples_payload = build_ml_examples(all_evidence_dicts)
+    rbi: dict[str, dict] = {r.rule_id: r.model_dump() for r in rule_cards.rules}
+    examples_payload = build_ml_examples(all_evidence_dicts, rules_by_id=rbi)
 
     rules_payload: list[dict[str, Any]] = []
     debug_rows: list[dict[str, Any]] = []
@@ -504,7 +593,7 @@ def build_ml_manifest(
             "ambiguous_example_refs": [],
             "source_event_ids": rule.source_event_ids or [],
         }
-        attach_rule_example_refs(rule_dict, all_evidence_dicts)
+        attach_rule_example_refs(rule_dict, all_evidence_dicts, rules_by_id=rbi)
         rules_payload.append(rule_dict)
         debug_rows.append({
             "rule_id": rule.rule_id,
@@ -527,8 +616,12 @@ def build_labeling_manifest(
     rule_cards: RuleCardCollection,
     evidence_index: EvidenceIndex,
 ) -> dict[str, Any]:
-    """Build manifest of labeling tasks (one per rule+evidence in ML buckets)."""
+    """Build manifest of labeling tasks (one per rule+evidence in ML buckets).
+
+    Task 17: gate on cross-rule directional safety.
+    """
     evidence_lookup = build_evidence_lookup(evidence_index)
+    rbi: dict[str, dict] = {r.rule_id: r.model_dump() for r in rule_cards.rules}
 
     tasks: list[dict[str, Any]] = []
 
@@ -545,6 +638,13 @@ def build_labeling_manifest(
             evidence = evidence_lookup[evidence_id]
             if not should_emit_labeling_task(evidence, rule):
                 continue
+            ev_dict = _evidence_ref_to_dict(evidence)
+            if not is_evidence_safe_for_ml(ev_dict, rbi):
+                continue
+            if evidence.example_role == "positive_example":
+                rule_dict = rbi.get(rule.rule_id, {})
+                if rule_dict and not is_positive_example_compatible(rule_dict, ev_dict, rbi):
+                    continue
             tasks.append({
                 "rule_id": rule.rule_id,
                 "concept": rule.concept,

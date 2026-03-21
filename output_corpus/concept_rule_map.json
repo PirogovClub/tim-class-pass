@@ -1,0 +1,374 @@
+{
+  "node:price_action": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_movement_near_levels_0",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_accumulation_1",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_re_test_7"
+  ],
+  "node:trade_management": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_take_profit_2",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_3",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_4"
+  ],
+  "node:stop_loss": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_5",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_6",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_20",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_21"
+  ],
+  "node:sootnoshenie_risk_pribyl": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_11"
+  ],
+  "node:torgovaya_strategiya": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_12",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_31",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_122",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_123",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_124",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_126",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_127",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_128",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_129",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_130",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_215",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_225",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_226",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_227",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_292",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_294"
+  ],
+  "node:raschetnyy_stop_loss": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_17"
+  ],
+  "node:tekhnicheskiy_stop_loss": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_18",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_19"
+  ],
+  "node:otboy_ot_urovnya": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_22"
+  ],
+  "node:volatilnost": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_23"
+  ],
+  "node:upravlenie_pozitsiey": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_27",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_28",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_82",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_112"
+  ],
+  "node:torgovaya_ustanovka": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_29",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_34"
+  ],
+  "node:taymfreym": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_30"
+  ],
+  "node:analiz_obema": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_32",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_33"
+  ],
+  "node:lozhnyy_proboy": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_36",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_37",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_62",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_77",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_78",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_161",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_7",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_8",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_9"
+  ],
+  "node:vykup": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_38"
+  ],
+  "node:upravlenie_riskom": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_40",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_41",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_223",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_286"
+  ],
+  "node:paranormalnyy_bar": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_49",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_50",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_51",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_152",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_153",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_154",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_155",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_156",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_157",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_158"
+  ],
+  "node:uroven": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_52",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_89",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_90",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_118",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_119",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_120",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_121",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_125",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_0",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_3",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_4",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_38",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_39",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_41",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_43"
+  ],
+  "node:perezakhod": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_53",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_54"
+  ],
+  "node:istinnyy_proboy": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_55"
+  ],
+  "node:nakoplenie": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_56"
+  ],
+  "node:zona": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_72",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_73",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_144"
+  ],
+  "node:bar": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_74"
+  ],
+  "node:torgovlya_po_urovnyam": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_75",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_79",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_189",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_258",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_259"
+  ],
+  "node:uderzhanie_pozitsii": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_76",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_100",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_136",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_186"
+  ],
+  "node:raschet_potentsiala_dvizheniya": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_80"
+  ],
+  "node:torgovlya_na_proboy": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_81",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_133",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_134",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_284"
+  ],
+  "node:sharty": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_91",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_92"
+  ],
+  "node:urovni": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_93",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_232",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_235",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_14",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_15",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_16",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_17",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_18",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_19",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_30",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_31",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_32",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_33",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_34",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_35",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_36",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_37",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_53",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_54",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_ipo_55"
+  ],
+  "node:uroven_protorgovki": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_97",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_101"
+  ],
+  "node:zona_za_urovnem": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_98"
+  ],
+  "node:torgovlya_na_razvorot": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_99",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_310",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_311",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_312"
+  ],
+  "node:torgovlya": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_108",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_109",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_110",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_131",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_315",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_316",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_42",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_44"
+  ],
+  "node:distributsiya": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_111"
+  ],
+  "node:rynochnaya_struktura": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_132"
+  ],
+  "node:obem": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_135"
+  ],
+  "node:zarazhennaya_zona": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_142",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_143",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_203"
+  ],
+  "node:torgovlya_v_razvorot": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_145"
+  ],
+  "node:razvorot": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_148"
+  ],
+  "node:zerkalnyy_uroven": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_164",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_188",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_221",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_21"
+  ],
+  "node:izlom_trenda": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_166"
+  ],
+  "node:slozhnyy_op": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_167"
+  ],
+  "node:torgovlya_u_urovney": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_168",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_169",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_170",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_171",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_172"
+  ],
+  "node:upravlenie_kapitalom": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_173",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_174",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_175",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_176",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_177",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_178",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_179",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_180"
+  ],
+  "node:proboy_urovnya": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_190"
+  ],
+  "node:torgovlya_lozhnym_proboem": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_191"
+  ],
+  "node:torgovlya_protiv_vstrechnykh_urovney": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_196"
+  ],
+  "node:vstrechnye_urovni": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_199",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_200"
+  ],
+  "node:podkhod_k_urovnyu": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_201"
+  ],
+  "node:dinamichnaya_pyatiminutka": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_202"
+  ],
+  "node:otboynaya_model": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_209",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_210",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_211",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_212"
+  ],
+  "node:upravlenie_orderami": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_222",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_224"
+  ],
+  "node:bary": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_233"
+  ],
+  "node:torgovlya_v_short": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_234"
+  ],
+  "node:torgovlya_ot_urovnya": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_250"
+  ],
+  "node:tvkh_tochka_vkhoda": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_255",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_256",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_257"
+  ],
+  "node:analiz_taymfreymov": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_260"
+  ],
+  "node:torgovlya_po_lozhnym_proboyam": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_261"
+  ],
+  "node:bpu": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_bpu_unknown_265"
+  ],
+  "node:bsu": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_266"
+  ],
+  "node:tvkh": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_267",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_268",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_269"
+  ],
+  "node:bpu_bsu": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_bpu_unknown_270",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_bpu_unknown_271"
+  ],
+  "node:vkhod_v_sdelku": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_285"
+  ],
+  "node:vybor_urovnya_dlya_torgovli": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_293"
+  ],
+  "node:adaptatsiya_urovney": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_300",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_301",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_302",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_303"
+  ],
+  "node:torgovlya_ot_urovney": [
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_304",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_305",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_306",
+    "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_307"
+  ],
+  "node:limitnyy_igrok": [
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_1",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_2"
+  ],
+  "node:obyom": [
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_5"
+  ],
+  "node:obnovit_high_low": [
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_high_low_unknown_10"
+  ],
+  "node:podtverzhdenie_urovnya": [
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_11",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_12"
+  ],
+  "node:soglasovannost_taymfreymov": [
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_22"
+  ],
+  "node:vybor_urovney": [
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_23"
+  ],
+  "node:povedenie_krupnykh_igrokov": [
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_24"
+  ],
+  "node:instrument": [
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_40"
+  ],
+  "node:ipo": [
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_ipo_unknown_50",
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_ipo_unknown_51"
+  ],
+  "node:urovni_ipo": [
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_ipo_high_low_ipo_52"
+  ],
+  "node:probitie_urovney": [
+    "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_56"
+  ]
+}

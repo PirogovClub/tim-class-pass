@@ -119,6 +119,12 @@ class EvidenceRef(ProvenanceMixin, TimeRangeMixin):
     linked_rule_ids: List[str] = Field(default_factory=list)
     raw_visual_event_ids: List[str] = Field(default_factory=list)
     metadata: Dict[str, Any] = Field(default_factory=dict)
+    source_language: str = "ru"
+    related_concept_ids: List[str] = Field(default_factory=list)
+    summary_primary: Optional[str] = None
+    summary_language: Optional[str] = None
+    summary_ru: Optional[str] = None
+    summary_en: Optional[str] = None
 
 
 class KnowledgeEvent(ProvenanceMixin, TimeRangeMixin):
@@ -152,6 +158,17 @@ class KnowledgeEvent(ProvenanceMixin, TimeRangeMixin):
             "solely because source_event_ids is empty."
         ),
     )
+    source_language: str = "ru"
+    concept_id: Optional[str] = None
+    subconcept_id: Optional[str] = None
+    condition_ids: List[str] = Field(default_factory=list)
+    invalidation_ids: List[str] = Field(default_factory=list)
+    exception_ids: List[str] = Field(default_factory=list)
+    rule_type: Optional[str] = None
+    pattern_tags: List[str] = Field(default_factory=list)
+    normalized_text_ru: Optional[str] = None
+    concept_label_ru: Optional[str] = None
+    subconcept_label_ru: Optional[str] = None
 
     @field_validator("raw_text", "normalized_text")
     @classmethod
@@ -183,6 +200,17 @@ class RuleCard(ProvenanceMixin):
     ambiguous_example_refs: List[str] = Field(default_factory=list)
     labeling_guidance: Optional[str] = None
     metadata: Dict[str, Any] = Field(default_factory=dict)
+    source_language: str = "ru"
+    concept_id: Optional[str] = None
+    subconcept_id: Optional[str] = None
+    condition_ids: List[str] = Field(default_factory=list)
+    invalidation_ids: List[str] = Field(default_factory=list)
+    exception_ids: List[str] = Field(default_factory=list)
+    rule_type: Optional[str] = None
+    pattern_tags: List[str] = Field(default_factory=list)
+    rule_text_ru: Optional[str] = None
+    concept_label_ru: Optional[str] = None
+    subconcept_label_ru: Optional[str] = None
 
     @field_validator("concept", "rule_text")
     @classmethod
@@ -461,7 +489,9 @@ def validate_evidence_index_for_export(
 
 # ----- Task 12: Concept graph schemas -----
 
-ConceptNodeType = Literal["concept", "subconcept", "rule_group"]
+ConceptNodeType = Literal[
+    "concept", "subconcept", "condition", "invalidation", "exception", "pattern", "rule_group",
+]
 
 
 class ConceptNode(SchemaBase):
@@ -472,6 +502,8 @@ class ConceptNode(SchemaBase):
     type: ConceptNodeType = "concept"
     parent_id: Optional[str] = None
     aliases: List[str] = Field(default_factory=list)
+    source_rule_ids: List[str] = Field(default_factory=list)
+    canonical_label: Optional[str] = None
     metadata: Dict[str, Any] = Field(default_factory=dict)
 
 
@@ -482,15 +514,26 @@ class ConceptRelation(SchemaBase):
     source_id: str
     target_id: str
     relation_type: str
+    weight: int = 1
+    source_rule_ids: List[str] = Field(default_factory=list)
     metadata: Dict[str, Any] = Field(default_factory=dict)
+
+
+class ConceptGraphStats(SchemaBase):
+    """Summary statistics for a concept graph."""
+
+    node_count: int = 0
+    edge_count: int = 0
 
 
 class ConceptGraph(SchemaBase):
     """Lesson-level concept graph (Task 12)."""
 
     lesson_id: str
+    graph_version: str = "1.0"
     nodes: List[ConceptNode] = Field(default_factory=list)
     relations: List[ConceptRelation] = Field(default_factory=list)
+    stats: ConceptGraphStats = Field(default_factory=ConceptGraphStats)
 
 
 class LessonKnowledgeBundle(SchemaBase):

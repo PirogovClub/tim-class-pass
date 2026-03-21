@@ -31,6 +31,11 @@ from pipeline.schemas import (
     is_placeholder_text,
     normalize_text as schemas_normalize_text,
 )
+from pipeline.component2.canonicalization import (
+    canonicalize_concept,
+    canonicalize_subconcept,
+    classify_rule_type,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -295,7 +300,7 @@ def extract_chunk_knowledge(
     cfg = compaction_cfg if compaction_cfg is not None else VisualCompactionConfig()
     visual_summaries = summarize_visual_events_for_extraction(chunk.visual_events, cfg)
     prompt = build_knowledge_extraction_prompt(chunk, visual_summaries)
-    system = "You are a trading knowledge extractor. Respond only with valid JSON."
+    system = "You are a trading knowledge extractor. The transcript is in Russian. All extracted text must remain in Russian. Respond only with valid JSON."
     debug: dict = {
         "chunk_index": chunk.chunk_index,
         "start_time_seconds": chunk.start_time_seconds,
@@ -843,7 +848,7 @@ def extraction_result_to_knowledge_events(
                     normalized_text=norm,
                     concept=concept,
                     subconcept=subconcept,
-                    source_event_ids=[],  # Phase 1: KnowledgeEvent is the primary extracted unit; no upstream lineage ids yet.
+                    source_event_ids=[],
                     evidence_refs=[],
                     confidence=label,
                     confidence_score=conf_score,
@@ -859,6 +864,13 @@ def extraction_result_to_knowledge_events(
                     anchor_span_width=anchor_span_width,
                     anchor_density=anchor_density,
                     metadata=strip_raw_visual_blobs_from_metadata(metadata),
+                    source_language="ru",
+                    concept_id=canonicalize_concept(concept),
+                    subconcept_id=canonicalize_subconcept(subconcept),
+                    rule_type=classify_rule_type(event_type),
+                    normalized_text_ru=norm if norm else None,
+                    concept_label_ru=concept if concept else None,
+                    subconcept_label_ru=subconcept if subconcept else None,
                 )
                 events.append(ke)
             except Exception:

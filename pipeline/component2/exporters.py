@@ -167,6 +167,52 @@ def clean_markdown_text(text: str) -> str:
     return re.sub(r"\s+", " ", str(text).strip()).strip()
 
 
+# ----- Timestamp resolution (Task 17) -----
+
+
+def _parse_mmss(ts: str | None) -> int | None:
+    """Parse 'MM:SS' or 'HH:MM:SS' to total seconds; return None on failure."""
+    if not ts:
+        return None
+    ts = ts.strip()
+    parts = ts.split(":")
+    try:
+        if len(parts) == 2:
+            return int(parts[0]) * 60 + int(parts[1])
+        if len(parts) == 3:
+            return int(parts[0]) * 3600 + int(parts[1]) * 60 + int(parts[2])
+    except (ValueError, IndexError):
+        pass
+    return None
+
+
+def _seconds_to_mmss(total_seconds: int) -> str:
+    m, s = divmod(total_seconds, 60)
+    return f"{m:02d}:{s:02d}"
+
+
+def resolve_rule_timestamp(
+    rule: RuleCard,
+    events_by_id: dict[str, KnowledgeEvent],
+) -> str | None:
+    """Resolve earliest confident timestamp from source events, formatted as MM:SS.
+
+    Returns None if no timestamp can be derived. Never fabricates [00:00].
+    """
+    earliest_sec: int | None = None
+    for eid in rule.source_event_ids or []:
+        ev = events_by_id.get(eid)
+        if ev is None:
+            continue
+        sec = _parse_mmss(getattr(ev, "timestamp_start", None))
+        if sec is not None and sec > 0:
+            if earliest_sec is None or sec < earliest_sec:
+                earliest_sec = sec
+    if earliest_sec is None or earliest_sec <= 0:
+        return None
+    return _seconds_to_mmss(earliest_sec)
+
+
 # ----- Deterministic renderers -----
 
 
@@ -265,14 +311,19 @@ def _rag_rule_block(
     rule: RuleCard,
     evidence_by_id: dict[str, EvidenceRef],
     compaction_cfg: VisualCompactionConfig | None = None,
+    events_by_id: dict[str, KnowledgeEvent] | None = None,
 ) -> str:
-    """Compact RAG rule block: no verbose provenance."""
+    """Compact RAG rule block: no verbose provenance. Task 17: optional [MM:SS] timestamp."""
     cfg = compaction_cfg or VisualCompactionConfig()
     parts: list[str] = []
     sub = rule.subconcept or rule.title
     if sub:
         parts.append(f"### {clean_markdown_text(sub)}")
-    parts.append(f"Rule: {clean_markdown_text(rule.rule_text)}")
+    ts = resolve_rule_timestamp(rule, events_by_id or {}) if events_by_id else None
+    rule_line = f"Rule: {clean_markdown_text(rule.rule_text)}"
+    if ts:
+        rule_line = f"[{ts}] {rule_line}"
+    parts.append(rule_line)
     parts.append("")
     block = format_bullet_block("Conditions", (rule.conditions or [])[:5])
     if block:
@@ -298,16 +349,19 @@ def _rag_rule_block(
 
 
 def render_rag_markdown_deterministic(ctx: ExportContext) -> str:
-    """Compact RAG markdown; no verbose provenance."""
+    """Compact RAG markdown; no verbose provenance. Task 17: timestamps from source events."""
     title = ctx.lesson_title or ctx.lesson_id
     lines: list[str] = [f"# Lesson: {title}", ""]
+    ebi: dict[str, KnowledgeEvent] = {}
+    if ctx.knowledge_events:
+        ebi = {e.event_id: e for e in ctx.knowledge_events}
     grouped = group_rule_cards_for_export(ctx.rule_cards)
     for concept in sorted(grouped.keys()):
         rules = sort_rule_cards(grouped[concept])
         lines.append(f"## {concept}")
         lines.append("")
         for rule in rules:
-            lines.append(_rag_rule_block(rule, ctx.evidence_by_id, ctx.compaction_cfg))
+            lines.append(_rag_rule_block(rule, ctx.evidence_by_id, ctx.compaction_cfg, events_by_id=ebi))
             lines.append("")
     while lines and lines[-1] == "":
         lines.pop()

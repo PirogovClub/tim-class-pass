@@ -28,6 +28,13 @@ from pipeline.schemas import (
     RuleCardCollection,
     validate_rule_card,
 )
+from pipeline.component2.canonicalization import (
+    canonicalize_concept,
+    canonicalize_subconcept,
+    canonicalize_short_statement,
+    classify_rule_type,
+)
+from pipeline.component2.parser import timestamp_to_seconds
 
 
 # ----- Internal model -----
@@ -331,6 +338,88 @@ def attach_evidence_to_candidates(
             if ref_ids & cand_ids:
                 if ref not in c.linked_evidence:
                     c.linked_evidence.append(ref)
+    return candidates
+
+
+def _candidate_time_range(candidate: RuleCandidate) -> tuple[float, float] | None:
+    """Return (min_start, max_end) in seconds across all events, or None."""
+    all_events = (
+        candidate.primary_events
+        + candidate.condition_events
+        + candidate.invalidation_events
+        + candidate.exception_events
+        + candidate.comparison_events
+        + candidate.example_events
+    )
+    starts: list[float] = []
+    ends: list[float] = []
+    for ev in all_events:
+        try:
+            if ev.timestamp_start:
+                starts.append(timestamp_to_seconds(ev.timestamp_start))
+            if ev.timestamp_end:
+                ends.append(timestamp_to_seconds(ev.timestamp_end))
+        except (ValueError, TypeError):
+            continue
+    if not starts and not ends:
+        return None
+    lo = min(starts) if starts else min(ends)
+    hi = max(ends) if ends else max(starts)
+    return (lo, hi)
+
+
+def _evidence_time_range(ref: EvidenceRef) -> tuple[float, float] | None:
+    try:
+        s = timestamp_to_seconds(ref.timestamp_start) if ref.timestamp_start else None
+        e = timestamp_to_seconds(ref.timestamp_end) if ref.timestamp_end else None
+    except (ValueError, TypeError):
+        return None
+    if s is not None and e is not None:
+        return (s, e)
+    if s is not None:
+        return (s, s)
+    if e is not None:
+        return (e, e)
+    return None
+
+
+def attach_evidence_by_proximity(
+    candidates: list[RuleCandidate],
+    evidence_index: EvidenceIndex,
+    max_proximity_seconds: float = 60.0,
+) -> list[RuleCandidate]:
+    """Fallback: for candidates with 0 linked_evidence, attach the nearest evidence by time."""
+    ref_ranges: list[tuple[EvidenceRef, tuple[float, float]]] = []
+    for ref in evidence_index.evidence_refs:
+        tr = _evidence_time_range(ref)
+        if tr is not None:
+            ref_ranges.append((ref, tr))
+    if not ref_ranges:
+        return candidates
+
+    for c in candidates:
+        if c.linked_evidence:
+            continue
+        ctr = _candidate_time_range(c)
+        if ctr is None:
+            continue
+        c_start, c_end = ctr
+
+        best_ref: EvidenceRef | None = None
+        best_gap = float("inf")
+        for ref, (r_start, r_end) in ref_ranges:
+            if r_start <= c_end and r_end >= c_start:
+                gap = 0.0
+            else:
+                gap = min(abs(c_start - r_end), abs(c_end - r_start))
+            if gap < best_gap:
+                best_gap = gap
+                best_ref = ref
+        if best_ref is not None and best_gap <= max_proximity_seconds:
+            c.linked_evidence.append(best_ref)
+            c.metadata["proximity_fallback"] = True
+            c.metadata["proximity_gap_seconds"] = round(best_gap, 2)
+
     return candidates
 
 
@@ -638,6 +727,16 @@ def candidate_to_rule_card(
     metadata["source_subsections"] = prov.get("source_subsections", [])
     metadata["source_chunk_indexes"] = prov.get("source_chunk_indexes", [])
 
+    conditions = collect_condition_texts(candidate)
+    invalidation = collect_invalidation_texts(candidate)
+    exceptions = collect_exception_texts(candidate)
+
+    dominant_event_type = "rule_statement"
+    if candidate.primary_events:
+        from collections import Counter
+        type_counts = Counter(e.event_type for e in candidate.primary_events)
+        dominant_event_type = type_counts.most_common(1)[0][0]
+
     return RuleCard(
         rule_id=rule_id,
         lesson_id=candidate.lesson_id,
@@ -649,10 +748,10 @@ def candidate_to_rule_card(
         subconcept=candidate.subconcept,
         title=candidate.title_hint,
         rule_text=rule_text,
-        conditions=collect_condition_texts(candidate),
+        conditions=conditions,
         context=[],
-        invalidation=collect_invalidation_texts(candidate),
-        exceptions=collect_exception_texts(candidate),
+        invalidation=invalidation,
+        exceptions=exceptions,
         comparisons=collect_comparison_texts(candidate),
         algorithm_notes=collect_algorithm_notes(candidate),
         visual_summary=summarize_evidence_for_rule_card(candidate.linked_evidence, cfg),
@@ -663,6 +762,16 @@ def candidate_to_rule_card(
         negative_example_refs=example_map["negative_example_refs"],
         ambiguous_example_refs=example_map["ambiguous_example_refs"],
         metadata=metadata,
+        source_language="ru",
+        concept_id=canonicalize_concept(concept),
+        subconcept_id=canonicalize_subconcept(candidate.subconcept),
+        condition_ids=[canonicalize_short_statement("condition", t) for t in conditions],
+        invalidation_ids=[canonicalize_short_statement("invalidation", t) for t in invalidation],
+        exception_ids=[canonicalize_short_statement("exception", t) for t in exceptions],
+        rule_type=classify_rule_type(dominant_event_type),
+        rule_text_ru=rule_text if rule_text else None,
+        concept_label_ru=concept if concept else None,
+        subconcept_label_ru=candidate.subconcept if candidate.subconcept else None,
     )
 
 
@@ -680,6 +789,7 @@ def build_rule_cards(
     events = list(knowledge_collection.events)
     candidates, group_debug = group_events_into_rule_candidates(events, evidence_index, threshold=attach_threshold)
     candidates = attach_evidence_to_candidates(candidates, evidence_index)
+    candidates = attach_evidence_by_proximity(candidates, evidence_index)
     all_candidates: list[RuleCandidate] = []
     for c in candidates:
         c.primary_events = merge_duplicate_primary_events(c.primary_events)
