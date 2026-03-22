@@ -106,6 +106,19 @@ def extract_result_text(result_line: dict) -> str | None:
     return joined or None
 ```
 
+### Live SDK compatibility notes
+
+The implementation must match the current `google-genai` SDK behavior observed in
+real batch runs:
+
+- Batch JSONL uploads should set an explicit MIME type. In practice,
+  `mime_type="text/plain"` is the safest choice for `.jsonl` batch request
+  files.
+- Batch result downloads should call the SDK with `client.files.download(file=...)`
+  rather than `name=...`.
+- Result files returned by Gemini must be downloaded and stored locally as soon as
+  practical; Files API objects are not durable project storage.
+
 ---
 
 ## Verification targets

@@ -55,6 +55,54 @@ For each materialized stage, write a manifest JSON listing:
 - Request count, parsed count, failed count
 - Written artifact paths
 
+### Remote retention and expiry
+
+Gemini operational limits that matter for this design:
+
+- Files API uploads are stored for **48 hours**
+- Files API storage limit is **20 GB per project**
+- Per-file upload limit for batch JSONL is **2 GB**
+- Batch jobs that remain pending/running too long may move to
+  `JOB_STATE_EXPIRED` after **48 hours**
+
+Operational consequence:
+
+- Download completed result files quickly
+- Materialize them into local lesson artifacts quickly
+- Do not treat Gemini Files API as durable storage
+- Keep batch sizes below the practical retry/expiry threshold
+
+### First-run prerequisites
+
+Do not assume `dense_analysis.json` already exists.
+
+There are two valid operational starting points:
+
+- **Fresh lesson / first run:** raw video + transcript/VTT exist, but no visual
+  analysis artifacts yet. Run vision first (sync or batch), then proceed to
+  `knowledge_extract`.
+- **Re-run / comparison / backfill:** `dense_analysis.json` already exists. Skip
+  expensive vision recomputation and batch only the LLM-heavy stages.
+
+### 100-video RAG-prep workflow
+
+For a large corpus-prep run:
+
+1. Discover all video roots under `data/`
+2. Ensure each lesson has a transcript/VTT
+3. If visual analysis is missing, produce `dense_analysis.json` first
+4. Batch `knowledge_extract` across lessons/videos with controlled concurrency
+5. Download + materialize results into normal per-lesson artifacts
+6. Run deterministic downstream local stages:
+   - evidence linking
+   - rule cards
+   - concept graph
+   - ML manifests
+   - exporters
+7. Build corpus exports with `pipeline.corpus`
+
+This is the recommended path for preparing many lessons for later RAG import.
+
 ---
 
 ## Phase 15 -- Acceptance criteria
@@ -121,6 +169,13 @@ reduction, concept graph, exporters, validations -- and those must keep
 consuming the same saved artifacts they already expect. This preserves the
 current tests and artifact contracts documented in
 `docs/pipeline_structure_and_features.md`.
+
+This means the repo can already run everything needed for corpus/RAG prep, but
+the final all-in-one orchestration convenience layer is still split across:
+
+- `pipeline.batch_cli` for batchable stages
+- existing local artifact writers for deterministic downstream stages
+- `pipeline.corpus` for corpus export
 
 **Naming isolation.** The new `pipeline/orchestrator/` package is intentionally
 separate from the existing `pipeline/component2/orchestrator.py` (which handles

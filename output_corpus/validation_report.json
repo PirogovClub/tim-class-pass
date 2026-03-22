@@ -1,14 +1,9 @@
 {
   "status": "warning",
   "error_count": 0,
-  "warning_count": 55,
+  "warning_count": 41,
   "errors": [],
   "warnings": [
-    {
-      "lesson_id": "2025-09-29-sviatoslav-chornyi",
-      "category": "no_evidence_optional",
-      "message": "Rule rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_152 has no evidence_refs (evidence_requirement=optional)"
-    },
     {
       "lesson_id": "2025-09-29-sviatoslav-chornyi",
       "category": "no_evidence_optional",
@@ -22,27 +17,12 @@
     {
       "lesson_id": "2025-09-29-sviatoslav-chornyi",
       "category": "no_evidence_optional",
-      "message": "Rule rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_155 has no evidence_refs (evidence_requirement=optional)"
-    },
-    {
-      "lesson_id": "2025-09-29-sviatoslav-chornyi",
-      "category": "no_evidence_optional",
-      "message": "Rule rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_156 has no evidence_refs (evidence_requirement=optional)"
-    },
-    {
-      "lesson_id": "2025-09-29-sviatoslav-chornyi",
-      "category": "no_evidence_optional",
       "message": "Rule rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_157 has no evidence_refs (evidence_requirement=optional)"
     },
     {
       "lesson_id": "2025-09-29-sviatoslav-chornyi",
       "category": "no_evidence_optional",
       "message": "Rule rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_158 has no evidence_refs (evidence_requirement=optional)"
-    },
-    {
-      "lesson_id": "2025-09-29-sviatoslav-chornyi",
-      "category": "no_evidence_optional",
-      "message": "Rule rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_167 has no evidence_refs (evidence_requirement=optional)"
     },
     {
       "lesson_id": "2025-09-29-sviatoslav-chornyi",
@@ -58,11 +38,6 @@
       "lesson_id": "2025-09-29-sviatoslav-chornyi",
       "category": "no_evidence_optional",
       "message": "Rule rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_172 has no evidence_refs (evidence_requirement=optional)"
-    },
-    {
-      "lesson_id": "2025-09-29-sviatoslav-chornyi",
-      "category": "no_evidence_optional",
-      "message": "Rule rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_188 has no evidence_refs (evidence_requirement=optional)"
     },
     {
       "lesson_id": "2025-09-29-sviatoslav-chornyi",
@@ -83,11 +58,6 @@
       "lesson_id": "2025-09-29-sviatoslav-chornyi",
       "category": "no_evidence_optional",
       "message": "Rule rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_196 has no evidence_refs (evidence_requirement=optional)"
-    },
-    {
-      "lesson_id": "2025-09-29-sviatoslav-chornyi",
-      "category": "no_evidence_optional",
-      "message": "Rule rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_199 has no evidence_refs (evidence_requirement=optional)"
     },
     {
       "lesson_id": "2025-09-29-sviatoslav-chornyi",
@@ -117,27 +87,12 @@
     {
       "lesson_id": "2025-09-29-sviatoslav-chornyi",
       "category": "no_evidence_optional",
-      "message": "Rule rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_210 has no evidence_refs (evidence_requirement=optional)"
-    },
-    {
-      "lesson_id": "2025-09-29-sviatoslav-chornyi",
-      "category": "no_evidence_optional",
       "message": "Rule rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_211 has no evidence_refs (evidence_requirement=optional)"
     },
     {
       "lesson_id": "2025-09-29-sviatoslav-chornyi",
       "category": "no_evidence_optional",
       "message": "Rule rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_212 has no evidence_refs (evidence_requirement=optional)"
-    },
-    {
-      "lesson_id": "2025-09-29-sviatoslav-chornyi",
-      "category": "no_evidence_optional",
-      "message": "Rule rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_215 has no evidence_refs (evidence_requirement=optional)"
-    },
-    {
-      "lesson_id": "2025-09-29-sviatoslav-chornyi",
-      "category": "no_evidence_optional",
-      "message": "Rule rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_221 has no evidence_refs (evidence_requirement=optional)"
     },
     {
       "lesson_id": "2025-09-29-sviatoslav-chornyi",
@@ -172,32 +127,12 @@
     {
       "lesson_id": "2025-09-29-sviatoslav-chornyi",
       "category": "no_evidence_optional",
-      "message": "Rule rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_232 has no evidence_refs (evidence_requirement=optional)"
-    },
-    {
-      "lesson_id": "2025-09-29-sviatoslav-chornyi",
-      "category": "no_evidence_optional",
-      "message": "Rule rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_233 has no evidence_refs (evidence_requirement=optional)"
-    },
-    {
-      "lesson_id": "2025-09-29-sviatoslav-chornyi",
-      "category": "no_evidence_optional",
       "message": "Rule rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_234 has no evidence_refs (evidence_requirement=optional)"
     },
     {
       "lesson_id": "2025-09-29-sviatoslav-chornyi",
       "category": "no_evidence_optional",
       "message": "Rule rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_235 has no evidence_refs (evidence_requirement=optional)"
-    },
-    {
-      "lesson_id": "2025-09-29-sviatoslav-chornyi",
-      "category": "no_evidence_optional",
-      "message": "Rule rule_2025_09_29_sviatoslav_chornyi_bpu_unknown_265 has no evidence_refs (evidence_requirement=optional)"
-    },
-    {
-      "lesson_id": "2025-09-29-sviatoslav-chornyi",
-      "category": "no_evidence_optional",
-      "message": "Rule rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_266 has no evidence_refs (evidence_requirement=optional)"
     },
     {
       "lesson_id": "2025-09-29-sviatoslav-chornyi",
@@ -268,11 +203,6 @@
       "lesson_id": "2025-09-29-sviatoslav-chornyi",
       "category": "no_evidence_optional",
       "message": "Rule rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_316 has no evidence_refs (evidence_requirement=optional)"
-    },
-    {
-      "lesson_id": "Lesson 2. Levels part 1",
-      "category": "no_evidence_optional",
-      "message": "Rule rule_lesson_2_levels_part_1_ipo_high_low_ipo_52 has no evidence_refs (evidence_requirement=optional)"
     },
     {
       "lesson_id": "Lesson 2. Levels part 1",

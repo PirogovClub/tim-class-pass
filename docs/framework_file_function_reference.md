@@ -2,7 +2,7 @@
 
 This document lists Python files in the repository with their functions and a short description of each one.
 
-Total Python files documented: 122
+Total Python files documented: 168
 
 ## helpers/__init__.py
 - No functions defined in this file.
@@ -64,6 +64,17 @@ Total Python files documented: 122
 - generate_with_retry() - Generate with retry.
 - generate_content_stream_result() - Stream generation; returns structured provider response.
 - generate_with_retry_stream() - Generate with retry stream.
+
+## helpers/clients/gemini_batch_client.py
+- _system_instruction_content() - Wrap a system instruction string in Gemini batch request shape.
+- build_generate_content_batch_line() - Build one JSONL row for Gemini Batch `generateContent`.
+- write_jsonl_lines() - Write JSONL payload atomically.
+- upload_jsonl() - Upload batch request JSONL to Gemini Files API; uses explicit MIME type for SDK compatibility.
+- create_batch_job() - Create a remote Gemini batch job from an uploaded file.
+- get_batch_job() - Fetch remote batch job state.
+- download_result_file() - Download batch result file bytes from Gemini Files API.
+- extract_result_text() - Extract joined text parts from one batch response row.
+- iter_result_jsonl() - Iterate decoded JSONL result rows, skipping blanks.
 
 ## helpers/clients/mlx_client.py
 - normalize_mlx_host() - Return MLX service base URL from env or argument (for display / scripts).
@@ -316,15 +327,20 @@ Total Python files documented: 122
 - build_knowledge_extract_prompt() - Build minimal user prompt: content-focused, no instruction block (instructions are in system prompt).
 - build_markdown_render_prompt() - Build markdown render prompt.
 - build_legacy_markdown_prompt() - Build legacy markdown prompt.
-- parse_knowledge_extraction() - Parse knowledge extraction.
-- parse_markdown_render_result() - Parse markdown render result.
-- parse_legacy_enriched_markdown_chunk() - Parse legacy enriched markdown chunk.
+- _strip_json_code_fences() - Remove Markdown code fences from JSON-like model output before validation.
+- parse_knowledge_extraction() - Parse knowledge extraction; accepts raw JSON or fenced JSON.
+- parse_markdown_render_result() - Parse markdown render result; accepts raw JSON or fenced JSON.
+- parse_legacy_enriched_markdown_chunk() - Parse legacy enriched markdown chunk; accepts raw JSON or fenced JSON.
 - _max_tokens_for_llm_mode() - Cap model output. Large knowledge JSON can exceed provider defaults and truncate mid-string.
 - _is_truncated_json_validation_error() - Is truncated json validation error.
 - _call_provider_for_mode() - Call provider for mode.
-- process_chunk_knowledge_extract() - Process chunk knowledge extract.
-- process_chunks_knowledge_extract() - Process chunks knowledge extract.
-- process_rule_cards_markdown_render() - Process rule cards markdown render.
+- process_chunk_knowledge_extract() - Async: single-chunk knowledge extraction via provider.
+- process_chunks_knowledge_extract() - Async: map over chunks with concurrency.
+- process_rule_cards_markdown_render() - Async: render markdown from rule cards + evidence context.
+- emit_batch_spool_for_knowledge_extract() - Write lesson-local Gemini Batch JSONL + manifest for knowledge_extract.
+- materialize_batch_results_for_knowledge_extract() - Parse batch result JSONL into `knowledge_events` (and related paths).
+- emit_batch_spool_for_markdown_render() - Write spool for markdown_render batch stage.
+- materialize_batch_results_for_markdown_render() - Write review/RAG markdown from batch responses.
 - _call_provider_legacy() - Call provider legacy.
 - process_chunk_legacy_markdown() - Process chunk legacy markdown.
 - process_chunks_legacy_markdown() - Process chunks legacy markdown.
@@ -380,6 +396,55 @@ Total Python files documented: 122
 
 ## pipeline/component2/orchestrator.py
 - prepare_component2_run() - Run preflight inspection, write pipeline_inspection.json, return artifact paths.
+
+## pipeline/batch_cli.py
+- _store() - Build `StateStore` from CLI db path.
+- _discover_all() - Discover all videos and lessons under a data root.
+- _lesson_context() - Build lesson context dict for batch spool/materialize helpers.
+- _load_queue_manifest() - Load `llm_queue/manifest.json` under a video root; return sorted frame keys and queue dir path.
+- _ensure_filtered_visuals() - Derive filtered visual artifacts from `dense_analysis.json` when needed.
+- _ensure_lesson_chunks() - Derive lesson chunks from transcript + filtered visuals when needed.
+- run_discover() - Populate state store with discovered videos/lessons.
+- run_plan() - Create pending stage runs for missing work.
+- run_spool() - Emit lesson-local batch spool fragments for a stage.
+- run_assemble() - Merge lesson fragments into central batch files.
+- run_submit() - Upload request files and create remote batch jobs.
+- run_poll() - Refresh local batch status from remote jobs.
+- run_download() - Download completed result files.
+- run_materialize() - Convert downloaded result JSONL into normal framework artifacts.
+- run_resume() - Convenience orchestrator for discover -> plan -> spool -> assemble -> submit -> poll -> download -> materialize.
+- main() - Click group entry point for Gemini Batch orchestration.
+- discover() / plan() / spool() / assemble() / submit() / poll() / download() / materialize() / resume() / status() / retry_failed_command() - Click subcommands; `status` supports optional `--watch` seconds for repeated tables.
+
+## pipeline/orchestrator/__init__.py
+- Re-exports stage/batch status constants, `make_request_key`, `parse_request_key`, `slugify_lesson_name`, `stable_sha256`, `utc_now_iso`, and `StateStore` from `models` / `state_store`.
+
+## pipeline/orchestrator/models.py
+- Stage and batch status string constants (`STAGE_VISION`, `STAGE_KNOWLEDGE_EXTRACT`, `STAGE_MARKDOWN_RENDER`, `STAGE_RUN_STATUS_*`, `BATCH_JOB_STATUS_*`, `REQUEST_PARSE_STATUS_*`, terminal-status frozensets).
+- utc_now_iso() - Current UTC time as ISO string.
+- slugify_lesson_name() - Lowercase slug for lesson names (safe fallback).
+- make_request_key() / parse_request_key() - Stable five-part batch request keys (`video__lesson__stage__kind__index`).
+- stable_sha256() - Deterministic SHA-256 of str, bytes, or JSON-serializable payload.
+
+## pipeline/orchestrator/discovery.py
+- discover_videos() - Scan data root for video dirs; upsert rows via `state_store.ensure_video`.
+- discover_lessons() - Scan a video root for `*.vtt`; upsert lessons with `ensure_lesson`.
+- plan_stages() - For each lesson, compare artifacts to config; create pending `gemini_batch` stage runs when outputs are missing (optional markdown_render when render flags enabled).
+
+## pipeline/orchestrator/status_service.py
+- format_status_tables() - Human-readable status summary from `state_store.summarize_status()` (videos, lessons, stage runs, batch jobs, requests).
+
+## pipeline/orchestrator/batch_assembler.py
+- assemble_batch_files() - Group READY stage-run spool manifests by provider/model/stage; merge JSONL fragments into `var/batches/<timestamp>/` with size/request limits; register batch jobs in the state store.
+
+## pipeline/orchestrator/run_manager.py
+- submit_ready_batches() - Upload local JSONL files and create remote Gemini batch jobs.
+- poll_active_batches() - Refresh local job status from remote Gemini state.
+- download_completed_batches() - Download result JSONL for completed jobs.
+- retry_failed_requests() - Re-spool failed requests into a new attempt.
+
+## pipeline/orchestrator/state_store.py
+- StateStore (class) - SQLite-backed orchestration store. Public API: `connect`, `ensure_video`, `ensure_lesson`, `create_or_reuse_stage_run`, `update_stage_run`, `record_spool_request`, `create_batch_job`, `attach_requests_to_batch`, `update_batch_job_status`, `mark_request_parsed`, `mark_request_failed`, `record_artifact`, `summarize_status`, `get_retryable_requests`, `get_unfinished_batches`, `list_videos`, `list_lessons`, `list_stage_runs`, `list_batch_jobs`, `list_batch_requests`, `get_stage_run`, `get_batch_job`.
 
 ## pipeline/component2/parser.py
 - timestamp_to_seconds() - Timestamp to seconds.
@@ -607,6 +672,11 @@ Total Python files documented: 122
 - _analyze_frame_setra() - Analyze frame setra.
 - get_batch_prompt() - Returns the production prompt for the agent to analyze a batch of frames
 - get_batch_prompt_independent() - Same as get_batch_prompt but without previous_state (Option B: independent batches).
+- _resolve_frame_path() - Resolve image path under `frames_dense` for a frame key.
+- _mime_type_for_image() - MIME type from file suffix for batch inline data.
+- parse_frame_analysis_text() - Parse provider response text into one frame's analysis dict.
+- emit_batch_spool_for_analysis() - Emit Gemini Batch JSONL lines + manifest for vision/dense-analysis chunks.
+- materialize_batch_results_for_analysis() - Merge batch vision outputs into `dense_analysis`-style structure.
 - _previous_frame_key() - Previous frame key.
 - _last_relevant_key() - Last relevant key.
 - _write_processing_status() - Write processing status.
@@ -708,7 +778,8 @@ Total Python files documented: 122
 - main() - Main.
 
 ## pipeline/stage_registry.py
-- No functions defined in this file.
+- StageSpec (dataclass) - Machine-readable stage metadata: `stage_id`, `description`, `callable_path`, `required_inputs`, `outputs`, `enabled_by_default`, `legacy_stage`.
+- STAGE_REGISTRY - Ordered list of `StageSpec` entries for the full dense pipeline (download through exporters).
 
 ## pipeline/stitcher.py
 - parse_vtt_timestamps() - Parse vtt timestamps.
@@ -787,6 +858,25 @@ Total Python files documented: 122
 - _run_tier_check() - Send _TIER_CHECK_REQUESTS rapid requests; return (success_count, rate_limited_count).
 - main() - Main.
 
+## scripts/validate_13phase2.py
+- Top-level script: prints 13-phase2 acceptance metrics for the Sviatoslav lesson artifacts (evidence roles, ML, labeling, graph); no functions.
+
+## scripts/validate_14phase2.py
+- Top-level script: 14-phase2 validation checks on fixed lesson paths; no functions.
+
+## scripts/verify_17task10.py
+- Top-level script: Task 17 checks (rule_text_ru, concept_graph, ML, RAG timestamps) for Lesson 2 and Sviatoslav data trees; no functions.
+
+## scripts/verify_18task10.py
+- Top-level script: Task 18 checks on `evidence_index.json` (`summary_primary`, `summary_language`, `summary_ru`/`summary_en`, `compact_visual_summary` counts) for Lesson 2 and Sviatoslav paths; no functions.
+
+## scripts/patch_evidence_summary_fields.py
+- detect_summary_language() - Heuristic ru/en from Cyrillic vs Latin counts in summary text.
+- Inline driver: patches `evidence_index.json` with `summary_primary`, `summary_language`, `summary_ru` / `summary_en`.
+
+## scripts/patch_ke_ru_fields.py
+- Top-level script: backfills `normalized_text_ru` and related `*_ru` fields on Russian `knowledge_events.json` rows; no functions.
+
 ## src/tim_class_pass/__init__.py
 - No functions defined in this file.
 
@@ -813,6 +903,72 @@ Total Python files documented: 122
 - _assert_lesson2_artifacts() - Shared Phase 2A assertion block (brief lines 479-564).
 - test_lesson2_final_artifacts_regression() - 6a: Assert Phase 2A guarantees on existing Lesson 2 artifacts; skip if any missing.
 - test_lesson2_final_artifacts_regression_full() - 6b: Run pipeline then assert Phase 2A guarantees. Run only when RUN_LESSON2_REGRESSION=1.
+
+## tests/integration/test_batch_lesson2_live.py
+- test_batch_lesson2_live() - Gated live Gemini Batch comparison for Lesson 2 (`RUN_BATCH_LESSON2_LIVE=1`, `GEMINI_API_KEY`); currently ends in `pytest.skip` so the suite does not hit the network.
+
+## tests/integration/test_batch_lesson2_parity.py
+- test_batch_lesson2_parity_from_existing_debug() - Replays `knowledge_debug.json` parsed extractions through `materialize_batch_results_for_knowledge_extract` and asserts knowledge/events align with committed Lesson 2 artifacts (skips if fixtures missing).
+
+## tests/integration/test_batch_resume_flow.py
+- test_batch_resume_flow_for_vision() - End-to-end resume: discover through materialize for vision batch with stubbed Gemini client.
+
+## tests/integration/test_sviatoslav_regression.py
+- test_sviatoslav_artifact_existence() - Required JSON/markdown artifacts exist under fixture root.
+- test_sviatoslav_knowledge_events_clean() - Knowledge events pass structure/cleanliness checks.
+- test_sviatoslav_rule_cards_provenance() - Rule cards have expected provenance fields.
+- test_sviatoslav_evidence_backlinks() - Evidence refs link consistently to rules/events.
+- test_sviatoslav_ml_safety_guard() - ML examples and labeling tasks satisfy safety helpers.
+- test_sviatoslav_weak_specificity_in_evidence_not_in_ml() - Low-specificity evidence excluded from ML export expectations.
+- test_sviatoslav_concept_graph_structure() - Concept graph nodes/relations shape.
+- test_sviatoslav_concept_graph_nodes_deduplicated() - No duplicate node ids after merge rules.
+- test_sviatoslav_markdown_quality() - RAG markdown quality heuristics.
+- test_sviatoslav_cross_file_integrity() - Cross-artifact references consistent.
+- test_sviatoslav_canonical_ids() - Canonical ids present on events, rules, evidence.
+
+## tests/regression_helpers.py
+- load_json() / index_by() / collect_all_rule_example_refs() - Small JSON/list helpers for regression tests.
+- artifact_paths_for_lesson() - Map logical artifact names to paths under a lesson output tree.
+- assert_artifact_existence() - Assert expected files exist (optional markdown).
+- assert_knowledge_events_clean() / assert_rule_cards_provenance() / assert_evidence_backlinks() - Structured artifact assertions.
+- assert_ml_safety() - ML manifest vs labeling manifest consistency checks.
+- assert_concept_graph_structure() / assert_cross_file_integrity() - Graph and cross-file checks.
+- assert_markdown_quality() - RAG markdown sanity (timestamps, length).
+- assert_canonical_ids_on_events() / assert_canonical_ids_on_rules() / assert_canonical_ids_on_evidence() - Canonical id coverage.
+
+## tests/test_batch_assembler.py
+- test_assemble_batch_files_combines_compatible_fragments() - Merges spool fragments into assembled JSONL and registers batch job rows.
+
+## tests/test_batch_cli.py
+- test_batch_cli_help() - Batch CLI prints help and exits 0.
+- test_batch_cli_discover_plan_status() - Discover + plan + status against temp data layout.
+- test_batch_cli_spool_and_assemble_vision() - Spool and assemble for vision stage with stubbed dependencies.
+
+## tests/test_dense_analyzer_batch.py
+- test_dense_analyzer_batch_emit_and_materialize() - Round-trip spool emit and materialize for dense analysis batch path.
+
+## tests/test_gemini_batch_client.py
+- test_build_generate_content_batch_line_omits_optional_fields() - Minimal batch line shape.
+- test_build_generate_content_batch_line_includes_system_instruction() - System instruction wrapped correctly.
+- test_extract_result_text_joins_multiple_parts() - Multi-part response text joined.
+- test_iter_result_jsonl_skips_blank_lines() - JSONL iterator skips empties.
+- test_upload_jsonl_sets_plain_text_mime_type() - Files API upload uses text/plain for JSONL.
+- test_download_result_file_uses_file_keyword() - Download uses SDK file handle keyword.
+
+## tests/test_llm_processor_batch.py
+- test_knowledge_extract_batch_emit_and_materialize() - Knowledge extract batch spool + materialize round-trip.
+- test_markdown_render_batch_emit_and_materialize() - Markdown render batch spool + materialize round-trip.
+
+## tests/test_request_keys.py
+- test_slugify_lesson_name_normalizes_spaces_and_case() - Slugify rules for lesson names.
+- test_make_request_key_round_trips() - make/parse request key symmetry.
+- test_parse_request_key_rejects_invalid_shape() - Invalid keys raise.
+
+## tests/test_state_store.py
+- test_state_store_initializes_schema_and_upserts() - DB schema and video/lesson upserts.
+- test_create_or_reuse_stage_run_and_force_new_attempt() - Stage run lifecycle and force flag.
+- test_record_spool_request_and_mark_statuses() - Spool rows and parse status transitions.
+- test_summarize_status_reports_counts() - summarize_status aggregation.
 
 ## tests/test_analyze.py
 - _write_image() - Write image.

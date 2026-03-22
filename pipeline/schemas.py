@@ -252,8 +252,8 @@ class RuleCard(ProvenanceMixin):
     transcript_support_score: Optional[float] = Field(None, ge=0.0, le=1.0)
     visual_support_score: Optional[float] = Field(None, ge=0.0, le=1.0)
     has_visual_evidence: bool = False
-    transcript_anchor_count: Optional[int] = None
-    transcript_repetition_count: Optional[int] = None
+    transcript_anchor_count: Optional[int] = None  # rule-level aggregate; not on KnowledgeEvent
+    transcript_repetition_count: Optional[int] = None  # rule-level aggregate; not on KnowledgeEvent
 
     @field_validator("concept", "rule_text")
     @classmethod

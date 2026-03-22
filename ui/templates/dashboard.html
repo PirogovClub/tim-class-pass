@@ -9,7 +9,13 @@
                 Showing {{ page_data.rows|length }} of {{ page_data.total_rows }} matching projects.
             </p>
         </div>
-        <a class="button" href="{{ request.url_for('new_project') }}">Create / import project</a>
+        <div class="button-row">
+            <form method="post" action="{{ request.url_for('reconcile_ready') }}">
+                <button class="button secondary" type="submit">Reconcile pending</button>
+            </form>
+            <a class="button secondary" href="{{ request.url_for('corpus_queue') }}">Open corpus queue</a>
+            <a class="button" href="{{ request.url_for('new_project') }}">Create / import project</a>
+        </div>
     </div>
 
     <div class="counter-grid">
@@ -71,6 +77,7 @@
                 <td>
                     <a href="{{ request.url_for('project_detail', project_id=row.project.project_id) }}">{{ row.project.title }}</a>
                     <div class="cell-subtext">{{ row.project.lesson_name }}</div>
+                    <div class="cell-subtext">{{ row.project.project_root }}</div>
                 </td>
                 <td>{{ "yes" if row.artifacts.transcript_exists else "no" }}</td>
                 <td>{{ "yes" if row.artifacts.dense_analysis_exists else "no" }}</td>

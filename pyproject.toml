@@ -21,6 +21,8 @@ dependencies = [
     "rank-bm25>=0.2.2",
     "sentence-transformers>=3.0.0",
     "numpy>=1.26.0",
+    "jinja2>=3.1.6",
+    "python-multipart>=0.0.22",
 ]
 
 [project.scripts]
@@ -44,7 +46,7 @@ dev = [
 ]
 
 [tool.coverage.run]
-source = ["pipeline", "helpers"]
+source = ["pipeline", "helpers", "ui"]
 omit = ["*/tests/*", "*__pycache__*"]
 branch = true
 

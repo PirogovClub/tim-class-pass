@@ -26,6 +26,7 @@ body {
 .topnav {
     display: flex;
     gap: 0.75rem;
+    flex-wrap: wrap;
 }
 
 .topnav a,
@@ -65,6 +66,7 @@ body {
     justify-content: space-between;
     gap: 1rem;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .muted,
@@ -116,11 +118,17 @@ body {
 }
 
 input,
-select {
+select,
+textarea {
     padding: 0.75rem;
     border: 1px solid #ccd7e6;
     border-radius: 0.5rem;
     font: inherit;
+}
+
+input[type="file"] {
+    background: white;
+    padding: 0.5rem;
 }
 
 .dashboard-table {
@@ -172,5 +180,38 @@ select {
     background: #fdeaea;
     color: #8b1e1e;
     margin-bottom: 1rem;
+}
+
+.button-row {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.form-note {
+    padding: 0.9rem 1rem;
+    border-radius: 0.5rem;
+    background: #eef5ff;
+    color: #24466f;
+}
+
+.panel.subtle {
+    background: #fbfcff;
+}
+
+.event-list {
+    margin: 0;
+    padding-left: 1.1rem;
+}
+
+.log-tail {
+    margin: 0;
+    padding: 1rem;
+    background: #0f172a;
+    color: #dbe5f8;
+    border-radius: 0.75rem;
+    overflow: auto;
+    white-space: pre-wrap;
 }
 

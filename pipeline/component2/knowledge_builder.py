@@ -470,9 +470,9 @@ def score_visual_support(
             best = max(best, 0.80)
         elif "negative" in lower or "counter" in lower:
             best = max(best, 0.70)
-        elif "illustration" in lower:
+        elif "illustration" in lower or "teaching" in lower or "conceptual" in lower:
             best = max(best, 0.40)
-        elif "ambiguous" in lower:
+        elif "ambiguous" in lower or "abstract" in lower:
             best = max(best, 0.25)
         else:
             best = max(best, 0.20)

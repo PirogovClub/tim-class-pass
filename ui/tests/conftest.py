@@ -17,7 +17,11 @@ def ui_context(tmp_path: Path):
         data_root=repo_root / "data",
         state_db_path=repo_root / "var" / "ui_state.db",
         log_root=repo_root / "var" / "ui-runs",
+        pipeline_db_root=repo_root / "var" / "pipeline-runs",
+        corpus_output_root=repo_root / "var" / "ui-corpus",
         page_size=25,
+        enable_periodic_reconcile=False,
+        test_mode=True,
     )
     app = create_app(settings=settings)
     client = TestClient(app)

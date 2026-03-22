@@ -1,0 +1,47 @@
+<div class="detail-grid" data-testid="run-status-partial">
+    <div>
+        <h3>Run state</h3>
+        <ul class="detail-list">
+            <li>Run ID: <strong>{{ run.run_id }}</strong></li>
+            <li>Status: <strong data-testid="run-status">{{ run.status }}</strong></li>
+            <li>Stage: {{ run.current_stage or "-" }}</li>
+            <li>Message: {{ run.progress_message or "-" }}</li>
+            <li>PID: {{ run.pid or "-" }}</li>
+            <li>Remote job: {{ run.remote_job_name or "-" }}</li>
+            <li>Last heartbeat: {{ run.last_heartbeat_at or "-" }}</li>
+            <li>Last remote poll: {{ run.last_remote_poll_at or "-" }}</li>
+            <li>Exit code: {{ run.exit_code if run.exit_code is not none else "-" }}</li>
+            <li>Error: {{ run.error_message or "-" }}</li>
+        </ul>
+    </div>
+    <div>
+        <h3>Targets</h3>
+        <ul class="detail-list">
+            {% for project in targets %}
+            <li>{{ project.title }}</li>
+            {% endfor %}
+        </ul>
+        {% if owner_project %}
+        <p class="muted">Owner project: {{ owner_project.title }}</p>
+        {% endif %}
+    </div>
+</div>
+
+<section class="panel subtle">
+    <h3>Recent events</h3>
+    {% if events %}
+    <ul class="event-list">
+        {% for event in events %}
+        <li><strong>{{ event.created_at }}</strong> - {{ event.event_type }} - {{ event.message }}</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="muted">No events recorded yet.</p>
+    {% endif %}
+</section>
+
+<section class="panel subtle">
+    <h3>Log tail</h3>
+    <pre class="log-tail">{{ log_tail or "No log output yet." }}</pre>
+</section>
+

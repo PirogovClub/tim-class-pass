@@ -1,0 +1,54 @@
+from __future__ import annotations
+
+import threading
+import time
+
+from ui.run_launcher import is_process_alive, launch_run_worker
+from ui.settings import UISettings
+from ui.storage import UIStateStore
+
+
+def launch_waiting_remote_runs(
+    store: UIStateStore,
+    settings: UISettings,
+    *,
+    run_ids: list[str] | None = None,
+) -> int:
+    launched = 0
+    candidates = store.list_waiting_remote_runs()
+    if run_ids is not None:
+        allowed = set(run_ids)
+        candidates = [run for run in candidates if str(run["run_id"]) in allowed]
+    for run in candidates:
+        pid_value = run.get("pid")
+        pid = None if pid_value is None else int(pid_value)
+        if is_process_alive(pid):
+            continue
+        launch_run_worker(store, settings, run_id=str(run["run_id"]), action="continue")
+        launched += 1
+    return launched
+
+
+class ReconcileScheduler:
+    def __init__(self, store: UIStateStore, settings: UISettings) -> None:
+        self.store = store
+        self.settings = settings
+        self._stop_event = threading.Event()
+        self._thread = threading.Thread(target=self._run_loop, name="ui-reconcile-scheduler", daemon=True)
+
+    def start(self) -> None:
+        self._thread.start()
+
+    def stop(self) -> None:
+        self._stop_event.set()
+        if self._thread.is_alive():
+            self._thread.join(timeout=2)
+
+    def _run_loop(self) -> None:
+        interval = max(2, int(self.settings.scheduler_interval_seconds))
+        while not self._stop_event.wait(interval):
+            try:
+                launch_waiting_remote_runs(self.store, self.settings)
+            except Exception:
+                time.sleep(1)
+

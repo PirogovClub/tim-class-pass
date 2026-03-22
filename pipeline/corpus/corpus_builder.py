@@ -196,6 +196,7 @@ def build_corpus(
     input_root: Path,
     output_root: Path,
     strict: bool = False,
+    selected_project_roots: list[Path] | None = None,
 ) -> dict[str, Any]:
     """Main entry point: discover -> validate -> merge -> enrich -> export.
 
@@ -203,7 +204,7 @@ def build_corpus(
     """
     output_root.mkdir(parents=True, exist_ok=True)
 
-    lessons = discover_lessons(input_root)
+    lessons = discover_lessons(input_root, selected_project_roots=selected_project_roots)
     if not lessons:
         raise RuntimeError(f"No lessons found under {input_root}")
 

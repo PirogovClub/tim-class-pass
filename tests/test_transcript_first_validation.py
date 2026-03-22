@@ -6,9 +6,13 @@ Verifies that:
 - Provenance validation respects evidence_requirement
 - New schema fields are populated on KnowledgeEvent, RuleCard, EvidenceRef
 - Confidence scoring is transcript-first
+- Real emitted artifacts have non-null support fields (regression)
 """
 
 from __future__ import annotations
+
+import json
+from pathlib import Path
 
 import pytest
 
@@ -311,3 +315,164 @@ class TestKnowledgeEventNewFields:
         assert ke.teaching_mode == "theory"
         assert ke.evidence_requirement == "none"
         assert ke.visual_support_score == 0.0
+
+
+# ── Regression: real emitted artifacts have populated fields ──────────────
+
+DATA_ROOT = Path(__file__).resolve().parent.parent / "data"
+
+LESSON_DIRS = [
+    ("Lesson 2. Levels part 1", "Lesson 2. Levels part 1"),
+    ("2025-09-29-sviatoslav-chornyi", "2025-09-29-sviatoslav-chornyi"),
+]
+
+_KE_SUPPORT_FIELDS = [
+    "support_basis",
+    "evidence_requirement",
+    "teaching_mode",
+    "transcript_support_score",
+    "visual_support_score",
+    "transcript_support_level",
+    "visual_support_level",
+]
+
+_RC_SUPPORT_FIELDS = _KE_SUPPORT_FIELDS + [
+    "has_visual_evidence",
+    "transcript_anchor_count",
+    "transcript_repetition_count",
+]
+
+
+def _load_json(path: Path) -> dict | list:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _skip_if_no_lesson(lesson_dir: Path, artifact: str):
+    path = lesson_dir / "output_intermediate" / artifact
+    if not path.exists():
+        pytest.skip(f"{path} not found (pipeline not yet run)")
+
+
+class TestRealArtifactSupportFields:
+    """Read emitted JSON and assert transcript-first fields are populated."""
+
+    @pytest.mark.parametrize("folder,name", LESSON_DIRS, ids=[d[0][:20] for d in LESSON_DIRS])
+    def test_knowledge_events_have_support_fields(self, folder, name):
+        lesson_dir = DATA_ROOT / folder
+        ke_path = lesson_dir / "output_intermediate" / f"{name}.knowledge_events.json"
+        if not ke_path.exists():
+            pytest.skip(f"{ke_path} not found")
+        data = _load_json(ke_path)
+        events = data.get("events", [])
+        assert len(events) > 0, "No events in file"
+        null_counts = {f: 0 for f in _KE_SUPPORT_FIELDS}
+        for ev in events:
+            for field in _KE_SUPPORT_FIELDS:
+                if ev.get(field) is None:
+                    null_counts[field] += 1
+        for field, count in null_counts.items():
+            assert count == 0, (
+                f"{count}/{len(events)} events have null {field} in {name}"
+            )
+
+    @pytest.mark.parametrize("folder,name", LESSON_DIRS, ids=[d[0][:20] for d in LESSON_DIRS])
+    def test_rule_cards_have_support_fields(self, folder, name):
+        lesson_dir = DATA_ROOT / folder
+        rc_path = lesson_dir / "output_intermediate" / f"{name}.rule_cards.json"
+        if not rc_path.exists():
+            pytest.skip(f"{rc_path} not found")
+        data = _load_json(rc_path)
+        rules = data.get("rules", [])
+        assert len(rules) > 0, "No rules in file"
+        null_counts = {f: 0 for f in _RC_SUPPORT_FIELDS}
+        for r in rules:
+            for field in _RC_SUPPORT_FIELDS:
+                if r.get(field) is None:
+                    null_counts[field] += 1
+        for field, count in null_counts.items():
+            assert count == 0, (
+                f"{count}/{len(rules)} rules have null {field} in {name}"
+            )
+
+    @pytest.mark.parametrize("folder,name", LESSON_DIRS, ids=[d[0][:20] for d in LESSON_DIRS])
+    def test_evidence_index_has_strength_fields(self, folder, name):
+        lesson_dir = DATA_ROOT / folder
+        ei_path = lesson_dir / "output_intermediate" / f"{name}.evidence_index.json"
+        if not ei_path.exists():
+            pytest.skip(f"{ei_path} not found")
+        data = _load_json(ei_path)
+        refs = data.get("evidence_refs", [])
+        if len(refs) == 0:
+            pytest.skip("No evidence refs to check")
+        null_strength = sum(1 for r in refs if r.get("evidence_strength") is None)
+        null_role = sum(1 for r in refs if r.get("evidence_role_detail") is None)
+        assert null_strength == 0, (
+            f"{null_strength}/{len(refs)} refs have null evidence_strength"
+        )
+        assert null_role == 0, (
+            f"{null_role}/{len(refs)} refs have null evidence_role_detail"
+        )
+
+    @pytest.mark.parametrize("folder,name", LESSON_DIRS, ids=[d[0][:20] for d in LESSON_DIRS])
+    def test_rule_cards_support_basis_distribution(self, folder, name):
+        lesson_dir = DATA_ROOT / folder
+        rc_path = lesson_dir / "output_intermediate" / f"{name}.rule_cards.json"
+        if not rc_path.exists():
+            pytest.skip(f"{rc_path} not found")
+        data = _load_json(rc_path)
+        rules = data.get("rules", [])
+        basis_values = {r.get("support_basis") for r in rules}
+        assert None not in basis_values, "Some rules still have null support_basis"
+        non_inferred = sum(1 for r in rules if r.get("support_basis") != "inferred")
+        assert non_inferred > 0, "All rules are inferred — transcript-first scoring not applied"
+
+    @pytest.mark.parametrize("folder,name", LESSON_DIRS, ids=[d[0][:20] for d in LESSON_DIRS])
+    def test_review_markdown_has_support_markers(self, folder, name):
+        lesson_dir = DATA_ROOT / folder
+        review_path = lesson_dir / "output_review" / f"{name}.review_markdown.md"
+        if not review_path.exists():
+            pytest.skip(f"{review_path} not found")
+        text = review_path.read_text(encoding="utf-8")
+        assert "**Support:**" in text, "review.md missing Support: markers"
+        assert "support=" in text, "review.md missing support= values"
+        assert "mode=" in text, "review.md missing mode= values"
+        assert "evidence=" in text, "review.md missing evidence= values"
+
+
+class TestCorpusMetadataSupportCounts:
+    """Verify corpus_metadata.json has non-zero transcript-first counts."""
+
+    CORPUS_PATH = Path(__file__).resolve().parent.parent / "output_corpus" / "corpus_metadata.json"
+
+    def test_corpus_metadata_has_support_basis_counts(self):
+        if not self.CORPUS_PATH.exists():
+            pytest.skip("corpus_metadata.json not found")
+        meta = _load_json(self.CORPUS_PATH)
+        assert "transcript_primary_rules" in meta
+        assert "transcript_plus_visual_rules" in meta
+        assert "inferred_rules" in meta
+
+    def test_corpus_metadata_not_all_inferred(self):
+        if not self.CORPUS_PATH.exists():
+            pytest.skip("corpus_metadata.json not found")
+        meta = _load_json(self.CORPUS_PATH)
+        total_non_inferred = (
+            meta.get("transcript_primary_rules", 0)
+            + meta.get("transcript_plus_visual_rules", 0)
+            + meta.get("visual_primary_rules", 0)
+        )
+        assert total_non_inferred > 0, (
+            f"All rules are inferred (transcript_primary={meta.get('transcript_primary_rules')}, "
+            f"transcript_plus_visual={meta.get('transcript_plus_visual_rules')})"
+        )
+
+    def test_corpus_validation_uses_optional_category(self):
+        vr_path = self.CORPUS_PATH.parent / "validation_report.json"
+        if not vr_path.exists():
+            pytest.skip("validation_report.json not found")
+        report = _load_json(vr_path)
+        warnings = report.get("warnings", [])
+        categories = {w.get("category") for w in warnings}
+        assert "no_evidence_optional" in categories or len(warnings) == 0, (
+            "Expected no_evidence_optional warnings; got categories: " + str(categories)
+        )

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Corpus Queue{% endblock %}
+{% block content %}
+<section class="panel">
+    <div class="panel-header">
+        <div>
+            <h2>Corpus queue</h2>
+            <p class="muted">Select ready or stale projects and launch one corpus build.</p>
+        </div>
+        <a class="button secondary" href="{{ request.url_for('dashboard') }}">Back to dashboard</a>
+    </div>
+    <div class="counter-grid">
+        {% for status_name, count in page.counts.items() %}
+        <div class="counter-card">
+            <div class="counter-label">{{ status_name }}</div>
+            <div class="counter-value">{{ count }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="panel">
+    <form method="post" action="{{ request.url_for('corpus_build') }}">
+        <table class="dashboard-table" data-testid="corpus-table">
+            <thead>
+                <tr>
+                    <th>Select</th>
+                    <th>Project</th>
+                    <th>Corpus status</th>
+                    <th>Artifacts ready</th>
+                    <th>Latest corpus run</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in page.rows %}
+                <tr>
+                    <td>
+                        {% if row.corpus_status in ["ready", "stale_since_last_export"] %}
+                        <input type="checkbox" name="project_ids" value="{{ row.project.project_id }}">
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ request.url_for('project_detail', project_id=row.project.project_id) }}">{{ row.project.title }}</a>
+                    </td>
+                    <td><span class="status-chip">{{ row.corpus_status }}</span></td>
+                    <td>{{ "yes" if row.artifacts.corpus_ready else "no" }}</td>
+                    <td>
+                        {% if row.latest_corpus_run %}
+                        <a href="{{ request.url_for('run_detail', run_id=row.latest_corpus_run.run_id) }}">{{ row.latest_corpus_run.run_id }}</a>
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="button-row">
+            <button class="button" type="submit">Build selected corpus</button>
+        </div>
+    </form>
+</section>
+{% endblock %}
+

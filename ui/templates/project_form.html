@@ -11,7 +11,7 @@
     <div class="alert" data-testid="form-error">{{ error }}</div>
     {% endif %}
 
-    <form class="stack-form" method="post" action="{{ request.url_for('create_project') }}">
+    <form class="stack-form" method="post" action="{{ request.url_for('create_project') }}" enctype="multipart/form-data">
         <label>
             Project title
             <input type="text" name="title" value="{{ title|default('', true) }}" placeholder="Lesson 2. Levels part 1">
@@ -20,12 +20,25 @@
             Project root
             <input type="text" name="project_root" value="{{ project_root|default('', true) }}" placeholder="data/Lesson 2. Levels part 1">
         </label>
+        <div class="detail-grid">
+            <label>
+                Source video upload
+                <input type="file" name="source_video_upload" accept=".mp4,.mov,.mkv,.webm">
+            </label>
+            <label>
+                Transcript upload
+                <input type="file" name="transcript_upload" accept=".vtt">
+            </label>
+        </div>
+        <div class="form-note">
+            Uploaded files are copied into the project directory under `data/`. Use the text paths below only when you want the UI to copy from an existing local file.
+        </div>
         <label>
-            Source video path
+            Source video path fallback
             <input type="text" name="source_video_path" value="{{ source_video_path|default('', true) }}" placeholder="optional">
         </label>
         <label>
-            Transcript path
+            Transcript path fallback
             <input type="text" name="transcript_path" value="{{ transcript_path|default('', true) }}" placeholder="optional">
         </label>
         <button class="button" type="submit">Save project</button>

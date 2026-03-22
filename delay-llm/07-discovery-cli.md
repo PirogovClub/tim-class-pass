@@ -27,6 +27,19 @@ batch CLI that wires all orchestrator modules together.
 - Only plan missing or invalid stages
 - Do not rerun stages whose final artifacts exist and validate, unless `--force` is given
 
+### First-run vs reprocessing inputs
+
+Two operational modes must be documented and supported:
+
+- **True first run.** A lesson may have only raw inputs plus transcript/VTT. In
+  this case `dense_analysis.json` does not exist yet, so the workflow must run a
+  vision stage first (existing sync vision path or Gemini batch vision) before
+  `knowledge_extract`.
+- **Reprocessing / comparison run.** A lesson may already have
+  `dense_analysis.json`. In that case the planner may skip vision and batch only
+  `knowledge_extract` (and optionally `markdown_render`) against the existing
+  visual analysis.
+
 ### Planner stage names
 
 (Matching `pipeline/stage_registry.py` where possible)
@@ -87,6 +100,34 @@ Use Click (already in `pyproject.toml`).
 
 11. **retry-failed** -- `python -m pipeline.batch_cli retry-failed --stage knowledge_extract`
     Create new attempts for failed stage_runs/batch_jobs, only for incomplete requests.
+
+### Multi-video note
+
+The batch CLI covers the batchable stages end-to-end:
+
+- discover
+- plan
+- spool
+- assemble
+- submit
+- poll
+- download
+- materialize
+
+For large multi-video RAG-prep runs, the repo still relies on the existing local
+downstream artifact writers after `knowledge_extract` materializes:
+
+- evidence linking
+- rule card build / reduction
+- concept graph
+- ML manifests
+- exporters
+- corpus build
+
+So the current implementation can process everything, but not yet through one
+single repo-supported "all videos -> batch -> downstream -> corpus" command.
+That final wrapper remains a future convenience layer over the already-working
+batch CLI plus `pipeline.component2.main` / `pipeline.corpus`.
 
 ### CLI output
 

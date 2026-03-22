@@ -7,8 +7,15 @@
             <h2>{{ row.project.title }}</h2>
             <p class="muted">{{ row.project.project_root }}</p>
         </div>
-        <a class="button secondary" href="{{ request.url_for('dashboard') }}">Back to dashboard</a>
+        <div class="button-row">
+            <a class="button secondary" href="{{ request.url_for('dashboard') }}">Back to dashboard</a>
+            <a class="button secondary" href="{{ request.url_for('corpus_queue') }}">Corpus queue</a>
+        </div>
     </div>
+
+    {% if error %}
+    <div class="alert" data-testid="project-error">{{ error }}</div>
+    {% endif %}
 
     <div class="detail-grid">
         <div>
@@ -39,6 +46,21 @@
 </section>
 
 <section class="panel">
+    <h3>Start work</h3>
+    <form class="filters" method="post" action="{{ request.url_for('create_run', project_id=row.project.project_id) }}">
+        <label>
+            Run mode
+            <select name="run_mode">
+                {% for run_mode in run_modes %}
+                <option value="{{ run_mode }}">{{ run_mode }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <button class="button" type="submit">Launch background run</button>
+    </form>
+</section>
+
+<section class="panel">
     <h3>Run history</h3>
     {% if runs %}
     <table class="dashboard-table">
@@ -54,7 +76,7 @@
         <tbody>
             {% for run in runs %}
             <tr>
-                <td>{{ run.run_id }}</td>
+                <td><a href="{{ request.url_for('run_detail', run_id=run.run_id) }}">{{ run.run_id }}</a></td>
                 <td>{{ run.run_mode }}</td>
                 <td>{{ run.status }}</td>
                 <td>{{ run.remote_job_name or "-" }}</td>

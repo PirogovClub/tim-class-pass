@@ -89,6 +89,19 @@ Steps:
 | all structured | schema validation | 100% pass |
 | all structured | non-placeholder text | 100% required |
 
+Practical Layer 3 execution may follow either of these subpaths:
+
+- **Full live path:** batch `vision` first, then batch `knowledge_extract`, then
+  materialize all stage outputs into the temp root.
+- **Hybrid live comparison path:** when the lesson already has a trusted
+  `dense_analysis.json` baseline or when live vision queueing is a bottleneck,
+  reuse that `dense_analysis.json`, run live batch for `knowledge_extract`, then
+  generate deterministic downstream artifacts locally and compare those against
+  the sync baseline.
+
+The hybrid path still counts as a live batch comparison for the LLM-heavy stage
+and is the recommended operational fallback for validation runs.
+
 3. Print diff summary table:
 
 ```

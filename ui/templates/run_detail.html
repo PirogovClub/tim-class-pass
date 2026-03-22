@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Run {{ run.run_id }}{% endblock %}
+{% block content %}
+<section class="panel">
+    <div class="panel-header">
+        <div>
+            <h2>Run {{ run.run_id }}</h2>
+            <p class="muted">{{ run.run_mode }} / {{ run.run_kind }}</p>
+        </div>
+        <div class="button-row">
+            {% if owner_project %}
+            <a class="button secondary" href="{{ request.url_for('project_detail', project_id=owner_project.project_id) }}">Back to project</a>
+            {% endif %}
+            <a class="button secondary" href="{{ request.url_for('dashboard') }}">Dashboard</a>
+            {% if run.status == "WAITING_REMOTE" %}
+            <form method="post" action="{{ request.url_for('reconcile_run', run_id=run.run_id) }}">
+                <button class="button secondary" type="submit">Reconcile now</button>
+            </form>
+            {% endif %}
+            {% if run.status in ["QUEUED", "RUNNING", "WAITING_REMOTE", "CANCEL_REQUESTED"] %}
+            <form method="post" action="{{ request.url_for('cancel_run', run_id=run.run_id) }}">
+                <button class="button" type="submit">Cancel run</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<div id="run-status-container">
+    {% include "_run_status_partial.html" %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+const activeStatuses = new Set(["QUEUED", "RUNNING", "WAITING_REMOTE", "CANCEL_REQUESTED"]);
+let currentStatus = "{{ run.status }}";
+async function refreshRunStatus() {
+    if (!activeStatuses.has(currentStatus)) {
+        return;
+    }
+    const response = await fetch("{{ request.url_for('run_partial', run_id=run.run_id) }}", { headers: { "X-Requested-With": "fetch" } });
+    if (!response.ok) {
+        return;
+    }
+    const html = await response.text();
+    document.getElementById("run-status-container").innerHTML = html;
+    const statusNode = document.querySelector('[data-testid="run-status"]');
+    currentStatus = statusNode ? statusNode.textContent.trim() : currentStatus;
+    if (activeStatuses.has(currentStatus)) {
+        window.setTimeout(refreshRunStatus, 2000);
+    }
+}
+window.setTimeout(refreshRunStatus, 2000);
+</script>
+{% endblock %}
+

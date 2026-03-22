@@ -40,12 +40,13 @@ _LIST_KEYS = {
 }
 
 
-def discover_lessons(input_root: Path) -> list[LessonRecord]:
+def discover_lessons(input_root: Path, selected_project_roots: list[Path] | None = None) -> list[LessonRecord]:
     """Scan input_root for directories containing output_intermediate/ with artifacts."""
     records: list[LessonRecord] = []
     now = datetime.now(timezone.utc).isoformat()
 
-    for lesson_dir in sorted(input_root.iterdir()):
+    candidate_dirs = selected_project_roots or list(input_root.iterdir())
+    for lesson_dir in sorted(candidate_dirs):
         if not lesson_dir.is_dir():
             continue
         intermediate = lesson_dir / "output_intermediate"

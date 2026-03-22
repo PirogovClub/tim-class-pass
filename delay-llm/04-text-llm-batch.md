@@ -90,6 +90,9 @@ via existing exporter path.
 - Do NOT break `process_chunks_knowledge_extract()`, `process_rule_cards_markdown_render()`, or legacy sync behavior.
 - Batch materialization must end in the same downstream artifacts as sync mode, so current evidence linker, rule reducer, exporters, validations, and tests remain valid.
 - Only batch-render structured inputs; do not feed raw transcript blobs if current deterministic exporter avoids them.
+- `parse_knowledge_extraction()` and `parse_markdown_render_result()` should be
+  tolerant of Gemini responses wrapped in Markdown fences such as
+  `````json ... ````` and normalize them before `model_validate_json()`.
 
 ---
 

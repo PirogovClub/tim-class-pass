@@ -29,11 +29,11 @@
       "concept_graph_version": "1.0.0",
       "corpus_contract_version": "1.0.0"
     },
-    "build_timestamp": "2026-03-21T20:56:39.056047+00:00",
+    "build_timestamp": "2026-03-22T02:47:17.800391+00:00",
     "content_hashes": {
-      "knowledge_events": "baa696ee692b983b3d248a84eb0447d0269ae3ab445a11c3078c78eef7bb766a",
-      "rule_cards": "7df91267e46e44f026abac1e4fcafecf289da7af220536f05283087da417a6fb",
-      "evidence_index": "73885e6e1dceae052f3ea77462b4aa536e89c992d6aef7c4689e505c2f200d1e",
+      "knowledge_events": "dd7ece66832a46e92dd80abcb205279c5a678f79497bc96f65fa2fa7f8b3f659",
+      "rule_cards": "d97c2ad33af7e0cf498334faff771e00a764d6e373321c0f63ba669ca779ab59",
+      "evidence_index": "b29540537b9bc4a8cde3509789191e2771ccb2bf971c56221a7383af6618313e",
       "concept_graph": "5fd3db6e953ed6949a34a1c5e9d6670906be355a0b9aa3f7ecfb448bac47fcb7"
     },
     "status": "valid",
@@ -69,11 +69,11 @@
       "concept_graph_version": "1.0.0",
       "corpus_contract_version": "1.0.0"
     },
-    "build_timestamp": "2026-03-21T20:56:39.056047+00:00",
+    "build_timestamp": "2026-03-22T02:47:17.800391+00:00",
     "content_hashes": {
-      "knowledge_events": "592f4ac22347b1a4838453bd2b655173f7bf0323c3bb2e66bd5e7f5612ae8402",
-      "rule_cards": "69cbffc668b507059f6c17148d8b453e3396b9a62cf2a3333e335ed71e7a7453",
-      "evidence_index": "6be540a09126fcf9e0d93f10e3da6ba40ef09e42622cfcc4a303eb304452ec76",
+      "knowledge_events": "6746c1970c2fe5bc8aafbc34d03b118153d7846592e2c4709fe36947baf1ca4e",
+      "rule_cards": "3f6b76c833b4917a224d02d330cb840bf0bf60066ff7ec7c9877e9132ac4cdc0",
+      "evidence_index": "11ba31e73286d263e9bf93ed2e77515660dfa840ed3f8216831ffb1e7fc56e09",
       "concept_graph": "eed41ca3df0387c4207114c8e345ab9dd2e9e526bd8cc8574914c92b38f06a38"
     },
     "status": "valid",

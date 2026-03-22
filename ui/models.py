@@ -9,6 +9,12 @@ RUN_STATUS_RUNNING = "RUNNING"
 RUN_STATUS_WAITING_REMOTE = "WAITING_REMOTE"
 RUN_STATUS_FAILED = "FAILED"
 RUN_STATUS_SUCCEEDED = "SUCCEEDED"
+RUN_STATUS_CANCEL_REQUESTED = "CANCEL_REQUESTED"
+RUN_STATUS_CANCELLED = "CANCELLED"
+RUN_STATUS_INTERRUPTED = "INTERRUPTED"
+
+RUN_KIND_PROJECT = "PROJECT"
+RUN_KIND_CORPUS = "CORPUS"
 
 
 @dataclass(frozen=True)
@@ -57,12 +63,53 @@ class ProjectRecord:
 class RunRecord:
     run_id: str
     project_id: str
+    run_kind: str
     run_mode: str
     status: str
+    current_stage: str | None
+    progress_message: str | None
     log_path: Path | None
+    pipeline_db_path: Path | None
     remote_job_name: str | None
+    pid: int | None
+    command: str | None
+    last_heartbeat_at: str | None
+    last_remote_poll_at: str | None
+    started_at: str | None
+    finished_at: str | None
+    exit_code: int | None
+    error_message: str | None
+    cancel_requested_at: str | None
     created_at: str
     updated_at: str
+
+    @property
+    def is_active(self) -> bool:
+        return self.status in {
+            RUN_STATUS_QUEUED,
+            RUN_STATUS_RUNNING,
+            RUN_STATUS_WAITING_REMOTE,
+            RUN_STATUS_CANCEL_REQUESTED,
+        }
+
+
+@dataclass(frozen=True)
+class RunEventRecord:
+    event_id: int
+    run_id: str
+    event_type: str
+    stage: str | None
+    message: str
+    created_at: str
+
+
+@dataclass(frozen=True)
+class CorpusQueueRow:
+    project: ProjectRecord
+    artifacts: ArtifactSnapshot
+    corpus_status: str
+    latest_corpus_run: RunRecord | None
+    output_root: Path | None
 
 
 @dataclass(frozen=True)
