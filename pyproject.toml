@@ -37,12 +37,15 @@ build-backend = "hatchling.build"
 markers = [
     "live_provider: mark tests that call live LLM providers (run with -m live_provider); skip when API keys unset",
     "integration: slow tests that read or regenerate Lesson 2 pipeline artifacts",
+    "e2e: browser end-to-end UI tests",
 ]
 
 [dependency-groups]
 dev = [
+    "playwright>=1.58.0",
     "pytest>=9.0.2",
     "pytest-cov>=6.0.0",
+    "pytest-playwright>=0.7.2",
 ]
 
 [tool.coverage.run]

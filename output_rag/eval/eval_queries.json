@@ -1,152 +1,370 @@
 [
   {
-    "query": "Как определить уровень для стоп-лосса?",
-    "category": "direct_rule",
-    "expected_unit": "rule_card",
-    "expected_concept": "Stop Loss"
+    "query_id": "q001",
+    "query_text": "Как определить уровень для стоп-лосса?",
+    "category": "direct_rule_lookup",
+    "expected_unit_types": [
+      "rule_card"
+    ],
+    "expected_concepts": [
+      "Stop Loss"
+    ],
+    "relevant_doc_ids": [],
+    "notes": "Direct rule lookup."
   },
   {
-    "query": "Правила постановки тейк-профита",
-    "category": "direct_rule",
-    "expected_unit": "rule_card",
-    "expected_concept": "Take Profit"
+    "query_id": "q002",
+    "query_text": "Правила постановки тейк-профита",
+    "category": "direct_rule_lookup",
+    "expected_unit_types": [
+      "rule_card"
+    ],
+    "expected_concepts": [
+      "Take Profit"
+    ],
+    "relevant_doc_ids": [],
+    "notes": "Direct rule lookup."
   },
   {
-    "query": "Что такое BPU в Price Action?",
-    "category": "direct_rule",
-    "expected_unit": "rule_card",
-    "expected_concept": "BPU"
+    "query_id": "q003",
+    "query_text": "Что такое BPU в Price Action?",
+    "category": "direct_rule_lookup",
+    "expected_unit_types": [
+      "rule_card",
+      "concept_node"
+    ],
+    "expected_concepts": [
+      "BPU"
+    ],
+    "relevant_doc_ids": [],
+    "notes": "Definition-style lookup."
   },
   {
-    "query": "Как работает накопление возле уровня?",
-    "category": "direct_rule",
-    "expected_unit": "rule_card",
-    "expected_concept": "Accumulation"
+    "query_id": "q004",
+    "query_text": "Как работает накопление возле уровня?",
+    "category": "direct_rule_lookup",
+    "expected_unit_types": [
+      "rule_card",
+      "knowledge_event"
+    ],
+    "expected_concepts": [
+      "Accumulation"
+    ],
+    "relevant_doc_ids": [],
+    "notes": "Concept rule lookup."
   },
   {
-    "query": "Правила входа после ложного пробоя",
-    "category": "direct_rule",
-    "expected_unit": "rule_card",
-    "expected_concept": "Movement near levels"
+    "query_id": "q005",
+    "query_text": "Правила входа после ложного пробоя",
+    "category": "direct_rule_lookup",
+    "expected_unit_types": [
+      "rule_card"
+    ],
+    "expected_concepts": [
+      "Ложный пробой"
+    ],
+    "relevant_doc_ids": [],
+    "notes": "Rule lookup for breakout/failure setup."
   },
   {
-    "query": "Когда правило стоп-лосса не работает?",
+    "query_id": "q006",
+    "query_text": "Когда правило стоп-лосса не работает?",
     "category": "invalidation",
-    "expected_unit": "rule_card",
-    "expected_concept": "Stop Loss"
+    "expected_unit_types": [
+      "rule_card",
+      "knowledge_event"
+    ],
+    "expected_concepts": [
+      "Stop Loss"
+    ],
+    "relevant_doc_ids": [],
+    "notes": "Invalidation query."
   },
   {
-    "query": "Исключения из правил управления позицией",
+    "query_id": "q007",
+    "query_text": "Исключения из правил управления позицией",
     "category": "invalidation",
-    "expected_unit": "rule_card",
-    "expected_concept": "Trade Management"
+    "expected_unit_types": [
+      "rule_card"
+    ],
+    "expected_concepts": [
+      "Trade Management"
+    ],
+    "relevant_doc_ids": [],
+    "notes": "Exception lookup."
   },
   {
-    "query": "Условия отмены входа в позицию",
+    "query_id": "q008",
+    "query_text": "Условия отмены входа в позицию",
     "category": "invalidation",
-    "expected_unit": "rule_card",
-    "expected_concept": "Trade Management"
+    "expected_unit_types": [
+      "rule_card",
+      "knowledge_event"
+    ],
+    "expected_concepts": [
+      "Trade Management"
+    ],
+    "relevant_doc_ids": [],
+    "notes": "Cancellation/invalidation lookup."
   },
   {
-    "query": "Разница между техническим и обычным стоп-лоссом",
+    "query_id": "q009",
+    "query_text": "Разница между техническим и обычным стоп-лоссом",
     "category": "concept_comparison",
-    "expected_unit": "rule_card",
-    "expected_concept": "Technical Stop Loss"
+    "expected_unit_types": [
+      "rule_card",
+      "concept_relation"
+    ],
+    "expected_concepts": [
+      "Technical Stop Loss",
+      "Stop Loss"
+    ],
+    "relevant_doc_ids": [],
+    "notes": "Comparison query."
   },
   {
-    "query": "BPU versus обычный бар",
+    "query_id": "q010",
+    "query_text": "BPU versus обычный бар",
     "category": "concept_comparison",
-    "expected_unit": "rule_card",
-    "expected_concept": "BPU"
+    "expected_unit_types": [
+      "rule_card",
+      "concept_relation"
+    ],
+    "expected_concepts": [
+      "BPU"
+    ],
+    "relevant_doc_ids": [],
+    "notes": "Cross-language comparison."
   },
   {
-    "query": "Сравнение стоп-лосса и тейк-профита",
+    "query_id": "q011",
+    "query_text": "Сравнение стоп-лосса и тейк-профита",
     "category": "concept_comparison",
-    "expected_unit": "rule_card",
-    "expected_concept": "Stop Loss"
+    "expected_unit_types": [
+      "rule_card",
+      "concept_relation"
+    ],
+    "expected_concepts": [
+      "Stop Loss",
+      "Take Profit"
+    ],
+    "relevant_doc_ids": [],
+    "notes": "Comparison query."
   },
   {
-    "query": "Покажи пример накопления на графике",
-    "category": "evidence_lookup",
-    "expected_unit": "evidence_ref",
-    "expected_concept": "Accumulation"
+    "query_id": "q012",
+    "query_text": "Покажи пример накопления на графике",
+    "category": "example_lookup",
+    "expected_unit_types": [
+      "evidence_ref"
+    ],
+    "expected_concepts": [
+      "Accumulation"
+    ],
+    "relevant_doc_ids": [],
+    "notes": "Evidence-focused query."
   },
   {
-    "query": "Визуальный пример ложного пробоя уровня",
-    "category": "evidence_lookup",
-    "expected_unit": "evidence_ref",
-    "expected_concept": "Movement near levels"
+    "query_id": "q013",
+    "query_text": "Визуальный пример ложного пробоя уровня",
+    "category": "example_lookup",
+    "expected_unit_types": [
+      "evidence_ref"
+    ],
+    "expected_concepts": [
+      "Ложный пробой"
+    ],
+    "relevant_doc_ids": [],
+    "notes": "Evidence-focused query."
   },
   {
-    "query": "Пример постановки стоп-лосса",
-    "category": "evidence_lookup",
-    "expected_unit": "evidence_ref",
-    "expected_concept": "Stop Loss"
+    "query_id": "q014",
+    "query_text": "Пример постановки стоп-лосса",
+    "category": "example_lookup",
+    "expected_unit_types": [
+      "evidence_ref",
+      "rule_card"
+    ],
+    "expected_concepts": [
+      "Stop Loss"
+    ],
+    "relevant_doc_ids": [],
+    "notes": "Evidence plus rule support."
   },
   {
-    "query": "Какие концепции рассматривались в уроке?",
+    "query_id": "q015",
+    "query_text": "Какие уроки обсуждают volume confirmation?",
     "category": "lesson_coverage",
-    "expected_unit": "knowledge_event",
-    "expected_concept": null
+    "expected_unit_types": [
+      "knowledge_event",
+      "concept_node"
+    ],
+    "expected_concepts": [
+      "анализ объема"
+    ],
+    "relevant_doc_ids": [],
+    "notes": "Lesson coverage query."
   },
   {
-    "query": "О чем рассказывал урок про Price Action?",
+    "query_id": "q016",
+    "query_text": "О чем рассказывал урок про Price Action?",
     "category": "lesson_coverage",
-    "expected_unit": "knowledge_event",
-    "expected_concept": "Price Action"
+    "expected_unit_types": [
+      "knowledge_event",
+      "rule_card"
+    ],
+    "expected_concepts": [
+      "Price Action"
+    ],
+    "relevant_doc_ids": [],
+    "notes": "Lesson coverage query."
   },
   {
-    "query": "Связь между уровнями и стоп-лоссом",
-    "category": "graph_query",
-    "expected_unit": "concept_relation",
-    "expected_concept": "Stop Loss"
+    "query_id": "q017",
+    "query_text": "Что общего между уровнями и стоп-лоссом?",
+    "category": "cross_lesson_conflict",
+    "expected_unit_types": [
+      "concept_relation",
+      "concept_node"
+    ],
+    "expected_concepts": [
+      "Уровень",
+      "Stop Loss"
+    ],
+    "relevant_doc_ids": [],
+    "notes": "Graph relation query."
   },
   {
-    "query": "Какие правила связаны с анализом таймфреймов?",
-    "category": "graph_query",
-    "expected_unit": "rule_card",
-    "expected_concept": "Анализ таймфреймов"
+    "query_id": "q018",
+    "query_text": "Какие правила связаны с анализом таймфреймов?",
+    "category": "cross_lesson_conflict",
+    "expected_unit_types": [
+      "rule_card",
+      "concept_node"
+    ],
+    "expected_concepts": [
+      "Анализ таймфреймов"
+    ],
+    "relevant_doc_ids": [],
+    "notes": "Concept/rule linkage query."
   },
   {
-    "query": "Концепции связанные с волатильностью",
-    "category": "graph_query",
-    "expected_unit": "concept_node",
-    "expected_concept": "Волатильность"
+    "query_id": "q019",
+    "query_text": "Концепции связанные с волатильностью",
+    "category": "cross_lesson_conflict",
+    "expected_unit_types": [
+      "concept_node",
+      "concept_relation"
+    ],
+    "expected_concepts": [
+      "Волатильность"
+    ],
+    "relevant_doc_ids": [],
+    "notes": "Graph expansion query."
   },
   {
-    "query": "Как определить дневной уровень?",
-    "category": "timeframe",
-    "expected_unit": "rule_card",
-    "expected_concept": null
+    "query_id": "q020",
+    "query_text": "Как определить дневной уровень?",
+    "category": "higher_timeframe_dependency",
+    "expected_unit_types": [
+      "rule_card",
+      "knowledge_event"
+    ],
+    "expected_concepts": [
+      "Уровень"
+    ],
+    "relevant_doc_ids": [],
+    "notes": "Higher timeframe dependency."
   },
   {
-    "query": "Правила торговли на разных таймфреймах",
-    "category": "timeframe",
-    "expected_unit": "rule_card",
-    "expected_concept": "Анализ таймфреймов"
+    "query_id": "q021",
+    "query_text": "Правила торговли на разных таймфреймах",
+    "category": "higher_timeframe_dependency",
+    "expected_unit_types": [
+      "rule_card"
+    ],
+    "expected_concepts": [
+      "Анализ таймфреймов"
+    ],
+    "relevant_doc_ids": [],
+    "notes": "Timeframe query."
   },
   {
-    "query": "Stop loss placement rules",
+    "query_id": "q022",
+    "query_text": "Какие правила подтверждаются только по transcript?",
+    "category": "support_policy",
+    "expected_unit_types": [
+      "rule_card",
+      "knowledge_event"
+    ],
+    "expected_concepts": [],
+    "relevant_doc_ids": [],
+    "notes": "Support-basis query."
+  },
+  {
+    "query_id": "q023",
+    "query_text": "Какие примеры требуют визуальных доказательств?",
+    "category": "support_policy",
+    "expected_unit_types": [
+      "evidence_ref",
+      "rule_card"
+    ],
+    "expected_concepts": [],
+    "relevant_doc_ids": [],
+    "notes": "Evidence policy query."
+  },
+  {
+    "query_id": "q024",
+    "query_text": "Stop loss placement rules",
     "category": "multilingual",
-    "expected_unit": "rule_card",
-    "expected_concept": "Stop Loss"
+    "expected_unit_types": [
+      "rule_card"
+    ],
+    "expected_concepts": [
+      "Stop Loss"
+    ],
+    "relevant_doc_ids": [],
+    "notes": "English query."
   },
   {
-    "query": "Take profit strategy",
+    "query_id": "q025",
+    "query_text": "Take profit strategy",
     "category": "multilingual",
-    "expected_unit": "rule_card",
-    "expected_concept": "Take Profit"
+    "expected_unit_types": [
+      "rule_card"
+    ],
+    "expected_concepts": [
+      "Take Profit"
+    ],
+    "relevant_doc_ids": [],
+    "notes": "English query."
   },
   {
-    "query": "БСУ бар строительный упорный",
-    "category": "alias",
-    "expected_unit": "rule_card",
-    "expected_concept": "BPU"
+    "query_id": "q026",
+    "query_text": "БСУ бар строительный упорный",
+    "category": "multilingual",
+    "expected_unit_types": [
+      "rule_card",
+      "concept_node"
+    ],
+    "expected_concepts": [
+      "BPU"
+    ],
+    "relevant_doc_ids": [],
+    "notes": "Alias lookup."
   },
   {
-    "query": "Re-test уровня после пробоя",
-    "category": "alias",
-    "expected_unit": "rule_card",
-    "expected_concept": "Re-test"
+    "query_id": "q027",
+    "query_text": "Re-test уровня после пробоя",
+    "category": "multilingual",
+    "expected_unit_types": [
+      "rule_card",
+      "concept_node"
+    ],
+    "expected_concepts": [
+      "Re-test"
+    ],
+    "relevant_doc_ids": [],
+    "notes": "Mixed-language alias lookup."
   }
 ]

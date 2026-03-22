@@ -6,15 +6,19 @@ Local filesystem for now; swap to S3-style object storage later.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+
+from pipeline.rag.config import RAGConfig
 
 
 class AssetResolver:
-    def __init__(self, data_root: Path = Path("data")) -> None:
-        self._data_root = data_root
+    def __init__(self, asset_root: Path | None = None, cfg: RAGConfig | None = None) -> None:
+        if cfg is not None:
+            self._asset_root = cfg.asset_root
+        else:
+            self._asset_root = asset_root or Path("data")
 
     def resolve_screenshot(self, lesson_id: str, frame_id: str) -> str | None:
-        candidate = self._data_root / lesson_id / "frames_dense" / f"{frame_id}.jpg"
+        candidate = self._asset_root / lesson_id / "frames_dense" / f"{frame_id}.jpg"
         if candidate.exists():
             return str(candidate)
         candidate_png = candidate.with_suffix(".png")
@@ -23,5 +27,9 @@ class AssetResolver:
         return None
 
     def resolve_lesson_dir(self, lesson_id: str) -> Path | None:
-        d = self._data_root / lesson_id
+        d = self._asset_root / lesson_id
         return d if d.is_dir() else None
+
+    def resolve_url(self, lesson_id: str, frame_id: str) -> str | None:
+        resolved = self.resolve_screenshot(lesson_id, frame_id)
+        return resolved if resolved else None

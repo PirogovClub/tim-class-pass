@@ -200,22 +200,22 @@ class TestVectorRetrieval:
 class TestGraphExpansion:
     def test_detect_concept(self, concept_expander):
         result = concept_expander.expand_query("Как работает Stop Loss?")
-        assert len(result["detected_concepts"]) > 0
+        assert len(result.detected_terms) > 0
 
     def test_alias_resolution(self, concept_expander):
         result = concept_expander.expand_query("БСУ правила")
-        all_ids = result["all_concept_ids"]
+        all_ids = result.canonical_concept_ids + result.expanded_concept_ids
         assert len(all_ids) >= 1
 
     def test_expansion_returns_neighbors(self, concept_expander):
         result = concept_expander.expand_query("Stop Loss")
-        assert "all_concept_ids" in result
-        assert "boosted_rule_ids" in result
-        assert "expansion_trace" in result
+        assert result.canonical_concept_ids
+        assert isinstance(result.boosted_rule_ids, list)
+        assert isinstance(result.expansion_trace, list)
 
     def test_no_concepts_empty_expansion(self, concept_expander):
         result = concept_expander.expand_query("random gibberish xyz123")
-        assert result["detected_concepts"] == []
+        assert result.detected_terms == []
 
 
 # ── Group 5: Hybrid merge ───────────────────────────────────────────────
@@ -232,8 +232,8 @@ class TestHybridMerge:
         small = all_docs[:50]
         emb = EmbeddingIndex.build(small, model_name="paraphrase-multilingual-MiniLM-L12-v2")
 
-        from pipeline.rag.store import DocStore
-        store = DocStore()
+        from pipeline.rag.store import InMemoryDocStore
+        store = InMemoryDocStore()
         for d in small:
             from pipeline.rag.retrieval_docs import RetrievalDocBase
             store.add(RetrievalDocBase(**d))
@@ -294,9 +294,12 @@ class TestReranking:
 class TestAPI:
     def test_health_uninitialized(self):
         from fastapi.testclient import TestClient
-        from pipeline.rag.api import app
+        from pipeline.rag import api as rag_api
 
-        client = TestClient(app)
+        rag_api._retriever = None
+        rag_api._store = None
+        rag_api._cfg = None
+        client = TestClient(rag_api.app)
         resp = client.get("/health")
         assert resp.status_code == 200
         data = resp.json()
@@ -304,17 +307,23 @@ class TestAPI:
 
     def test_search_uninitialized_returns_503(self):
         from fastapi.testclient import TestClient
-        from pipeline.rag.api import app
+        from pipeline.rag import api as rag_api
 
-        client = TestClient(app)
+        rag_api._retriever = None
+        rag_api._store = None
+        rag_api._cfg = None
+        client = TestClient(rag_api.app)
         resp = client.post("/rag/search", json={"query": "test"})
         assert resp.status_code == 503
 
     def test_doc_uninitialized_returns_503(self):
         from fastapi.testclient import TestClient
-        from pipeline.rag.api import app
+        from pipeline.rag import api as rag_api
 
-        client = TestClient(app)
+        rag_api._retriever = None
+        rag_api._store = None
+        rag_api._cfg = None
+        client = TestClient(rag_api.app)
         resp = client.get("/rag/doc/fake_id")
         assert resp.status_code == 503
 
@@ -332,7 +341,7 @@ class TestEvalHarness:
         from pipeline.rag.eval import CURATED_QUERIES
 
         categories = {q["category"] for q in CURATED_QUERIES}
-        for expected in ["direct_rule", "invalidation", "concept_comparison", "evidence_lookup", "lesson_coverage", "graph_query", "multilingual"]:
+        for expected in ["direct_rule_lookup", "invalidation", "concept_comparison", "example_lookup", "lesson_coverage", "cross_lesson_conflict", "multilingual"]:
             assert expected in categories, f"Missing category: {expected}"
 
 
@@ -362,9 +371,9 @@ class TestStorePersistence:
     def test_save_load_roundtrip(self, doc_store, tmp_path):
         path = tmp_path / "docs.jsonl"
         doc_store.save(path)
-        from pipeline.rag.store import DocStore
+        from pipeline.rag.store import InMemoryDocStore
 
-        loaded = DocStore.load(path)
+        loaded = InMemoryDocStore.load(path)
         assert loaded.doc_count == doc_store.doc_count
 
     def test_filter_by_unit(self, doc_store):

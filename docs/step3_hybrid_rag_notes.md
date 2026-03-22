@@ -2,14 +2,17 @@
 
 ## Overview
 
-The hybrid RAG system transforms Step 2 corpus exports (rule cards, knowledge events, evidence refs, concept graph) into a queryable retrieval layer. It combines lexical search (BM25), vector similarity (sentence-transformers), concept graph expansion, and deterministic reranking.
+The hybrid RAG system transforms Step 2 corpus exports into a queryable retrieval layer with stable IDs, preserved provenance, and separate retrieval units. It combines lexical search (BM25), vector similarity (sentence-transformers), concept graph expansion, and deterministic reranking, then returns grounded structured responses with timestamps and evidence IDs where available.
 
-## Hardware Constraints & Design Rationale
+## Stack Decision
 
-- **32 GB RAM available** — all indexes and documents live in-memory at startup
-- **Target: 250 lessons** (~140K retrieval documents, ~1.4 GB total RAM usage)
-- No external database required at this scale; everything is loaded from JSONL/npy persistence files
-- DB (pgvector) deferred to 500+ lesson scale or concurrent write needs
+- Current implementation is intentionally **local-first**:
+  - retrieval docs persisted as JSONL
+  - lexical index persisted as JSON
+  - embeddings persisted as `.npy` + manifest
+  - runtime store loaded into memory behind a replaceable `DocStore` protocol
+- Postgres + pgvector is still the long-term target, but it is intentionally deferred while retrieval quality, contracts, and evaluation are stabilized.
+- This keeps the retrieval behavior backend-independent and limits the future persistence swap to `store.py` and `embedding_index.py`.
 
 ## Stack
 
@@ -18,9 +21,10 @@ The hybrid RAG system transforms Step 2 corpus exports (rule cards, knowledge ev
 | Lexical index   | `rank_bm25` (BM25Okapi)                  | Pure-Python, pre-tokenized in RAM  |
 | Vector index    | `sentence-transformers` + numpy           | `paraphrase-multilingual-MiniLM-L12-v2`, 384-dim, brute-force cosine |
 | API             | FastAPI + uvicorn                         | OpenAPI explorer at `/docs`        |
-| Persistence     | JSONL + `.npy`                            | Filesystem-based, loaded into RAM  |
+| Persistence     | JSONL + JSON manifests + `.npy`           | Filesystem-based, loaded into RAM  |
+| Store abstraction | `DocStore` protocol + `InMemoryDocStore` | Replaceable backend boundary       |
 | Reranker        | Deterministic weighted scorer             | No LLM, explainable breakdown     |
-| Graph expansion | In-memory alias registry + adjacency list | Pre-built from corpus              |
+| Graph expansion | Alias registry + concept graph + family index + overlap report | Pre-built from corpus              |
 
 ## Retrieval Document Design
 
@@ -28,19 +32,72 @@ Five unit types, each with a Pydantic model derived from `RetrievalDocBase`:
 
 | Unit Type            | Source Corpus File                  | Key Fields                                                              |
 | -------------------- | ----------------------------------- | ----------------------------------------------------------------------- |
-| `rule_card`          | `corpus_rule_cards.jsonl`           | concept, subconcept, rule_text, conditions, invalidation, visual_summary |
-| `knowledge_event`    | `corpus_knowledge_events.jsonl`     | event_type, normalized_text, concept, timestamps                        |
-| `evidence_ref`       | `corpus_evidence_index.jsonl`       | example_role, visual_summary, linked_rule_ids, frame_ids                |
+| `rule_card`          | `corpus_rule_cards.jsonl`           | concept, subconcept, rule_text, conditions, invalidation, support basis, teaching mode |
+| `knowledge_event`    | `corpus_knowledge_events.jsonl`     | event_type, normalized_text, concept, timestamps, support metadata     |
+| `evidence_ref`       | `corpus_evidence_index.jsonl`       | example_role, visual summary, linked_rule_ids, frame_ids, screenshot paths |
 | `concept_node`       | `corpus_concept_graph.json` (nodes) | name, aliases, source_lessons, frequency stats                          |
 | `concept_relation`   | `corpus_concept_graph.json` (rels)  | source → relation_type → target                                        |
 
-Each doc assembles a structured `text` field for indexing (concept tags, sections, Russian text). A `short_text` (first 200 chars) is kept for display.
+Each doc carries:
+- stable `doc_id`
+- `unit_type`
+- concept/subconcept IDs
+- alias terms
+- keywords
+- provenance
+- timestamp ranges
+- evidence/source links
+- support policy fields (`support_basis`, `evidence_requirement`, `teaching_mode`)
+
+Each doc assembles a structured `text` field for indexing and a `short_text` for display.
+
+## Input Contract
+
+The build reads only Step 2 corpus outputs:
+
+- `output_corpus/schema_versions.json`
+- `output_corpus/lesson_registry.json`
+- `output_corpus/corpus_metadata.json`
+- `output_corpus/corpus_lessons.jsonl`
+- `output_corpus/corpus_knowledge_events.jsonl`
+- `output_corpus/corpus_rule_cards.jsonl`
+- `output_corpus/corpus_evidence_index.jsonl`
+- `output_corpus/corpus_concept_graph.json`
+- `output_corpus/concept_alias_registry.json`
+- `output_corpus/concept_frequencies.json`
+- `output_corpus/concept_rule_map.json`
+- `output_corpus/rule_family_index.json`
+- `output_corpus/concept_overlap_report.json`
+
+## Data Flow
+
+```mermaid
+flowchart LR
+  corpus[output_corpus] --> loader[corpus_loader.py]
+  loader --> docs[retrieval_docs_*.jsonl]
+  loader --> store[InMemoryDocStore]
+  store --> lexical[lexical_index.py]
+  store --> embed[embedding_index.py]
+  corpus --> graph[graph_expand.py]
+  lexical --> retriever[retriever.py]
+  embed --> retriever
+  graph --> retriever
+  retriever --> reranker[reranker.py]
+  reranker --> answer[answer_builder.py]
+  answer --> api[api.py]
+  retriever --> eval[eval.py]
+```
 
 ## Indexing Process
 
-1. **Corpus Loader** reads JSONL/JSON corpus files → builds typed retrieval docs → writes `output_rag/retrieval_docs_all.jsonl`
-2. **Lexical Index** tokenizes docs (whitespace + lowercase + Cyrillic-aware) → builds BM25Okapi → saves manifest
-3. **Embedding Index** encodes all doc texts with sentence-transformer → saves `embeddings.npy` + `embedding_doc_ids.json`
+1. `corpus_loader.py` validates the full Step 2 corpus contract and writes:
+   - `output_rag/retrieval_docs_rule_cards.jsonl`
+   - `output_rag/retrieval_docs_knowledge_events.jsonl`
+   - `output_rag/retrieval_docs_evidence_refs.jsonl`
+   - `output_rag/retrieval_docs_concepts.jsonl`
+   - `output_rag/retrieval_docs_all.jsonl`
+2. `lexical_index.py` tokenizes title/text/keywords/aliases and persists a BM25-ready data snapshot plus manifest.
+3. `embedding_index.py` builds weighted text embeddings and persists vectors plus metadata manifest.
 
 ## Search Flow
 
@@ -48,12 +105,13 @@ Each doc assembles a structured `text` field for indexing (concept tags, section
 Query → Graph Expansion → [Lexical BM25 | Vector Cosine] → Merge → Rerank → Answer Builder → Response
 ```
 
-1. **Graph Expansion**: detect concepts in query via alias registry; 1-hop expansion through relations; collect boosted rule IDs
-2. **Lexical Search**: BM25 top-k with optional unit-type and filter-id masking
-3. **Vector Search**: cosine similarity on pre-normalized embeddings with same filters
-4. **Merge**: union candidate sets by doc_id, carry both scores
-5. **Rerank**: weighted combination of 8 signals (lexical, vector, concept match, alias match, confidence, evidence, timestamps, provenance)
-6. **Answer Builder**: group by unit type, build citations, optional extractive summary from top rules
+1. Normalize the query and infer a likely unit bias (`mixed`, `rule`, `evidence`, `concept`).
+2. Expand the query with alias matches, conservative graph neighbors, overlap hints, and rule-family boosts.
+3. Run lexical retrieval with phrase boost, alias boost, and unit/lesson/concept filters.
+4. Run vector retrieval over the persisted embedding matrix.
+5. Merge candidates by `doc_id` and cap at `merged_top_k`.
+6. Rerank with transparent deterministic signals.
+7. Build a structured grounded response with grouped hits and citations.
 
 ## Reranker Weights
 
@@ -63,10 +121,15 @@ Query → Graph Expansion → [Lexical BM25 | Vector Cosine] → Merge → Reran
 | vector_score         | 0.30   |
 | concept_exact_match  | 0.15   |
 | alias_match          | 0.05   |
+| unit_type_relevance  | 0.04   |
+| support_basis_relevance | 0.02 |
+| teaching_mode_relevance | 0.02 |
 | confidence_score     | 0.05   |
 | evidence_available   | 0.05   |
 | timestamp_available  | 0.05   |
 | provenance_richness  | 0.05   |
+| lesson_diversity_bonus | 0.03 |
+| groundedness         | 0.04   |
 
 ## Filters & Facets
 
@@ -82,6 +145,7 @@ Per-query filters: `unit_types`, `lesson_ids`, `concept_ids`, `min_confidence`. 
 | GET    | `/rag/concept/{id}`  | All docs for a concept           |
 | GET    | `/rag/lesson/{id}`   | All docs for a lesson            |
 | POST   | `/rag/eval/run`      | Run eval harness from API        |
+| GET    | `/rag/facets`        | Debug counts by unit/lesson/concept |
 
 ## CLI Commands
 
@@ -101,14 +165,43 @@ python -m pipeline.rag eval
 
 ## Evaluation
 
-25 curated queries across 7 categories: direct rule lookup, invalidation, concept comparison, evidence lookup, lesson coverage, graph query, multilingual. Metrics: Recall@5, Recall@10, MRR, concept detection accuracy, per-unit hit rate.
+The evaluation harness writes:
+
+- `output_rag/eval/eval_queries.json`
+- `output_rag/eval/eval_results.json`
+- `output_rag/eval/eval_report.json`
+
+It currently runs 27 curated multilingual queries across:
+
+- direct rule lookup
+- invalidation
+- concept comparison
+- example lookup
+- lesson coverage
+- cross-lesson / graph queries
+- higher-timeframe dependency
+- support-policy queries
+- multilingual alias queries
+
+Metrics include:
+
+- Recall@5
+- Recall@10
+- MRR
+- concept-detection success proxy
+- evidence-presence rate
+- timestamp-presence rate
+- evidence-ID rate
+- per-unit hit rate
+- category average recall
 
 ## Limitations
 
-- Brute-force cosine (no ANN) — fine at 140K docs, add HNSW at 500K+
+- In-memory serving is good for development/evaluation but not for long-term concurrency or durable multi-process serving
+- Brute-force cosine (no ANN) — fine at moderate scale, add ANN/pgvector later
 - No LLM-based reranking or answer generation (by design)
-- Single-process; no concurrent writes to indexes
-- Embedding model loaded per query in CLI `search` (server keeps it in memory)
+- Current concept detection still underperforms on some Russian concept-name queries and should be improved in a later pass
+- Postgres/pgvector, migrations, and durable serving are intentionally deferred
 
 ## What Step 4 Consumes
 

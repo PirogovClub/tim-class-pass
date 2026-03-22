@@ -1,5 +1,6 @@
 {
   "backend": "rank_bm25",
   "doc_count": 1591,
-  "tokenizer": "whitespace_lowercase_cyrillic"
+  "tokenizer": "whitespace_lowercase_cyrillic",
+  "avg_doc_length": 41.79195474544312
 }

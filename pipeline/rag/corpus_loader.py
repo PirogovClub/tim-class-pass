@@ -1,4 +1,4 @@
-"""Load Step 2 corpus exports and transform into retrieval documents."""
+"""Load Step 2 corpus exports and transform them into retrieval documents."""
 
 from __future__ import annotations
 
@@ -7,16 +7,16 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from pipeline.rag.contracts import CorpusInputManifest, RAGBuildResult
 from pipeline.rag.config import RAGConfig
 from pipeline.rag.retrieval_docs import (
     ConceptNodeDoc,
     ConceptRelationDoc,
     EvidenceRefDoc,
     KnowledgeEventDoc,
-    RetrievalDocBase,
     RuleCardDoc,
 )
-from pipeline.rag.store import DocStore
+from pipeline.rag.store import InMemoryDocStore
 
 
 def _read_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -33,41 +33,112 @@ def _read_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def _validate_corpus(root: Path) -> None:
-    required = [
-        "corpus_knowledge_events.jsonl",
-        "corpus_rule_cards.jsonl",
-        "corpus_evidence_index.jsonl",
-        "corpus_concept_graph.json",
-        "concept_alias_registry.json",
-        "concept_rule_map.json",
-        "corpus_metadata.json",
-    ]
-    for name in required:
-        if not (root / name).exists():
-            raise FileNotFoundError(f"Missing required corpus file: {root / name}")
+def _jsonl_rows(path: Path) -> list[dict[str, Any]]:
+    rows = _read_jsonl(path)
+    if not isinstance(rows, list):
+        raise ValueError(f"Expected JSONL list from {path}")
+    return rows
 
 
-def load_corpus_and_build_docs(cfg: RAGConfig) -> DocStore:
+def _write_jsonl(path: Path, docs: list[dict[str, Any]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w", encoding="utf-8") as handle:
+        for doc in docs:
+            handle.write(json.dumps(doc, ensure_ascii=False) + "\n")
+
+
+def _append_unique_str(items: list[str], value: str) -> None:
+    if value and value not in items:
+        items.append(value)
+
+
+def _append_unique_timestamp(items: list[dict[str, Any]], value: dict[str, Any]) -> None:
+    if not value:
+        return
+    if value not in items:
+        items.append(value)
+
+
+def _enrich_doc_links(
+    store: InMemoryDocStore,
+    alias_registry: dict[str, Any],
+    overlap_report: list[dict[str, Any]],
+) -> None:
+    related_terms_by_concept: dict[str, list[str]] = {}
+    for row in overlap_report:
+        concept_id = row.get("concept_id")
+        name = row.get("name")
+        if concept_id and name:
+            related_terms_by_concept.setdefault(concept_id, []).append(name)
+
+    event_map = {doc["doc_id"]: doc for doc in store.get_by_unit("knowledge_event")}
+    evidence_map = {doc["doc_id"]: doc for doc in store.get_by_unit("evidence_ref")}
+
+    for doc in store.get_all():
+        alias_terms = list(doc.get("alias_terms") or [])
+        keywords = list(doc.get("keywords") or [])
+
+        for concept_id in doc.get("canonical_concept_ids") or []:
+            alias_info = alias_registry.get(concept_id, {})
+            for term in alias_info.get("aliases") or []:
+                _append_unique_str(alias_terms, term)
+                _append_unique_str(keywords, term)
+            if alias_info.get("name"):
+                _append_unique_str(alias_terms, alias_info["name"])
+                _append_unique_str(keywords, alias_info["name"])
+            for related in related_terms_by_concept.get(concept_id, []):
+                _append_unique_str(keywords, related)
+
+        if doc.get("unit_type") == "rule_card":
+            for event_id in doc.get("source_event_ids") or []:
+                event_doc = event_map.get(event_id)
+                if not event_doc:
+                    continue
+                for ts in event_doc.get("timestamps") or []:
+                    _append_unique_timestamp(doc["timestamps"], ts)
+                for evidence_id in event_doc.get("evidence_ids") or []:
+                    _append_unique_str(doc["evidence_ids"], evidence_id)
+
+        if doc.get("unit_type") in {"rule_card", "knowledge_event"}:
+            for evidence_id in doc.get("evidence_ids") or []:
+                evidence_doc = evidence_map.get(evidence_id)
+                if not evidence_doc:
+                    continue
+                for ts in evidence_doc.get("timestamps") or []:
+                    _append_unique_timestamp(doc["timestamps"], ts)
+
+        doc["alias_terms"] = alias_terms
+        doc["keywords"] = keywords
+
+
+def load_corpus_and_build_docs(cfg: RAGConfig) -> InMemoryDocStore:
     """Load all Step 2 corpus exports, transform to retrieval docs."""
-    _validate_corpus(cfg.corpus_root)
-    store = DocStore()
+    manifest = CorpusInputManifest.from_root(cfg.corpus_root)
+    store = InMemoryDocStore()
 
-    frequencies = _read_json(cfg.corpus_root / "concept_frequencies.json") if (cfg.corpus_root / "concept_frequencies.json").exists() else {}
+    frequencies = _read_json(manifest.path("concept_frequencies.json"))
+    alias_registry = _read_json(manifest.path("concept_alias_registry.json"))
+    overlap_report = _read_json(manifest.path("concept_overlap_report.json"))
+    _read_json(manifest.path("schema_versions.json"))
+    _read_json(manifest.path("lesson_registry.json"))
+    _jsonl_rows(manifest.path("corpus_lessons.jsonl"))
+    _read_json(manifest.path("rule_family_index.json"))
+    _read_json(manifest.path("concept_rule_map.json"))
+    _read_json(manifest.path("corpus_metadata.json"))
 
-    rules = _read_jsonl(cfg.corpus_root / "corpus_rule_cards.jsonl")
+    rules = _jsonl_rows(manifest.path("corpus_rule_cards.jsonl"))
     for raw in rules:
         store.add(RuleCardDoc.from_corpus(raw))
 
-    events = _read_jsonl(cfg.corpus_root / "corpus_knowledge_events.jsonl")
+    events = _jsonl_rows(manifest.path("corpus_knowledge_events.jsonl"))
     for raw in events:
         store.add(KnowledgeEventDoc.from_corpus(raw))
 
-    evidence = _read_jsonl(cfg.corpus_root / "corpus_evidence_index.jsonl")
+    evidence = _jsonl_rows(manifest.path("corpus_evidence_index.jsonl"))
     for raw in evidence:
         store.add(EvidenceRefDoc.from_corpus(raw))
 
-    graph = _read_json(cfg.corpus_root / "corpus_concept_graph.json")
+    graph = _read_json(manifest.path("corpus_concept_graph.json"))
     node_name_map: dict[str, str] = {}
     for node in graph.get("nodes", []):
         node_name_map[node.get("global_id", "")] = node.get("name", "")
@@ -76,6 +147,7 @@ def load_corpus_and_build_docs(cfg: RAGConfig) -> DocStore:
     for rel in graph.get("relations", []):
         store.add(ConceptRelationDoc.from_corpus(rel, node_name_map))
 
+    _enrich_doc_links(store, alias_registry, overlap_report if isinstance(overlap_report, list) else [])
     return store
 
 
@@ -86,28 +158,33 @@ def build_and_persist(cfg: RAGConfig) -> dict[str, Any]:
 
     store.save(cfg.rag_root / "retrieval_docs_all.jsonl")
 
-    for ut in store.unit_types():
-        docs = store.get_by_unit(ut)  # type: ignore[arg-type]
-        out_path = cfg.rag_root / f"retrieval_docs_{ut}s.jsonl"
-        out_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(out_path, "w", encoding="utf-8") as f:
-            for doc in docs:
-                f.write(json.dumps(doc, ensure_ascii=False) + "\n")
+    output_map = {
+        "rule_card": cfg.rag_root / "retrieval_docs_rule_cards.jsonl",
+        "knowledge_event": cfg.rag_root / "retrieval_docs_knowledge_events.jsonl",
+        "evidence_ref": cfg.rag_root / "retrieval_docs_evidence_refs.jsonl",
+        "concept_node": cfg.rag_root / "retrieval_docs_concept_nodes.jsonl",
+        "concept_relation": cfg.rag_root / "retrieval_docs_concept_relations.jsonl",
+    }
+    for unit_type, path in output_map.items():
+        _write_jsonl(path, store.get_by_unit(unit_type))  # type: ignore[arg-type]
+
+    concept_docs = store.get_by_unit("concept_node") + store.get_by_unit("concept_relation")
+    _write_jsonl(cfg.rag_root / "retrieval_docs_concepts.jsonl", concept_docs)
 
     corpus_meta = {}
     meta_path = cfg.corpus_root / "corpus_metadata.json"
     if meta_path.exists():
         corpus_meta = _read_json(meta_path)
 
-    build_meta = {
-        "corpus_contract_version": corpus_meta.get("corpus_contract_version", "unknown"),
-        "source_corpus_root": str(cfg.corpus_root),
-        "retrieval_doc_counts": {ut: len(store.get_by_unit(ut)) for ut in store.unit_types()},  # type: ignore[arg-type]
-        "total_retrieval_docs": store.doc_count,
-        "build_timestamp": datetime.now(timezone.utc).isoformat(),
-    }
+    build_result = RAGBuildResult(
+        corpus_contract_version=corpus_meta.get("corpus_contract_version", "unknown"),
+        source_corpus_root=cfg.corpus_root,
+        retrieval_doc_counts={ut: len(store.get_by_unit(ut)) for ut in store.unit_types()},  # type: ignore[arg-type]
+        total_retrieval_docs=store.doc_count,
+        build_timestamp=datetime.now(timezone.utc),
+    )
     (cfg.rag_root / "rag_build_metadata.json").write_text(
-        json.dumps(build_meta, indent=2, ensure_ascii=False), encoding="utf-8"
+        build_result.model_dump_json(indent=2), encoding="utf-8"
     )
 
-    return build_meta
+    return build_result.model_dump(mode="json")

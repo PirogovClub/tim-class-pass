@@ -1,8 +1,4 @@
-"""Retrieval document models derived from Step 2 corpus entities.
-
-Each unit type has a dedicated subclass that assembles structured retrieval
-text while preserving the original corpus fields and provenance.
-"""
+"""Retrieval document models derived from Step 2 corpus entities."""
 
 from __future__ import annotations
 
@@ -16,18 +12,22 @@ from pipeline.rag.config import UnitType
 class RetrievalDocBase(BaseModel):
     doc_id: str
     unit_type: UnitType
-    lesson_id: str
-    lesson_slug: str = ""
-    language: str = "ru"
+    lesson_id: str | None = None
+    lesson_slug: str | None = None
+    language: str | None = "ru"
     canonical_concept_ids: list[str] = Field(default_factory=list)
     canonical_subconcept_ids: list[str] = Field(default_factory=list)
     alias_terms: list[str] = Field(default_factory=list)
     title: str = ""
     text: str = ""
     short_text: str = ""
+    keywords: list[str] = Field(default_factory=list)
     provenance: dict[str, Any] = Field(default_factory=dict)
     confidence_score: Optional[float] = None
-    timestamps: list[str] = Field(default_factory=list)
+    support_basis: Optional[str] = None
+    evidence_requirement: Optional[str] = None
+    teaching_mode: Optional[str] = None
+    timestamps: list[dict[str, Any]] = Field(default_factory=list)
     evidence_ids: list[str] = Field(default_factory=list)
     source_event_ids: list[str] = Field(default_factory=list)
     source_rule_ids: list[str] = Field(default_factory=list)
@@ -42,7 +42,54 @@ def _join_nonempty(*parts: str | None, sep: str = " | ") -> str:
     return sep.join(p.strip() for p in parts if p and p.strip())
 
 
-# ── Rule Card ────────────────────────────────────────────────────────────
+def _compact_keywords(*groups: Any) -> list[str]:
+    seen: set[str] = set()
+    output: list[str] = []
+    for group in groups:
+        if isinstance(group, str):
+            values = [group]
+        elif isinstance(group, list):
+            values = [item for item in group if isinstance(item, str)]
+        else:
+            values = []
+        for value in values:
+            normalized = " ".join(value.split()).strip()
+            if not normalized:
+                continue
+            key = normalized.lower()
+            if key in seen:
+                continue
+            seen.add(key)
+            output.append(normalized)
+    return output
+
+
+def _timestamp_entries(raw: dict[str, Any]) -> list[dict[str, Any]]:
+    start = raw.get("timestamp_start")
+    end = raw.get("timestamp_end")
+    if not start and not end:
+        return []
+    return [{
+        "start": start,
+        "end": end,
+    }]
+
+
+def _base_kwargs(raw: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "lesson_id": raw.get("lesson_id"),
+        "lesson_slug": raw.get("lesson_slug"),
+        "language": raw.get("source_language"),
+        "canonical_concept_ids": [raw["concept_id"]] if raw.get("concept_id") else [],
+        "canonical_subconcept_ids": [raw["subconcept_id"]] if raw.get("subconcept_id") else [],
+        "confidence_score": raw.get("confidence_score"),
+        "support_basis": raw.get("support_basis"),
+        "evidence_requirement": raw.get("evidence_requirement"),
+        "teaching_mode": raw.get("teaching_mode"),
+        "timestamps": _timestamp_entries(raw),
+        "evidence_ids": raw.get("evidence_refs") or [],
+        "source_event_ids": raw.get("source_event_ids") or [],
+    }
 
 
 class RuleCardDoc(RetrievalDocBase):
@@ -84,30 +131,60 @@ class RuleCardDoc(RetrievalDocBase):
             parts.append(f"[Comparisons] {'; '.join(comparisons)}")
         if visual_summary:
             parts.append(f"[Visual] {visual_summary}")
+        if raw.get("support_basis"):
+            parts.append(f"[Support Basis] {raw['support_basis']}")
+        if raw.get("evidence_requirement"):
+            parts.append(f"[Evidence Requirement] {raw['evidence_requirement']}")
+        if raw.get("teaching_mode"):
+            parts.append(f"[Teaching Mode] {raw['teaching_mode']}")
 
         text = "\n".join(p for p in parts if p)
-        ts: list[str] = []
-        for eid in raw.get("source_event_ids", []):
-            if isinstance(eid, str):
-                ts.append(eid)
+        alias_terms = _compact_keywords(
+            concept,
+            subconcept,
+            raw.get("concept_label_ru"),
+            raw.get("subconcept_label_ru"),
+        )
+        keywords = _compact_keywords(
+            concept,
+            subconcept,
+            conditions,
+            invalidation,
+            exceptions,
+            comparisons,
+            raw.get("pattern_tags") or [],
+            raw.get("algorithm_notes") or [],
+        )
 
-        return RuleCardDoc(
+        doc = RuleCardDoc(
             doc_id=raw.get("global_id", raw.get("rule_id", "")),
-            lesson_id=raw.get("lesson_id", ""),
-            lesson_slug=raw.get("lesson_slug", ""),
-            language=raw.get("source_language", "ru"),
-            canonical_concept_ids=[raw["concept_id"]] if raw.get("concept_id") else [],
-            canonical_subconcept_ids=[raw["subconcept_id"]] if raw.get("subconcept_id") else [],
+            alias_terms=alias_terms,
             title=_join_nonempty(concept, subconcept, sep=" / "),
             text=text,
             short_text=_trunc(text),
-            confidence_score=raw.get("confidence_score"),
-            evidence_ids=raw.get("evidence_refs") or [],
-            source_event_ids=raw.get("source_event_ids") or [],
+            keywords=keywords,
             provenance={
+                "lesson_title": raw.get("lesson_title"),
                 "section": raw.get("section"),
                 "subsection": raw.get("subsection"),
                 "confidence": raw.get("confidence"),
+                "support_basis": raw.get("support_basis"),
+            },
+            source_rule_ids=[raw.get("global_id", raw.get("rule_id", ""))],
+            metadata={
+                **(raw.get("metadata") or {}),
+                "conditions": conditions,
+                "invalidation": invalidation,
+                "exceptions": exceptions,
+                "comparisons": comparisons,
+                "algorithm_notes": raw.get("algorithm_notes") or [],
+                "visual_support_level": raw.get("visual_support_level"),
+                "transcript_support_level": raw.get("transcript_support_level"),
+                "transcript_support_score": raw.get("transcript_support_score"),
+                "visual_support_score": raw.get("visual_support_score"),
+                "has_visual_evidence": raw.get("has_visual_evidence"),
+                "transcript_anchor_count": raw.get("transcript_anchor_count"),
+                "transcript_repetition_count": raw.get("transcript_repetition_count"),
             },
             rule_text=rule_text,
             rule_text_ru=rule_text_ru,
@@ -118,7 +195,9 @@ class RuleCardDoc(RetrievalDocBase):
             visual_summary=visual_summary,
             concept=concept,
             subconcept=subconcept,
+            **_base_kwargs(raw),
         )
+        return doc
 
 
 # ── Knowledge Event ──────────────────────────────────────────────────────
@@ -149,34 +228,65 @@ class KnowledgeEventDoc(RetrievalDocBase):
         ]
         if ts_start:
             parts.append(f"[Time] {ts_start}–{ts_end}")
+        if raw.get("support_basis"):
+            parts.append(f"[Support Basis] {raw['support_basis']}")
 
         text = " ".join(p for p in parts if p)
-        timestamps = [t for t in [ts_start, ts_end] if t]
+        alias_terms = _compact_keywords(
+            concept,
+            subconcept,
+            raw.get("concept_label_ru"),
+            raw.get("subconcept_label_ru"),
+            raw.get("pattern_tags") or [],
+        )
+        keywords = _compact_keywords(
+            concept,
+            subconcept,
+            event_type,
+            raw.get("rule_type"),
+            raw.get("pattern_tags") or [],
+            raw.get("condition_ids") or [],
+            raw.get("invalidation_ids") or [],
+            raw.get("exception_ids") or [],
+        )
 
         return KnowledgeEventDoc(
             doc_id=raw.get("global_id", raw.get("event_id", "")),
-            lesson_id=raw.get("lesson_id", ""),
-            lesson_slug=raw.get("lesson_slug", ""),
-            language=raw.get("source_language", "ru"),
-            canonical_concept_ids=[raw["concept_id"]] if raw.get("concept_id") else [],
-            canonical_subconcept_ids=[raw["subconcept_id"]] if raw.get("subconcept_id") else [],
+            alias_terms=alias_terms,
             title=_join_nonempty(event_type, concept, sep=" / "),
             text=text,
             short_text=_trunc(text),
-            confidence_score=raw.get("confidence_score"),
-            timestamps=timestamps,
-            source_event_ids=raw.get("source_event_ids") or [],
-            evidence_ids=raw.get("evidence_refs") or [],
+            keywords=keywords,
             provenance={
+                "lesson_title": raw.get("lesson_title"),
                 "section": raw.get("section"),
                 "subsection": raw.get("subsection"),
                 "chunk_index": raw.get("source_chunk_index"),
+                "source_line_start": raw.get("source_line_start"),
+                "source_line_end": raw.get("source_line_end"),
             },
             event_type=event_type,
             normalized_text=norm,
             normalized_text_ru=norm_ru,
             concept=concept,
             subconcept=subconcept,
+            metadata={
+                **(raw.get("metadata") or {}),
+                "rule_type": raw.get("rule_type"),
+                "pattern_tags": raw.get("pattern_tags") or [],
+                "source_quote": raw.get("source_quote"),
+                "transcript_anchors": raw.get("transcript_anchors") or [],
+                "timestamp_confidence": raw.get("timestamp_confidence"),
+                "anchor_match_source": raw.get("anchor_match_source"),
+                "anchor_line_count": raw.get("anchor_line_count"),
+                "anchor_span_width": raw.get("anchor_span_width"),
+                "anchor_density": raw.get("anchor_density"),
+                "visual_support_level": raw.get("visual_support_level"),
+                "transcript_support_level": raw.get("transcript_support_level"),
+                "transcript_support_score": raw.get("transcript_support_score"),
+                "visual_support_score": raw.get("visual_support_score"),
+            },
+            **_base_kwargs(raw),
         )
 
 
@@ -195,7 +305,7 @@ class EvidenceRefDoc(RetrievalDocBase):
         role = raw.get("example_role") or ""
         summary_ru = raw.get("summary_ru") or ""
         summary_en = raw.get("summary_en") or ""
-        summary = raw.get("compact_visual_summary") or summary_ru or summary_en
+        summary = raw.get("compact_visual_summary") or raw.get("summary_primary") or summary_ru or summary_en
         linked_rules = raw.get("linked_rule_ids") or []
         ts_start = raw.get("timestamp_start") or ""
         ts_end = raw.get("timestamp_end") or ""
@@ -206,29 +316,57 @@ class EvidenceRefDoc(RetrievalDocBase):
             f"[Rules] {', '.join(linked_rules[:5])}" if linked_rules else "",
             f"[Time] {ts_start}–{ts_end}" if ts_start else "",
         ]
+        if raw.get("evidence_strength"):
+            parts.append(f"[Strength] {raw['evidence_strength']}")
+        if raw.get("evidence_role_detail"):
+            parts.append(f"[Role Detail] {raw['evidence_role_detail']}")
         text = " ".join(p for p in parts if p)
-        timestamps = [t for t in [ts_start, ts_end] if t]
+        keywords = _compact_keywords(
+            role,
+            raw.get("visual_type"),
+            raw.get("evidence_strength"),
+            raw.get("evidence_role_detail"),
+            raw.get("related_concept_ids") or [],
+            raw.get("frame_ids") or [],
+        )
 
         return EvidenceRefDoc(
             doc_id=raw.get("global_id", raw.get("evidence_id", "")),
-            lesson_id=raw.get("lesson_id", ""),
-            lesson_slug=raw.get("lesson_slug", ""),
-            language=raw.get("source_language", "ru"),
+            lesson_id=raw.get("lesson_id"),
+            lesson_slug=raw.get("lesson_slug"),
+            language=raw.get("source_language"),
+            alias_terms=_compact_keywords(role, raw.get("evidence_role_detail")),
             title=f"Evidence: {role}",
             text=text,
             short_text=_trunc(text),
-            timestamps=timestamps,
-            source_event_ids=raw.get("source_event_ids") or [],
-            source_rule_ids=linked_rules,
+            keywords=keywords,
             provenance={
+                "lesson_title": raw.get("lesson_title"),
                 "section": raw.get("section"),
                 "subsection": raw.get("subsection"),
                 "frame_count": len(raw.get("frame_ids") or []),
             },
+            canonical_concept_ids=raw.get("related_concept_ids") or [],
+            confidence_score=None,
+            timestamps=_timestamp_entries(raw),
+            evidence_ids=[],
+            source_event_ids=raw.get("source_event_ids") or [],
+            source_rule_ids=linked_rules,
             example_role=role,
             visual_summary=summary,
             visual_type=raw.get("visual_type") or "",
             frame_ids=raw.get("frame_ids") or [],
+            metadata={
+                **(raw.get("metadata") or {}),
+                "screenshot_paths": raw.get("screenshot_paths") or [],
+                "summary_primary": raw.get("summary_primary"),
+                "summary_ru": summary_ru,
+                "summary_en": summary_en,
+                "summary_language": raw.get("summary_language"),
+                "evidence_strength": raw.get("evidence_strength"),
+                "evidence_role_detail": raw.get("evidence_role_detail"),
+                "raw_visual_event_ids": raw.get("raw_visual_event_ids") or [],
+            },
         )
 
 
@@ -279,12 +417,18 @@ class ConceptNodeDoc(RetrievalDocBase):
             title=name,
             text=text,
             short_text=_trunc(text),
+            keywords=_compact_keywords(name, aliases, ctype, raw.get("canonical_label")),
             source_rule_ids=raw.get("source_rule_ids") or [],
-            provenance={"source_lessons": source_lessons},
+            provenance={"source_lessons": source_lessons, "type": ctype},
             concept_name=name,
             concept_type=ctype,
             aliases=aliases,
             source_lessons=source_lessons,
+            metadata={
+                **(raw.get("metadata") or {}),
+                "canonical_label": raw.get("canonical_label"),
+                "parent_id": raw.get("parent_id"),
+            },
         )
 
 
@@ -321,10 +465,17 @@ class ConceptRelationDoc(RetrievalDocBase):
             title=f"{src_name} → {tgt_name}",
             text=text,
             short_text=_trunc(text),
+            keywords=_compact_keywords(src_name, tgt_name, rel_type),
+            alias_terms=_compact_keywords(src_name, tgt_name),
             source_rule_ids=raw.get("source_rule_ids") or [],
-            provenance={"source_lessons": source_lessons},
+            provenance={"source_lessons": source_lessons, "relation_type": rel_type},
             source_concept=src_name,
             target_concept=tgt_name,
             relation_type=rel_type,
             weight=raw.get("weight", 1),
+            metadata={
+                "source_id": src_id,
+                "target_id": tgt_id,
+                "source_lessons": source_lessons,
+            },
         )

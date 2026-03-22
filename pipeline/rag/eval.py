@@ -1,4 +1,4 @@
-"""Evaluation harness: curated queries, Recall@k, MRR, per-unit hit rate."""
+"""Evaluation harness for the hybrid RAG system."""
 
 from __future__ import annotations
 
@@ -10,84 +10,83 @@ from pipeline.rag.config import RAGConfig
 from pipeline.rag.retriever import HybridRetriever
 
 CURATED_QUERIES: list[dict[str, Any]] = [
-    # ── Direct rule lookup ───────────────────────────────────────────
-    {"query": "Как определить уровень для стоп-лосса?", "category": "direct_rule", "expected_unit": "rule_card", "expected_concept": "Stop Loss"},
-    {"query": "Правила постановки тейк-профита", "category": "direct_rule", "expected_unit": "rule_card", "expected_concept": "Take Profit"},
-    {"query": "Что такое BPU в Price Action?", "category": "direct_rule", "expected_unit": "rule_card", "expected_concept": "BPU"},
-    {"query": "Как работает накопление возле уровня?", "category": "direct_rule", "expected_unit": "rule_card", "expected_concept": "Accumulation"},
-    {"query": "Правила входа после ложного пробоя", "category": "direct_rule", "expected_unit": "rule_card", "expected_concept": "Movement near levels"},
-
-    # ── Invalidation / exceptions ────────────────────────────────────
-    {"query": "Когда правило стоп-лосса не работает?", "category": "invalidation", "expected_unit": "rule_card", "expected_concept": "Stop Loss"},
-    {"query": "Исключения из правил управления позицией", "category": "invalidation", "expected_unit": "rule_card", "expected_concept": "Trade Management"},
-    {"query": "Условия отмены входа в позицию", "category": "invalidation", "expected_unit": "rule_card", "expected_concept": "Trade Management"},
-
-    # ── Concept comparison ───────────────────────────────────────────
-    {"query": "Разница между техническим и обычным стоп-лоссом", "category": "concept_comparison", "expected_unit": "rule_card", "expected_concept": "Technical Stop Loss"},
-    {"query": "BPU versus обычный бар", "category": "concept_comparison", "expected_unit": "rule_card", "expected_concept": "BPU"},
-    {"query": "Сравнение стоп-лосса и тейк-профита", "category": "concept_comparison", "expected_unit": "rule_card", "expected_concept": "Stop Loss"},
-
-    # ── Example / evidence lookup ────────────────────────────────────
-    {"query": "Покажи пример накопления на графике", "category": "evidence_lookup", "expected_unit": "evidence_ref", "expected_concept": "Accumulation"},
-    {"query": "Визуальный пример ложного пробоя уровня", "category": "evidence_lookup", "expected_unit": "evidence_ref", "expected_concept": "Movement near levels"},
-    {"query": "Пример постановки стоп-лосса", "category": "evidence_lookup", "expected_unit": "evidence_ref", "expected_concept": "Stop Loss"},
-
-    # ── Lesson coverage ──────────────────────────────────────────────
-    {"query": "Какие концепции рассматривались в уроке?", "category": "lesson_coverage", "expected_unit": "knowledge_event", "expected_concept": None},
-    {"query": "О чем рассказывал урок про Price Action?", "category": "lesson_coverage", "expected_unit": "knowledge_event", "expected_concept": "Price Action"},
-
-    # ── Cross-lesson / concept graph ─────────────────────────────────
-    {"query": "Связь между уровнями и стоп-лоссом", "category": "graph_query", "expected_unit": "concept_relation", "expected_concept": "Stop Loss"},
-    {"query": "Какие правила связаны с анализом таймфреймов?", "category": "graph_query", "expected_unit": "rule_card", "expected_concept": "Анализ таймфреймов"},
-    {"query": "Концепции связанные с волатильностью", "category": "graph_query", "expected_unit": "concept_node", "expected_concept": "Волатильность"},
-
-    # ── Timeframe dependency ─────────────────────────────────────────
-    {"query": "Как определить дневной уровень?", "category": "timeframe", "expected_unit": "rule_card", "expected_concept": None},
-    {"query": "Правила торговли на разных таймфреймах", "category": "timeframe", "expected_unit": "rule_card", "expected_concept": "Анализ таймфреймов"},
-
-    # ── Multilingual / alias ─────────────────────────────────────────
-    {"query": "Stop loss placement rules", "category": "multilingual", "expected_unit": "rule_card", "expected_concept": "Stop Loss"},
-    {"query": "Take profit strategy", "category": "multilingual", "expected_unit": "rule_card", "expected_concept": "Take Profit"},
-    {"query": "БСУ бар строительный упорный", "category": "alias", "expected_unit": "rule_card", "expected_concept": "BPU"},
-    {"query": "Re-test уровня после пробоя", "category": "alias", "expected_unit": "rule_card", "expected_concept": "Re-test"},
+    {"query_id": "q001", "query_text": "Как определить уровень для стоп-лосса?", "category": "direct_rule_lookup", "expected_unit_types": ["rule_card"], "expected_concepts": ["Stop Loss"], "relevant_doc_ids": [], "notes": "Direct rule lookup."},
+    {"query_id": "q002", "query_text": "Правила постановки тейк-профита", "category": "direct_rule_lookup", "expected_unit_types": ["rule_card"], "expected_concepts": ["Take Profit"], "relevant_doc_ids": [], "notes": "Direct rule lookup."},
+    {"query_id": "q003", "query_text": "Что такое BPU в Price Action?", "category": "direct_rule_lookup", "expected_unit_types": ["rule_card", "concept_node"], "expected_concepts": ["BPU"], "relevant_doc_ids": [], "notes": "Definition-style lookup."},
+    {"query_id": "q004", "query_text": "Как работает накопление возле уровня?", "category": "direct_rule_lookup", "expected_unit_types": ["rule_card", "knowledge_event"], "expected_concepts": ["Accumulation"], "relevant_doc_ids": [], "notes": "Concept rule lookup."},
+    {"query_id": "q005", "query_text": "Правила входа после ложного пробоя", "category": "direct_rule_lookup", "expected_unit_types": ["rule_card"], "expected_concepts": ["Ложный пробой"], "relevant_doc_ids": [], "notes": "Rule lookup for breakout/failure setup."},
+    {"query_id": "q006", "query_text": "Когда правило стоп-лосса не работает?", "category": "invalidation", "expected_unit_types": ["rule_card", "knowledge_event"], "expected_concepts": ["Stop Loss"], "relevant_doc_ids": [], "notes": "Invalidation query."},
+    {"query_id": "q007", "query_text": "Исключения из правил управления позицией", "category": "invalidation", "expected_unit_types": ["rule_card"], "expected_concepts": ["Trade Management"], "relevant_doc_ids": [], "notes": "Exception lookup."},
+    {"query_id": "q008", "query_text": "Условия отмены входа в позицию", "category": "invalidation", "expected_unit_types": ["rule_card", "knowledge_event"], "expected_concepts": ["Trade Management"], "relevant_doc_ids": [], "notes": "Cancellation/invalidation lookup."},
+    {"query_id": "q009", "query_text": "Разница между техническим и обычным стоп-лоссом", "category": "concept_comparison", "expected_unit_types": ["rule_card", "concept_relation"], "expected_concepts": ["Technical Stop Loss", "Stop Loss"], "relevant_doc_ids": [], "notes": "Comparison query."},
+    {"query_id": "q010", "query_text": "BPU versus обычный бар", "category": "concept_comparison", "expected_unit_types": ["rule_card", "concept_relation"], "expected_concepts": ["BPU"], "relevant_doc_ids": [], "notes": "Cross-language comparison."},
+    {"query_id": "q011", "query_text": "Сравнение стоп-лосса и тейк-профита", "category": "concept_comparison", "expected_unit_types": ["rule_card", "concept_relation"], "expected_concepts": ["Stop Loss", "Take Profit"], "relevant_doc_ids": [], "notes": "Comparison query."},
+    {"query_id": "q012", "query_text": "Покажи пример накопления на графике", "category": "example_lookup", "expected_unit_types": ["evidence_ref"], "expected_concepts": ["Accumulation"], "relevant_doc_ids": [], "notes": "Evidence-focused query."},
+    {"query_id": "q013", "query_text": "Визуальный пример ложного пробоя уровня", "category": "example_lookup", "expected_unit_types": ["evidence_ref"], "expected_concepts": ["Ложный пробой"], "relevant_doc_ids": [], "notes": "Evidence-focused query."},
+    {"query_id": "q014", "query_text": "Пример постановки стоп-лосса", "category": "example_lookup", "expected_unit_types": ["evidence_ref", "rule_card"], "expected_concepts": ["Stop Loss"], "relevant_doc_ids": [], "notes": "Evidence plus rule support."},
+    {"query_id": "q015", "query_text": "Какие уроки обсуждают volume confirmation?", "category": "lesson_coverage", "expected_unit_types": ["knowledge_event", "concept_node"], "expected_concepts": ["анализ объема"], "relevant_doc_ids": [], "notes": "Lesson coverage query."},
+    {"query_id": "q016", "query_text": "О чем рассказывал урок про Price Action?", "category": "lesson_coverage", "expected_unit_types": ["knowledge_event", "rule_card"], "expected_concepts": ["Price Action"], "relevant_doc_ids": [], "notes": "Lesson coverage query."},
+    {"query_id": "q017", "query_text": "Что общего между уровнями и стоп-лоссом?", "category": "cross_lesson_conflict", "expected_unit_types": ["concept_relation", "concept_node"], "expected_concepts": ["Уровень", "Stop Loss"], "relevant_doc_ids": [], "notes": "Graph relation query."},
+    {"query_id": "q018", "query_text": "Какие правила связаны с анализом таймфреймов?", "category": "cross_lesson_conflict", "expected_unit_types": ["rule_card", "concept_node"], "expected_concepts": ["Анализ таймфреймов"], "relevant_doc_ids": [], "notes": "Concept/rule linkage query."},
+    {"query_id": "q019", "query_text": "Концепции связанные с волатильностью", "category": "cross_lesson_conflict", "expected_unit_types": ["concept_node", "concept_relation"], "expected_concepts": ["Волатильность"], "relevant_doc_ids": [], "notes": "Graph expansion query."},
+    {"query_id": "q020", "query_text": "Как определить дневной уровень?", "category": "higher_timeframe_dependency", "expected_unit_types": ["rule_card", "knowledge_event"], "expected_concepts": ["Уровень"], "relevant_doc_ids": [], "notes": "Higher timeframe dependency."},
+    {"query_id": "q021", "query_text": "Правила торговли на разных таймфреймах", "category": "higher_timeframe_dependency", "expected_unit_types": ["rule_card"], "expected_concepts": ["Анализ таймфреймов"], "relevant_doc_ids": [], "notes": "Timeframe query."},
+    {"query_id": "q022", "query_text": "Какие правила подтверждаются только по transcript?", "category": "support_policy", "expected_unit_types": ["rule_card", "knowledge_event"], "expected_concepts": [], "relevant_doc_ids": [], "notes": "Support-basis query."},
+    {"query_id": "q023", "query_text": "Какие примеры требуют визуальных доказательств?", "category": "support_policy", "expected_unit_types": ["evidence_ref", "rule_card"], "expected_concepts": [], "relevant_doc_ids": [], "notes": "Evidence policy query."},
+    {"query_id": "q024", "query_text": "Stop loss placement rules", "category": "multilingual", "expected_unit_types": ["rule_card"], "expected_concepts": ["Stop Loss"], "relevant_doc_ids": [], "notes": "English query."},
+    {"query_id": "q025", "query_text": "Take profit strategy", "category": "multilingual", "expected_unit_types": ["rule_card"], "expected_concepts": ["Take Profit"], "relevant_doc_ids": [], "notes": "English query."},
+    {"query_id": "q026", "query_text": "БСУ бар строительный упорный", "category": "multilingual", "expected_unit_types": ["rule_card", "concept_node"], "expected_concepts": ["BPU"], "relevant_doc_ids": [], "notes": "Alias lookup."},
+    {"query_id": "q027", "query_text": "Re-test уровня после пробоя", "category": "multilingual", "expected_unit_types": ["rule_card", "concept_node"], "expected_concepts": ["Re-test"], "relevant_doc_ids": [], "notes": "Mixed-language alias lookup."},
 ]
 
 
-def _recall_at_k(hits: list[dict[str, Any]], expected_unit: str | None, k: int) -> float:
-    if not expected_unit:
+def _recall_at_k(
+    hits: list[dict[str, Any]],
+    relevant_doc_ids: list[str],
+    expected_unit_types: list[str],
+    k: int,
+) -> float:
+    if relevant_doc_ids:
+        found = any(hit.get("doc_id") in relevant_doc_ids for hit in hits[:k])
+        return 1.0 if found else 0.0
+    if not expected_unit_types:
         return 1.0 if hits else 0.0
-    found = any(h.get("unit_type") == expected_unit for h in hits[:k])
+    found = any(hit.get("unit_type") in expected_unit_types for hit in hits[:k])
     return 1.0 if found else 0.0
 
 
-def _mrr(hits: list[dict[str, Any]], expected_unit: str | None) -> float:
-    if not expected_unit:
+def _mrr(
+    hits: list[dict[str, Any]],
+    relevant_doc_ids: list[str],
+    expected_unit_types: list[str],
+) -> float:
+    if not expected_unit_types and not relevant_doc_ids:
         return 1.0 if hits else 0.0
-    for i, h in enumerate(hits, 1):
-        if h.get("unit_type") == expected_unit:
+    for i, hit in enumerate(hits, 1):
+        if relevant_doc_ids and hit.get("doc_id") in relevant_doc_ids:
+            return 1.0 / i
+        if expected_unit_types and hit.get("unit_type") in expected_unit_types:
             return 1.0 / i
     return 0.0
 
 
-def _concept_detected(expansion: dict[str, Any], expected_concept: str | None) -> bool:
-    if not expected_concept:
+def _concept_detected(expansion: dict[str, Any], expected_concepts: list[str]) -> bool:
+    if not expected_concepts:
         return True
-    ec = expected_concept.lower()
-    for det in expansion.get("detected_concepts", []):
-        if det.get("matched_term", "").lower() == ec or ec in det.get("matched_term", "").lower():
-            return True
-    for exp in expansion.get("expanded_concepts", []):
-        cid = exp.get("concept_id", "").lower()
-        if ec in cid:
-            return True
-    return False
+    haystack = {
+        *[term.lower() for term in expansion.get("detected_terms", [])],
+        *[concept_id.lower() for concept_id in expansion.get("canonical_concept_ids", [])],
+        *[concept_id.lower() for concept_id in expansion.get("expanded_concept_ids", [])],
+        *[term.lower() for term in expansion.get("related_terms", [])],
+    }
+    return all(any(expected.lower() in item for item in haystack) for expected in expected_concepts)
 
 
-def _evidence_rate(hits: list[dict[str, Any]]) -> float:
+def _presence_rate(hits: list[dict[str, Any]], key: str) -> float:
     if not hits:
         return 0.0
-    with_ev = sum(1 for h in hits if h.get("evidence_ids"))
-    return with_ev / len(hits)
+    present = sum(1 for hit in hits if hit.get(key))
+    return present / len(hits)
 
 
 def run_eval(
@@ -120,19 +119,25 @@ def run_eval(
     category_scores: dict[str, list[float]] = {}
 
     for q in queries:
-        query_text = q["query"]
-        expected_unit = q.get("expected_unit")
-        expected_concept = q.get("expected_concept")
+        query_text = q["query_text"]
+        expected_unit_types = q.get("expected_unit_types") or []
+        expected_concepts = q.get("expected_concepts") or []
+        relevant_doc_ids = q.get("relevant_doc_ids") or []
         category = q.get("category", "unknown")
 
         result = retriever.search(query_text, top_k=max(k_values))
         hits = result["top_hits"]
         expansion = result["expansion"]
 
-        r_at_k = {k: _recall_at_k(hits, expected_unit, k) for k in k_values}
-        mrr_val = _mrr(hits, expected_unit)
-        cd = _concept_detected(expansion, expected_concept)
-        ev_rate = _evidence_rate(hits)
+        r_at_k = {
+            k: _recall_at_k(hits, relevant_doc_ids, expected_unit_types, k)
+            for k in k_values
+        }
+        mrr_val = _mrr(hits, relevant_doc_ids, expected_unit_types)
+        cd = _concept_detected(expansion, expected_concepts)
+        evidence_rate = _presence_rate(hits, "evidence_ids")
+        timestamp_rate = _presence_rate(hits, "timestamps")
+        evidence_id_rate = _presence_rate(hits, "evidence_ids")
 
         for k in k_values:
             recall_sums[k] += r_at_k[k]
@@ -140,7 +145,7 @@ def run_eval(
         if cd:
             concept_hits += 1
 
-        if expected_unit:
+        for expected_unit in expected_unit_types:
             if r_at_k[max(k_values)] > 0:
                 unit_hit_counts[expected_unit] = unit_hit_counts.get(expected_unit, 0) + 1
             else:
@@ -149,27 +154,42 @@ def run_eval(
         category_scores.setdefault(category, []).append(r_at_k[max(k_values)])
 
         results.append({
-            "query": query_text,
+            "query_id": q["query_id"],
+            "query_text": query_text,
             "category": category,
-            "expected_unit": expected_unit,
-            "expected_concept": expected_concept,
+            "expected_unit_types": expected_unit_types,
+            "expected_concepts": expected_concepts,
+            "relevant_doc_ids": relevant_doc_ids,
             "recall_at_k": r_at_k,
             "mrr": mrr_val,
             "concept_detected": cd,
-            "evidence_rate": ev_rate,
+            "evidence_presence_rate": evidence_rate,
+            "timestamp_presence_rate": timestamp_rate,
+            "evidence_id_rate": evidence_id_rate,
             "hit_count": len(hits),
             "top_hit_unit_type": hits[0]["unit_type"] if hits else None,
             "top_hit_score": hits[0]["score"] if hits else None,
         })
 
+    metrics = {
+        f"recall_at_{k}": round(recall_sums[k] / total, 4) if total else 0
+        for k in k_values
+    }
+    metrics["mrr"] = round(mrr_sum / total, 4) if total else 0
+    metrics["concept_detection_success_proxy"] = round(concept_hits / total, 4) if total else 0
+    metrics["evidence_presence_rate"] = round(
+        sum(result["evidence_presence_rate"] for result in results) / total, 4
+    ) if total else 0
+    metrics["timestamp_presence_rate"] = round(
+        sum(result["timestamp_presence_rate"] for result in results) / total, 4
+    ) if total else 0
+    metrics["evidence_id_rate"] = round(
+        sum(result["evidence_id_rate"] for result in results) / total, 4
+    ) if total else 0
+
     report = {
         "query_count": total,
-        "metrics": {
-            f"recall_at_{k}": round(recall_sums[k] / total, 4) if total else 0
-            for k in k_values
-        },
-        "mrr": round(mrr_sum / total, 4) if total else 0,
-        "concept_detection_accuracy": round(concept_hits / total, 4) if total else 0,
+        "metrics": metrics,
         "unit_hit_rates": {
             ut: round(unit_hit_counts.get(ut, 0) / (unit_hit_counts.get(ut, 0) + unit_miss_counts.get(ut, 0)), 4)
             for ut in set(list(unit_hit_counts.keys()) + list(unit_miss_counts.keys()))

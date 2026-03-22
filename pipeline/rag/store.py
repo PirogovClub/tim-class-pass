@@ -1,20 +1,56 @@
-"""In-memory document store backed by JSONL persistence.
-
-All retrieval docs are loaded into RAM at startup for maximum query speed
-(32 GB available; ~1.4 GB projected at 250-lesson scale).
-"""
+"""Replaceable document store abstraction with an in-memory backend."""
 
 from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Protocol, runtime_checkable
 
 from pipeline.rag.config import UnitType
 from pipeline.rag.retrieval_docs import RetrievalDocBase
 
 
-class DocStore:
+@runtime_checkable
+class DocStore(Protocol):
+    @property
+    def doc_count(self) -> int: ...
+
+    def add(self, doc: RetrievalDocBase | dict[str, Any]) -> None: ...
+
+    def get(self, doc_id: str) -> dict[str, Any] | None: ...
+
+    def get_all(self) -> list[dict[str, Any]]: ...
+
+    def get_by_ids(self, doc_ids: list[str]) -> list[dict[str, Any]]: ...
+
+    def get_by_unit(self, unit_type: UnitType) -> list[dict[str, Any]]: ...
+
+    def get_by_lesson(self, lesson_id: str) -> list[dict[str, Any]]: ...
+
+    def get_by_concept(self, concept_id: str) -> list[dict[str, Any]]: ...
+
+    def all_doc_ids(self) -> list[str]: ...
+
+    def unit_types(self) -> list[str]: ...
+
+    def lesson_ids(self) -> list[str]: ...
+
+    def concept_ids(self) -> list[str]: ...
+
+    def filter_ids(
+        self,
+        unit_types: list[str] | None = None,
+        lesson_ids: list[str] | None = None,
+        concept_ids: list[str] | None = None,
+        min_confidence: float | None = None,
+    ) -> set[str]: ...
+
+    def facets(self, doc_ids: set[str] | None = None) -> dict[str, dict[str, int]]: ...
+
+    def save(self, path: Path) -> None: ...
+
+
+class InMemoryDocStore:
     def __init__(self) -> None:
         self._docs: dict[str, dict[str, Any]] = {}
         self._by_unit: dict[str, list[str]] = {}
@@ -25,12 +61,13 @@ class DocStore:
     def doc_count(self) -> int:
         return len(self._docs)
 
-    def add(self, doc: RetrievalDocBase) -> None:
-        d = doc.model_dump()
+    def add(self, doc: RetrievalDocBase | dict[str, Any]) -> None:
+        d = doc.model_dump() if isinstance(doc, RetrievalDocBase) else dict(doc)
         did = d["doc_id"]
         self._docs[did] = d
         self._by_unit.setdefault(d["unit_type"], []).append(did)
-        self._by_lesson.setdefault(d["lesson_id"], []).append(did)
+        lesson_id = d.get("lesson_id") or "corpus"
+        self._by_lesson.setdefault(lesson_id, []).append(did)
         for cid in d.get("canonical_concept_ids") or []:
             self._by_concept.setdefault(cid, []).append(did)
 
@@ -105,7 +142,7 @@ class DocStore:
                 continue
             ut = doc["unit_type"]
             by_unit[ut] = by_unit.get(ut, 0) + 1
-            lid = doc["lesson_id"]
+            lid = doc.get("lesson_id") or "corpus"
             by_lesson[lid] = by_lesson.get(lid, 0) + 1
             for cid in doc.get("canonical_concept_ids") or []:
                 by_concept[cid] = by_concept.get(cid, 0) + 1
@@ -124,7 +161,7 @@ class DocStore:
                 f.write(json.dumps(doc, ensure_ascii=False) + "\n")
 
     @classmethod
-    def load(cls, path: Path) -> DocStore:
+    def load(cls, path: Path) -> "InMemoryDocStore":
         store = cls()
         with open(path, "r", encoding="utf-8") as f:
             for line in f:
@@ -135,7 +172,8 @@ class DocStore:
                 did = raw["doc_id"]
                 store._docs[did] = raw
                 store._by_unit.setdefault(raw["unit_type"], []).append(did)
-                store._by_lesson.setdefault(raw["lesson_id"], []).append(did)
+                lesson_id = raw.get("lesson_id") or "corpus"
+                store._by_lesson.setdefault(lesson_id, []).append(did)
                 for cid in raw.get("canonical_concept_ids") or []:
                     store._by_concept.setdefault(cid, []).append(did)
         return store
