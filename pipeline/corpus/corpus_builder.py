@@ -315,6 +315,19 @@ def build_corpus(
         else 0.0
     )
 
+    sb_counts: dict[str, int] = {
+        "transcript_primary": 0,
+        "transcript_plus_visual": 0,
+        "visual_primary": 0,
+        "inferred": 0,
+    }
+    for r in global_rules:
+        sb = r.get("support_basis") or "inferred"
+        if sb in sb_counts:
+            sb_counts[sb] += 1
+        else:
+            sb_counts["inferred"] += 1
+
     now = datetime.now(timezone.utc).isoformat()
     meta = CorpusMetadata(
         corpus_contract_version=SCHEMA_VERSIONS["corpus_contract_version"],
@@ -331,6 +344,10 @@ def build_corpus(
         evidence_coverage_pct=ev_coverage,
         rules_without_evidence=rules_no_ev,
         fallback_linked_rules=rules_fallback,
+        transcript_primary_rules=sb_counts["transcript_primary"],
+        transcript_plus_visual_rules=sb_counts["transcript_plus_visual"],
+        visual_primary_rules=sb_counts["visual_primary"],
+        inferred_rules=sb_counts["inferred"],
         notes=[],
     )
     _write_json(meta.model_dump(), output_root / "corpus_metadata.json")

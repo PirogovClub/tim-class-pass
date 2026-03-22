@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import json
 import os
+import re
 import time
 from pathlib import Path
 from typing import Callable
@@ -10,8 +11,15 @@ from typing import Callable
 from pydantic import BaseModel, Field, ValidationError
 
 from helpers import config as pipeline_config
+from helpers.clients import gemini_batch_client
 from helpers.clients.providers import get_provider, resolve_model_for_stage, resolve_provider_for_stage
-from pipeline.component2.knowledge_builder import AdaptedChunk, ChunkExtractionResult
+from pipeline.component2.knowledge_builder import (
+    AdaptedChunk,
+    ChunkExtractionResult,
+    build_knowledge_events_from_extraction_results,
+    save_knowledge_debug,
+    save_knowledge_events,
+)
 from pipeline.component2.models import EnrichedMarkdownChunk, LessonChunk
 from pipeline.component2 import visual_compaction
 from pipeline.component2.visual_compaction import (
@@ -20,6 +28,22 @@ from pipeline.component2.visual_compaction import (
     from_pipeline_config as visual_compaction_from_pipeline_config,
 )
 from pipeline.component2.parser import seconds_to_mmss
+from pipeline.contracts import PipelinePaths
+from pipeline.io_utils import atomic_write_json
+from pipeline.orchestrator import (
+    STAGE_KNOWLEDGE_EXTRACT,
+    STAGE_MARKDOWN_RENDER,
+    STAGE_RUN_STATUS_FAILED,
+    STAGE_RUN_STATUS_MATERIALIZING,
+    STAGE_RUN_STATUS_READY,
+    STAGE_RUN_STATUS_SPOOLING,
+    STAGE_RUN_STATUS_SUCCEEDED,
+    make_request_key,
+    parse_request_key,
+    slugify_lesson_name,
+    stable_sha256,
+    utc_now_iso,
+)
 from pipeline.schemas import EvidenceRef, RuleCard
 
 
@@ -436,16 +460,23 @@ build_user_prompt = build_legacy_markdown_prompt
 
 # ----- Parsers -----
 
+def _strip_json_code_fences(payload: str) -> str:
+    text = str(payload or "").strip()
+    if text.startswith("```"):
+        text = re.sub(r"^```\w*\n?", "", text)
+        text = re.sub(r"\n?```\s*$", "", text)
+    return text.strip()
+
 def parse_knowledge_extraction(payload: str) -> ChunkExtractionResult:
-    return ChunkExtractionResult.model_validate_json(payload)
+    return ChunkExtractionResult.model_validate_json(_strip_json_code_fences(payload))
 
 
 def parse_markdown_render_result(payload: str) -> MarkdownRenderResult:
-    return MarkdownRenderResult.model_validate_json(payload)
+    return MarkdownRenderResult.model_validate_json(_strip_json_code_fences(payload))
 
 
 def parse_legacy_enriched_markdown_chunk(payload: str) -> EnrichedMarkdownChunk:
-    return EnrichedMarkdownChunk.model_validate_json(payload)
+    return EnrichedMarkdownChunk.model_validate_json(_strip_json_code_fences(payload))
 
 
 parse_enriched_markdown_chunk = parse_legacy_enriched_markdown_chunk
@@ -648,6 +679,364 @@ def process_rule_cards_markdown_render(
         temperature=0.2,
     )
     return (parsed, usage)
+
+
+def emit_batch_spool_for_knowledge_extract(
+    *,
+    chunks: list[AdaptedChunk],
+    lesson_id: str,
+    video_id: str,
+    paths: PipelinePaths,
+    state_store,
+    compaction_cfg: VisualCompactionConfig | None = None,
+    model: str | None = None,
+    provider: str | None = None,
+) -> Path:
+    paths.ensure_batch_dirs(STAGE_KNOWLEDGE_EXTRACT)
+    lesson_slug = slugify_lesson_name(lesson_id)
+    fragment_name = f"{lesson_slug}__knowledge_extract"
+    spool_path = paths.batch_spool_requests_path(STAGE_KNOWLEDGE_EXTRACT, fragment_name)
+    manifest_path = paths.batch_spool_manifest_path(STAGE_KNOWLEDGE_EXTRACT, fragment_name)
+    stage_run = state_store.create_or_reuse_stage_run(
+        lesson_id=lesson_id,
+        stage_name=STAGE_KNOWLEDGE_EXTRACT,
+        execution_mode="gemini_batch",
+        status=STAGE_RUN_STATUS_SPOOLING,
+    )
+
+    resolved_provider = _resolve_provider_for_llm_mode(
+        "knowledge_extract",
+        video_id=video_id,
+        provider=provider,
+    )
+    resolved_model = _resolve_model_for_llm_mode(
+        "knowledge_extract",
+        video_id=video_id,
+        model=model,
+    )
+
+    lines: list[dict] = []
+    request_keys: list[str] = []
+    for chunk in chunks:
+        visual_summaries = visual_compaction.summarize_visual_events_for_extraction(
+            chunk.visual_events,
+            compaction_cfg or VisualCompactionConfig(),
+        )
+        prompt = build_knowledge_extract_prompt(
+            lesson_id=chunk.lesson_id,
+            chunk_index=chunk.chunk_index,
+            section=getattr(chunk, "section", None),
+            transcript_text=chunk.transcript_text or "",
+            transcript_lines=getattr(chunk, "transcript_lines", None),
+            visual_summaries=visual_summaries,
+            concept_context=getattr(chunk, "concept_context", None),
+            start_time_seconds=chunk.start_time_seconds,
+            end_time_seconds=chunk.end_time_seconds,
+        )
+        request_key = make_request_key(
+            video_id=video_id,
+            lesson_slug=lesson_slug,
+            stage_name=STAGE_KNOWLEDGE_EXTRACT,
+            entity_kind="chunk",
+            entity_index=str(chunk.chunk_index),
+        )
+        line = gemini_batch_client.build_generate_content_batch_line(
+            request_key=request_key,
+            contents=[{"role": "user", "parts": [{"text": prompt}]}],
+            system_instruction=KNOWLEDGE_EXTRACT_SYSTEM_PROMPT,
+        )
+        lines.append(line)
+        request_keys.append(request_key)
+        state_store.record_spool_request(
+            request_key=request_key,
+            stage_run_id=stage_run["stage_run_id"],
+            video_id=video_id,
+            lesson_id=lesson_id,
+            stage_name=STAGE_KNOWLEDGE_EXTRACT,
+            entity_kind="chunk",
+            entity_index=str(chunk.chunk_index),
+            payload_sha256=stable_sha256(line),
+            spool_file_path=spool_path,
+        )
+
+    gemini_batch_client.write_jsonl_lines(spool_path, lines)
+    atomic_write_json(
+        manifest_path,
+        {
+            "lesson_id": lesson_id,
+            "video_id": video_id,
+            "stage_name": STAGE_KNOWLEDGE_EXTRACT,
+            "provider": resolved_provider,
+            "model": resolved_model,
+            "spool_file_path": str(spool_path),
+            "request_count": len(lines),
+            "request_keys": request_keys,
+            "created_at": utc_now_iso(),
+        },
+    )
+    state_store.update_stage_run(
+        stage_run["stage_run_id"],
+        status=STAGE_RUN_STATUS_READY,
+        request_manifest_path=manifest_path,
+        started_at=stage_run.get("started_at") or utc_now_iso(),
+    )
+    return spool_path
+
+
+def materialize_batch_results_for_knowledge_extract(
+    results_jsonl_path,
+    adapted_chunks: list[AdaptedChunk],
+    lesson_name: str,
+    paths: PipelinePaths,
+    state_store,
+):
+    artifact_lesson_name = lesson_name.split("::", 1)[-1]
+    stage_runs = state_store.list_stage_runs(
+        lesson_id=lesson_name,
+        stage_name=STAGE_KNOWLEDGE_EXTRACT,
+        execution_mode="gemini_batch",
+    )
+    stage_run_id = stage_runs[-1]["stage_run_id"] if stage_runs else None
+    if stage_run_id:
+        state_store.update_stage_run(stage_run_id, status=STAGE_RUN_STATUS_MATERIALIZING)
+
+    chunk_by_index = {chunk.chunk_index: chunk for chunk in adapted_chunks}
+    lesson_slug = slugify_lesson_name(lesson_name)
+    parsed_by_index: dict[int, ChunkExtractionResult] = {}
+    usage_by_index: dict[int, list[dict]] = {}
+    failures: list[dict[str, str]] = []
+    decoded = Path(results_jsonl_path).read_text(encoding="utf-8")
+    for result_line in gemini_batch_client.iter_result_jsonl(decoded):
+        request_key = str(result_line.get("key") or "")
+        if not request_key:
+            failures.append({"request_key": "", "error": "missing key"})
+            continue
+        parsed_key = parse_request_key(request_key)
+        if parsed_key["lesson_slug"] != lesson_slug:
+            continue
+        chunk_index = int(parsed_key["entity_index"])
+        try:
+            text = gemini_batch_client.extract_result_text(result_line)
+            if not text:
+                raise ValueError("missing response text")
+            parsed = parse_knowledge_extraction(text)
+            parsed_by_index[chunk_index] = parsed
+            usage_by_index[chunk_index] = result_line.get("usage") or []
+            state_store.mark_request_parsed(request_key, output_path=paths.knowledge_events_path(artifact_lesson_name))
+        except Exception as exc:
+            failures.append({"request_key": request_key, "error": str(exc)})
+            state_store.mark_request_failed(request_key, str(exc))
+
+    missing_indices = sorted(set(chunk_by_index) - set(parsed_by_index))
+    if missing_indices:
+        raise ValueError(f"Missing batch responses for chunk indices: {missing_indices}")
+
+    ordered_chunks = [chunk_by_index[idx] for idx in sorted(chunk_by_index)]
+    ordered_results = [parsed_by_index[idx] for idx in sorted(chunk_by_index)]
+    collection, debug_rows = build_knowledge_events_from_extraction_results(
+        ordered_chunks,
+        ordered_results,
+        lesson_name,
+        None,
+    )
+    for row in debug_rows:
+        row["request_usage"] = usage_by_index.get(row["chunk_index"], [])
+
+    save_knowledge_events(collection, paths.knowledge_events_path(artifact_lesson_name))
+    save_knowledge_debug(debug_rows, paths.knowledge_debug_path(artifact_lesson_name))
+    atomic_write_json(
+        paths.batch_materialization_debug_path(STAGE_KNOWLEDGE_EXTRACT),
+        {
+            "stage_name": STAGE_KNOWLEDGE_EXTRACT,
+            "results_jsonl_path": str(results_jsonl_path),
+            "parsed_count": len(ordered_results),
+            "failed_count": len(failures),
+            "failures": failures,
+            "artifacts": {
+                "knowledge_events": str(paths.knowledge_events_path(artifact_lesson_name)),
+                "knowledge_debug": str(paths.knowledge_debug_path(artifact_lesson_name)),
+            },
+        },
+    )
+    if stage_run_id:
+        state_store.update_stage_run(
+            stage_run_id,
+            status=STAGE_RUN_STATUS_SUCCEEDED if not failures else STAGE_RUN_STATUS_FAILED,
+            result_manifest_path=paths.batch_materialization_debug_path(STAGE_KNOWLEDGE_EXTRACT),
+            finished_at=utc_now_iso(),
+        )
+    return collection
+
+
+def emit_batch_spool_for_markdown_render(
+    *,
+    lesson_id: str,
+    rule_cards: list[RuleCard] | list[dict],
+    evidence_refs: list[EvidenceRef] | list[dict],
+    paths: PipelinePaths,
+    state_store,
+    render_mode: str = "review",
+    video_id: str | None = None,
+    model: str | None = None,
+    provider: str | None = None,
+) -> Path:
+    paths.ensure_batch_dirs(STAGE_MARKDOWN_RENDER)
+    lesson_slug = slugify_lesson_name(lesson_id)
+    fragment_name = f"{lesson_slug}__markdown_render__{render_mode}"
+    spool_path = paths.batch_spool_requests_path(STAGE_MARKDOWN_RENDER, fragment_name)
+    manifest_path = paths.batch_spool_manifest_path(STAGE_MARKDOWN_RENDER, fragment_name)
+    stage_run = state_store.create_or_reuse_stage_run(
+        lesson_id=lesson_id,
+        stage_name=STAGE_MARKDOWN_RENDER,
+        execution_mode="gemini_batch",
+        status=STAGE_RUN_STATUS_SPOOLING,
+    )
+    resolved_provider = _resolve_provider_for_llm_mode(
+        "markdown_render",
+        video_id=video_id,
+        provider=provider,
+    )
+    resolved_model = _resolve_model_for_llm_mode(
+        "markdown_render",
+        video_id=video_id,
+        model=model,
+    )
+    prompt = build_markdown_render_prompt(
+        lesson_id=lesson_id,
+        lesson_title=None,
+        rule_cards=rule_cards,
+        evidence_refs=evidence_refs,
+        render_mode=render_mode,
+    )
+    request_key = make_request_key(
+        video_id=video_id or lesson_id,
+        lesson_slug=lesson_slug,
+        stage_name=STAGE_MARKDOWN_RENDER,
+        entity_kind="section",
+        entity_index=render_mode,
+    )
+    line = gemini_batch_client.build_generate_content_batch_line(
+        request_key=request_key,
+        contents=[{"role": "user", "parts": [{"text": prompt}]}],
+        system_instruction=MARKDOWN_RENDER_SYSTEM_PROMPT,
+    )
+    gemini_batch_client.write_jsonl_lines(spool_path, [line])
+    state_store.record_spool_request(
+        request_key=request_key,
+        stage_run_id=stage_run["stage_run_id"],
+        video_id=video_id or lesson_id,
+        lesson_id=lesson_id,
+        stage_name=STAGE_MARKDOWN_RENDER,
+        entity_kind="section",
+        entity_index=render_mode,
+        payload_sha256=stable_sha256(line),
+        spool_file_path=spool_path,
+    )
+    atomic_write_json(
+        manifest_path,
+        {
+            "lesson_id": lesson_id,
+            "video_id": video_id or lesson_id,
+            "stage_name": STAGE_MARKDOWN_RENDER,
+            "render_mode": render_mode,
+            "provider": resolved_provider,
+            "model": resolved_model,
+            "spool_file_path": str(spool_path),
+            "request_count": 1,
+            "request_keys": [request_key],
+            "created_at": utc_now_iso(),
+        },
+    )
+    state_store.update_stage_run(
+        stage_run["stage_run_id"],
+        status=STAGE_RUN_STATUS_READY,
+        request_manifest_path=manifest_path,
+        started_at=stage_run.get("started_at") or utc_now_iso(),
+    )
+    return spool_path
+
+
+def materialize_batch_results_for_markdown_render(
+    results_jsonl_path,
+    lesson_name: str,
+    paths: PipelinePaths,
+    state_store,
+):
+    artifact_lesson_name = lesson_name.split("::", 1)[-1]
+    stage_runs = state_store.list_stage_runs(
+        lesson_id=lesson_name,
+        stage_name=STAGE_MARKDOWN_RENDER,
+        execution_mode="gemini_batch",
+    )
+    stage_run_id = stage_runs[-1]["stage_run_id"] if stage_runs else None
+    if stage_run_id:
+        state_store.update_stage_run(stage_run_id, status=STAGE_RUN_STATUS_MATERIALIZING)
+
+    decoded = Path(results_jsonl_path).read_text(encoding="utf-8")
+    lesson_slug = slugify_lesson_name(lesson_name)
+    written: dict[str, str] = {}
+    failures: list[dict[str, str]] = []
+    last_result: MarkdownRenderResult | None = None
+    for result_line in gemini_batch_client.iter_result_jsonl(decoded):
+        request_key = str(result_line.get("key") or "")
+        if not request_key:
+            failures.append({"request_key": "", "error": "missing key"})
+            continue
+        parsed_key = parse_request_key(request_key)
+        if parsed_key["lesson_slug"] != lesson_slug:
+            continue
+        render_mode = parsed_key["entity_index"]
+        try:
+            text = gemini_batch_client.extract_result_text(result_line)
+            if not text:
+                raise ValueError("missing response text")
+            result = parse_markdown_render_result(text)
+            last_result = result
+            if render_mode == "rag":
+                destination = paths.rag_ready_export_path(artifact_lesson_name)
+                debug_path = paths.rag_render_debug_path(artifact_lesson_name)
+            else:
+                destination = paths.review_markdown_path(artifact_lesson_name)
+                debug_path = paths.review_render_debug_path(artifact_lesson_name)
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_text(result.markdown, encoding="utf-8")
+            write_llm_debug(
+                debug_path,
+                [
+                    {
+                        "render_mode": render_mode,
+                        "markdown_preview": result.markdown[:500],
+                        "metadata_tags": result.metadata_tags,
+                        "request_usage": result_line.get("usage") or [],
+                    }
+                ],
+            )
+            written[render_mode] = str(destination)
+            state_store.mark_request_parsed(request_key, output_path=destination)
+        except Exception as exc:
+            failures.append({"request_key": request_key, "error": str(exc)})
+            state_store.mark_request_failed(request_key, str(exc))
+
+    atomic_write_json(
+        paths.batch_materialization_debug_path(STAGE_MARKDOWN_RENDER),
+        {
+            "stage_name": STAGE_MARKDOWN_RENDER,
+            "results_jsonl_path": str(results_jsonl_path),
+            "written": written,
+            "failed_count": len(failures),
+            "failures": failures,
+        },
+    )
+    if stage_run_id:
+        state_store.update_stage_run(
+            stage_run_id,
+            status=STAGE_RUN_STATUS_SUCCEEDED if not failures else STAGE_RUN_STATUS_FAILED,
+            result_manifest_path=paths.batch_materialization_debug_path(STAGE_MARKDOWN_RENDER),
+            finished_at=utc_now_iso(),
+        )
+    if last_result is None:
+        raise ValueError(f"No markdown render results were materialized from {results_jsonl_path}")
+    return last_result
 
 
 # ----- Public APIs: Legacy -----

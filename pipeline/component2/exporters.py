@@ -251,6 +251,19 @@ def _review_rule_block(
         parts.append(f"**Confidence:** {conf} ({score:.2f})")
     else:
         parts.append(f"**Confidence:** {conf}")
+
+    sb = getattr(rule, "support_basis", None)
+    tm = getattr(rule, "teaching_mode", None)
+    er = getattr(rule, "evidence_requirement", None)
+    support_parts: list[str] = []
+    if sb:
+        support_parts.append(f"support={sb}")
+    if tm:
+        support_parts.append(f"mode={tm}")
+    if er:
+        support_parts.append(f"evidence={er}")
+    if support_parts:
+        parts.append(f"**Support:** {', '.join(support_parts)}")
     parts.append("")
 
     block = format_bullet_block("Conditions", (rule.conditions or []))

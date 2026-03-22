@@ -21,6 +21,13 @@ DEFAULT_VISUAL_REVIEW_MAX_BULLETS = 2
 DEFAULT_VISUAL_RAG_MAX_BULLETS = 1
 DEFAULT_VISUAL_INCLUDE_SCREENSHOT_CANDIDATES = True
 DEFAULT_VISUAL_STORE_RAW_BLOBS = False
+DEFAULT_BATCH_ENABLED = False
+DEFAULT_BATCH_PROVIDER = "gemini"
+DEFAULT_BATCH_MAX_FILE_SIZE_MB = 500
+DEFAULT_BATCH_MAX_REQUESTS_PER_JOB = 5000
+DEFAULT_BATCH_POLL_INTERVAL_SEC = 15
+DEFAULT_BATCH_SUBMIT_LIMIT = 3
+DEFAULT_BATCH_WATCH_DEFAULT_SEC = 10
 
 
 def _default_pipeline_workers() -> int:
@@ -124,6 +131,28 @@ def get_config_for_video(video_id: str) -> dict:
         "enable_visual_compaction_debug": _parse_bool(os.getenv("ENABLE_VISUAL_COMPACTION_DEBUG"), False),
         "include_provenance_in_review_markdown": _parse_bool(os.getenv("INCLUDE_PROVENANCE_IN_REVIEW_MARKDOWN"), True),
         "include_provenance_validation_in_debug": _parse_bool(os.getenv("INCLUDE_PROVENANCE_VALIDATION_IN_DEBUG"), True),
+        "batch_enabled": _parse_bool(os.getenv("BATCH_ENABLED"), DEFAULT_BATCH_ENABLED),
+        "batch_provider": os.getenv("BATCH_PROVIDER") or DEFAULT_BATCH_PROVIDER,
+        "batch_max_file_size_mb": _parse_int(
+            os.getenv("BATCH_MAX_FILE_SIZE_MB"),
+            DEFAULT_BATCH_MAX_FILE_SIZE_MB,
+        ),
+        "batch_max_requests_per_job": _parse_int(
+            os.getenv("BATCH_MAX_REQUESTS_PER_JOB"),
+            DEFAULT_BATCH_MAX_REQUESTS_PER_JOB,
+        ),
+        "batch_poll_interval_sec": _parse_int(
+            os.getenv("BATCH_POLL_INTERVAL_SEC"),
+            DEFAULT_BATCH_POLL_INTERVAL_SEC,
+        ),
+        "batch_submit_limit": _parse_int(
+            os.getenv("BATCH_SUBMIT_LIMIT"),
+            DEFAULT_BATCH_SUBMIT_LIMIT,
+        ),
+        "batch_watch_default_sec": _parse_int(
+            os.getenv("BATCH_WATCH_DEFAULT_SEC"),
+            DEFAULT_BATCH_WATCH_DEFAULT_SEC,
+        ),
     }
     batch_env = os.getenv("BATCH_SIZE")
     if batch_env is not None:
@@ -177,6 +206,13 @@ def get_config_for_video(video_id: str) -> dict:
         "enable_visual_compaction_debug",
         "include_provenance_in_review_markdown",
         "include_provenance_validation_in_debug",
+        "batch_enabled",
+        "batch_provider",
+        "batch_max_file_size_mb",
+        "batch_max_requests_per_job",
+        "batch_poll_interval_sec",
+        "batch_submit_limit",
+        "batch_watch_default_sec",
         *_provider_keys,
         *_model_keys,
     )
@@ -201,6 +237,18 @@ def get_config_for_video(video_id: str) -> dict:
                 value = _parse_int(value, result.get(key))
             if key in {"visual_include_screenshot_candidates", "visual_store_raw_blobs", "enable_visual_compaction_debug"} and isinstance(value, str):
                 value = _parse_bool(value, result.get(key, False))
+            if key in {
+                "batch_enabled",
+            } and isinstance(value, str):
+                value = _parse_bool(value, result.get(key, False))
+            if key in {
+                "batch_max_file_size_mb",
+                "batch_max_requests_per_job",
+                "batch_poll_interval_sec",
+                "batch_submit_limit",
+                "batch_watch_default_sec",
+            } and isinstance(value, str):
+                value = _parse_int(value, result.get(key))
             result[key] = value
     if isinstance(result["batch_size"], str):
         try:

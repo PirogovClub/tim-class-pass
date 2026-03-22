@@ -35,6 +35,13 @@ from pipeline.component2.canonicalization import (
     classify_rule_type,
 )
 from pipeline.component2.parser import timestamp_to_seconds
+from pipeline.component2.support_policy import (
+    classify_evidence_requirement,
+    classify_support_basis,
+    classify_teaching_mode,
+    classify_transcript_support_level,
+    classify_visual_support_level,
+)
 
 
 # ----- Internal model -----
@@ -657,19 +664,65 @@ def distribute_example_refs(candidate: RuleCandidate) -> dict[str, list[str]]:
 # ----- Confidence -----
 
 
-def score_rule_candidate_confidence(candidate: RuleCandidate) -> tuple[str, float]:
-    """Return (confidence_label, score in [0,1])."""
-    score = 0.5
+def _aggregate_transcript_support(candidate: RuleCandidate) -> tuple[float, int, int]:
+    """Aggregate transcript support from source events.
+
+    Returns (avg_transcript_score, total_anchor_count, repetition_count).
+    """
+    all_events = (
+        candidate.primary_events
+        + candidate.condition_events
+        + candidate.invalidation_events
+        + candidate.exception_events
+    )
+    scores: list[float] = []
+    total_anchors = 0
+    for ev in all_events:
+        ts = getattr(ev, "transcript_support_score", None)
+        if ts is not None:
+            scores.append(ts)
+        total_anchors += len(getattr(ev, "transcript_anchors", []))
+    avg_score = sum(scores) / len(scores) if scores else 0.40
+    repetition = max(len(candidate.primary_events) - 1, 0)
+    return (avg_score, total_anchors, repetition)
+
+
+def _aggregate_visual_support(candidate: RuleCandidate) -> float:
+    """Aggregate visual support from source events."""
+    all_events = (
+        candidate.primary_events
+        + candidate.condition_events
+        + candidate.invalidation_events
+        + candidate.exception_events
+    )
+    scores: list[float] = []
+    for ev in all_events:
+        vs = getattr(ev, "visual_support_score", None)
+        if vs is not None:
+            scores.append(vs)
+    if candidate.linked_evidence:
+        scores.append(0.50)
+    return max(scores) if scores else 0.0
+
+
+def score_rule_candidate_confidence(
+    candidate: RuleCandidate,
+    *,
+    transcript_support_score: float = 0.5,
+) -> tuple[str, float]:
+    """Transcript-first confidence: strong transcript grounding lifts score
+    even when visual evidence is absent."""
+    score = 0.25 + transcript_support_score * 0.35
     if candidate.primary_events:
-        score += 0.15
+        score += 0.10
     if candidate.concept and candidate.concept.strip():
-        score += 0.1
+        score += 0.08
     if candidate.subconcept and candidate.subconcept.strip():
-        score += 0.05
+        score += 0.04
     if len(candidate.condition_events) + len(candidate.invalidation_events) > 0:
         score += 0.05
     if candidate.linked_evidence:
-        score += 0.1
+        score += 0.06
     if len(candidate.primary_events) + len(candidate.condition_events) > 1:
         score += 0.05
     score = max(0.0, min(1.0, score))
@@ -713,7 +766,36 @@ def candidate_to_rule_card(
     concept = (candidate.concept or "unknown").strip() or "unknown"
     rule_id = make_rule_id(candidate.lesson_id, candidate.concept, candidate.subconcept, candidate_index)
     rule_text = choose_canonical_rule_text(candidate)
-    conf_label, conf_score = score_rule_candidate_confidence(candidate)
+
+    ts_score, anchor_count, repetition_count = _aggregate_transcript_support(candidate)
+    vs_score = _aggregate_visual_support(candidate)
+
+    dominant_event_type_for_policy = "rule_statement"
+    if candidate.primary_events:
+        from collections import Counter as _Counter
+        _tc = _Counter(e.event_type for e in candidate.primary_events)
+        dominant_event_type_for_policy = _tc.most_common(1)[0][0]
+
+    teaching_mode = classify_teaching_mode(
+        dominant_event_type_for_policy,
+        rule_text,
+        linked_visual_count=len(candidate.linked_evidence),
+        visual_example_type=None,
+    )
+    ev_req = classify_evidence_requirement(
+        dominant_event_type_for_policy, teaching_mode, concept, candidate.subconcept,
+    )
+    s_basis = classify_support_basis(ts_score, vs_score, teaching_mode)
+    t_level = classify_transcript_support_level(ts_score)
+
+    primary_example_role = None
+    if candidate.linked_evidence:
+        primary_example_role = getattr(candidate.linked_evidence[0], "example_role", None)
+    v_level = classify_visual_support_level(vs_score, example_role=primary_example_role)
+
+    conf_label, conf_score = score_rule_candidate_confidence(
+        candidate, transcript_support_score=ts_score,
+    )
     example_map = distribute_example_refs(candidate)
     section = None
     subsection = None
@@ -730,12 +812,6 @@ def candidate_to_rule_card(
     conditions = collect_condition_texts(candidate)
     invalidation = collect_invalidation_texts(candidate)
     exceptions = collect_exception_texts(candidate)
-
-    dominant_event_type = "rule_statement"
-    if candidate.primary_events:
-        from collections import Counter
-        type_counts = Counter(e.event_type for e in candidate.primary_events)
-        dominant_event_type = type_counts.most_common(1)[0][0]
 
     return RuleCard(
         rule_id=rule_id,
@@ -768,10 +844,20 @@ def candidate_to_rule_card(
         condition_ids=[canonicalize_short_statement("condition", t) for t in conditions],
         invalidation_ids=[canonicalize_short_statement("invalidation", t) for t in invalidation],
         exception_ids=[canonicalize_short_statement("exception", t) for t in exceptions],
-        rule_type=classify_rule_type(dominant_event_type),
+        rule_type=classify_rule_type(dominant_event_type_for_policy),
         rule_text_ru=rule_text if rule_text else None,
         concept_label_ru=concept if concept else None,
         subconcept_label_ru=candidate.subconcept if candidate.subconcept else None,
+        support_basis=s_basis,
+        evidence_requirement=ev_req,
+        teaching_mode=teaching_mode,
+        visual_support_level=v_level,
+        transcript_support_level=t_level,
+        transcript_support_score=round(ts_score, 4),
+        visual_support_score=round(vs_score, 4),
+        has_visual_evidence=bool(candidate.linked_evidence),
+        transcript_anchor_count=anchor_count,
+        transcript_repetition_count=repetition_count,
     )
 
 

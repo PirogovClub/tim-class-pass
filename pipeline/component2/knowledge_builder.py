@@ -36,6 +36,13 @@ from pipeline.component2.canonicalization import (
     canonicalize_subconcept,
     classify_rule_type,
 )
+from pipeline.component2.support_policy import (
+    classify_evidence_requirement,
+    classify_support_basis,
+    classify_teaching_mode,
+    classify_transcript_support_level,
+    classify_visual_support_level,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -415,6 +422,63 @@ def resolve_concept(
     return (None, None)
 
 
+# ----- Transcript & visual support scoring -----
+
+
+def score_transcript_support(
+    anchor_density: float,
+    anchor_line_count: int,
+    timestamp_confidence: str,
+    text: str,
+) -> float:
+    """Compute a 0..1 transcript support score based on anchor quality and text clarity."""
+    score = 0.0
+    if timestamp_confidence == "line":
+        score += 0.40
+    elif timestamp_confidence == "span":
+        score += 0.25
+    else:
+        score += 0.10
+
+    score += min(anchor_density * 0.30, 0.30)
+    score += min(anchor_line_count * 0.05, 0.15)
+
+    stripped = (text or "").strip()
+    if stripped and len(stripped) >= 15 and stripped[-1] in ".!":
+        score += 0.10
+    if stripped and len(stripped) >= 30:
+        score += 0.05
+
+    return max(0.0, min(1.0, score))
+
+
+def score_visual_support(
+    chunk: AdaptedChunk,
+    event_type: str,
+) -> float:
+    """Estimate how much visual evidence in this chunk supports any event."""
+    if not chunk.visual_events:
+        return 0.0
+    example_types = chunk.candidate_example_types
+    if not example_types:
+        return 0.10
+
+    best = 0.10
+    for et in example_types:
+        lower = et.lower()
+        if "positive" in lower or "strong" in lower:
+            best = max(best, 0.80)
+        elif "negative" in lower or "counter" in lower:
+            best = max(best, 0.70)
+        elif "illustration" in lower:
+            best = max(best, 0.40)
+        elif "ambiguous" in lower:
+            best = max(best, 0.25)
+        else:
+            best = max(best, 0.20)
+    return min(1.0, best)
+
+
 # ----- Confidence -----
 
 
@@ -424,21 +488,27 @@ def score_event_confidence(
     concept: str | None,
     ambiguity_notes: list[str],
     chunk: AdaptedChunk,
+    *,
+    transcript_support_score: float = 0.5,
 ) -> tuple[ConfidenceLabel, float]:
-    """Heuristic label and score in [0, 1]."""
-    score = 0.5
+    """Transcript-first heuristic label and score in [0, 1].
+
+    transcript_support_score directly anchors the base: strong transcript
+    grounding lifts confidence even when visual evidence is absent.
+    """
+    score = 0.30 + transcript_support_score * 0.35
     if concept:
-        score += 0.15
+        score += 0.10
     if not ambiguity_notes:
-        score += 0.1
+        score += 0.08
     if text and len(text.strip()) < 200 and text.strip().endswith((".", "!")):
-        score += 0.1
+        score += 0.07
     if event_type in ("definition", "rule_statement") and concept:
-        score += 0.1
+        score += 0.08
     if not text or len(text.strip()) < 10:
-        score -= 0.2
+        score -= 0.20
     if not concept and event_type in ("rule_statement", "condition"):
-        score -= 0.15
+        score -= 0.10
     score = max(0.0, min(1.0, score))
     if score >= 0.7:
         label: ConfidenceLabel = "high"
@@ -830,8 +900,30 @@ def extraction_result_to_knowledge_events(
             concept, subconcept = resolve_concept(
                 st.concept, st.subconcept, chunk, raw
             )
+
+            ts_score = score_transcript_support(
+                anchor_density, len(resolved_line_indices),
+                timestamp_confidence, raw,
+            )
+            vs_score = score_visual_support(chunk, event_type)
+            teaching_mode = classify_teaching_mode(
+                event_type, raw,
+                linked_visual_count=len(chunk.visual_events),
+                visual_example_type=(chunk.candidate_example_types or [None])[0],
+            )
+            ev_req = classify_evidence_requirement(
+                event_type, teaching_mode, concept, subconcept,
+            )
+            s_basis = classify_support_basis(ts_score, vs_score, teaching_mode)
+            t_level = classify_transcript_support_level(ts_score)
+            v_level = classify_visual_support_level(
+                vs_score,
+                example_role=(chunk.candidate_example_types or [None])[0],
+            )
+
             label, conf_score = score_event_confidence(
-                raw, event_type, concept, st.ambiguity_notes or [], chunk
+                raw, event_type, concept, st.ambiguity_notes or [], chunk,
+                transcript_support_score=ts_score,
             )
             event_id = f"ke_{slug}_{chunk.chunk_index}_{event_type}_{i}"
             try:
@@ -871,6 +963,13 @@ def extraction_result_to_knowledge_events(
                     normalized_text_ru=norm if norm else None,
                     concept_label_ru=concept if concept else None,
                     subconcept_label_ru=subconcept if subconcept else None,
+                    support_basis=s_basis,
+                    evidence_requirement=ev_req,
+                    teaching_mode=teaching_mode,
+                    visual_support_level=v_level,
+                    transcript_support_level=t_level,
+                    transcript_support_score=round(ts_score, 4),
+                    visual_support_score=round(vs_score, 4),
                 )
                 events.append(ke)
             except Exception:

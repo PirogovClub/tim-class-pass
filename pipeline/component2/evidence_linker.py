@@ -623,6 +623,62 @@ def infer_example_role(
     return "illustration"
 
 
+# ----- Evidence strength and role detail -----
+
+
+def classify_evidence_strength(
+    candidate: VisualEvidenceCandidate,
+    linked_events: list[KnowledgeEvent],
+) -> str:
+    """Classify evidence strength: weak, moderate, or strong.
+
+    Evidence is always *supporting* — this scores how strong the support is,
+    not whether the rule itself is valid.
+    """
+    summary = _norm_text(candidate.compact_visual_summary)
+    hit_count = concrete_visual_hit_count(summary)
+    has_many_links = len(linked_events) >= 2
+
+    if hit_count >= 3 and has_many_links:
+        return "strong"
+    if hit_count >= 2 or has_many_links:
+        return "moderate"
+    return "weak"
+
+
+def classify_evidence_role_detail(
+    example_role: str,
+    candidate: VisualEvidenceCandidate,
+    linked_events: list[KnowledgeEvent],
+) -> str:
+    """Return a granular role label for the evidence reference.
+
+    This describes *how* the visual supports the transcript-based rule,
+    not whether the rule is true.
+    """
+    event_types = {getattr(e, "event_type", "") for e in linked_events}
+    summary = _norm_text(candidate.compact_visual_summary)
+
+    if example_role in ("counterexample", "negative_example"):
+        return "shows_counterexample"
+
+    if "failure" in summary or "fail" in summary:
+        return "shows_failure"
+
+    if example_role == "positive_example":
+        if "setup" in summary or "entry" in summary:
+            return "shows_setup"
+        return "illustrates_rule"
+
+    if event_types & {"rule_statement", "definition", "condition"}:
+        return "illustrates_rule"
+
+    if "chart" in summary and not (event_types & {"rule_statement", "definition"}):
+        return "ambiguous_chart_context"
+
+    return "illustrates_rule"
+
+
 # ----- Scoring and linking -----
 
 def _event_time_range_seconds(event: KnowledgeEvent) -> tuple[float, float] | None:
@@ -778,6 +834,10 @@ def candidate_to_evidence_ref(
         if len(normalized) > 300:
             compact_visual_summary = normalized[:297] + "..."
     summary_lang = detect_summary_language(compact_visual_summary)
+    ev_strength = classify_evidence_strength(candidate, linked_events)
+    ev_role_detail = classify_evidence_role_detail(
+        candidate.example_role, candidate, linked_events,
+    )
     evidence_ref = EvidenceRef(
         evidence_id=candidate.candidate_id,
         lesson_id=lesson_id,
@@ -799,6 +859,8 @@ def candidate_to_evidence_ref(
         summary_language=summary_lang,
         summary_ru=compact_visual_summary if summary_lang == "ru" else None,
         summary_en=compact_visual_summary if summary_lang == "en" else None,
+        evidence_strength=ev_strength,
+        evidence_role_detail=ev_role_detail,
     )
     return evidence_ref
 

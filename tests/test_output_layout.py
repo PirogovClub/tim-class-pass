@@ -44,6 +44,32 @@ def test_legacy_and_new_rag_paths_do_not_conflict(tmp_path: Path) -> None:
     assert new.name == "abc.rag_ready.md"
 
 
+def test_batch_paths_are_deterministic(tmp_path: Path) -> None:
+    from pipeline.contracts import PipelinePaths
+
+    paths = PipelinePaths(video_root=tmp_path)
+
+    assert paths.batch_root_dir().name == "batch"
+    assert paths.batch_spool_dir("vision").name == "spool"
+    assert paths.batch_spool_requests_path("vision", "frag").name == "frag.jsonl"
+    assert paths.batch_spool_manifest_path("vision", "frag").name == "frag.manifest.json"
+    assert paths.batch_results_dir("vision").name == "results"
+    assert paths.batch_result_download_path("vision", "job1").name == "job1.jsonl"
+    assert paths.batch_materialization_debug_path("vision").name == "materialization_debug.json"
+
+
+def test_ensure_batch_dirs(tmp_path: Path) -> None:
+    from pipeline.contracts import PipelinePaths
+
+    paths = PipelinePaths(video_root=tmp_path)
+    paths.ensure_batch_dirs("vision", "knowledge_extract")
+
+    assert paths.batch_spool_dir("vision").exists()
+    assert paths.batch_results_dir("vision").exists()
+    assert paths.batch_spool_dir("knowledge_extract").exists()
+    assert paths.batch_results_dir("knowledge_extract").exists()
+
+
 def test_atomic_write_json(tmp_path: Path) -> None:
     from pipeline.io_utils import atomic_write_json
 

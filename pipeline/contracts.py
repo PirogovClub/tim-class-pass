@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
+from typing import Iterable, Optional
 
 
 @dataclass(frozen=True)
@@ -66,6 +66,34 @@ class PipelinePaths:
     def output_review_dir(self) -> Path:
         """Directory for review markdown and export manifests."""
         return self.video_root / "output_review"
+
+    def batch_root_dir(self) -> Path:
+        """Root directory for batch orchestration artifacts."""
+        return self.output_intermediate_dir / "batch"
+
+    def batch_spool_dir(self, stage_name: str) -> Path:
+        """Directory for lesson-local spool fragments for one stage."""
+        return self.batch_root_dir() / stage_name / "spool"
+
+    def batch_spool_requests_path(self, stage_name: str, fragment_name: str) -> Path:
+        """Path to a lesson-local spool JSONL fragment."""
+        return self.batch_spool_dir(stage_name) / f"{fragment_name}.jsonl"
+
+    def batch_spool_manifest_path(self, stage_name: str, fragment_name: str) -> Path:
+        """Path to a lesson-local spool manifest JSON."""
+        return self.batch_spool_dir(stage_name) / f"{fragment_name}.manifest.json"
+
+    def batch_results_dir(self, stage_name: str) -> Path:
+        """Directory for downloaded Gemini batch result JSONL files."""
+        return self.batch_root_dir() / stage_name / "results"
+
+    def batch_result_download_path(self, stage_name: str, batch_job_name: str) -> Path:
+        """Path for downloaded raw batch result JSONL."""
+        return self.batch_results_dir(stage_name) / f"{batch_job_name}.jsonl"
+
+    def batch_materialization_debug_path(self, stage_name: str) -> Path:
+        """Path for batch materialization debug manifest."""
+        return self.batch_root_dir() / stage_name / "materialization_debug.json"
 
     def lesson_chunks_path(self, lesson_name: str) -> Path:
         """Path to lesson chunks JSON (synced transcript + visual events)."""
@@ -158,6 +186,19 @@ class PipelinePaths:
         self.output_intermediate_dir.mkdir(parents=True, exist_ok=True)
         self.output_review_dir.mkdir(parents=True, exist_ok=True)
         self.output_rag_ready_dir.mkdir(parents=True, exist_ok=True)
+
+    def ensure_batch_dirs(self, *stage_names: str) -> None:
+        """Create batch spool/results directories for the given stages."""
+        stages: Iterable[str] = stage_names or (
+            "vision",
+            "knowledge_extract",
+            "markdown_render",
+        )
+        self.ensure_output_dirs()
+        self.batch_root_dir().mkdir(parents=True, exist_ok=True)
+        for stage_name in stages:
+            self.batch_spool_dir(stage_name).mkdir(parents=True, exist_ok=True)
+            self.batch_results_dir(stage_name).mkdir(parents=True, exist_ok=True)
 
 
 @dataclass

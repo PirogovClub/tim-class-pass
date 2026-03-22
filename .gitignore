@@ -22,4 +22,5 @@ build/
 htmlcov/
 .mypy_cache/
 .ruff_cache/data/
+var/
 data/

@@ -2,7 +2,7 @@
 
 This document lists Python files in the repository with their functions and a short description of each one.
 
-Total Python files documented: 119
+Total Python files documented: 122
 
 ## helpers/__init__.py
 - No functions defined in this file.
@@ -226,7 +226,9 @@ Total Python files documented: 119
 - _contains_any() - Contains any.
 - _is_generic_teaching_visual() - Is generic teaching visual.
 - _has_explicit_negative_semantics() - Has explicit negative semantics.
-- infer_example_role() - Heuristic example role (06-phase1). Counterexample only with explicit negative semantics and non-generic visual.
+- infer_example_role() - Heuristic example role (13-phase2, 14-phase2). Positive only with concrete market visuals; counterexample only with explicit negative event types.
+- classify_evidence_strength() - Classify evidence strength: weak, moderate, or strong. Evidence is always supporting.
+- classify_evidence_role_detail() - Return a granular role label for the evidence reference (illustrates_rule, shows_setup, shows_failure, shows_counterexample, ambiguous_chart_context).
 - _event_time_range_seconds() - Return (start_sec, end_sec) or None if not parseable.
 - score_candidate_event_match() - Score match; return (total, breakdown). Weights: chunk 0.40, time 0.25, concept 0.20, subconcept 0.10, type 0.05; cap 1.0.
 - link_candidates_to_knowledge_events() - For each candidate, link events with score >= threshold; return (pairs, debug_rows).
@@ -284,7 +286,9 @@ Total Python files documented: 119
 - infer_concept_from_text() - Conservative keyword-based concept/subconcept from text.
 - infer_concept_from_visuals() - Conservative concept from visual annotation/example_type.
 - resolve_concept() - Prefer LLM-provided, then transcript keywords, then visual hints.
-- score_event_confidence() - Heuristic label and score in [0, 1].
+- score_transcript_support() - Compute a 0..1 transcript support score based on anchor quality and text clarity.
+- score_visual_support() - Estimate how much visual evidence in this chunk supports any event.
+- score_event_confidence() - Transcript-first heuristic label and score in [0, 1].
 - normalize_statement_text() - Strip and collapse whitespace.
 - dedupe_statements() - Case-insensitive, whitespace-normalized exact-text dedupe.
 - clamp_line_indices() - Clamp line indices.
@@ -448,11 +452,22 @@ Total Python files documented: 119
 - _slug() - Slug.
 - make_rule_id() - Make rule id.
 - distribute_example_refs() - Map example_role to positive/negative/ambiguous evidence_id lists.
-- score_rule_candidate_confidence() - Return (confidence_label, score in [0,1]).
+- _aggregate_transcript_support() - Aggregate transcript support from source events. Returns (avg_score, total_anchors, repetition_count).
+- _aggregate_visual_support() - Aggregate visual support from source events.
+- score_rule_candidate_confidence() - Transcript-first confidence: strong transcript grounding lifts score even without visual evidence.
 - candidate_to_rule_card() - Convert RuleCandidate to RuleCard.
 - build_rule_cards() - Group  attach evidence  merge duplicates  split  convert to RuleCards; return collection and debug rows.
 - save_rule_cards() - Write RuleCardCollection to JSON.
 - save_rule_debug() - Write debug rows to JSON.
+
+## pipeline/component2/support_policy.py
+- DEFAULT_EVENT_POLICY - Dict mapping event_type to default teaching_mode and evidence_requirement.
+- classify_teaching_mode() - Classify how the concept is taught: theory, example, or mixed.
+- classify_evidence_requirement() - Determine whether visual evidence is required, optional, or unnecessary.
+- classify_support_basis() - Determine the primary grounding source: transcript_primary, transcript_plus_visual, visual_primary, inferred.
+- classify_transcript_support_level() - Bucket a transcript support score into weak/moderate/strong.
+- classify_visual_support_level() - Classify the strength of visual support for a rule or event.
+- should_require_visual_evidence() - Return True only when the entity actually needs linked visual evidence.
 
 ## pipeline/component2/visual_compaction.py
 - _int_default() - Int default.
@@ -1173,6 +1188,23 @@ Total Python files documented: 119
 - TestAreDirectionsConflicting (class, 4 tests) - Same not conflicting; bullish/bearish conflicting; unknown always conflicting; neutral with itself not conflicting.
 - TestRussianBackfill (class, 6 tests) - KnowledgeEvent/RuleCard/EvidenceRef *_ru fields populated when Russian, default None otherwise.
 - TestLanguageAwareSummary (class, 5 tests) - Russian summary goes to summary_ru; English does not; legacy compact_visual_summary preserved; ambiguous/empty stays safe; mixed language detection.
+
+## tests/test_support_policy.py
+- TestDefaultEventPolicy (class, 3 tests) - All event types present, theory types require no evidence, example requires evidence.
+- TestClassifyTeachingMode (class, 6 tests) - definition→theory, comparison→theory, example→example, rule_statement mixed with visual language, defaults.
+- TestClassifyEvidenceRequirement (class, 4 tests) - example mode requires, definition none, rule_statement optional, unknown defaults.
+- TestClassifySupportBasis (class, 5 tests) - transcript_primary, transcript_plus_visual, visual_primary, inferred, edge thresholds.
+- TestClassifyTranscriptSupportLevel (class, 5 tests) - strong/moderate/weak boundaries.
+- TestClassifyVisualSupportLevel (class, 6 tests) - none, illustration, counterexample, ambiguous, strong_example, supporting_example.
+- TestShouldRequireVisualEvidence (class, 3 tests) - example requires, theory does not, optional does not.
+
+## tests/test_transcript_first_validation.py
+- TestSchemaFieldsExist (class, 3 tests) - KnowledgeEvent, RuleCard, EvidenceRef new fields present and settable.
+- TestValidationPolicy (class, 3 tests) - evidence_requirement=none suppresses warnings, optional warns on visual_summary.
+- TestTranscriptSupportScoring (class, 3 tests) - line confidence high score, chunk confidence lower, longer text boosts.
+- TestConfidenceScoringTranscriptFirst (class, 2 tests) - High transcript_support_score lifts confidence for events and rule candidates.
+- TestEvidenceClassifiers (class, 4 tests) - Evidence strength weak/moderate/strong classification, role detail classification.
+- TestKnowledgeEventNewFields (class, 2 tests) - Extraction populates support fields, theory event gets transcript_primary.
 
 ## tests/test_rule_reducer.py
 - test_load_valid_knowledge_events() - Valid KnowledgeEventCollection loads and validates.

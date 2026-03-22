@@ -162,8 +162,11 @@ def _check_intra_lesson_integrity(lesson: LessonRecord, result: ValidationResult
                 for eid in rc.evidence_refs:
                     if eid and eid not in evidence_ids:
                         result.add_warning(lid, "integrity", f"Rule {rc.rule_id} references unknown evidence {eid}")
-                if not rc.evidence_refs:
-                    result.add_warning(lid, "no_evidence", f"Rule {rc.rule_id} has no evidence_refs")
+                ev_req = getattr(rc, "evidence_requirement", None) or "optional"
+                if not rc.evidence_refs and ev_req == "required":
+                    result.add_warning(lid, "no_evidence", f"Rule {rc.rule_id} has no evidence_refs (evidence_requirement=required)")
+                elif not rc.evidence_refs and ev_req == "optional":
+                    result.add_warning(lid, "no_evidence_optional", f"Rule {rc.rule_id} has no evidence_refs (evidence_requirement=optional)")
         except Exception:
             pass
 

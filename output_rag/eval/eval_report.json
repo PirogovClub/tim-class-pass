@@ -7,11 +7,11 @@
   "mrr": 0.2789,
   "concept_detection_accuracy": 0.36,
   "unit_hit_rates": {
-    "concept_relation": 0.0,
     "rule_card": 0.6667,
-    "knowledge_event": 1.0,
+    "concept_relation": 0.0,
+    "concept_node": 1.0,
     "evidence_ref": 0.0,
-    "concept_node": 1.0
+    "knowledge_event": 1.0
   },
   "category_avg_recall": {
     "alias": 1.0,

@@ -42,6 +42,30 @@ ExampleRole = Literal[
     "unknown",
 ]
 
+SupportBasis = Literal[
+    "transcript_primary",
+    "transcript_plus_visual",
+    "visual_primary",
+    "inferred",
+]
+
+EvidenceRequirement = Literal["none", "optional", "required"]
+
+TeachingMode = Literal["theory", "example", "mixed"]
+
+VisualSupportLevel = Literal[
+    "none",
+    "illustration",
+    "supporting_example",
+    "strong_example",
+    "counterexample",
+    "ambiguous",
+]
+
+TranscriptSupportLevel = Literal["weak", "moderate", "strong"]
+
+EvidenceStrength = Literal["weak", "moderate", "strong"]
+
 # ----- Phase 1: shared validation helpers -----
 
 PLACEHOLDER_TEXTS: frozenset[str] = frozenset({
@@ -125,6 +149,8 @@ class EvidenceRef(ProvenanceMixin, TimeRangeMixin):
     summary_language: Optional[str] = None
     summary_ru: Optional[str] = None
     summary_en: Optional[str] = None
+    evidence_strength: Optional[EvidenceStrength] = None
+    evidence_role_detail: Optional[str] = None
 
 
 class KnowledgeEvent(ProvenanceMixin, TimeRangeMixin):
@@ -169,6 +195,13 @@ class KnowledgeEvent(ProvenanceMixin, TimeRangeMixin):
     normalized_text_ru: Optional[str] = None
     concept_label_ru: Optional[str] = None
     subconcept_label_ru: Optional[str] = None
+    support_basis: Optional[SupportBasis] = None
+    evidence_requirement: Optional[EvidenceRequirement] = None
+    teaching_mode: Optional[TeachingMode] = None
+    visual_support_level: Optional[VisualSupportLevel] = None
+    transcript_support_level: Optional[TranscriptSupportLevel] = None
+    transcript_support_score: Optional[float] = Field(None, ge=0.0, le=1.0)
+    visual_support_score: Optional[float] = Field(None, ge=0.0, le=1.0)
 
     @field_validator("raw_text", "normalized_text")
     @classmethod
@@ -211,6 +244,16 @@ class RuleCard(ProvenanceMixin):
     rule_text_ru: Optional[str] = None
     concept_label_ru: Optional[str] = None
     subconcept_label_ru: Optional[str] = None
+    support_basis: Optional[SupportBasis] = None
+    evidence_requirement: Optional[EvidenceRequirement] = None
+    teaching_mode: Optional[TeachingMode] = None
+    visual_support_level: Optional[VisualSupportLevel] = None
+    transcript_support_level: Optional[TranscriptSupportLevel] = None
+    transcript_support_score: Optional[float] = Field(None, ge=0.0, le=1.0)
+    visual_support_score: Optional[float] = Field(None, ge=0.0, le=1.0)
+    has_visual_evidence: bool = False
+    transcript_anchor_count: Optional[int] = None
+    transcript_repetition_count: Optional[int] = None
 
     @field_validator("concept", "rule_text")
     @classmethod
@@ -310,7 +353,8 @@ def validate_rule_card(rule: RuleCard) -> List[str]:
     )
     if all_empty:
         errors.append("all of rule_text, conditions, invalidation, exceptions, comparisons, algorithm_notes are empty")
-    if (rule.visual_summary or "").strip() and not (rule.evidence_refs or []):
+    ev_req = getattr(rule, "evidence_requirement", None) or "optional"
+    if (rule.visual_summary or "").strip() and not (rule.evidence_refs or []) and ev_req != "none":
         errors.append("visual_summary present but evidence_refs empty")
     if rule.labeling_guidance and is_placeholder_text(rule.rule_text):
         errors.append("labeling_guidance should be empty when rule is invalid")

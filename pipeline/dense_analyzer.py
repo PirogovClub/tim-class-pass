@@ -7,10 +7,26 @@ import click
 import base64
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from pathlib import Path
 from dotenv import load_dotenv
 
+from helpers.clients import gemini_batch_client
 from helpers.utils.compare import compare_images
 from helpers.utils.frame_schema import ensure_material_change, key_to_timestamp, minimal_no_change_frame
+from pipeline.contracts import PipelinePaths
+from pipeline.io_utils import atomic_write_json
+from pipeline.orchestrator import (
+    STAGE_RUN_STATUS_MATERIALIZING,
+    STAGE_RUN_STATUS_READY,
+    STAGE_RUN_STATUS_SPOOLING,
+    STAGE_RUN_STATUS_SUCCEEDED,
+    STAGE_VISION,
+    make_request_key,
+    parse_request_key,
+    slugify_lesson_name,
+    stable_sha256,
+    utc_now_iso,
+)
 
 load_dotenv()
 
@@ -498,6 +514,224 @@ def _write_analysis_outputs(
         json_path = os.path.join(frames_dir, f"frame_{key}.json")
         with open(json_path, "w", encoding="utf-8") as f:
             json.dump(entry, f, indent=2, ensure_ascii=False)
+
+
+def _resolve_frame_path(frames_dir: str | Path, frame_key: str) -> Path:
+    frames_root = Path(frames_dir)
+    candidates = [
+        frames_root / f"frame_{frame_key}.jpg",
+        frames_root / f"frame_{frame_key}.jpeg",
+        frames_root / f"frame_{frame_key}.png",
+        frames_root / f"{frame_key}.jpg",
+        frames_root / f"{frame_key}.jpeg",
+        frames_root / f"{frame_key}.png",
+    ]
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    raise FileNotFoundError(f"Could not resolve frame image for key={frame_key} in {frames_root}")
+
+
+def _mime_type_for_image(path: Path) -> str:
+    suffix = path.suffix.lower()
+    if suffix == ".png":
+        return "image/png"
+    if suffix == ".webp":
+        return "image/webp"
+    return "image/jpeg"
+
+
+def parse_frame_analysis_text(text: str, frame_key: str | None = None) -> dict:
+    parsed = _parse_json_from_response(text)
+    if frame_key and frame_key in parsed and isinstance(parsed[frame_key], dict):
+        parsed = parsed[frame_key]
+    if frame_key and isinstance(parsed, dict):
+        parsed.setdefault("frame_timestamp", key_to_timestamp(frame_key))
+    return ensure_material_change(parsed)
+
+
+def emit_batch_spool_for_analysis(
+    *,
+    video_root,
+    lesson_context,
+    queue_keys,
+    frames_dir,
+    config,
+    state_store,
+) -> Path:
+    video_root_path = Path(video_root)
+    frames_root = Path(frames_dir)
+    paths = PipelinePaths(video_root=video_root_path)
+    paths.ensure_batch_dirs(STAGE_VISION)
+
+    lesson_name = (
+        lesson_context.get("lesson_name")
+        or lesson_context.get("lesson_id")
+        or lesson_context.get("title")
+        or video_root_path.name
+    )
+    video_id = lesson_context.get("video_id") or video_root_path.name
+    lesson_slug = slugify_lesson_name(lesson_name)
+    lesson_id = lesson_context.get("lesson_id") or f"{video_id}::{lesson_slug}"
+    fragment_name = lesson_context.get("fragment_name") or f"{lesson_slug}__vision"
+
+    stage_run = state_store.create_or_reuse_stage_run(
+        lesson_id=lesson_id,
+        stage_name=STAGE_VISION,
+        execution_mode="gemini_batch",
+        status=STAGE_RUN_STATUS_SPOOLING,
+    )
+
+    model_name = (
+        (config or {}).get("model")
+        or (config or {}).get("model_images")
+        or (config or {}).get("model_name")
+        or "gemini-2.5-flash-lite"
+    )
+    provider_name = (config or {}).get("provider") or (config or {}).get("provider_images") or "gemini"
+    spool_path = paths.batch_spool_requests_path(STAGE_VISION, fragment_name)
+    manifest_path = paths.batch_spool_manifest_path(STAGE_VISION, fragment_name)
+
+    lines: list[dict] = []
+    request_keys: list[str] = []
+    for frame_key in [str(key) for key in queue_keys]:
+        frame_path = _resolve_frame_path(frames_root, frame_key)
+        prompt = get_batch_prompt_independent([(frame_key, str(frame_path))], str(video_root_path))
+        contents = [
+            {
+                "role": "user",
+                "parts": [
+                    {"text": prompt},
+                    {
+                        "inlineData": {
+                            "mimeType": _mime_type_for_image(frame_path),
+                            "data": _encode_image(str(frame_path)),
+                        }
+                    },
+                ],
+            }
+        ]
+        request_key = make_request_key(
+            video_id=video_id,
+            lesson_slug=lesson_slug,
+            stage_name=STAGE_VISION,
+            entity_kind="frame",
+            entity_index=frame_key,
+        )
+        line = gemini_batch_client.build_generate_content_batch_line(
+            request_key=request_key,
+            contents=contents,
+        )
+        lines.append(line)
+        request_keys.append(request_key)
+        state_store.record_spool_request(
+            request_key=request_key,
+            stage_run_id=stage_run["stage_run_id"],
+            video_id=video_id,
+            lesson_id=lesson_id,
+            stage_name=STAGE_VISION,
+            entity_kind="frame",
+            entity_index=frame_key,
+            payload_sha256=stable_sha256(line),
+            spool_file_path=spool_path,
+        )
+
+    gemini_batch_client.write_jsonl_lines(spool_path, lines)
+    manifest = {
+        "video_id": video_id,
+        "lesson_id": lesson_id,
+        "lesson_name": lesson_name,
+        "lesson_slug": lesson_slug,
+        "stage_name": STAGE_VISION,
+        "provider": provider_name,
+        "model": model_name,
+        "spool_file_path": str(spool_path),
+        "request_count": len(lines),
+        "request_keys": request_keys,
+        "created_at": utc_now_iso(),
+    }
+    atomic_write_json(manifest_path, manifest)
+    state_store.update_stage_run(
+        stage_run["stage_run_id"],
+        status=STAGE_RUN_STATUS_READY,
+        request_manifest_path=manifest_path,
+        started_at=stage_run.get("started_at") or utc_now_iso(),
+    )
+    return spool_path
+
+
+def materialize_batch_results_for_analysis(
+    results_jsonl_path,
+    *,
+    video_root,
+    lesson_context,
+    frames_dir,
+    state_store,
+) -> dict[str, dict]:
+    video_root_path = Path(video_root)
+    frames_root = Path(frames_dir)
+    lesson_name = (
+        lesson_context.get("lesson_name")
+        or lesson_context.get("lesson_id")
+        or lesson_context.get("title")
+        or video_root_path.name
+    )
+    lesson_slug = slugify_lesson_name(lesson_name)
+    lesson_id = lesson_context.get("lesson_id") or f"{lesson_context.get('video_id') or video_root_path.name}::{lesson_slug}"
+
+    stage_runs = state_store.list_stage_runs(
+        lesson_id=lesson_id,
+        stage_name=STAGE_VISION,
+        execution_mode="gemini_batch",
+    )
+    stage_run_id = stage_runs[-1]["stage_run_id"] if stage_runs else None
+    if stage_run_id:
+        state_store.update_stage_run(stage_run_id, status=STAGE_RUN_STATUS_MATERIALIZING)
+
+    decoded = Path(results_jsonl_path).read_text(encoding="utf-8")
+    analysis: dict[str, dict] = {}
+    failures: list[dict[str, str]] = []
+    for result_line in gemini_batch_client.iter_result_jsonl(decoded):
+        request_key = str(result_line.get("key") or "")
+        if not request_key:
+            failures.append({"request_key": "", "error": "missing key"})
+            continue
+        parsed_key = parse_request_key(request_key)
+        if parsed_key["lesson_slug"] != lesson_slug:
+            continue
+        frame_key = parsed_key["entity_index"]
+        try:
+            text = gemini_batch_client.extract_result_text(result_line)
+            if not text:
+                raise ValueError("missing response text")
+            entry = parse_frame_analysis_text(text, frame_key)
+            analysis[frame_key] = entry
+            state_store.mark_request_parsed(request_key, output_path=frames_root / f"frame_{frame_key}.json")
+        except Exception as exc:
+            failures.append({"request_key": request_key, "error": str(exc)})
+            state_store.mark_request_failed(request_key, str(exc))
+
+    analysis_file = video_root_path / "dense_analysis.json"
+    _write_analysis_outputs(analysis, str(analysis_file), str(frames_root))
+    debug_path = PipelinePaths(video_root=video_root_path).batch_materialization_debug_path(STAGE_VISION)
+    atomic_write_json(
+        debug_path,
+        {
+            "stage_name": STAGE_VISION,
+            "results_jsonl_path": str(results_jsonl_path),
+            "parsed_count": len(analysis),
+            "failed_count": len(failures),
+            "failures": failures,
+        },
+    )
+    if stage_run_id:
+        state_store.update_stage_run(
+            stage_run_id,
+            status=STAGE_RUN_STATUS_SUCCEEDED if not failures else STAGE_RUN_STATUS_FAILED,
+            result_manifest_path=debug_path,
+            finished_at=utc_now_iso(),
+        )
+    return analysis
 
 
 def _entries_meaningfully_different(left: dict, right: dict) -> bool:

@@ -136,6 +136,38 @@ def test_parse_knowledge_extraction_accepts_source_line_indices_and_source_quote
     assert parsed.definitions[0].source_quote is not None
 
 
+def test_parse_knowledge_extraction_accepts_fenced_json() -> None:
+    payload = """```json
+    {
+      "definitions": [
+        {
+          "text": "A level is a price area of repeated reaction.",
+          "concept": "level",
+          "subconcept": null,
+          "source_type": "explicit",
+          "ambiguity_notes": [],
+          "source_line_indices": [0],
+          "source_quote": "price reacts from the same area"
+        }
+      ],
+      "rule_statements": [],
+      "conditions": [],
+      "invalidations": [],
+      "exceptions": [],
+      "comparisons": [],
+      "warnings": [],
+      "process_steps": [],
+      "algorithm_hints": [],
+      "examples": [],
+      "global_notes": []
+    }
+    ```"""
+
+    parsed = parse_knowledge_extraction(payload)
+
+    assert parsed.definitions[0].text == "A level is a price area of repeated reaction."
+
+
 # ----- 3. build_markdown_render_prompt -----
 
 

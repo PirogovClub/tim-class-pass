@@ -78,4 +78,8 @@ class CorpusMetadata(BaseModel):
     evidence_coverage_pct: float = 0.0
     rules_without_evidence: int = 0
     fallback_linked_rules: int = 0
+    transcript_primary_rules: int = 0
+    transcript_plus_visual_rules: int = 0
+    visual_primary_rules: int = 0
+    inferred_rules: int = 0
     notes: list[str] = Field(default_factory=list)

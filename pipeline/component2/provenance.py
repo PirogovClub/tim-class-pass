@@ -241,7 +241,8 @@ def validate_rule_card_provenance(rule: Any) -> list[str]:
     if not source_event_ids:
         warnings.append("missing source_event_ids")
 
-    if getattr(rule, "visual_summary", None) and not evidence_refs:
+    ev_req = getattr(rule, "evidence_requirement", None) or "optional"
+    if getattr(rule, "visual_summary", None) and not evidence_refs and ev_req != "none":
         warnings.append("visual_summary present but evidence_refs missing")
 
     if not getattr(rule, "concept", None):

@@ -29,7 +29,7 @@
       "concept_graph_version": "1.0.0",
       "corpus_contract_version": "1.0.0"
     },
-    "build_timestamp": "2026-03-21T19:38:44.460564+00:00",
+    "build_timestamp": "2026-03-21T20:56:39.056047+00:00",
     "content_hashes": {
       "knowledge_events": "baa696ee692b983b3d248a84eb0447d0269ae3ab445a11c3078c78eef7bb766a",
       "rule_cards": "7df91267e46e44f026abac1e4fcafecf289da7af220536f05283087da417a6fb",
@@ -69,7 +69,7 @@
       "concept_graph_version": "1.0.0",
       "corpus_contract_version": "1.0.0"
     },
-    "build_timestamp": "2026-03-21T19:38:44.460564+00:00",
+    "build_timestamp": "2026-03-21T20:56:39.056047+00:00",
     "content_hashes": {
       "knowledge_events": "592f4ac22347b1a4838453bd2b655173f7bf0323c3bb2e66bd5e7f5612ae8402",
       "rule_cards": "69cbffc668b507059f6c17148d8b453e3396b9a62cf2a3333e335ed71e7a7453",
