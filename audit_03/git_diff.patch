@@ -1,0 +1,1239 @@
+﻿diff --git a/pipeline/component2/evidence_linker.py b/pipeline/component2/evidence_linker.py
+index 56f5124..073baa3 100644
+--- a/pipeline/component2/evidence_linker.py
++++ b/pipeline/component2/evidence_linker.py
+@@ -623,6 +623,62 @@ def infer_example_role(
+     return "illustration"
+ 
+ 
++# ----- Evidence strength and role detail -----
++
++
++def classify_evidence_strength(
++    candidate: VisualEvidenceCandidate,
++    linked_events: list[KnowledgeEvent],
++) -> str:
++    """Classify evidence strength: weak, moderate, or strong.
++
++    Evidence is always *supporting* ΓÇö this scores how strong the support is,
++    not whether the rule itself is valid.
++    """
++    summary = _norm_text(candidate.compact_visual_summary)
++    hit_count = concrete_visual_hit_count(summary)
++    has_many_links = len(linked_events) >= 2
++
++    if hit_count >= 3 and has_many_links:
++        return "strong"
++    if hit_count >= 2 or has_many_links:
++        return "moderate"
++    return "weak"
++
++
++def classify_evidence_role_detail(
++    example_role: str,
++    candidate: VisualEvidenceCandidate,
++    linked_events: list[KnowledgeEvent],
++) -> str:
++    """Return a granular role label for the evidence reference.
++
++    This describes *how* the visual supports the transcript-based rule,
++    not whether the rule is true.
++    """
++    event_types = {getattr(e, "event_type", "") for e in linked_events}
++    summary = _norm_text(candidate.compact_visual_summary)
++
++    if example_role in ("counterexample", "negative_example"):
++        return "shows_counterexample"
++
++    if "failure" in summary or "fail" in summary:
++        return "shows_failure"
++
++    if example_role == "positive_example":
++        if "setup" in summary or "entry" in summary:
++            return "shows_setup"
++        return "illustrates_rule"
++
++    if event_types & {"rule_statement", "definition", "condition"}:
++        return "illustrates_rule"
++
++    if "chart" in summary and not (event_types & {"rule_statement", "definition"}):
++        return "ambiguous_chart_context"
++
++    return "illustrates_rule"
++
++
+ # ----- Scoring and linking -----
+ 
+ def _event_time_range_seconds(event: KnowledgeEvent) -> tuple[float, float] | None:
+@@ -778,6 +834,10 @@ def candidate_to_evidence_ref(
+         if len(normalized) > 300:
+             compact_visual_summary = normalized[:297] + "..."
+     summary_lang = detect_summary_language(compact_visual_summary)
++    ev_strength = classify_evidence_strength(candidate, linked_events)
++    ev_role_detail = classify_evidence_role_detail(
++        candidate.example_role, candidate, linked_events,
++    )
+     evidence_ref = EvidenceRef(
+         evidence_id=candidate.candidate_id,
+         lesson_id=lesson_id,
+@@ -799,6 +859,8 @@ def candidate_to_evidence_ref(
+         summary_language=summary_lang,
+         summary_ru=compact_visual_summary if summary_lang == "ru" else None,
+         summary_en=compact_visual_summary if summary_lang == "en" else None,
++        evidence_strength=ev_strength,
++        evidence_role_detail=ev_role_detail,
+     )
+     return evidence_ref
+ 
+diff --git a/pipeline/component2/exporters.py b/pipeline/component2/exporters.py
+index f848991..daf52d9 100644
+--- a/pipeline/component2/exporters.py
++++ b/pipeline/component2/exporters.py
+@@ -251,6 +251,19 @@ def _review_rule_block(
+         parts.append(f"**Confidence:** {conf} ({score:.2f})")
+     else:
+         parts.append(f"**Confidence:** {conf}")
++
++    sb = getattr(rule, "support_basis", None)
++    tm = getattr(rule, "teaching_mode", None)
++    er = getattr(rule, "evidence_requirement", None)
++    support_parts: list[str] = []
++    if sb:
++        support_parts.append(f"support={sb}")
++    if tm:
++        support_parts.append(f"mode={tm}")
++    if er:
++        support_parts.append(f"evidence={er}")
++    if support_parts:
++        parts.append(f"**Support:** {', '.join(support_parts)}")
+     parts.append("")
+ 
+     block = format_bullet_block("Conditions", (rule.conditions or []))
+diff --git a/pipeline/component2/knowledge_builder.py b/pipeline/component2/knowledge_builder.py
+index 33b075a..ad2ea4c 100644
+--- a/pipeline/component2/knowledge_builder.py
++++ b/pipeline/component2/knowledge_builder.py
+@@ -36,6 +36,13 @@ from pipeline.component2.canonicalization import (
+     canonicalize_subconcept,
+     classify_rule_type,
+ )
++from pipeline.component2.support_policy import (
++    classify_evidence_requirement,
++    classify_support_basis,
++    classify_teaching_mode,
++    classify_transcript_support_level,
++    classify_visual_support_level,
++)
+ 
+ logger = logging.getLogger(__name__)
+ 
+@@ -415,6 +422,63 @@ def resolve_concept(
+     return (None, None)
+ 
+ 
++# ----- Transcript & visual support scoring -----
++
++
++def score_transcript_support(
++    anchor_density: float,
++    anchor_line_count: int,
++    timestamp_confidence: str,
++    text: str,
++) -> float:
++    """Compute a 0..1 transcript support score based on anchor quality and text clarity."""
++    score = 0.0
++    if timestamp_confidence == "line":
++        score += 0.40
++    elif timestamp_confidence == "span":
++        score += 0.25
++    else:
++        score += 0.10
++
++    score += min(anchor_density * 0.30, 0.30)
++    score += min(anchor_line_count * 0.05, 0.15)
++
++    stripped = (text or "").strip()
++    if stripped and len(stripped) >= 15 and stripped[-1] in ".!":
++        score += 0.10
++    if stripped and len(stripped) >= 30:
++        score += 0.05
++
++    return max(0.0, min(1.0, score))
++
++
++def score_visual_support(
++    chunk: AdaptedChunk,
++    event_type: str,
++) -> float:
++    """Estimate how much visual evidence in this chunk supports any event."""
++    if not chunk.visual_events:
++        return 0.0
++    example_types = chunk.candidate_example_types
++    if not example_types:
++        return 0.10
++
++    best = 0.10
++    for et in example_types:
++        lower = et.lower()
++        if "positive" in lower or "strong" in lower:
++            best = max(best, 0.80)
++        elif "negative" in lower or "counter" in lower:
++            best = max(best, 0.70)
++        elif "illustration" in lower:
++            best = max(best, 0.40)
++        elif "ambiguous" in lower:
++            best = max(best, 0.25)
++        else:
++            best = max(best, 0.20)
++    return min(1.0, best)
++
++
+ # ----- Confidence -----
+ 
+ 
+@@ -424,21 +488,27 @@ def score_event_confidence(
+     concept: str | None,
+     ambiguity_notes: list[str],
+     chunk: AdaptedChunk,
++    *,
++    transcript_support_score: float = 0.5,
+ ) -> tuple[ConfidenceLabel, float]:
+-    """Heuristic label and score in [0, 1]."""
+-    score = 0.5
++    """Transcript-first heuristic label and score in [0, 1].
++
++    transcript_support_score directly anchors the base: strong transcript
++    grounding lifts confidence even when visual evidence is absent.
++    """
++    score = 0.30 + transcript_support_score * 0.35
+     if concept:
+-        score += 0.15
++        score += 0.10
+     if not ambiguity_notes:
+-        score += 0.1
++        score += 0.08
+     if text and len(text.strip()) < 200 and text.strip().endswith((".", "!")):
+-        score += 0.1
++        score += 0.07
+     if event_type in ("definition", "rule_statement") and concept:
+-        score += 0.1
++        score += 0.08
+     if not text or len(text.strip()) < 10:
+-        score -= 0.2
++        score -= 0.20
+     if not concept and event_type in ("rule_statement", "condition"):
+-        score -= 0.15
++        score -= 0.10
+     score = max(0.0, min(1.0, score))
+     if score >= 0.7:
+         label: ConfidenceLabel = "high"
+@@ -830,8 +900,30 @@ def extraction_result_to_knowledge_events(
+             concept, subconcept = resolve_concept(
+                 st.concept, st.subconcept, chunk, raw
+             )
++
++            ts_score = score_transcript_support(
++                anchor_density, len(resolved_line_indices),
++                timestamp_confidence, raw,
++            )
++            vs_score = score_visual_support(chunk, event_type)
++            teaching_mode = classify_teaching_mode(
++                event_type, raw,
++                linked_visual_count=len(chunk.visual_events),
++                visual_example_type=(chunk.candidate_example_types or [None])[0],
++            )
++            ev_req = classify_evidence_requirement(
++                event_type, teaching_mode, concept, subconcept,
++            )
++            s_basis = classify_support_basis(ts_score, vs_score, teaching_mode)
++            t_level = classify_transcript_support_level(ts_score)
++            v_level = classify_visual_support_level(
++                vs_score,
++                example_role=(chunk.candidate_example_types or [None])[0],
++            )
++
+             label, conf_score = score_event_confidence(
+-                raw, event_type, concept, st.ambiguity_notes or [], chunk
++                raw, event_type, concept, st.ambiguity_notes or [], chunk,
++                transcript_support_score=ts_score,
+             )
+             event_id = f"ke_{slug}_{chunk.chunk_index}_{event_type}_{i}"
+             try:
+@@ -871,6 +963,13 @@ def extraction_result_to_knowledge_events(
+                     normalized_text_ru=norm if norm else None,
+                     concept_label_ru=concept if concept else None,
+                     subconcept_label_ru=subconcept if subconcept else None,
++                    support_basis=s_basis,
++                    evidence_requirement=ev_req,
++                    teaching_mode=teaching_mode,
++                    visual_support_level=v_level,
++                    transcript_support_level=t_level,
++                    transcript_support_score=round(ts_score, 4),
++                    visual_support_score=round(vs_score, 4),
+                 )
+                 events.append(ke)
+             except Exception:
+diff --git a/pipeline/component2/provenance.py b/pipeline/component2/provenance.py
+index e4e8f25..f7939c1 100644
+--- a/pipeline/component2/provenance.py
++++ b/pipeline/component2/provenance.py
+@@ -241,7 +241,8 @@ def validate_rule_card_provenance(rule: Any) -> list[str]:
+     if not source_event_ids:
+         warnings.append("missing source_event_ids")
+ 
+-    if getattr(rule, "visual_summary", None) and not evidence_refs:
++    ev_req = getattr(rule, "evidence_requirement", None) or "optional"
++    if getattr(rule, "visual_summary", None) and not evidence_refs and ev_req != "none":
+         warnings.append("visual_summary present but evidence_refs missing")
+ 
+     if not getattr(rule, "concept", None):
+diff --git a/pipeline/component2/rule_reducer.py b/pipeline/component2/rule_reducer.py
+index 181bfac..085d723 100644
+--- a/pipeline/component2/rule_reducer.py
++++ b/pipeline/component2/rule_reducer.py
+@@ -35,6 +35,13 @@ from pipeline.component2.canonicalization import (
+     classify_rule_type,
+ )
+ from pipeline.component2.parser import timestamp_to_seconds
++from pipeline.component2.support_policy import (
++    classify_evidence_requirement,
++    classify_support_basis,
++    classify_teaching_mode,
++    classify_transcript_support_level,
++    classify_visual_support_level,
++)
+ 
+ 
+ # ----- Internal model -----
+@@ -657,19 +664,65 @@ def distribute_example_refs(candidate: RuleCandidate) -> dict[str, list[str]]:
+ # ----- Confidence -----
+ 
+ 
+-def score_rule_candidate_confidence(candidate: RuleCandidate) -> tuple[str, float]:
+-    """Return (confidence_label, score in [0,1])."""
+-    score = 0.5
++def _aggregate_transcript_support(candidate: RuleCandidate) -> tuple[float, int, int]:
++    """Aggregate transcript support from source events.
++
++    Returns (avg_transcript_score, total_anchor_count, repetition_count).
++    """
++    all_events = (
++        candidate.primary_events
++        + candidate.condition_events
++        + candidate.invalidation_events
++        + candidate.exception_events
++    )
++    scores: list[float] = []
++    total_anchors = 0
++    for ev in all_events:
++        ts = getattr(ev, "transcript_support_score", None)
++        if ts is not None:
++            scores.append(ts)
++        total_anchors += len(getattr(ev, "transcript_anchors", []))
++    avg_score = sum(scores) / len(scores) if scores else 0.40
++    repetition = max(len(candidate.primary_events) - 1, 0)
++    return (avg_score, total_anchors, repetition)
++
++
++def _aggregate_visual_support(candidate: RuleCandidate) -> float:
++    """Aggregate visual support from source events."""
++    all_events = (
++        candidate.primary_events
++        + candidate.condition_events
++        + candidate.invalidation_events
++        + candidate.exception_events
++    )
++    scores: list[float] = []
++    for ev in all_events:
++        vs = getattr(ev, "visual_support_score", None)
++        if vs is not None:
++            scores.append(vs)
++    if candidate.linked_evidence:
++        scores.append(0.50)
++    return max(scores) if scores else 0.0
++
++
++def score_rule_candidate_confidence(
++    candidate: RuleCandidate,
++    *,
++    transcript_support_score: float = 0.5,
++) -> tuple[str, float]:
++    """Transcript-first confidence: strong transcript grounding lifts score
++    even when visual evidence is absent."""
++    score = 0.25 + transcript_support_score * 0.35
+     if candidate.primary_events:
+-        score += 0.15
++        score += 0.10
+     if candidate.concept and candidate.concept.strip():
+-        score += 0.1
++        score += 0.08
+     if candidate.subconcept and candidate.subconcept.strip():
+-        score += 0.05
++        score += 0.04
+     if len(candidate.condition_events) + len(candidate.invalidation_events) > 0:
+         score += 0.05
+     if candidate.linked_evidence:
+-        score += 0.1
++        score += 0.06
+     if len(candidate.primary_events) + len(candidate.condition_events) > 1:
+         score += 0.05
+     score = max(0.0, min(1.0, score))
+@@ -713,7 +766,36 @@ def candidate_to_rule_card(
+     concept = (candidate.concept or "unknown").strip() or "unknown"
+     rule_id = make_rule_id(candidate.lesson_id, candidate.concept, candidate.subconcept, candidate_index)
+     rule_text = choose_canonical_rule_text(candidate)
+-    conf_label, conf_score = score_rule_candidate_confidence(candidate)
++
++    ts_score, anchor_count, repetition_count = _aggregate_transcript_support(candidate)
++    vs_score = _aggregate_visual_support(candidate)
++
++    dominant_event_type_for_policy = "rule_statement"
++    if candidate.primary_events:
++        from collections import Counter as _Counter
++        _tc = _Counter(e.event_type for e in candidate.primary_events)
++        dominant_event_type_for_policy = _tc.most_common(1)[0][0]
++
++    teaching_mode = classify_teaching_mode(
++        dominant_event_type_for_policy,
++        rule_text,
++        linked_visual_count=len(candidate.linked_evidence),
++        visual_example_type=None,
++    )
++    ev_req = classify_evidence_requirement(
++        dominant_event_type_for_policy, teaching_mode, concept, candidate.subconcept,
++    )
++    s_basis = classify_support_basis(ts_score, vs_score, teaching_mode)
++    t_level = classify_transcript_support_level(ts_score)
++
++    primary_example_role = None
++    if candidate.linked_evidence:
++        primary_example_role = getattr(candidate.linked_evidence[0], "example_role", None)
++    v_level = classify_visual_support_level(vs_score, example_role=primary_example_role)
++
++    conf_label, conf_score = score_rule_candidate_confidence(
++        candidate, transcript_support_score=ts_score,
++    )
+     example_map = distribute_example_refs(candidate)
+     section = None
+     subsection = None
+@@ -731,12 +813,6 @@ def candidate_to_rule_card(
+     invalidation = collect_invalidation_texts(candidate)
+     exceptions = collect_exception_texts(candidate)
+ 
+-    dominant_event_type = "rule_statement"
+-    if candidate.primary_events:
+-        from collections import Counter
+-        type_counts = Counter(e.event_type for e in candidate.primary_events)
+-        dominant_event_type = type_counts.most_common(1)[0][0]
+-
+     return RuleCard(
+         rule_id=rule_id,
+         lesson_id=candidate.lesson_id,
+@@ -768,10 +844,20 @@ def candidate_to_rule_card(
+         condition_ids=[canonicalize_short_statement("condition", t) for t in conditions],
+         invalidation_ids=[canonicalize_short_statement("invalidation", t) for t in invalidation],
+         exception_ids=[canonicalize_short_statement("exception", t) for t in exceptions],
+-        rule_type=classify_rule_type(dominant_event_type),
++        rule_type=classify_rule_type(dominant_event_type_for_policy),
+         rule_text_ru=rule_text if rule_text else None,
+         concept_label_ru=concept if concept else None,
+         subconcept_label_ru=candidate.subconcept if candidate.subconcept else None,
++        support_basis=s_basis,
++        evidence_requirement=ev_req,
++        teaching_mode=teaching_mode,
++        visual_support_level=v_level,
++        transcript_support_level=t_level,
++        transcript_support_score=round(ts_score, 4),
++        visual_support_score=round(vs_score, 4),
++        has_visual_evidence=bool(candidate.linked_evidence),
++        transcript_anchor_count=anchor_count,
++        transcript_repetition_count=repetition_count,
+     )
+ 
+ 
+diff --git a/pipeline/component2/support_policy.py b/pipeline/component2/support_policy.py
+new file mode 100644
+index 0000000..2a4ef92
+--- /dev/null
++++ b/pipeline/component2/support_policy.py
+@@ -0,0 +1,134 @@
++"""Transcript-first classification policy for knowledge events and rules.
++
++Pure functions that classify teaching mode, evidence requirement, support basis,
++and support levels based on event type, scores, and context. These implement the
++ground truth policy: transcript is primary, visuals are supporting evidence.
++"""
++
++from __future__ import annotations
++
++from typing import Any
++
++# ΓöÇΓöÇ Default policy table keyed by event_type ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
++
++DEFAULT_EVENT_POLICY: dict[str, dict[str, str]] = {
++    "definition":     {"teaching_mode": "theory",  "evidence_requirement": "none"},
++    "comparison":     {"teaching_mode": "theory",  "evidence_requirement": "none"},
++    "warning":        {"teaching_mode": "theory",  "evidence_requirement": "optional"},
++    "process_step":   {"teaching_mode": "theory",  "evidence_requirement": "optional"},
++    "algorithm_hint": {"teaching_mode": "theory",  "evidence_requirement": "optional"},
++    "rule_statement": {"teaching_mode": "mixed",   "evidence_requirement": "optional"},
++    "condition":      {"teaching_mode": "theory",  "evidence_requirement": "optional"},
++    "invalidation":   {"teaching_mode": "theory",  "evidence_requirement": "optional"},
++    "exception":      {"teaching_mode": "theory",  "evidence_requirement": "optional"},
++    "example":        {"teaching_mode": "example", "evidence_requirement": "required"},
++    "observation":    {"teaching_mode": "theory",  "evidence_requirement": "optional"},
++}
++
++_EXAMPLE_LANGUAGE = frozenset({
++    "╨┐╨╛╨║╨░╨╖", "╤ü╨╝╨╛╤é╤Ç", "╨▓╨╕╨┤╨╕╨╝", "╨│╤Ç╨░╤ä╨╕╨║", "chart", "setup", "╨┐╤Ç╨╕╨╝╨╡╤Ç",
++    "╨┤╨╡╨╝╨╛╨╜╤ü╤é╤Ç╨░╤å", "failure", "breakout", "╨┐╤Ç╨╛╨▒╨╛╨╣", "╤ü╨▓╨╡╤ç",
++})
++
++
++def classify_teaching_mode(
++    event_type: str,
++    raw_text: str,
++    linked_visual_count: int = 0,
++    visual_example_type: str | None = None,
++) -> str:
++    """Classify how the concept is taught: theory, example, or mixed."""
++    default = DEFAULT_EVENT_POLICY.get(event_type, {}).get("teaching_mode", "theory")
++
++    if event_type in ("definition", "comparison"):
++        return "theory"
++
++    if event_type == "example":
++        return "example"
++
++    lower = (raw_text or "").lower()
++    has_example_lang = any(kw in lower for kw in _EXAMPLE_LANGUAGE)
++
++    if has_example_lang and linked_visual_count > 0:
++        if event_type == "rule_statement":
++            return "mixed"
++        return "example"
++
++    if visual_example_type and visual_example_type not in ("illustration", "unknown"):
++        if event_type == "rule_statement":
++            return "mixed"
++
++    return default
++
++
++def classify_evidence_requirement(
++    event_type: str,
++    teaching_mode: str,
++    concept: str | None = None,
++    subconcept: str | None = None,
++) -> str:
++    """Determine whether visual evidence is required, optional, or unnecessary."""
++    default = DEFAULT_EVENT_POLICY.get(event_type, {}).get("evidence_requirement", "optional")
++
++    if teaching_mode == "example":
++        return "required"
++
++    if event_type in ("definition", "comparison"):
++        return "none"
++
++    return default
++
++
++def classify_support_basis(
++    transcript_support_score: float,
++    visual_support_score: float,
++    teaching_mode: str,
++) -> str:
++    """Determine the primary grounding source for a rule or event."""
++    if transcript_support_score >= 0.60 and visual_support_score < 0.35:
++        return "transcript_primary"
++    if transcript_support_score >= 0.60 and visual_support_score >= 0.35:
++        return "transcript_plus_visual"
++    if (
++        transcript_support_score < 0.45
++        and visual_support_score >= 0.60
++        and teaching_mode in ("example", "mixed")
++    ):
++        return "visual_primary"
++    return "inferred"
++
++
++def classify_transcript_support_level(score: float) -> str:
++    """Bucket a transcript support score into weak/moderate/strong."""
++    if score >= 0.75:
++        return "strong"
++    if score >= 0.45:
++        return "moderate"
++    return "weak"
++
++
++def classify_visual_support_level(
++    score: float,
++    example_role: str | None = None,
++) -> str:
++    """Classify the strength of visual support for a rule or event."""
++    if score <= 0.0 and not example_role:
++        return "none"
++    if example_role == "illustration":
++        return "illustration"
++    if example_role == "ambiguous_example":
++        return "ambiguous"
++    if example_role in ("counterexample", "negative_example"):
++        return "counterexample"
++    if score >= 0.75:
++        return "strong_example"
++    if score > 0.0:
++        return "supporting_example"
++    return "none"
++
++
++def should_require_visual_evidence(rule_or_event: Any) -> bool:
++    """Return True only when the entity actually needs linked visual evidence."""
++    tm = getattr(rule_or_event, "teaching_mode", None)
++    er = getattr(rule_or_event, "evidence_requirement", None)
++    return tm == "example" or er == "required"
+diff --git a/pipeline/corpus/contracts.py b/pipeline/corpus/contracts.py
+index f44897f..d293fe8 100644
+--- a/pipeline/corpus/contracts.py
++++ b/pipeline/corpus/contracts.py
+@@ -78,4 +78,8 @@ class CorpusMetadata(BaseModel):
+     evidence_coverage_pct: float = 0.0
+     rules_without_evidence: int = 0
+     fallback_linked_rules: int = 0
++    transcript_primary_rules: int = 0
++    transcript_plus_visual_rules: int = 0
++    visual_primary_rules: int = 0
++    inferred_rules: int = 0
+     notes: list[str] = Field(default_factory=list)
+diff --git a/pipeline/corpus/corpus_builder.py b/pipeline/corpus/corpus_builder.py
+index 9228b1a..62696b2 100644
+--- a/pipeline/corpus/corpus_builder.py
++++ b/pipeline/corpus/corpus_builder.py
+@@ -315,6 +315,19 @@ def build_corpus(
+         else 0.0
+     )
+ 
++    sb_counts: dict[str, int] = {
++        "transcript_primary": 0,
++        "transcript_plus_visual": 0,
++        "visual_primary": 0,
++        "inferred": 0,
++    }
++    for r in global_rules:
++        sb = r.get("support_basis") or "inferred"
++        if sb in sb_counts:
++            sb_counts[sb] += 1
++        else:
++            sb_counts["inferred"] += 1
++
+     now = datetime.now(timezone.utc).isoformat()
+     meta = CorpusMetadata(
+         corpus_contract_version=SCHEMA_VERSIONS["corpus_contract_version"],
+@@ -331,6 +344,10 @@ def build_corpus(
+         evidence_coverage_pct=ev_coverage,
+         rules_without_evidence=rules_no_ev,
+         fallback_linked_rules=rules_fallback,
++        transcript_primary_rules=sb_counts["transcript_primary"],
++        transcript_plus_visual_rules=sb_counts["transcript_plus_visual"],
++        visual_primary_rules=sb_counts["visual_primary"],
++        inferred_rules=sb_counts["inferred"],
+         notes=[],
+     )
+     _write_json(meta.model_dump(), output_root / "corpus_metadata.json")
+diff --git a/pipeline/corpus/validator.py b/pipeline/corpus/validator.py
+index 88411b3..5b2d774 100644
+--- a/pipeline/corpus/validator.py
++++ b/pipeline/corpus/validator.py
+@@ -162,8 +162,11 @@ def _check_intra_lesson_integrity(lesson: LessonRecord, result: ValidationResult
+                 for eid in rc.evidence_refs:
+                     if eid and eid not in evidence_ids:
+                         result.add_warning(lid, "integrity", f"Rule {rc.rule_id} references unknown evidence {eid}")
+-                if not rc.evidence_refs:
+-                    result.add_warning(lid, "no_evidence", f"Rule {rc.rule_id} has no evidence_refs")
++                ev_req = getattr(rc, "evidence_requirement", None) or "optional"
++                if not rc.evidence_refs and ev_req == "required":
++                    result.add_warning(lid, "no_evidence", f"Rule {rc.rule_id} has no evidence_refs (evidence_requirement=required)")
++                elif not rc.evidence_refs and ev_req == "optional":
++                    result.add_warning(lid, "no_evidence_optional", f"Rule {rc.rule_id} has no evidence_refs (evidence_requirement=optional)")
+         except Exception:
+             pass
+ 
+diff --git a/pipeline/schemas.py b/pipeline/schemas.py
+index 1332b8c..b2110b4 100644
+--- a/pipeline/schemas.py
++++ b/pipeline/schemas.py
+@@ -42,6 +42,30 @@ ExampleRole = Literal[
+     "unknown",
+ ]
+ 
++SupportBasis = Literal[
++    "transcript_primary",
++    "transcript_plus_visual",
++    "visual_primary",
++    "inferred",
++]
++
++EvidenceRequirement = Literal["none", "optional", "required"]
++
++TeachingMode = Literal["theory", "example", "mixed"]
++
++VisualSupportLevel = Literal[
++    "none",
++    "illustration",
++    "supporting_example",
++    "strong_example",
++    "counterexample",
++    "ambiguous",
++]
++
++TranscriptSupportLevel = Literal["weak", "moderate", "strong"]
++
++EvidenceStrength = Literal["weak", "moderate", "strong"]
++
+ # ----- Phase 1: shared validation helpers -----
+ 
+ PLACEHOLDER_TEXTS: frozenset[str] = frozenset({
+@@ -125,6 +149,8 @@ class EvidenceRef(ProvenanceMixin, TimeRangeMixin):
+     summary_language: Optional[str] = None
+     summary_ru: Optional[str] = None
+     summary_en: Optional[str] = None
++    evidence_strength: Optional[EvidenceStrength] = None
++    evidence_role_detail: Optional[str] = None
+ 
+ 
+ class KnowledgeEvent(ProvenanceMixin, TimeRangeMixin):
+@@ -169,6 +195,13 @@ class KnowledgeEvent(ProvenanceMixin, TimeRangeMixin):
+     normalized_text_ru: Optional[str] = None
+     concept_label_ru: Optional[str] = None
+     subconcept_label_ru: Optional[str] = None
++    support_basis: Optional[SupportBasis] = None
++    evidence_requirement: Optional[EvidenceRequirement] = None
++    teaching_mode: Optional[TeachingMode] = None
++    visual_support_level: Optional[VisualSupportLevel] = None
++    transcript_support_level: Optional[TranscriptSupportLevel] = None
++    transcript_support_score: Optional[float] = Field(None, ge=0.0, le=1.0)
++    visual_support_score: Optional[float] = Field(None, ge=0.0, le=1.0)
+ 
+     @field_validator("raw_text", "normalized_text")
+     @classmethod
+@@ -211,6 +244,16 @@ class RuleCard(ProvenanceMixin):
+     rule_text_ru: Optional[str] = None
+     concept_label_ru: Optional[str] = None
+     subconcept_label_ru: Optional[str] = None
++    support_basis: Optional[SupportBasis] = None
++    evidence_requirement: Optional[EvidenceRequirement] = None
++    teaching_mode: Optional[TeachingMode] = None
++    visual_support_level: Optional[VisualSupportLevel] = None
++    transcript_support_level: Optional[TranscriptSupportLevel] = None
++    transcript_support_score: Optional[float] = Field(None, ge=0.0, le=1.0)
++    visual_support_score: Optional[float] = Field(None, ge=0.0, le=1.0)
++    has_visual_evidence: bool = False
++    transcript_anchor_count: Optional[int] = None
++    transcript_repetition_count: Optional[int] = None
+ 
+     @field_validator("concept", "rule_text")
+     @classmethod
+@@ -310,7 +353,8 @@ def validate_rule_card(rule: RuleCard) -> List[str]:
+     )
+     if all_empty:
+         errors.append("all of rule_text, conditions, invalidation, exceptions, comparisons, algorithm_notes are empty")
+-    if (rule.visual_summary or "").strip() and not (rule.evidence_refs or []):
++    ev_req = getattr(rule, "evidence_requirement", None) or "optional"
++    if (rule.visual_summary or "").strip() and not (rule.evidence_refs or []) and ev_req != "none":
+         errors.append("visual_summary present but evidence_refs empty")
+     if rule.labeling_guidance and is_placeholder_text(rule.rule_text):
+         errors.append("labeling_guidance should be empty when rule is invalid")
+diff --git a/tests/test_support_policy.py b/tests/test_support_policy.py
+new file mode 100644
+index 0000000..6d9af2a
+--- /dev/null
++++ b/tests/test_support_policy.py
+@@ -0,0 +1,170 @@
++"""Tests for pipeline.component2.support_policy ΓÇö transcript-first classification."""
++
++from __future__ import annotations
++
++import pytest
++
++from pipeline.component2.support_policy import (
++    DEFAULT_EVENT_POLICY,
++    classify_evidence_requirement,
++    classify_support_basis,
++    classify_teaching_mode,
++    classify_transcript_support_level,
++    classify_visual_support_level,
++    should_require_visual_evidence,
++)
++
++
++# ΓöÇΓöÇ DEFAULT_EVENT_POLICY table ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
++
++
++class TestDefaultEventPolicy:
++    def test_all_event_types_present(self):
++        expected = {
++            "definition", "comparison", "warning", "process_step",
++            "algorithm_hint", "rule_statement", "condition", "invalidation",
++            "exception", "example", "observation",
++        }
++        assert set(DEFAULT_EVENT_POLICY.keys()) == expected
++
++    def test_theory_types_require_no_evidence(self):
++        assert DEFAULT_EVENT_POLICY["definition"]["evidence_requirement"] == "none"
++        assert DEFAULT_EVENT_POLICY["comparison"]["evidence_requirement"] == "none"
++
++    def test_example_requires_evidence(self):
++        assert DEFAULT_EVENT_POLICY["example"]["evidence_requirement"] == "required"
++        assert DEFAULT_EVENT_POLICY["example"]["teaching_mode"] == "example"
++
++
++# ΓöÇΓöÇ classify_teaching_mode ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
++
++
++class TestClassifyTeachingMode:
++    def test_definition_always_theory(self):
++        assert classify_teaching_mode("definition", "some text", 5) == "theory"
++
++    def test_comparison_always_theory(self):
++        assert classify_teaching_mode("comparison", "text", 0) == "theory"
++
++    def test_example_always_example(self):
++        assert classify_teaching_mode("example", "text", 0) == "example"
++
++    def test_rule_statement_with_example_language_and_visuals_is_mixed(self):
++        result = classify_teaching_mode(
++            "rule_statement", "╨í╨╝╨╛╤é╤Ç╨╕╨╝ ╨╜╨░ ╨│╤Ç╨░╤ä╨╕╨║", linked_visual_count=2,
++        )
++        assert result == "mixed"
++
++    def test_rule_statement_plain_text_defaults_to_mixed(self):
++        result = classify_teaching_mode("rule_statement", "plain text", 0)
++        assert result == "mixed"
++
++    def test_condition_defaults_to_theory(self):
++        assert classify_teaching_mode("condition", "text", 0) == "theory"
++
++
++# ΓöÇΓöÇ classify_evidence_requirement ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
++
++
++class TestClassifyEvidenceRequirement:
++    def test_example_mode_requires_evidence(self):
++        assert classify_evidence_requirement("example", "example") == "required"
++
++    def test_definition_mode_no_evidence(self):
++        assert classify_evidence_requirement("definition", "theory") == "none"
++
++    def test_rule_statement_optional(self):
++        result = classify_evidence_requirement("rule_statement", "mixed")
++        assert result == "optional"
++
++    def test_unknown_event_type_defaults_optional(self):
++        result = classify_evidence_requirement("unknown_type", "theory")
++        assert result == "optional"
++
++
++# ΓöÇΓöÇ classify_support_basis ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
++
++
++class TestClassifySupportBasis:
++    def test_transcript_primary(self):
++        assert classify_support_basis(0.80, 0.10, "theory") == "transcript_primary"
++
++    def test_transcript_plus_visual(self):
++        assert classify_support_basis(0.80, 0.50, "mixed") == "transcript_plus_visual"
++
++    def test_visual_primary(self):
++        assert classify_support_basis(0.30, 0.80, "example") == "visual_primary"
++
++    def test_inferred(self):
++        assert classify_support_basis(0.30, 0.20, "theory") == "inferred"
++
++    def test_edge_thresholds(self):
++        assert classify_support_basis(0.60, 0.34, "theory") == "transcript_primary"
++        assert classify_support_basis(0.60, 0.35, "theory") == "transcript_plus_visual"
++
++
++# ΓöÇΓöÇ classify_transcript_support_level ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
++
++
++class TestClassifyTranscriptSupportLevel:
++    def test_strong(self):
++        assert classify_transcript_support_level(0.80) == "strong"
++
++    def test_moderate(self):
++        assert classify_transcript_support_level(0.55) == "moderate"
++
++    def test_weak(self):
++        assert classify_transcript_support_level(0.30) == "weak"
++
++    def test_boundary_strong(self):
++        assert classify_transcript_support_level(0.75) == "strong"
++
++    def test_boundary_moderate(self):
++        assert classify_transcript_support_level(0.45) == "moderate"
++
++
++# ΓöÇΓöÇ classify_visual_support_level ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
++
++
++class TestClassifyVisualSupportLevel:
++    def test_none_when_zero(self):
++        assert classify_visual_support_level(0.0) == "none"
++
++    def test_illustration(self):
++        assert classify_visual_support_level(0.5, "illustration") == "illustration"
++
++    def test_counterexample(self):
++        assert classify_visual_support_level(0.5, "counterexample") == "counterexample"
++        assert classify_visual_support_level(0.5, "negative_example") == "counterexample"
++
++    def test_ambiguous(self):
++        assert classify_visual_support_level(0.5, "ambiguous_example") == "ambiguous"
++
++    def test_strong_example(self):
++        assert classify_visual_support_level(0.80) == "strong_example"
++
++    def test_supporting_example(self):
++        assert classify_visual_support_level(0.40) == "supporting_example"
++
++
++# ΓöÇΓöÇ should_require_visual_evidence ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
++
++
++class TestShouldRequireVisualEvidence:
++    def test_example_mode_requires(self):
++        class _Stub:
++            teaching_mode = "example"
++            evidence_requirement = "required"
++        assert should_require_visual_evidence(_Stub()) is True
++
++    def test_theory_mode_does_not_require(self):
++        class _Stub:
++            teaching_mode = "theory"
++            evidence_requirement = "none"
++        assert should_require_visual_evidence(_Stub()) is False
++
++    def test_optional_does_not_require(self):
++        class _Stub:
++            teaching_mode = "mixed"
++            evidence_requirement = "optional"
++        assert should_require_visual_evidence(_Stub()) is False
+diff --git a/tests/test_transcript_first_validation.py b/tests/test_transcript_first_validation.py
+new file mode 100644
+index 0000000..ff08fde
+--- /dev/null
++++ b/tests/test_transcript_first_validation.py
+@@ -0,0 +1,313 @@
++"""Tests for transcript-first validation policy changes.
++
++Verifies that:
++- Rules with evidence_requirement="none" don't emit no_evidence warnings
++- Rules with evidence_requirement="required" and no evidence DO emit warnings
++- Provenance validation respects evidence_requirement
++- New schema fields are populated on KnowledgeEvent, RuleCard, EvidenceRef
++- Confidence scoring is transcript-first
++"""
++
++from __future__ import annotations
++
++import pytest
++
++from pipeline.schemas import (
++    EvidenceRef,
++    KnowledgeEvent,
++    RuleCard,
++    validate_rule_card,
++)
++from pipeline.component2.provenance import validate_rule_card_provenance
++from pipeline.component2.knowledge_builder import (
++    score_event_confidence,
++    score_transcript_support,
++    score_visual_support,
++    AdaptedChunk,
++    extraction_result_to_knowledge_events,
++    ChunkExtractionResult,
++    ExtractedStatement,
++)
++from pipeline.component2.rule_reducer import (
++    score_rule_candidate_confidence,
++    RuleCandidate,
++)
++from pipeline.component2.evidence_linker import (
++    classify_evidence_strength,
++    classify_evidence_role_detail,
++    VisualEvidenceCandidate,
++)
++
++
++# ΓöÇΓöÇ Helper factories ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
++
++
++def _make_rule(**overrides) -> RuleCard:
++    defaults = dict(
++        rule_id="test_rule_1",
++        lesson_id="lesson_1",
++        concept="level",
++        rule_text="Price reacts from the level.",
++        source_event_ids=["ke_1"],
++        evidence_refs=[],
++        confidence="high",
++        confidence_score=0.85,
++    )
++    defaults.update(overrides)
++    return RuleCard(**defaults)
++
++
++def _make_event(**overrides) -> KnowledgeEvent:
++    defaults = dict(
++        event_id="ke_1",
++        lesson_id="lesson_1",
++        event_type="rule_statement",
++        raw_text="╨ª╨╡╨╜╨░ ╤Ç╨╡╨░╨│╨╕╤Ç╤â╨╡╤é ╨╛╤é ╤â╤Ç╨╛╨▓╨╜╤Å.",
++        normalized_text="╨ª╨╡╨╜╨░ ╤Ç╨╡╨░╨│╨╕╤Ç╤â╨╡╤é ╨╛╤é ╤â╤Ç╨╛╨▓╨╜╤Å.",
++        metadata={"chunk_index": 0},
++    )
++    defaults.update(overrides)
++    return KnowledgeEvent(**defaults)
++
++
++def _make_chunk(**overrides) -> AdaptedChunk:
++    defaults = dict(
++        chunk_index=0,
++        lesson_id="lesson_1",
++        lesson_title="Test Lesson",
++        section=None,
++        subsection=None,
++        start_time_seconds=0.0,
++        end_time_seconds=60.0,
++        transcript_lines=[
++            {"text": "╨ª╨╡╨╜╨░ ╤Ç╨╡╨░╨│╨╕╤Ç╤â╨╡╤é ╨╛╤é ╤â╤Ç╨╛╨▓╨╜╤Å.", "start_seconds": 0.0, "end_seconds": 5.0},
++            {"text": "╨ú╤Ç╨╛╨▓╨╡╨╜╤î ╨┐╨╛╨┤╤é╨▓╨╡╤Ç╨╢╨┤╨░╨╡╤é╤ü╤Å ╤Ç╨╡╨░╨║╤å╨╕╤Å╨╝╨╕.", "start_seconds": 5.0, "end_seconds": 10.0},
++        ],
++    )
++    defaults.update(overrides)
++    return AdaptedChunk(**defaults)
++
++
++# ΓöÇΓöÇ Schema fields exist ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
++
++
++class TestSchemaFieldsExist:
++    def test_knowledge_event_has_support_fields(self):
++        ke = _make_event(
++            support_basis="transcript_primary",
++            evidence_requirement="none",
++            teaching_mode="theory",
++            transcript_support_level="strong",
++            visual_support_level="none",
++            transcript_support_score=0.85,
++            visual_support_score=0.0,
++        )
++        assert ke.support_basis == "transcript_primary"
++        assert ke.evidence_requirement == "none"
++        assert ke.teaching_mode == "theory"
++
++    def test_rule_card_has_support_fields(self):
++        rc = _make_rule(
++            support_basis="transcript_plus_visual",
++            evidence_requirement="optional",
++            teaching_mode="mixed",
++            has_visual_evidence=True,
++            transcript_anchor_count=3,
++            transcript_repetition_count=1,
++        )
++        assert rc.support_basis == "transcript_plus_visual"
++        assert rc.has_visual_evidence is True
++        assert rc.transcript_anchor_count == 3
++
++    def test_evidence_ref_has_strength_fields(self):
++        ref = EvidenceRef(
++            evidence_id="ev_1",
++            lesson_id="lesson_1",
++            evidence_strength="moderate",
++            evidence_role_detail="illustrates_rule",
++        )
++        assert ref.evidence_strength == "moderate"
++        assert ref.evidence_role_detail == "illustrates_rule"
++
++
++# ΓöÇΓöÇ Validation policy: evidence_requirement-based ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
++
++
++class TestValidationPolicy:
++    def test_rule_no_evidence_no_warning_when_requirement_none(self):
++        rc = _make_rule(
++            evidence_refs=[],
++            visual_summary="Some visual text",
++            evidence_requirement="none",
++        )
++        errors = validate_rule_card(rc)
++        assert not any("evidence_refs empty" in e for e in errors)
++
++    def test_rule_no_evidence_warning_when_visual_summary_and_requirement_optional(self):
++        rc = _make_rule(
++            evidence_refs=[],
++            visual_summary="Some visual text",
++            evidence_requirement="optional",
++        )
++        errors = validate_rule_card(rc)
++        assert any("visual_summary present but evidence_refs empty" in e for e in errors)
++
++    def test_provenance_no_warning_visual_summary_when_requirement_none(self):
++        rc = _make_rule(
++            evidence_refs=[],
++            visual_summary="Some visual text",
++            evidence_requirement="none",
++        )
++        warnings = validate_rule_card_provenance(rc)
++        assert "visual_summary present but evidence_refs missing" not in warnings
++
++
++# ΓöÇΓöÇ Transcript support scoring ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
++
++
++class TestTranscriptSupportScoring:
++    def test_line_confidence_gives_high_score(self):
++        score = score_transcript_support(
++            anchor_density=1.0,
++            anchor_line_count=2,
++            timestamp_confidence="line",
++            text="╨ª╨╡╨╜╨░ ╤Ç╨╡╨░╨│╨╕╤Ç╤â╨╡╤é ╨╛╤é ╤â╤Ç╨╛╨▓╨╜╤Å.",
++        )
++        assert score >= 0.70
++
++    def test_chunk_confidence_gives_lower_score(self):
++        score = score_transcript_support(
++            anchor_density=0.0,
++            anchor_line_count=0,
++            timestamp_confidence="chunk",
++            text="Short.",
++        )
++        assert score < 0.35
++
++    def test_longer_text_boosts_score(self):
++        short = score_transcript_support(0.5, 1, "span", "Short")
++        long = score_transcript_support(
++            0.5, 1, "span",
++            "This is a much longer text that should give a higher boost."
++        )
++        assert long > short
++
++
++# ΓöÇΓöÇ Confidence scoring is transcript-first ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
++
++
++class TestConfidenceScoringTranscriptFirst:
++    def test_high_transcript_score_lifts_confidence(self):
++        chunk = _make_chunk()
++        _, score_high = score_event_confidence(
++            "╨ª╨╡╨╜╨░ ╤Ç╨╡╨░╨│╨╕╤Ç╤â╨╡╤é ╨╛╤é ╤â╤Ç╨╛╨▓╨╜╤Å.", "rule_statement",
++            "level", [], chunk, transcript_support_score=0.90,
++        )
++        _, score_low = score_event_confidence(
++            "╨ª╨╡╨╜╨░ ╤Ç╨╡╨░╨│╨╕╤Ç╤â╨╡╤é ╨╛╤é ╤â╤Ç╨╛╨▓╨╜╤Å.", "rule_statement",
++            "level", [], chunk, transcript_support_score=0.20,
++        )
++        assert score_high > score_low
++
++    def test_rule_candidate_confidence_transcript_first(self):
++        cand = RuleCandidate(
++            candidate_id="test",
++            lesson_id="lesson_1",
++            concept="level",
++            subconcept=None,
++            title_hint=None,
++            primary_events=[_make_event()],
++        )
++        _, score_high = score_rule_candidate_confidence(
++            cand, transcript_support_score=0.90,
++        )
++        _, score_low = score_rule_candidate_confidence(
++            cand, transcript_support_score=0.20,
++        )
++        assert score_high > score_low
++
++
++# ΓöÇΓöÇ Evidence strength and role detail ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
++
++
++class TestEvidenceClassifiers:
++    def _make_visual_candidate(self, summary: str = "") -> VisualEvidenceCandidate:
++        return VisualEvidenceCandidate(
++            candidate_id="vc_1",
++            lesson_id="lesson_1",
++            chunk_index=0,
++            timestamp_start=0.0,
++            timestamp_end=10.0,
++            compact_visual_summary=summary,
++        )
++
++    def test_classify_evidence_strength_weak(self):
++        vc = self._make_visual_candidate("intro slide")
++        assert classify_evidence_strength(vc, []) == "weak"
++
++    def test_classify_evidence_strength_strong(self):
++        vc = self._make_visual_candidate("annotated chart with level and candles")
++        evts = [_make_event(), _make_event(event_id="ke_2")]
++        assert classify_evidence_strength(vc, evts) == "strong"
++
++    def test_classify_evidence_strength_moderate(self):
++        vc = self._make_visual_candidate("annotated chart")
++        evts = [_make_event(), _make_event(event_id="ke_2")]
++        assert classify_evidence_strength(vc, evts) == "moderate"
++
++    def test_classify_evidence_role_detail_illustrates(self):
++        vc = self._make_visual_candidate("chart with level")
++        evts = [_make_event(event_type="rule_statement")]
++        result = classify_evidence_role_detail("illustration", vc, evts)
++        assert result == "illustrates_rule"
++
++    def test_classify_evidence_role_detail_counterexample(self):
++        vc = self._make_visual_candidate("failed breakout")
++        evts = [_make_event(event_type="invalidation")]
++        result = classify_evidence_role_detail("counterexample", vc, evts)
++        assert result == "shows_counterexample"
++
++
++# ΓöÇΓöÇ KnowledgeEvent populates new fields ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
++
++
++class TestKnowledgeEventNewFields:
++    def test_extraction_populates_support_fields(self):
++        chunk = _make_chunk()
++        extraction = ChunkExtractionResult(
++            rule_statements=[
++                ExtractedStatement(
++                    text="╨ª╨╡╨╜╨░ ╤Ç╨╡╨░╨│╨╕╤Ç╤â╨╡╤é ╨╛╤é ╤â╤Ç╨╛╨▓╨╜╤Å.",
++                    concept="level",
++                    source_line_indices=[0, 1],
++                ),
++            ]
++        )
++        events, _ = extraction_result_to_knowledge_events(extraction, chunk)
++        assert len(events) == 1
++        ke = events[0]
++        assert ke.support_basis is not None
++        assert ke.evidence_requirement is not None
++        assert ke.teaching_mode is not None
++        assert ke.transcript_support_score is not None
++        assert ke.visual_support_score is not None
++        assert ke.transcript_support_level is not None
++        assert ke.visual_support_level is not None
++
++    def test_theory_event_gets_transcript_primary(self):
++        chunk = _make_chunk(visual_events=[])
++        extraction = ChunkExtractionResult(
++            definitions=[
++                ExtractedStatement(
++                    text="╨ú╤Ç╨╛╨▓╨╡╨╜╤î ΓÇö ╤ì╤é╨╛ ╨╖╨╛╨╜╨░, ╨╛╤é ╨║╨╛╤é╨╛╤Ç╨╛╨╣ ╤å╨╡╨╜╨░ ╤Ç╨╡╨░╨│╨╕╤Ç╤â╨╡╤é.",
++                    concept="level",
++                    source_line_indices=[0, 1],
++                ),
++            ]
++        )
++        events, _ = extraction_result_to_knowledge_events(extraction, chunk)
++        assert len(events) == 1
++        ke = events[0]
++        assert ke.teaching_mode == "theory"
++        assert ke.evidence_requirement == "none"
++        assert ke.visual_support_score == 0.0

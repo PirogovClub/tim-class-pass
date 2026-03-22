@@ -1,0 +1,1106 @@
+"""Structured post-parse knowledge extraction from *.chunks.json (Task 3)."""
+
+from __future__ import annotations
+
+import json
+import logging
+import re
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Literal, Optional, Protocol
+
+from pydantic import BaseModel, Field, field_validator
+
+from pipeline.io_utils import atomic_write_text, atomic_write_json
+from pipeline.component2.parser import seconds_to_mmss
+from pipeline.component2.provenance import (
+    build_knowledge_event_provenance,
+    validate_knowledge_event_provenance,
+)
+from pipeline.component2.visual_compaction import (
+    VisualCompactionConfig,
+    assert_no_raw_visual_blob_leak,
+    strip_raw_visual_blobs_from_metadata,
+    summarize_visual_events_for_extraction,
+)
+from pipeline.schemas import (
+    ConfidenceLabel,
+    KnowledgeEvent,
+    KnowledgeEventCollection,
+    TranscriptAnchor,
+    is_placeholder_text,
+    normalize_text as schemas_normalize_text,
+)
+from pipeline.component2.canonicalization import (
+    canonicalize_concept,
+    canonicalize_subconcept,
+    classify_rule_type,
+)
+from pipeline.component2.support_policy import (
+    classify_evidence_requirement,
+    classify_support_basis,
+    classify_teaching_mode,
+    classify_transcript_support_level,
+    classify_visual_support_level,
+)
+
+logger = logging.getLogger(__name__)
+
+MIN_NORMALIZED_LENGTH = 3
+BUCKET_TO_EVENT_TYPE: dict[str, str] = {
+    "definitions": "definition",
+    "rule_statements": "rule_statement",
+    "conditions": "condition",
+    "invalidations": "invalidation",
+    "exceptions": "exception",
+    "comparisons": "comparison",
+    "warnings": "warning",
+    "process_steps": "process_step",
+    "algorithm_hints": "algorithm_hint",
+    "examples": "example",
+}
+
+MAX_LINE_CONFIDENCE_WIDTH = 3
+MAX_SPAN_CONFIDENCE_WIDTH = 10
+MIN_LINE_DENSITY = 0.60
+MIN_SPAN_DENSITY = 0.50
+
+
+# ----- Chunk adapter -----
+
+
+def _lesson_slug(lesson_id: str) -> str:
+    return re.sub(r"\W+", "_", lesson_id).strip("_").lower() or "lesson"
+
+
+@dataclass
+class AdaptedChunk:
+    chunk_index: int
+    lesson_id: str
+    lesson_title: Optional[str]
+    section: Optional[str]
+    subsection: Optional[str]
+    start_time_seconds: float
+    end_time_seconds: float
+    transcript_lines: list[dict[str, Any]] = field(default_factory=list)
+    transcript_text: str = ""
+    visual_events: list[dict[str, Any]] = field(default_factory=list)
+    previous_visual_state: Optional[dict[str, Any]] = None
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+    @property
+    def candidate_visual_frame_keys(self) -> list[str]:
+        keys: list[str] = []
+        for v in self.visual_events:
+            frame_key = v.get("frame_key")
+            if frame_key:
+                keys.append(str(frame_key))
+        return keys
+
+    @property
+    def candidate_visual_types(self) -> list[str]:
+        values: list[str] = []
+        for v in self.visual_events:
+            val = v.get("visual_representation_type")
+            if val:
+                values.append(str(val))
+        return values
+
+    @property
+    def candidate_example_types(self) -> list[str]:
+        values: list[str] = []
+        for v in self.visual_events:
+            val = v.get("example_type")
+            if val:
+                values.append(str(val))
+        return values
+
+
+def load_chunks_json(path: Path) -> list[dict]:
+    """Load and validate *.chunks.json as a list of chunk dicts."""
+    with open(path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    if not isinstance(data, list):
+        raise ValueError("chunks.json must be a JSON array")
+    return data
+
+
+def build_transcript_text(transcript_lines: list[dict]) -> str:
+    """Join non-empty stripped line texts; ignore blanks."""
+    parts: list[str] = []
+    for line in transcript_lines:
+        if not isinstance(line, dict):
+            continue
+        text = (line.get("text") or "").strip()
+        if text:
+            parts.append(text)
+    return "\n".join(parts) if parts else ""
+
+
+def build_numbered_transcript_text(transcript_lines: list[dict]) -> str:
+    """
+    Render transcript lines with chunk-local zero-based indices and mm:ss spans.
+    Example:
+    [L0 00:01-00:04] Price reacts from the level.
+    [L1 00:04-00:07] A false breakout returns under the level.
+    """
+    rendered: list[str] = []
+    for idx, line in enumerate(transcript_lines or []):
+        text = normalize_statement_text((line.get("text") or "").strip())
+        if not text:
+            continue
+        start = seconds_to_mmss(float(line.get("start_seconds", 0.0)))
+        end = seconds_to_mmss(float(line.get("end_seconds", 0.0)))
+        rendered.append(f"[L{idx} {start}-{end}] {text}")
+    return "\n".join(rendered)
+
+
+def get_transcript_time_bounds(
+    transcript_lines: list[dict], fallback_start: float, fallback_end: float
+) -> tuple[float, float]:
+    """Use first/last line start/end if present, else fallbacks."""
+    if not transcript_lines:
+        return (fallback_start, fallback_end)
+    start = fallback_start
+    end = fallback_end
+    first = transcript_lines[0]
+    if isinstance(first, dict) and "start_seconds" in first:
+        try:
+            start = float(first["start_seconds"])
+        except (TypeError, ValueError):
+            pass
+    last = transcript_lines[-1]
+    if isinstance(last, dict) and "end_seconds" in last:
+        try:
+            end = float(last["end_seconds"])
+        except (TypeError, ValueError):
+            pass
+    return (start, end)
+
+
+def adapt_chunk(
+    raw_chunk: dict,
+    lesson_id: str,
+    lesson_title: str | None = None,
+) -> AdaptedChunk:
+    """Normalize a raw chunk dict into AdaptedChunk."""
+    meta = raw_chunk.get("metadata") or {}
+    transcript_lines = raw_chunk.get("transcript_lines") or []
+    visual_events = raw_chunk.get("visual_events") or []
+    transcript_text = build_transcript_text(transcript_lines)
+    return AdaptedChunk(
+        chunk_index=int(raw_chunk.get("chunk_index", 0)),
+        lesson_id=lesson_id,
+        lesson_title=lesson_title,
+        section=meta.get("section") or None,
+        subsection=meta.get("subsection") or None,
+        start_time_seconds=float(raw_chunk.get("start_time_seconds", 0.0)),
+        end_time_seconds=float(raw_chunk.get("end_time_seconds", 0.0)),
+        transcript_lines=transcript_lines,
+        transcript_text=transcript_text,
+        visual_events=visual_events,
+        previous_visual_state=raw_chunk.get("previous_visual_state"),
+        metadata=dict(meta),
+    )
+
+
+def adapt_chunks(
+    raw_chunks: list[dict],
+    lesson_id: str,
+    lesson_title: str | None = None,
+) -> list[AdaptedChunk]:
+    """Adapt a list of raw chunk dicts."""
+    return [
+        adapt_chunk(c, lesson_id=lesson_id, lesson_title=lesson_title)
+        for c in raw_chunks
+    ]
+
+
+# ----- Extraction models -----
+
+
+SourceType = Literal["explicit", "inferred", "mixed"]
+
+
+class ExtractedStatement(BaseModel):
+    text: str
+    concept: Optional[str] = None
+    subconcept: Optional[str] = None
+    source_type: SourceType = "explicit"
+    ambiguity_notes: list[str] = Field(default_factory=list)
+    source_line_indices: list[int] = Field(default_factory=list)
+    source_quote: Optional[str] = None
+
+    @field_validator("source_line_indices")
+    @classmethod
+    def normalize_source_line_indices(cls, value: list[int]) -> list[int]:
+        cleaned = []
+        seen = set()
+        for item in value or []:
+            if isinstance(item, int) and item >= 0 and item not in seen:
+                seen.add(item)
+                cleaned.append(item)
+        return sorted(cleaned)
+
+
+class ChunkExtractionResult(BaseModel):
+    definitions: list[ExtractedStatement] = Field(default_factory=list)
+    rule_statements: list[ExtractedStatement] = Field(default_factory=list)
+    conditions: list[ExtractedStatement] = Field(default_factory=list)
+    invalidations: list[ExtractedStatement] = Field(default_factory=list)
+    exceptions: list[ExtractedStatement] = Field(default_factory=list)
+    comparisons: list[ExtractedStatement] = Field(default_factory=list)
+    warnings: list[ExtractedStatement] = Field(default_factory=list)
+    process_steps: list[ExtractedStatement] = Field(default_factory=list)
+    algorithm_hints: list[ExtractedStatement] = Field(default_factory=list)
+    examples: list[ExtractedStatement] = Field(default_factory=list)
+    global_notes: list[str] = Field(default_factory=list)
+
+
+# ----- Prompt -----
+
+
+def build_knowledge_extraction_prompt(
+    chunk: AdaptedChunk,
+    visual_summaries: list[str],
+) -> str:
+    """Build the extraction prompt with transcript and compact visual summaries."""
+    time_range = f"{seconds_to_mmss(chunk.start_time_seconds)} - {seconds_to_mmss(chunk.end_time_seconds)}"
+    visual_block = "\n".join(f"- {s}" for s in visual_summaries) if visual_summaries else "(none)"
+    return f"""Extract atomic trading knowledge from this lesson chunk. Output valid JSON only. Split distinct ideas into separate entries. Prefer explicit teaching rules over narration. Keep statements short and normalized. Use visuals as supporting evidence only. Do not describe frame-by-frame. Do not summarize the whole lesson. Do not invent absent information. Leave concept/subconcept null when unclear; note ambiguity in ambiguity_notes.
+
+Lesson ID: {chunk.lesson_id}
+Chunk index: {chunk.chunk_index}
+Time range: {time_range}
+
+<transcript>
+{chunk.transcript_text or "(empty)"}
+</transcript>
+
+<compact_visual_summaries>
+{visual_block}
+</compact_visual_summaries>
+
+Output a single JSON object with exactly these keys (each a list of objects with text, optional concept, optional subconcept, optional ambiguity_notes list): definitions, rule_statements, conditions, invalidations, exceptions, comparisons, warnings, process_steps, algorithm_hints, examples, global_notes (list of strings). Use empty lists for missing buckets. No markdown, no prose."""
+
+
+# ----- LLM client protocol -----
+
+
+class LLMExtractionClient(Protocol):
+    """Protocol for extraction: (user_text, system_instruction) -> raw JSON string."""
+
+    def generate_extraction(self, user_text: str, system_instruction: str) -> str:
+        ...
+
+
+# ----- Extraction and parsing -----
+
+
+def extract_chunk_knowledge(
+    chunk: AdaptedChunk,
+    llm_client: Any,
+    max_visual_summaries: int = 5,
+    compaction_cfg: VisualCompactionConfig | None = None,
+) -> tuple[ChunkExtractionResult, dict]:
+    """Call LLM, parse JSON into ChunkExtractionResult, return result and debug payload."""
+    cfg = compaction_cfg if compaction_cfg is not None else VisualCompactionConfig()
+    visual_summaries = summarize_visual_events_for_extraction(chunk.visual_events, cfg)
+    prompt = build_knowledge_extraction_prompt(chunk, visual_summaries)
+    system = "You are a trading knowledge extractor. The transcript is in Russian. All extracted text must remain in Russian. Respond only with valid JSON."
+    debug: dict = {
+        "chunk_index": chunk.chunk_index,
+        "start_time_seconds": chunk.start_time_seconds,
+        "end_time_seconds": chunk.end_time_seconds,
+        "transcript_text": (chunk.transcript_text or "")[:500],
+        "compact_visual_summaries": visual_summaries,
+        "raw_model_response": "",
+        "parsed_extraction": {},
+        "emitted_event_ids": [],
+        "error": None,
+    }
+    raw_response = ""
+    try:
+        if hasattr(llm_client, "generate_extraction"):
+            raw_response = llm_client.generate_extraction(prompt, system)
+        elif callable(llm_client):
+            raw_response = str(llm_client(prompt, system) or "").strip()
+        else:
+            resp = llm_client.generate_text(
+                user_text=prompt,
+                system_instruction=system,
+                response_mime_type="application/json",
+                response_schema=ChunkExtractionResult,
+            )
+            raw_response = (resp.text or "").strip() if hasattr(resp, "text") else str(resp).strip()
+    except Exception as e:
+        debug["error"] = str(e)
+        debug["raw_model_response"] = raw_response or "(no response)"
+        return (ChunkExtractionResult(), debug)
+
+    debug["raw_model_response"] = raw_response[:2000] if raw_response else ""
+
+    parsed: ChunkExtractionResult | None = None
+    try:
+        if raw_response:
+            raw_response = raw_response.strip()
+            if raw_response.startswith("```"):
+                raw_response = re.sub(r"^```\w*\n?", "", raw_response)
+                raw_response = re.sub(r"\n?```\s*$", "", raw_response)
+            parsed = ChunkExtractionResult.model_validate_json(raw_response)
+    except Exception as e:
+        debug["error"] = f"Parse error: {e}"
+        return (ChunkExtractionResult(), debug)
+
+    if parsed is None:
+        parsed = ChunkExtractionResult()
+    debug["parsed_extraction"] = parsed.model_dump()
+
+    events, rejected = extraction_result_to_knowledge_events(parsed, chunk)
+    debug["emitted_event_ids"] = [e.event_id for e in events]
+    debug["rejected_candidates"] = rejected
+    debug["provenance_warnings"] = [
+        w for e in events for w in validate_knowledge_event_provenance(e)
+    ]
+    return (parsed, debug)
+
+
+# ----- Concept inference -----
+
+_CONCEPT_KEYWORDS: list[tuple[list[str], str, str | None]] = [
+    (["level", "support", "resistance", "уровень"], "level", None),
+    (["false breakout", "failed breakout", "ложный пробой", "false breakout"], "false_breakout", None),
+    (["breakout", "break", "пробой", "break confirmation"], "break_confirmation", None),
+    (["trend break"], "trend_break_level", None),
+    (["reaction", "touches", "multiple reactions", "level rating"], "level_rating", None),
+]
+
+
+def infer_concept_from_text(text: str) -> tuple[str | None, str | None]:
+    """Conservative keyword-based concept/subconcept from text."""
+    if not text or not text.strip():
+        return (None, None)
+    lower = text.strip().lower()
+    for keywords, concept, subconcept in _CONCEPT_KEYWORDS:
+        for kw in keywords:
+            if kw in lower:
+                return (concept, subconcept)
+    return (None, None)
+
+
+def infer_concept_from_visuals(visual_events: list[dict]) -> tuple[str | None, str | None]:
+    """Conservative concept from visual annotation/example_type."""
+    for event in visual_events:
+        etype = (event.get("example_type") or "").lower()
+        if "false" in etype and "breakout" in etype:
+            return ("false_breakout", None)
+        if "level" in etype:
+            return ("level", None)
+        current = event.get("current_state") or {}
+        if isinstance(current, dict):
+            ann = (current.get("visible_annotations") or "")
+            if isinstance(ann, str) and "level" in ann.lower():
+                return ("level", None)
+    return (None, None)
+
+
+def resolve_concept(
+    statement_concept: str | None,
+    statement_subconcept: str | None,
+    chunk: AdaptedChunk,
+    statement_text: str,
+) -> tuple[str | None, str | None]:
+    """Prefer LLM-provided, then transcript keywords, then visual hints."""
+    if statement_concept and statement_concept.strip():
+        return (statement_concept.strip(), (statement_subconcept or "").strip() or None)
+    c, s = infer_concept_from_text(statement_text)
+    if c:
+        return (c, s)
+    c, s = infer_concept_from_visuals(chunk.visual_events)
+    if c:
+        return (c, s)
+    return (None, None)
+
+
+# ----- Transcript & visual support scoring -----
+
+
+def score_transcript_support(
+    anchor_density: float,
+    anchor_line_count: int,
+    timestamp_confidence: str,
+    text: str,
+) -> float:
+    """Compute a 0..1 transcript support score based on anchor quality and text clarity."""
+    score = 0.0
+    if timestamp_confidence == "line":
+        score += 0.40
+    elif timestamp_confidence == "span":
+        score += 0.25
+    else:
+        score += 0.10
+
+    score += min(anchor_density * 0.30, 0.30)
+    score += min(anchor_line_count * 0.05, 0.15)
+
+    stripped = (text or "").strip()
+    if stripped and len(stripped) >= 15 and stripped[-1] in ".!":
+        score += 0.10
+    if stripped and len(stripped) >= 30:
+        score += 0.05
+
+    return max(0.0, min(1.0, score))
+
+
+def score_visual_support(
+    chunk: AdaptedChunk,
+    event_type: str,
+) -> float:
+    """Estimate how much visual evidence in this chunk supports any event."""
+    if not chunk.visual_events:
+        return 0.0
+    example_types = chunk.candidate_example_types
+    if not example_types:
+        return 0.10
+
+    best = 0.10
+    for et in example_types:
+        lower = et.lower()
+        if "positive" in lower or "strong" in lower:
+            best = max(best, 0.80)
+        elif "negative" in lower or "counter" in lower:
+            best = max(best, 0.70)
+        elif "illustration" in lower:
+            best = max(best, 0.40)
+        elif "ambiguous" in lower:
+            best = max(best, 0.25)
+        else:
+            best = max(best, 0.20)
+    return min(1.0, best)
+
+
+# ----- Confidence -----
+
+
+def score_event_confidence(
+    text: str,
+    event_type: str,
+    concept: str | None,
+    ambiguity_notes: list[str],
+    chunk: AdaptedChunk,
+    *,
+    transcript_support_score: float = 0.5,
+) -> tuple[ConfidenceLabel, float]:
+    """Transcript-first heuristic label and score in [0, 1].
+
+    transcript_support_score directly anchors the base: strong transcript
+    grounding lifts confidence even when visual evidence is absent.
+    """
+    score = 0.30 + transcript_support_score * 0.35
+    if concept:
+        score += 0.10
+    if not ambiguity_notes:
+        score += 0.08
+    if text and len(text.strip()) < 200 and text.strip().endswith((".", "!")):
+        score += 0.07
+    if event_type in ("definition", "rule_statement") and concept:
+        score += 0.08
+    if not text or len(text.strip()) < 10:
+        score -= 0.20
+    if not concept and event_type in ("rule_statement", "condition"):
+        score -= 0.10
+    score = max(0.0, min(1.0, score))
+    if score >= 0.7:
+        label: ConfidenceLabel = "high"
+    elif score >= 0.4:
+        label = "medium"
+    else:
+        label = "low"
+    return (label, score)
+
+
+# ----- Normalize and dedupe -----
+
+
+def normalize_statement_text(text: str) -> str:
+    """Strip and collapse whitespace."""
+    if not text:
+        return ""
+    return re.sub(r"\s+", " ", text.strip())
+
+
+def dedupe_statements(statements: list[ExtractedStatement]) -> list[ExtractedStatement]:
+    """Case-insensitive, whitespace-normalized exact-text dedupe."""
+    seen: set[str] = set()
+    out: list[ExtractedStatement] = []
+    for s in statements:
+        key = normalize_statement_text(s.text).lower()
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        out.append(s)
+    return out
+
+
+# ----- Map to KnowledgeEvent -----
+
+
+def clamp_line_indices(indices: list[int], transcript_lines: list[dict]) -> list[int]:
+    if not transcript_lines:
+        return []
+    max_idx = len(transcript_lines) - 1
+    valid = [i for i in indices if 0 <= i <= max_idx]
+    return sorted(dict.fromkeys(valid))
+
+
+def find_line_indices_by_quote(source_quote: str | None, transcript_lines: list[dict]) -> list[int]:
+    quote = normalize_statement_text(source_quote or "").lower()
+    if not quote or not transcript_lines:
+        return []
+    matches: list[int] = []
+    for idx, line in enumerate(transcript_lines):
+        text = normalize_statement_text((line.get("text") or "")).lower()
+        if not text:
+            continue
+        if quote in text or text in quote:
+            matches.append(idx)
+    return matches
+
+
+def build_transcript_anchors(
+    line_indices: list[int],
+    transcript_lines: list[dict],
+    *,
+    match_source: str,
+) -> list[TranscriptAnchor]:
+    anchors: list[TranscriptAnchor] = []
+    for idx in line_indices:
+        line = transcript_lines[idx]
+        anchors.append(
+            TranscriptAnchor(
+                line_index=idx,
+                text=normalize_statement_text(line.get("text") or ""),
+                timestamp_start=seconds_to_mmss(float(line.get("start_seconds", 0.0))),
+                timestamp_end=seconds_to_mmss(float(line.get("end_seconds", 0.0))),
+                match_source=match_source,
+            )
+        )
+    return anchors
+
+
+def compute_anchor_span_width(line_indices: list[int]) -> int:
+    if not line_indices:
+        return 0
+    ordered = sorted(set(line_indices))
+    return (ordered[-1] - ordered[0]) + 1
+
+
+def compute_anchor_density(line_indices: list[int]) -> float:
+    if not line_indices:
+        return 0.0
+    width = compute_anchor_span_width(line_indices)
+    if width <= 0:
+        return 0.0
+    return len(set(line_indices)) / float(width)
+
+
+def is_near_contiguous(line_indices: list[int], *, max_gap: int = 1) -> bool:
+    ordered = sorted(set(line_indices))
+    if len(ordered) <= 1:
+        return True
+    for left, right in zip(ordered, ordered[1:]):
+        if right - left > (max_gap + 1):
+            return False
+    return True
+
+
+def compute_timestamp_confidence(
+    source_line_start: int | None,
+    source_line_end: int | None,
+    transcript_anchors: list[Any],
+    anchor_density: float | None,
+) -> str:
+    """Return line/span/chunk from line bounds and density (brief 11-phase2)."""
+    anchors = transcript_anchors or []
+    if source_line_start is None or source_line_end is None:
+        return "chunk"
+    span_width = source_line_end - source_line_start + 1
+    density = float(anchor_density or 0.0)
+    if not anchors:
+        return "chunk"
+    if span_width <= 3 and density >= 0.60:
+        return "line"
+    if span_width >= 4:
+        return "span"
+    if density > 0:
+        return "span"
+    return "chunk"
+
+
+def finalize_anchor_provenance(
+    source_line_start: int | None,
+    source_line_end: int | None,
+    transcript_anchors: list[Any],
+    anchor_density: float | None,
+) -> dict[str, Any]:
+    """Return dict with timestamp_confidence for tests (brief 11-phase2)."""
+    return {
+        "timestamp_confidence": compute_timestamp_confidence(
+            source_line_start,
+            source_line_end,
+            transcript_anchors,
+            anchor_density,
+        ),
+    }
+
+
+def classify_timestamp_confidence(
+    *,
+    resolved_line_indices: list[int],
+    match_source: str,
+) -> tuple[str, int | None, int | None, int, float]:
+    """
+    Returns:
+      timestamp_confidence, source_line_start, source_line_end, span_width, density
+    """
+    if not resolved_line_indices:
+        return ("chunk", None, None, 0, 0.0)
+    ordered = sorted(set(resolved_line_indices))
+    source_line_start = ordered[0]
+    source_line_end = ordered[-1]
+    span_width = compute_anchor_span_width(ordered)
+    density = compute_anchor_density(ordered)
+    near_contiguous = is_near_contiguous(ordered, max_gap=1)
+    if (
+        match_source == "llm_line_indices"
+        and near_contiguous
+        and span_width <= MAX_LINE_CONFIDENCE_WIDTH
+        and density >= MIN_LINE_DENSITY
+    ):
+        return ("line", source_line_start, source_line_end, span_width, density)
+    if (
+        near_contiguous
+        and span_width <= MAX_SPAN_CONFIDENCE_WIDTH
+        and density >= MIN_SPAN_DENSITY
+    ):
+        return ("span", source_line_start, source_line_end, span_width, density)
+    return ("chunk", None, None, span_width, density)
+
+
+def derive_event_timestamps_from_line_indices(
+    line_indices: list[int],
+    transcript_lines: list[dict],
+    *,
+    fallback_start_seconds: float,
+    fallback_end_seconds: float,
+) -> tuple[str, str, str, int | None, int | None]:
+    """
+    Returns:
+      timestamp_start, timestamp_end, timestamp_confidence, source_line_start, source_line_end
+    """
+    resolved = clamp_line_indices(line_indices, transcript_lines)
+    if not resolved:
+        return (
+            seconds_to_mmss(fallback_start_seconds),
+            seconds_to_mmss(fallback_end_seconds),
+            "chunk",
+            None,
+            None,
+        )
+    start_seconds = float(transcript_lines[resolved[0]].get("start_seconds", fallback_start_seconds))
+    end_seconds = float(transcript_lines[resolved[-1]].get("end_seconds", fallback_end_seconds))
+    return (
+        seconds_to_mmss(start_seconds),
+        seconds_to_mmss(end_seconds),
+        "line",
+        resolved[0],
+        resolved[-1],
+    )
+
+
+def resolve_statement_anchors(
+    statement: ExtractedStatement,
+    chunk: AdaptedChunk,
+) -> tuple[
+    list[int],
+    list[TranscriptAnchor],
+    str | None,
+    str,
+    str,
+    int | None,
+    int | None,
+    str,
+    str,
+    int,
+    float,
+]:
+    """
+    Returns:
+      resolved_line_indices,
+      transcript_anchors,
+      source_quote,
+      anchor_match_source,
+      timestamp_confidence,
+      source_line_start,
+      source_line_end,
+      timestamp_start,
+      timestamp_end,
+      anchor_span_width,
+      anchor_density,
+    """
+    transcript_lines = chunk.transcript_lines or []
+    resolved_line_indices = clamp_line_indices(
+        statement.source_line_indices or [],
+        transcript_lines,
+    )
+    anchor_match_source = "llm_line_indices"
+    if not resolved_line_indices and statement.source_quote:
+        resolved_line_indices = find_line_indices_by_quote(
+            statement.source_quote,
+            transcript_lines,
+        )
+        if resolved_line_indices:
+            anchor_match_source = "llm_source_quote"
+    (
+        timestamp_confidence,
+        source_line_start,
+        source_line_end,
+        anchor_span_width,
+        anchor_density,
+    ) = classify_timestamp_confidence(
+        resolved_line_indices=resolved_line_indices,
+        match_source=anchor_match_source,
+    )
+    if timestamp_confidence in {"line", "span"} and source_line_start is not None and source_line_end is not None:
+        start_seconds = float(
+            transcript_lines[source_line_start].get("start_seconds", chunk.start_time_seconds)
+        )
+        end_seconds = float(
+            transcript_lines[source_line_end].get("end_seconds", chunk.end_time_seconds)
+        )
+        timestamp_start = seconds_to_mmss(start_seconds)
+        timestamp_end = seconds_to_mmss(end_seconds)
+        transcript_anchors = build_transcript_anchors(
+            resolved_line_indices,
+            transcript_lines,
+            match_source=anchor_match_source,
+        )
+    else:
+        timestamp_start = seconds_to_mmss(chunk.start_time_seconds)
+        timestamp_end = seconds_to_mmss(chunk.end_time_seconds)
+        transcript_anchors = []
+        anchor_match_source = "chunk_fallback"
+    return (
+        resolved_line_indices,
+        transcript_anchors,
+        statement.source_quote,
+        anchor_match_source,
+        timestamp_confidence,
+        source_line_start,
+        source_line_end,
+        timestamp_start,
+        timestamp_end,
+        anchor_span_width,
+        anchor_density,
+    )
+
+
+def extraction_result_to_knowledge_events(
+    extraction: ChunkExtractionResult,
+    chunk: AdaptedChunk,
+) -> tuple[list[KnowledgeEvent], list[dict]]:
+    """Map extraction buckets to KnowledgeEvents with provenance and deterministic ids.
+    Returns (events, rejected_candidates) for Phase 1 validity gate; rejected have placeholder/empty text."""
+    slug = _lesson_slug(chunk.lesson_id)
+    chunk_t_start, chunk_t_end = get_transcript_time_bounds(
+        chunk.transcript_lines,
+        chunk.start_time_seconds,
+        chunk.end_time_seconds,
+    )
+    chunk_ts_start = seconds_to_mmss(chunk_t_start)
+    chunk_ts_end = seconds_to_mmss(chunk_t_end)
+    metadata = build_knowledge_event_provenance(
+        lesson_id=chunk.lesson_id,
+        chunk_index=chunk.chunk_index,
+        chunk_start_time_seconds=chunk.start_time_seconds,
+        chunk_end_time_seconds=chunk.end_time_seconds,
+        transcript_line_count=len(chunk.transcript_lines),
+        candidate_visual_frame_keys=chunk.candidate_visual_frame_keys,
+        candidate_visual_types=chunk.candidate_visual_types,
+        candidate_example_types=chunk.candidate_example_types,
+    )
+    events: list[KnowledgeEvent] = []
+    rejected: list[dict] = []
+
+    for bucket_name, event_type in BUCKET_TO_EVENT_TYPE.items():
+        statements: list[ExtractedStatement] = getattr(extraction, bucket_name, []) or []
+        statements = dedupe_statements(statements)
+        for i, st in enumerate(statements):
+            raw = (st.text or "").strip()
+            norm = schemas_normalize_text(raw)
+            if not raw:
+                raw = ""
+            if not norm or len(norm) < MIN_NORMALIZED_LENGTH:
+                rejected.append({
+                    "stage": "knowledge_builder",
+                    "entity_type": "knowledge_event_candidate",
+                    "entity_id": f"ke_{slug}_{chunk.chunk_index}_{event_type}_{i}_rej",
+                    "candidate_text": raw or "(empty)",
+                    "reason_rejected": "empty or too short after normalize",
+                    "chunk_index": chunk.chunk_index,
+                    "section": chunk.section,
+                    "subsection": chunk.subsection,
+                    "timestamp_start": chunk_ts_start,
+                    "timestamp_end": chunk_ts_end,
+                    "source_line_indices": st.source_line_indices or [],
+                    "resolved_line_indices": st.source_line_indices or [],
+                    "source_quote": st.source_quote,
+                    "anchor_match_source": None,
+                    "timestamp_confidence": None,
+                    "anchor_line_count": len(st.source_line_indices or []),
+                    "anchor_span_width": None,
+                    "anchor_density": None,
+                })
+                continue
+            if is_placeholder_text(norm) or is_placeholder_text(raw):
+                rejected.append({
+                    "stage": "knowledge_builder",
+                    "entity_type": "knowledge_event_candidate",
+                    "entity_id": f"ke_{slug}_{chunk.chunk_index}_{event_type}_{i}_rej",
+                    "candidate_text": raw or norm,
+                    "reason_rejected": "placeholder or empty text",
+                    "chunk_index": chunk.chunk_index,
+                    "section": chunk.section,
+                    "subsection": chunk.subsection,
+                    "timestamp_start": chunk_ts_start,
+                    "timestamp_end": chunk_ts_end,
+                    "source_line_indices": st.source_line_indices or [],
+                    "resolved_line_indices": st.source_line_indices or [],
+                    "source_quote": st.source_quote,
+                    "anchor_match_source": None,
+                    "timestamp_confidence": None,
+                    "anchor_line_count": len(st.source_line_indices or []),
+                    "anchor_span_width": None,
+                    "anchor_density": None,
+                })
+                continue
+            (
+                resolved_line_indices,
+                transcript_anchors,
+                source_quote,
+                anchor_match_source,
+                timestamp_confidence,
+                source_line_start,
+                source_line_end,
+                ts_start,
+                ts_end,
+                anchor_span_width,
+                anchor_density,
+            ) = resolve_statement_anchors(st, chunk)
+            concept, subconcept = resolve_concept(
+                st.concept, st.subconcept, chunk, raw
+            )
+
+            ts_score = score_transcript_support(
+                anchor_density, len(resolved_line_indices),
+                timestamp_confidence, raw,
+            )
+            vs_score = score_visual_support(chunk, event_type)
+            teaching_mode = classify_teaching_mode(
+                event_type, raw,
+                linked_visual_count=len(chunk.visual_events),
+                visual_example_type=(chunk.candidate_example_types or [None])[0],
+            )
+            ev_req = classify_evidence_requirement(
+                event_type, teaching_mode, concept, subconcept,
+            )
+            s_basis = classify_support_basis(ts_score, vs_score, teaching_mode)
+            t_level = classify_transcript_support_level(ts_score)
+            v_level = classify_visual_support_level(
+                vs_score,
+                example_role=(chunk.candidate_example_types or [None])[0],
+            )
+
+            label, conf_score = score_event_confidence(
+                raw, event_type, concept, st.ambiguity_notes or [], chunk,
+                transcript_support_score=ts_score,
+            )
+            event_id = f"ke_{slug}_{chunk.chunk_index}_{event_type}_{i}"
+            try:
+                ke = KnowledgeEvent(
+                    event_id=event_id,
+                    lesson_id=chunk.lesson_id,
+                    lesson_title=chunk.lesson_title,
+                    section=chunk.section,
+                    subsection=chunk.subsection,
+                    timestamp_start=ts_start,
+                    timestamp_end=ts_end,
+                    event_type=event_type,
+                    raw_text=raw,
+                    normalized_text=norm,
+                    concept=concept,
+                    subconcept=subconcept,
+                    source_event_ids=[],
+                    evidence_refs=[],
+                    confidence=label,
+                    confidence_score=conf_score,
+                    ambiguity_notes=st.ambiguity_notes or [],
+                    source_chunk_index=chunk.chunk_index,
+                    source_line_start=source_line_start,
+                    source_line_end=source_line_end,
+                    source_quote=source_quote,
+                    transcript_anchors=transcript_anchors,
+                    timestamp_confidence=timestamp_confidence,
+                    anchor_match_source=anchor_match_source,
+                    anchor_line_count=len(resolved_line_indices),
+                    anchor_span_width=anchor_span_width,
+                    anchor_density=anchor_density,
+                    metadata=strip_raw_visual_blobs_from_metadata(metadata),
+                    source_language="ru",
+                    concept_id=canonicalize_concept(concept),
+                    subconcept_id=canonicalize_subconcept(subconcept),
+                    rule_type=classify_rule_type(event_type),
+                    normalized_text_ru=norm if norm else None,
+                    concept_label_ru=concept if concept else None,
+                    subconcept_label_ru=subconcept if subconcept else None,
+                    support_basis=s_basis,
+                    evidence_requirement=ev_req,
+                    teaching_mode=teaching_mode,
+                    visual_support_level=v_level,
+                    transcript_support_level=t_level,
+                    transcript_support_score=round(ts_score, 4),
+                    visual_support_score=round(vs_score, 4),
+                )
+                events.append(ke)
+            except Exception:
+                rejected.append({
+                    "stage": "knowledge_builder",
+                    "entity_type": "knowledge_event_candidate",
+                    "entity_id": f"ke_{slug}_{chunk.chunk_index}_{event_type}_{i}_rej",
+                    "candidate_text": raw,
+                    "reason_rejected": "validation or build error",
+                    "chunk_index": chunk.chunk_index,
+                    "section": chunk.section,
+                    "subsection": chunk.subsection,
+                    "timestamp_start": chunk_ts_start,
+                    "timestamp_end": chunk_ts_end,
+                    "source_line_indices": st.source_line_indices or [],
+                    "resolved_line_indices": resolved_line_indices,
+                    "source_quote": st.source_quote,
+                    "anchor_match_source": anchor_match_source,
+                    "timestamp_confidence": timestamp_confidence,
+                    "anchor_line_count": len(resolved_line_indices),
+                    "anchor_span_width": anchor_span_width,
+                    "anchor_density": anchor_density,
+                })
+                continue
+    return (events, rejected)
+
+
+# ----- Collection build and save -----
+
+
+def build_knowledge_events_from_extraction_results(
+    adapted_chunks: list[AdaptedChunk],
+    extraction_results: list[ChunkExtractionResult],
+    lesson_id: str,
+    lesson_title: str | None = None,
+) -> tuple[KnowledgeEventCollection, list[dict]]:
+    """Build KnowledgeEventCollection from pre-extracted chunk results (no LLM call)."""
+    if len(adapted_chunks) != len(extraction_results):
+        raise ValueError(
+            f"adapted_chunks and extraction_results length mismatch: "
+            f"{len(adapted_chunks)} chunks vs {len(extraction_results)} results"
+        )
+    all_events: list[KnowledgeEvent] = []
+    debug_rows: list[dict] = []
+    for chunk, extraction in zip(adapted_chunks, extraction_results):
+        events, rejected = extraction_result_to_knowledge_events(extraction, chunk)
+        all_events.extend(events)
+        row: dict = {
+            "chunk_index": chunk.chunk_index,
+            "start_time_seconds": chunk.start_time_seconds,
+            "end_time_seconds": chunk.end_time_seconds,
+            "num_events_emitted": len(events),
+            "emitted_event_ids": [e.event_id for e in events],
+            "rejected_candidates": rejected,
+            "provenance_warnings": [
+                w for e in events for w in validate_knowledge_event_provenance(e)
+            ],
+        }
+        row["parsed_extraction"] = extraction.model_dump()
+        debug_rows.append(row)
+    collection = KnowledgeEventCollection(
+        schema_version="1.0",
+        lesson_id=lesson_id,
+        lesson_title=lesson_title,
+        events=all_events,
+    )
+    return (collection, debug_rows)
+
+
+def build_knowledge_events_from_chunks(
+    chunks: list[AdaptedChunk],
+    lesson_id: str,
+    lesson_title: str | None,
+    llm_client: Any,
+    debug: bool = False,
+) -> tuple[KnowledgeEventCollection, list[dict]]:
+    """Extract per chunk, aggregate events, collect debug rows."""
+    all_events: list[KnowledgeEvent] = []
+    debug_rows: list[dict] = []
+    success_count = 0
+    for chunk in chunks:
+        extraction, debug_payload = extract_chunk_knowledge(
+            chunk, llm_client, max_visual_summaries=5
+        )
+        if debug:
+            debug_rows.append(debug_payload)
+        events, _ = extraction_result_to_knowledge_events(extraction, chunk)
+        if not debug_payload.get("error"):
+            success_count += 1
+        all_events.extend(events)
+    collection = KnowledgeEventCollection(
+        schema_version="1.0",
+        lesson_id=lesson_id,
+        events=all_events,
+    )
+    logger.info(
+        "Knowledge extraction: chunks=%d extracted=%d events=%d failed=%d",
+        len(chunks),
+        success_count,
+        len(all_events),
+        len(chunks) - success_count,
+    )
+    return (collection, debug_rows)
+
+
+def build_knowledge_events_from_file(
+    chunks_path: Path,
+    lesson_id: str,
+    lesson_title: str | None,
+    llm_client: Any,
+    debug: bool = False,
+) -> tuple[KnowledgeEventCollection, list[dict]]:
+    """Load chunks from file, adapt, then build from chunks."""
+    raw = load_chunks_json(chunks_path)
+    adapted = adapt_chunks(raw, lesson_id=lesson_id, lesson_title=lesson_title)
+    logger.info("Loaded %d chunks from %s", len(adapted), chunks_path)
+    return build_knowledge_events_from_chunks(
+        adapted, lesson_id=lesson_id, lesson_title=lesson_title, llm_client=llm_client, debug=debug
+    )
+
+
+def save_knowledge_events(collection: KnowledgeEventCollection, output_path: Path) -> None:
+    """Write KnowledgeEventCollection as JSON. Uses full model_dump so Phase 2A and diagnostic fields are preserved."""
+    assert_no_raw_visual_blob_leak(collection.model_dump())
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    payload = collection.model_dump(mode="json", exclude_none=False)
+    atomic_write_text(output_path, json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    logger.info("Wrote %d events to %s", len(collection.events), output_path)
+
+
+def save_knowledge_debug(debug_rows: list[dict], output_path: Path) -> None:
+    """Write debug records as JSON array."""
+    atomic_write_json(output_path, debug_rows)
+    logger.info("Wrote debug %d rows to %s", len(debug_rows), output_path)

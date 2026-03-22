@@ -1,0 +1,264 @@
+```yaml
+tags:
+  - ATR
+  - Pullback
+  - Stop-loss
+  - Take profit
+  - Consolidation
+  - Rounding
+  - Squeeze
+  - False Breakout
+  - Profit Potential
+  - Breakeven
+  - Paranormal Bar
+  - Volume
+  - Rebound
+  - Entry Point (TVX)
+  - Intraday trading
+  - Daily risk limit
+  - Risk-Reward Ratio (R:R)
+  - Price compression / Squeezing
+  - Calculated Stop Loss
+  - Technical Stop Loss
+  - Mirror Level
+  - Trend Break Level
+  - Trading Level
+  - V-formation
+  - Whipsaw
+  - Clear Zone
+  - Near Retest
+  - Accumulation
+  - Breakout
+  - Alerts
+  - Luft
+  - Level
+  - Stop-limit order
+  - Conditional order
+  - Infected Zone
+  - Choppiness
+  - Support
+  - Resistance
+  - Stop-market
+  - Wick / Tail
+  - Distribution
+  - Reversal
+  - Limit Player Level
+  - Bar Forming the Level (BSU)
+  - Bar Confirming the Level 1 / 2 (BPU1 / BPU2)
+  - Distant Retest
+  - Counter-trend
+  - Trend
+  - Long
+  - Short
+  - Complex False Breakout
+  - Retracement Boundary
+  - Upthrust
+  - Local levels
+  - Reversal model
+  - BSU
+  - BPU1
+  - BPU2
+```
+
+# Algorithmic Trading Rulebook: Accumulation, Levels, and Execution
+
+## Stop-Loss and Take-Profit Strategies
+
+- **Rule 1:** When entering a trade, hide the stop-loss behind the pullback. **[00:53]**
+- **Rule 2:** Utilize 20% of ATR for stop-loss placement to accommodate larger take-profit targets. **[00:53]**
+- **Rule 3:** If using a larger stop-loss (e.g., 20% of ATR), the time in the trade will increase. **[00:53]**
+- **Rule 4:** Technical stops can be placed behind one or two five-minute bars, an hourly bar, a half-hour bar, a consolidation, a rounding pattern, a squeeze, a pullback, or the tail of a false breakout. **[01:10]**
+- **Rule 5:** A larger stop-loss can lead to a larger potential profit. **[02:05]**
+- **Rule 6:** A smaller stop-loss leads to less time in the trade and potentially a higher take-profit ratio. **[02:50]**
+- **Rule 7:** Calculated stop-losses are applicable in all market conditions (Forex, US market, Crypto, MOEX, etc.). **[03:15]**
+- **Rule 8:** Technical stops are best applied when specific criteria are present, such as reduced volatility or a rebound model. **[03:30]**
+- **Rule 9:** In a rebound model with reduced volatility, a stop smaller than one five-minute bar can be used, hidden behind the level, aiming for a 10:1 reward. **[03:30]**
+- **Rule 10:** Volatility affects profit potential and dictates the appropriate stop-loss size. **[03:50]**
+- **Rule 11:** Consolidation, rounding, false breakout tails, and pullbacks indicate criteria for using either a large or small technical stop. **[04:05]**
+- **Rule 12:** If a technical stop-loss is large, expect to remain in the trade for an extended period. **[07:00]**
+- **Rule 13:** If a false breakout tail is large (e.g., 20% of ATR), the time in the trade can extend to several hours. **[07:00]**
+- **Rule 14:** A quick stop-out or rapid take-profit is possible when using short stops. **[07:18]**
+- **Rule 15:** If a trade reaches a 2:1 reward or shows signs of consolidation after a false breakout, consider moving the stop to breakeven or taking partial profit. **[09:00]**
+- **Rule 16:** If an instrument shows signs of being bought back after a false breakout, shift stops to breakeven. **[09:00]**
+- **Rule 17:** For short stops, be prepared for either a very quick stop-out or a rapid take-profit. **[09:30]**
+- **Rule 18:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 19:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 20:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 21:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 22:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 23:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 24:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 25:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 26:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 27:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 28:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 29:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 30:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 31:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 32:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 33:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 34:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 35:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 36:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 37:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 38:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 39:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 40:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 41:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 42:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 43:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 44:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 45:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 46:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 47:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 48:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 49:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 50:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 51:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 52:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 53:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 54:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 55:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 56:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 57:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 58:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 59:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 60:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 61:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 62:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 63:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 64:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 65:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 66:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 67:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 68:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 69:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 70:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 71:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 72:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 73:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 74:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 75:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 76:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 77:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 78:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 79:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 80:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 81:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 82:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 83:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 84:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 85:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 86:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 87:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 88:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 89:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 90:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 91:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 92:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 93:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 94:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 95:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 96:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 97:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 98:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 99:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 100:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 101:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 102:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 103:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 104:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 105:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 106:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 107:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 108:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 109:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 110:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 111:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 112:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 113:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 114:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 115:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 116:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 117:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 118:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 119:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 120:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 121:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 122:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 123:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 124:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 125:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 126:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 127:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 128:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 129:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 130:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 131:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 132:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 133:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 134:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 135:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 136:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 137:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 138:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 139:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 140:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 141:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 142:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 143:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 144:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 145:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 146:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 147:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 148:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 149:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 150:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 151:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 152:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 153:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 154:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 155:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 156:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 157:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 158:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 159:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 160:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 161:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 162:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 163:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 164:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 165:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 166:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 167:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 168:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 169:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 170:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 171:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 172:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 173:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 174:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 175:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 176:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 177:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 178:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 179:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 180:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 181:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 182:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 183:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 184:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 185:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 186:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 187:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 188:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 189:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 190:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 191:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 192:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 193:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 194:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 195:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 196:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 197:** If a trade reaches 2:1 reward and shows signs of consolidation, move stops to breakeven. **[09:30]**
+- **Rule 198:** If a trade reaches 2

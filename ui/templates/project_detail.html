@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}{{ row.project.title }}{% endblock %}
+{% block content %}
+<section class="panel">
+    <div class="panel-header">
+        <div>
+            <h2>{{ row.project.title }}</h2>
+            <p class="muted">{{ row.project.project_root }}</p>
+        </div>
+        <a class="button secondary" href="{{ request.url_for('dashboard') }}">Back to dashboard</a>
+    </div>
+
+    <div class="detail-grid">
+        <div>
+            <h3>Current state</h3>
+            <ul class="detail-list">
+                <li>Status: <strong data-testid="project-status">{{ row.effective_status }}</strong></li>
+                <li>Next action: {{ row.next_action }}</li>
+                <li>Lesson name: {{ row.project.lesson_name }}</li>
+                <li>Transcript: {{ row.project.transcript_path or "-" }}</li>
+                <li>Source video: {{ row.project.source_video_path or "-" }}</li>
+            </ul>
+        </div>
+        <div>
+            <h3>Artifacts</h3>
+            <ul class="detail-list">
+                <li>Transcript detected: {{ "yes" if row.artifacts.transcript_exists else "no" }}</li>
+                <li>Filtered visuals: {{ "yes" if row.artifacts.filtered_visuals_exists else "no" }}</li>
+                <li>Dense analysis: {{ "yes" if row.artifacts.dense_analysis_exists else "no" }}</li>
+                <li>Knowledge events: {{ "yes" if row.artifacts.knowledge_events_exists else "no" }}</li>
+                <li>Rule cards: {{ "yes" if row.artifacts.rule_cards_exists else "no" }}</li>
+                <li>Evidence index: {{ "yes" if row.artifacts.evidence_index_exists else "no" }}</li>
+                <li>Concept graph: {{ "yes" if row.artifacts.concept_graph_exists else "no" }}</li>
+                <li>Review markdown: {{ "yes" if row.artifacts.review_markdown_exists else "no" }}</li>
+                <li>RAG-ready output: {{ "yes" if row.artifacts.rag_ready_exists else "no" }}</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="panel">
+    <h3>Run history</h3>
+    {% if runs %}
+    <table class="dashboard-table">
+        <thead>
+            <tr>
+                <th>Run ID</th>
+                <th>Mode</th>
+                <th>Status</th>
+                <th>Remote job</th>
+                <th>Updated</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for run in runs %}
+            <tr>
+                <td>{{ run.run_id }}</td>
+                <td>{{ run.run_mode }}</td>
+                <td>{{ run.status }}</td>
+                <td>{{ run.remote_job_name or "-" }}</td>
+                <td>{{ run.updated_at }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p data-testid="no-runs">No runs recorded yet.</p>
+    {% endif %}
+</section>
+{% endblock %}
+

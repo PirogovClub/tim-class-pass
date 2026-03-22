@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}New Project{% endblock %}
+{% block content %}
+<section class="panel narrow">
+    <h2>Create or import project</h2>
+    <p class="muted">
+        If `project_root` is left blank, the UI creates the project under the repo `data/` directory.
+    </p>
+
+    {% if error %}
+    <div class="alert" data-testid="form-error">{{ error }}</div>
+    {% endif %}
+
+    <form class="stack-form" method="post" action="{{ request.url_for('create_project') }}">
+        <label>
+            Project title
+            <input type="text" name="title" value="{{ title|default('', true) }}" placeholder="Lesson 2. Levels part 1">
+        </label>
+        <label>
+            Project root
+            <input type="text" name="project_root" value="{{ project_root|default('', true) }}" placeholder="data/Lesson 2. Levels part 1">
+        </label>
+        <label>
+            Source video path
+            <input type="text" name="source_video_path" value="{{ source_video_path|default('', true) }}" placeholder="optional">
+        </label>
+        <label>
+            Transcript path
+            <input type="text" name="transcript_path" value="{{ transcript_path|default('', true) }}" placeholder="optional">
+        </label>
+        <button class="button" type="submit">Save project</button>
+    </form>
+</section>
+{% endblock %}
+

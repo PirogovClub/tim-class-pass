@@ -1,0 +1,82 @@
+[
+  {
+    "lesson_id": "2025-09-29-sviatoslav-chornyi",
+    "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+    "lesson_title": "2025-09-29-sviatoslav-chornyi",
+    "source_language": "ru",
+    "available_artifacts": {
+      "knowledge_events": true,
+      "rule_cards": true,
+      "evidence_index": true,
+      "concept_graph": true
+    },
+    "artifact_paths": {
+      "knowledge_events": "data\\2025-09-29-sviatoslav-chornyi\\output_intermediate\\2025-09-29-sviatoslav-chornyi.knowledge_events.json",
+      "rule_cards": "data\\2025-09-29-sviatoslav-chornyi\\output_intermediate\\2025-09-29-sviatoslav-chornyi.rule_cards.json",
+      "evidence_index": "data\\2025-09-29-sviatoslav-chornyi\\output_intermediate\\2025-09-29-sviatoslav-chornyi.evidence_index.json",
+      "concept_graph": "data\\2025-09-29-sviatoslav-chornyi\\output_intermediate\\2025-09-29-sviatoslav-chornyi.concept_graph.json"
+    },
+    "artifact_counts": {
+      "knowledge_events": 719,
+      "rule_cards": 174,
+      "evidence_index": 54,
+      "concept_graph": 190
+    },
+    "schema_versions": {
+      "knowledge_schema_version": "1.0.0",
+      "rule_schema_version": "1.0.0",
+      "evidence_schema_version": "1.0.0",
+      "concept_graph_version": "1.0.0",
+      "corpus_contract_version": "1.0.0"
+    },
+    "build_timestamp": "2026-03-22T02:47:17.800391+00:00",
+    "content_hashes": {
+      "knowledge_events": "dd7ece66832a46e92dd80abcb205279c5a678f79497bc96f65fa2fa7f8b3f659",
+      "rule_cards": "d97c2ad33af7e0cf498334faff771e00a764d6e373321c0f63ba669ca779ab59",
+      "evidence_index": "b29540537b9bc4a8cde3509789191e2771ccb2bf971c56221a7383af6618313e",
+      "concept_graph": "5fd3db6e953ed6949a34a1c5e9d6670906be355a0b9aa3f7ecfb448bac47fcb7"
+    },
+    "status": "valid",
+    "warnings": []
+  },
+  {
+    "lesson_id": "Lesson 2. Levels part 1",
+    "lesson_slug": "lesson_2_levels_part_1",
+    "lesson_title": "Lesson 2. Levels part 1",
+    "source_language": "ru",
+    "available_artifacts": {
+      "knowledge_events": true,
+      "rule_cards": true,
+      "evidence_index": true,
+      "concept_graph": true
+    },
+    "artifact_paths": {
+      "knowledge_events": "data\\Lesson 2. Levels part 1\\output_intermediate\\Lesson 2. Levels part 1.knowledge_events.json",
+      "rule_cards": "data\\Lesson 2. Levels part 1\\output_intermediate\\Lesson 2. Levels part 1.rule_cards.json",
+      "evidence_index": "data\\Lesson 2. Levels part 1\\output_intermediate\\Lesson 2. Levels part 1.evidence_index.json",
+      "concept_graph": "data\\Lesson 2. Levels part 1\\output_intermediate\\Lesson 2. Levels part 1.concept_graph.json"
+    },
+    "artifact_counts": {
+      "knowledge_events": 116,
+      "rule_cards": 44,
+      "evidence_index": 38,
+      "concept_graph": 44
+    },
+    "schema_versions": {
+      "knowledge_schema_version": "1.0.0",
+      "rule_schema_version": "1.0.0",
+      "evidence_schema_version": "1.0.0",
+      "concept_graph_version": "1.0.0",
+      "corpus_contract_version": "1.0.0"
+    },
+    "build_timestamp": "2026-03-22T02:47:17.800391+00:00",
+    "content_hashes": {
+      "knowledge_events": "6746c1970c2fe5bc8aafbc34d03b118153d7846592e2c4709fe36947baf1ca4e",
+      "rule_cards": "3f6b76c833b4917a224d02d330cb840bf0bf60066ff7ec7c9877e9132ac4cdc0",
+      "evidence_index": "11ba31e73286d263e9bf93ed2e77515660dfa840ed3f8216831ffb1e7fc56e09",
+      "concept_graph": "eed41ca3df0387c4207114c8e345ab9dd2e9e526bd8cc8574914c92b38f06a38"
+    },
+    "status": "valid",
+    "warnings": []
+  }
+]

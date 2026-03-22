@@ -1,0 +1,2378 @@
+{
+  "schema_version": "1.0",
+  "lesson_id": "Lesson 2. Levels part 1",
+  "rules": [
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_0_definition_0",
+        "ke_lesson_2_levels_part_1_0_example_0"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_0",
+      "concept": "Уровень",
+      "subconcept": "Точка излома тренда",
+      "title": null,
+      "rule_text": "Точка излома тренда - это точка, с которой инструмент делает разворот, потому что он встретил сильного лимитного игрока, гораздо сильнее, чем он.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [
+        "Идентифицировать точку, с которой инструмент делает разворот после сильного движения вверх, как уровень излома тренда."
+      ],
+      "visual_summary": "First frame: introduction slide with GTE logo and title 'Уровни (часть №1)'. Instructor is visible, with a laptop displaying a name tag. No chart or diagram is present.. The…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_0_0",
+        "evcand_Lesson 2. Levels part 1_0_1",
+        "evcand_Lesson 2. Levels part 1_0_2"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.9,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          0
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:level",
+      "subconcept_id": "subconcept:tochka_izloma_trenda",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "definition",
+      "pattern_tags": [],
+      "rule_text_ru": "Точка излома тренда - это точка, с которой инструмент делает разворот, потому что он встретил сильного лимитного игрока, гораздо сильнее, чем он.",
+      "concept_label_ru": "Уровень",
+      "subconcept_label_ru": "Точка излома тренда"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_0_definition_1"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_1",
+      "concept": "Лимитный игрок",
+      "subconcept": "Сильный лимитный игрок",
+      "title": null,
+      "rule_text": "Сильный лимитный игрок - это игрок, который сильнее цены, идущей в его направлении, и способен остановить её движение.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "New visual content displayed on the right side of the screen, showing a diagram with price bars and a horizontal line.. New chart example showing price action relative to a…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_0_3",
+        "evcand_Lesson 2. Levels part 1_0_4",
+        "evcand_Lesson 2. Levels part 1_0_5"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.9,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          0
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:limit_player",
+      "subconcept_id": "subconcept:silnyy_limitnyy_igrok",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "definition",
+      "pattern_tags": [],
+      "rule_text_ru": "Сильный лимитный игрок - это игрок, который сильнее цены, идущей в его направлении, и способен остановить её движение.",
+      "concept_label_ru": "Лимитный игрок",
+      "subconcept_label_ru": "Сильный лимитный игрок"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_0_rule_statement_1"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_2",
+      "concept": "Лимитный игрок",
+      "subconcept": "Сильный лимитный игрок",
+      "title": null,
+      "rule_text": "Если покупатель был бы сильнее, он бы смог пробить и пойти дальше.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "New visual content displayed on the right side of the screen, showing a diagram with price bars and a horizontal line.. New chart example showing price action relative to a…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_0_3",
+        "evcand_Lesson 2. Levels part 1_0_4",
+        "evcand_Lesson 2. Levels part 1_0_5"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.9,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          0
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:limit_player",
+      "subconcept_id": "subconcept:silnyy_limitnyy_igrok",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Если покупатель был бы сильнее, он бы смог пробить и пойти дальше.",
+      "concept_label_ru": "Лимитный игрок",
+      "subconcept_label_ru": "Сильный лимитный игрок"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_0_definition_2",
+        "ke_lesson_2_levels_part_1_0_condition_0",
+        "ke_lesson_2_levels_part_1_0_example_1"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_3",
+      "concept": "Уровень",
+      "subconcept": "Уровень остановки падения",
+      "title": null,
+      "rule_text": "Уровни, которые останавливают очень сильное падение, являются сильными точками, где сидит крупный покупатель, который съел объём.",
+      "conditions": [
+        "Если вы видите прям сильное падение, инструмент очень сильно падает, очень быстро падает и в этой точке его разворачивают, значит вот здесь вот сидит крупный покупатель, который съел объём."
+      ],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [
+        "Идентифицировать точку, где сильное падение было остановлено и инструмент развернулся, как уровень, где сидит крупный покупатель, съевший объём."
+      ],
+      "visual_summary": "First frame: introduction slide with GTE logo and title 'Уровни (часть №1)'. Instructor is visible, with a laptop displaying a name tag. No chart or diagram is present.. The…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_0_0",
+        "evcand_Lesson 2. Levels part 1_0_1",
+        "evcand_Lesson 2. Levels part 1_0_2"
+      ],
+      "confidence": "high",
+      "confidence_score": 1.0,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          0
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:level",
+      "subconcept_id": "subconcept:uroven_ostanovki_padeniya",
+      "condition_ids": [
+        "condition:esli_vy_vidite_pryam_silnoe_padenie_instrument_ochen_silno_padaet_ochen_bystro_padaet_i_v_etoy_tochke_ego_razvorachivayut_znachit_vot_zdes_vot_sidit_krupnyy_pokupatel_kotoryy_sel_obyom"
+      ],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "definition",
+      "pattern_tags": [],
+      "rule_text_ru": "Уровни, которые останавливают очень сильное падение, являются сильными точками, где сидит крупный покупатель, который съел объём.",
+      "concept_label_ru": "Уровень",
+      "subconcept_label_ru": "Уровень остановки падения"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_0_rule_statement_0"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_4",
+      "concept": "Уровень",
+      "subconcept": "Точка разворота тренда",
+      "title": null,
+      "rule_text": "Точка разворота тренда является сильной точкой.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "New visual content displayed on the right side of the screen, showing a diagram with price bars and a horizontal line.. New chart example showing price action relative to a…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_0_3",
+        "evcand_Lesson 2. Levels part 1_0_4",
+        "evcand_Lesson 2. Levels part 1_0_5"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.9,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          0
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:level",
+      "subconcept_id": "subconcept:tochka_razvorota_trenda",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Точка разворота тренда является сильной точкой.",
+      "concept_label_ru": "Уровень",
+      "subconcept_label_ru": "Точка разворота тренда"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_0_rule_statement_2"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_5",
+      "concept": "Объём",
+      "subconcept": "Паранормальные бары",
+      "title": null,
+      "rule_text": "В больших паранормальных барах обычно очень большой объём.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "New diagram illustrating a trend reversal level with a visual representation of price action.. New diagram showing a trend reversal level with price action.. The instructor is…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_0_7",
+        "evcand_Lesson 2. Levels part 1_0_8",
+        "evcand_Lesson 2. Levels part 1_0_9"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.9,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          0
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:obyom",
+      "subconcept_id": "subconcept:paranormalnye_bary",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "В больших паранормальных барах обычно очень большой объём.",
+      "concept_label_ru": "Объём",
+      "subconcept_label_ru": "Паранормальные бары"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_1_definition_0"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_7",
+      "concept": "Ложный пробой",
+      "subconcept": null,
+      "title": null,
+      "rule_text": "Ложный пробой (ЛП) — это ситуация, когда инструмент не может закрепиться выше или ниже уровня, тем самым показывая, что инструмент не может идти дальше вверх или вниз.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "The instructor's gaze has shifted slightly, and the laptop is now more prominent in the frame. The abstract diagrams on the screen have been updated to show price action…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_1_17",
+        "evcand_Lesson 2. Levels part 1_1_18",
+        "evcand_Lesson 2. Levels part 1_1_19"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.85,
+      "candidate_features": [],
+      "positive_example_refs": [
+        "evcand_Lesson 2. Levels part 1_1_28"
+      ],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          1
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:false_breakout",
+      "subconcept_id": null,
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "definition",
+      "pattern_tags": [],
+      "rule_text_ru": "Ложный пробой (ЛП) — это ситуация, когда инструмент не может закрепиться выше или ниже уровня, тем самым показывая, что инструмент не может идти дальше вверх или вниз.",
+      "concept_label_ru": "Ложный пробой",
+      "subconcept_label_ru": null
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_1_rule_statement_0"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_8",
+      "concept": "Ложный пробой",
+      "subconcept": "Определение",
+      "title": null,
+      "rule_text": "Если инструмент не может обновить свой high или low, это называется ложным пробоем.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "The instructor's gaze has shifted slightly, and the laptop is now more prominent in the frame. The abstract diagrams on the screen have been updated to show price action…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_1_17",
+        "evcand_Lesson 2. Levels part 1_1_18",
+        "evcand_Lesson 2. Levels part 1_1_19"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.9,
+      "candidate_features": [],
+      "positive_example_refs": [
+        "evcand_Lesson 2. Levels part 1_1_28"
+      ],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          1
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:false_breakout",
+      "subconcept_id": "subconcept:opredelenie",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Если инструмент не может обновить свой high или low, это называется ложным пробоем.",
+      "concept_label_ru": "Ложный пробой",
+      "subconcept_label_ru": "Определение"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_2_rule_statement_1",
+        "ke_lesson_2_levels_part_1_2_rule_statement_2",
+        "ke_lesson_2_levels_part_1_2_rule_statement_3",
+        "ke_lesson_2_levels_part_1_2_condition_0"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_9",
+      "concept": "Ложный пробой",
+      "subconcept": "Определение ложного пробоя",
+      "title": null,
+      "rule_text": "Если бар попытался обновить high, но закрылся ниже, это ложный пробой.",
+      "conditions": [
+        "Ложный пробой определяется постфактум."
+      ],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "The instructor's gaze has shifted slightly, and the laptop is now more prominent in the frame. The abstract diagrams on the screen have been updated to show price action…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_1_17",
+        "evcand_Lesson 2. Levels part 1_1_18",
+        "evcand_Lesson 2. Levels part 1_1_19"
+      ],
+      "confidence": "high",
+      "confidence_score": 1.0,
+      "candidate_features": [],
+      "positive_example_refs": [
+        "evcand_Lesson 2. Levels part 1_1_28"
+      ],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          2
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:false_breakout",
+      "subconcept_id": "subconcept:opredelenie_lozhnogo_proboya",
+      "condition_ids": [
+        "condition:lozhnyy_proboy_opredelyaetsya_postfaktum"
+      ],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Если бар попытался обновить high, но закрылся ниже, это ложный пробой.",
+      "concept_label_ru": "Ложный пробой",
+      "subconcept_label_ru": "Определение ложного пробоя"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_1_definition_1"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_high_low_unknown_10",
+      "concept": "Обновить high/low",
+      "subconcept": null,
+      "title": null,
+      "rule_text": "Обновить high или low означает закрепиться выше или ниже уровня соответственно.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "The instructor's gaze has shifted slightly, and the laptop is now more prominent in the frame. The abstract diagrams on the screen have been updated to show price action…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_1_17",
+        "evcand_Lesson 2. Levels part 1_1_18",
+        "evcand_Lesson 2. Levels part 1_1_19"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.85,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          1
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:obnovit_high_low",
+      "subconcept_id": null,
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "definition",
+      "pattern_tags": [],
+      "rule_text_ru": "Обновить high или low означает закрепиться выше или ниже уровня соответственно.",
+      "concept_label_ru": "Обновить high/low",
+      "subconcept_label_ru": null
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_1_rule_statement_1",
+        "ke_lesson_2_levels_part_1_1_example_0"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_11",
+      "concept": "Подтверждение уровня",
+      "subconcept": "Закрепление",
+      "title": null,
+      "rule_text": "Закрепление выше уровня подтверждает, что инструмент идет выше.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "New diagram illustrating price action around a level, with two distinct sections separated by a dashed line. The left side shows green bars interacting with a horizontal line…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_1_28",
+        "evcand_Lesson 2. Levels part 1_1_29",
+        "evcand_Lesson 2. Levels part 1_1_30"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.9,
+      "candidate_features": [],
+      "positive_example_refs": [
+        "evcand_Lesson 2. Levels part 1_1_28"
+      ],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          1
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:level_confirmation",
+      "subconcept_id": "subconcept:acceptance",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Закрепление выше уровня подтверждает, что инструмент идет выше.",
+      "concept_label_ru": "Подтверждение уровня",
+      "subconcept_label_ru": "Закрепление"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_1_rule_statement_2",
+        "ke_lesson_2_levels_part_1_1_example_0"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_12",
+      "concept": "Подтверждение уровня",
+      "subconcept": "Закрепление",
+      "title": null,
+      "rule_text": "Закрепление ниже уровня показывает, что инструмент скорее всего пойдет ниже.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "New diagram illustrating price action around a level, with two distinct sections separated by a dashed line. The left side shows green bars interacting with a horizontal line…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_1_28",
+        "evcand_Lesson 2. Levels part 1_1_29",
+        "evcand_Lesson 2. Levels part 1_1_30"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.9,
+      "candidate_features": [],
+      "positive_example_refs": [
+        "evcand_Lesson 2. Levels part 1_1_28"
+      ],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          1
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:level_confirmation",
+      "subconcept_id": "subconcept:acceptance",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Закрепление ниже уровня показывает, что инструмент скорее всего пойдет ниже.",
+      "concept_label_ru": "Подтверждение уровня",
+      "subconcept_label_ru": "Закрепление"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_2_definition_0"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_14",
+      "concept": "Уровни",
+      "subconcept": "Уровень ложного пробоя",
+      "title": null,
+      "rule_text": "Уровень, образованный баром ложного пробоя",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "New text slide with instructions on level selection.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_2_54",
+        "evcand_Lesson 2. Levels part 1_2_55",
+        "evcand_Lesson 2. Levels part 1_2_56"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.9,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          2
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:level",
+      "subconcept_id": "subconcept:uroven_lozhnogo_proboya",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "definition",
+      "pattern_tags": [],
+      "rule_text_ru": "Уровень, образованный баром ложного пробоя",
+      "concept_label_ru": "Уровни",
+      "subconcept_label_ru": "Уровень ложного пробоя"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_2_rule_statement_4"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_15",
+      "concept": "Уровни",
+      "subconcept": "Уровень ложного пробоя",
+      "title": null,
+      "rule_text": "Бар, относительно которого был ложный пробой, является уровнем.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "New text slide with instructions on level selection.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_2_54",
+        "evcand_Lesson 2. Levels part 1_2_55",
+        "evcand_Lesson 2. Levels part 1_2_56"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.9,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          2
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:level",
+      "subconcept_id": "subconcept:uroven_lozhnogo_proboya",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Бар, относительно которого был ложный пробой, является уровнем.",
+      "concept_label_ru": "Уровни",
+      "subconcept_label_ru": "Уровень ложного пробоя"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_2_rule_statement_5"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_16",
+      "concept": "Уровни",
+      "subconcept": "Уровень ложного пробоя",
+      "title": null,
+      "rule_text": "Если один из баров не может подтвердить свой high или low и закрепляется ниже уровня, значит предыдущий бар будет являться в будущем уровнем.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "New text slide with instructions on level selection.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_2_54",
+        "evcand_Lesson 2. Levels part 1_2_55",
+        "evcand_Lesson 2. Levels part 1_2_56"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.9,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          2
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:level",
+      "subconcept_id": "subconcept:uroven_lozhnogo_proboya",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Если один из баров не может подтвердить свой high или low и закрепляется ниже уровня, значит предыдущий бар будет являться в будущем уровнем.",
+      "concept_label_ru": "Уровни",
+      "subconcept_label_ru": "Уровень ложного пробоя"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_2_rule_statement_6"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_17",
+      "concept": "Уровни",
+      "subconcept": "Уровень ложного пробоя",
+      "title": null,
+      "rule_text": "Если относительно какого-то бара или уровня был ложный пробой, значит предыдущий бар был уровнем.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "New text slide with instructions on level selection.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_2_54",
+        "evcand_Lesson 2. Levels part 1_2_55",
+        "evcand_Lesson 2. Levels part 1_2_56"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.9,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          2
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:level",
+      "subconcept_id": "subconcept:uroven_lozhnogo_proboya",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Если относительно какого-то бара или уровня был ложный пробой, значит предыдущий бар был уровнем.",
+      "concept_label_ru": "Уровни",
+      "subconcept_label_ru": "Уровень ложного пробоя"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_2_definition_1"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_18",
+      "concept": "Уровни",
+      "subconcept": "Зеркальный уровень",
+      "title": null,
+      "rule_text": "Зеркальный уровень",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "New diagram showing price action relative to a level.. The diagram has evolved to show more bars and a slightly different interaction with the level. New grey bars have appeared…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_2_69",
+        "evcand_Lesson 2. Levels part 1_2_70",
+        "evcand_Lesson 2. Levels part 1_2_71"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.9,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          2
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:level",
+      "subconcept_id": "subconcept:mirror_level",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "definition",
+      "pattern_tags": [],
+      "rule_text_ru": "Зеркальный уровень",
+      "concept_label_ru": "Уровни",
+      "subconcept_label_ru": "Зеркальный уровень"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_2_rule_statement_0",
+        "ke_lesson_2_levels_part_1_2_example_0"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_19",
+      "concept": "Уровни",
+      "subconcept": "Определение уровней",
+      "title": null,
+      "rule_text": "Любой из баров может быть уровнем.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "New text slide with instructions on level selection.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_2_54",
+        "evcand_Lesson 2. Levels part 1_2_55",
+        "evcand_Lesson 2. Levels part 1_2_56"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.9,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          2
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:level",
+      "subconcept_id": "subconcept:opredelenie_urovney",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Любой из баров может быть уровнем.",
+      "concept_label_ru": "Уровни",
+      "subconcept_label_ru": "Определение уровней"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_3_definition_0"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_21",
+      "concept": "Зеркальный уровень",
+      "subconcept": null,
+      "title": null,
+      "rule_text": "Когда уровень сопротивления становится уровнем поддержки или наоборот, это называется зеркальным уровнем.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "New diagram illustrating price action relative to a liquidity level.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_3_84",
+        "evcand_Lesson 2. Levels part 1_3_85",
+        "evcand_Lesson 2. Levels part 1_3_86"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.85,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          3
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:mirror_level",
+      "subconcept_id": null,
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "definition",
+      "pattern_tags": [],
+      "rule_text_ru": "Когда уровень сопротивления становится уровнем поддержки или наоборот, это называется зеркальным уровнем.",
+      "concept_label_ru": "Зеркальный уровень",
+      "subconcept_label_ru": null
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_3_rule_statement_0"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_22",
+      "concept": "Согласованность таймфреймов",
+      "subconcept": "Уровни",
+      "title": null,
+      "rule_text": "Картинка, которая рисуется на дневке, не должна противоречить картинке, которая рисуется на коротком таймфрейме.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [
+        "При ситуации, когда вы спускаетесь, например, на 5-15 минут или маленькие таймфреймы, картинка, которая рисуется на дневке, не должна противоречить картинке, которая рисуется на коротком таймфрейме."
+      ],
+      "visual_summary": "A small chart diagram has appeared on the screen. The chart displays a few candlesticks with red and green colors. Text annotations in Russian are present above the chart..…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_3_94",
+        "evcand_Lesson 2. Levels part 1_3_95",
+        "evcand_Lesson 2. Levels part 1_3_96"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.9,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          3
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:soglasovannost_taymfreymov",
+      "subconcept_id": "subconcept:level",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Картинка, которая рисуется на дневке, не должна противоречить картинке, которая рисуется на коротком таймфрейме.",
+      "concept_label_ru": "Согласованность таймфреймов",
+      "subconcept_label_ru": "Уровни"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_3_rule_statement_1"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_23",
+      "concept": "Выбор уровней",
+      "subconcept": "Таймфреймы",
+      "title": null,
+      "rule_text": "Старайтесь не брать какие-то локальные уровни, старайтесь брать уровни, которые приходят со старших таймфреймов.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [
+        "Старайтесь не брать какие-то локальные уровни, старайтесь брать уровни, которые приходят со старших таймфреймов."
+      ],
+      "visual_summary": "A small chart diagram has appeared on the screen. The chart displays a few candlesticks with red and green colors. Text annotations in Russian are present above the chart..…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_3_94",
+        "evcand_Lesson 2. Levels part 1_3_95",
+        "evcand_Lesson 2. Levels part 1_3_96"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.9,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          3
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:vybor_urovney",
+      "subconcept_id": "subconcept:taymfreymy",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Старайтесь не брать какие-то локальные уровни, старайтесь брать уровни, которые приходят со старших таймфреймов.",
+      "concept_label_ru": "Выбор уровней",
+      "subconcept_label_ru": "Таймфреймы"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_3_rule_statement_2"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_24",
+      "concept": "Поведение крупных игроков",
+      "subconcept": "Уровни",
+      "title": null,
+      "rule_text": "Крупняк всегда будет защищать свой уровень, который он сделал на дневке, на недельке, на месяце.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "A small chart diagram has appeared on the screen. The chart displays a few candlesticks with red and green colors. Text annotations in Russian are present above the chart..…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_3_94",
+        "evcand_Lesson 2. Levels part 1_3_95",
+        "evcand_Lesson 2. Levels part 1_3_96"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.9,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          3
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:povedenie_krupnykh_igrokov",
+      "subconcept_id": "subconcept:level",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Крупняк всегда будет защищать свой уровень, который он сделал на дневке, на недельке, на месяце.",
+      "concept_label_ru": "Поведение крупных игроков",
+      "subconcept_label_ru": "Уровни"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_4_definition_0",
+        "ke_lesson_2_levels_part_1_4_condition_2",
+        "ke_lesson_2_levels_part_1_4_invalidation_0",
+        "ke_lesson_2_levels_part_1_4_example_0"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_30",
+      "concept": "Уровни",
+      "subconcept": "Уровень лимитного игрока",
+      "title": null,
+      "rule_text": "Уровень лимитного игрока",
+      "conditions": [
+        "Для входа в точку уровня лимитного игрока с коротким стопом, у вас должен быть большой запас хода."
+      ],
+      "context": [],
+      "invalidation": [
+        "Если уровень лимитного игрока пробит, он соберет все стопы и улетит."
+      ],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [
+        "Искать уровни с минимум тремя касаниями.",
+        "Проверять, что уровень не пробит, даже если цена немного не дошла."
+      ],
+      "visual_summary": "New slide with title 'IPO уровни' appeared.. Instructor is visible, and a text slide with the title \"IPO уровни\" is displayed.. concepts: abstract_teaching_example, atr_values,…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_4_100",
+        "evcand_Lesson 2. Levels part 1_4_101",
+        "evcand_Lesson 2. Levels part 1_4_102"
+      ],
+      "confidence": "high",
+      "confidence_score": 1.0,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          4
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:level",
+      "subconcept_id": "subconcept:limit_player_level",
+      "condition_ids": [
+        "condition:dlya_vkhoda_v_tochku_urovnya_limitnogo_igroka_s_korotkim_stopom_u_vas_dolzhen_byt_bolshoy_zapas_khoda"
+      ],
+      "invalidation_ids": [
+        "invalidation:esli_uroven_limitnogo_igroka_probit_on_soberet_vse_stopy_i_uletit"
+      ],
+      "exception_ids": [],
+      "rule_type": "definition",
+      "pattern_tags": [],
+      "rule_text_ru": "Уровень лимитного игрока",
+      "concept_label_ru": "Уровни",
+      "subconcept_label_ru": "Уровень лимитного игрока"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_4_rule_statement_1",
+        "ke_lesson_2_levels_part_1_4_condition_2",
+        "ke_lesson_2_levels_part_1_4_invalidation_0",
+        "ke_lesson_2_levels_part_1_4_example_0"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_31",
+      "concept": "Уровни",
+      "subconcept": "Уровень лимитного игрока",
+      "title": null,
+      "rule_text": "Для уровня лимитного игрока нужно минимум три удара в одну точку.",
+      "conditions": [
+        "Для входа в точку уровня лимитного игрока с коротким стопом, у вас должен быть большой запас хода."
+      ],
+      "context": [],
+      "invalidation": [
+        "Если уровень лимитного игрока пробит, он соберет все стопы и улетит."
+      ],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [
+        "Искать уровни с минимум тремя касаниями.",
+        "Проверять, что уровень не пробит, даже если цена немного не дошла."
+      ],
+      "visual_summary": "New slide with title 'IPO уровни' appeared.. Instructor is visible, and a text slide with the title \"IPO уровни\" is displayed.. concepts: abstract_teaching_example, atr_values,…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_4_100",
+        "evcand_Lesson 2. Levels part 1_4_101",
+        "evcand_Lesson 2. Levels part 1_4_102"
+      ],
+      "confidence": "high",
+      "confidence_score": 1.0,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          4
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:level",
+      "subconcept_id": "subconcept:limit_player_level",
+      "condition_ids": [
+        "condition:dlya_vkhoda_v_tochku_urovnya_limitnogo_igroka_s_korotkim_stopom_u_vas_dolzhen_byt_bolshoy_zapas_khoda"
+      ],
+      "invalidation_ids": [
+        "invalidation:esli_uroven_limitnogo_igroka_probit_on_soberet_vse_stopy_i_uletit"
+      ],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Для уровня лимитного игрока нужно минимум три удара в одну точку.",
+      "concept_label_ru": "Уровни",
+      "subconcept_label_ru": "Уровень лимитного игрока"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_4_rule_statement_2",
+        "ke_lesson_2_levels_part_1_4_condition_2",
+        "ke_lesson_2_levels_part_1_4_invalidation_0",
+        "ke_lesson_2_levels_part_1_4_example_0"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_32",
+      "concept": "Уровни",
+      "subconcept": "Уровень лимитного игрока",
+      "title": null,
+      "rule_text": "Если бар чуть-чуть не добивает до уровня, но визуально картинка не ломается и уровень не пробит, это допустимо.",
+      "conditions": [
+        "Для входа в точку уровня лимитного игрока с коротким стопом, у вас должен быть большой запас хода."
+      ],
+      "context": [],
+      "invalidation": [
+        "Если уровень лимитного игрока пробит, он соберет все стопы и улетит."
+      ],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [
+        "Искать уровни с минимум тремя касаниями.",
+        "Проверять, что уровень не пробит, даже если цена немного не дошла."
+      ],
+      "visual_summary": "New slide with title 'IPO уровни' appeared.. Instructor is visible, and a text slide with the title \"IPO уровни\" is displayed.. concepts: abstract_teaching_example, atr_values,…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_4_100",
+        "evcand_Lesson 2. Levels part 1_4_101",
+        "evcand_Lesson 2. Levels part 1_4_102"
+      ],
+      "confidence": "high",
+      "confidence_score": 1.0,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          4
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:level",
+      "subconcept_id": "subconcept:limit_player_level",
+      "condition_ids": [
+        "condition:dlya_vkhoda_v_tochku_urovnya_limitnogo_igroka_s_korotkim_stopom_u_vas_dolzhen_byt_bolshoy_zapas_khoda"
+      ],
+      "invalidation_ids": [
+        "invalidation:esli_uroven_limitnogo_igroka_probit_on_soberet_vse_stopy_i_uletit"
+      ],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Если бар чуть-чуть не добивает до уровня, но визуально картинка не ломается и уровень не пробит, это допустимо.",
+      "concept_label_ru": "Уровни",
+      "subconcept_label_ru": "Уровень лимитного игрока"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_4_rule_statement_3",
+        "ke_lesson_2_levels_part_1_4_condition_2",
+        "ke_lesson_2_levels_part_1_4_invalidation_0",
+        "ke_lesson_2_levels_part_1_4_example_0"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_33",
+      "concept": "Уровни",
+      "subconcept": "Уровень лимитного игрока",
+      "title": null,
+      "rule_text": "Уровень лимитного игрока является одной из самых сильных картинок.",
+      "conditions": [
+        "Для входа в точку уровня лимитного игрока с коротким стопом, у вас должен быть большой запас хода."
+      ],
+      "context": [],
+      "invalidation": [
+        "Если уровень лимитного игрока пробит, он соберет все стопы и улетит."
+      ],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [
+        "Искать уровни с минимум тремя касаниями.",
+        "Проверять, что уровень не пробит, даже если цена немного не дошла."
+      ],
+      "visual_summary": "New slide with title 'IPO уровни' appeared.. Instructor is visible, and a text slide with the title \"IPO уровни\" is displayed.. concepts: abstract_teaching_example, atr_values,…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_4_100",
+        "evcand_Lesson 2. Levels part 1_4_101",
+        "evcand_Lesson 2. Levels part 1_4_102"
+      ],
+      "confidence": "high",
+      "confidence_score": 1.0,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          4
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:level",
+      "subconcept_id": "subconcept:limit_player_level",
+      "condition_ids": [
+        "condition:dlya_vkhoda_v_tochku_urovnya_limitnogo_igroka_s_korotkim_stopom_u_vas_dolzhen_byt_bolshoy_zapas_khoda"
+      ],
+      "invalidation_ids": [
+        "invalidation:esli_uroven_limitnogo_igroka_probit_on_soberet_vse_stopy_i_uletit"
+      ],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Уровень лимитного игрока является одной из самых сильных картинок.",
+      "concept_label_ru": "Уровни",
+      "subconcept_label_ru": "Уровень лимитного игрока"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_4_rule_statement_6",
+        "ke_lesson_2_levels_part_1_4_condition_2",
+        "ke_lesson_2_levels_part_1_4_invalidation_0",
+        "ke_lesson_2_levels_part_1_4_example_0"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_34",
+      "concept": "Уровни",
+      "subconcept": "Уровень лимитного игрока",
+      "title": null,
+      "rule_text": "Если инструмент падает, бьется в одну точку, потом четко начинает отрабатывать ту же точку и ведет себя очень хорошо, одерживая сильный лимит, это сигнал для входа с коротким стопом.",
+      "conditions": [
+        "Для входа в точку уровня лимитного игрока с коротким стопом, у вас должен быть большой запас хода."
+      ],
+      "context": [],
+      "invalidation": [
+        "Если уровень лимитного игрока пробит, он соберет все стопы и улетит."
+      ],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [
+        "Искать уровни с минимум тремя касаниями.",
+        "Проверять, что уровень не пробит, даже если цена немного не дошла."
+      ],
+      "visual_summary": "New slide with title 'IPO уровни' appeared.. Instructor is visible, and a text slide with the title \"IPO уровни\" is displayed.. concepts: abstract_teaching_example, atr_values,…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_4_100",
+        "evcand_Lesson 2. Levels part 1_4_101",
+        "evcand_Lesson 2. Levels part 1_4_102"
+      ],
+      "confidence": "high",
+      "confidence_score": 1.0,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          4
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:level",
+      "subconcept_id": "subconcept:limit_player_level",
+      "condition_ids": [
+        "condition:dlya_vkhoda_v_tochku_urovnya_limitnogo_igroka_s_korotkim_stopom_u_vas_dolzhen_byt_bolshoy_zapas_khoda"
+      ],
+      "invalidation_ids": [
+        "invalidation:esli_uroven_limitnogo_igroka_probit_on_soberet_vse_stopy_i_uletit"
+      ],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Если инструмент падает, бьется в одну точку, потом четко начинает отрабатывать ту же точку и ведет себя очень хорошо, одерживая сильный лимит, это сигнал для входа с коротким стопом.",
+      "concept_label_ru": "Уровни",
+      "subconcept_label_ru": "Уровень лимитного игрока"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_4_rule_statement_0",
+        "ke_lesson_2_levels_part_1_4_condition_0"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_35",
+      "concept": "Уровни",
+      "subconcept": "Защита уровней",
+      "title": null,
+      "rule_text": "Крупняк, если набрал большую позицию, будет обязательно защищать свои сильные уровни.",
+      "conditions": [
+        "Уровень должен быть сильным, чтобы крупняк его защищал."
+      ],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "New slide with title 'IPO уровни' appeared.. Instructor is visible, and a text slide with the title \"IPO уровни\" is displayed.. concepts: abstract_teaching_example, atr_values,…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_4_100",
+        "evcand_Lesson 2. Levels part 1_4_101"
+      ],
+      "confidence": "high",
+      "confidence_score": 1.0,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          4
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:level",
+      "subconcept_id": "subconcept:level_defense",
+      "condition_ids": [
+        "condition:uroven_dolzhen_byt_silnym_chtoby_krupnyak_ego_zashchishchal"
+      ],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Крупняк, если набрал большую позицию, будет обязательно защищать свои сильные уровни.",
+      "concept_label_ru": "Уровни",
+      "subconcept_label_ru": "Защита уровней"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_4_rule_statement_4",
+        "ke_lesson_2_levels_part_1_4_condition_1"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_36",
+      "concept": "Уровни",
+      "subconcept": "Управление риском",
+      "title": null,
+      "rule_text": "Чем сильнее ваш уровень, тем короче будет ваш стоп.",
+      "conditions": [
+        "При входе от уровня лимитного игрока стоп должен быть намного короче, чем в стандартной ситуации."
+      ],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [
+        "Устанавливать стоп-лосс значительно короче стандартного при работе с уровнем лимитного игрока."
+      ],
+      "visual_summary": "New visual content displayed: IPO levels diagram and definition.. New frame analyzed.. The visual content has changed from a chart diagram to a person sitting at a laptop with a…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_4_101",
+        "evcand_Lesson 2. Levels part 1_4_102",
+        "evcand_Lesson 2. Levels part 1_4_103"
+      ],
+      "confidence": "high",
+      "confidence_score": 1.0,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          4
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:level",
+      "subconcept_id": "subconcept:risk_management",
+      "condition_ids": [
+        "condition:pri_vkhode_ot_urovnya_limitnogo_igroka_stop_dolzhen_byt_namnogo_koroche_chem_v_standartnoy_situatsii"
+      ],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Чем сильнее ваш уровень, тем короче будет ваш стоп.",
+      "concept_label_ru": "Уровни",
+      "subconcept_label_ru": "Управление риском"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_4_rule_statement_5",
+        "ke_lesson_2_levels_part_1_4_condition_1"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_37",
+      "concept": "Уровни",
+      "subconcept": "Управление риском",
+      "title": null,
+      "rule_text": "При уровне лимитного игрока стоп должен быть самым коротким.",
+      "conditions": [
+        "При входе от уровня лимитного игрока стоп должен быть намного короче, чем в стандартной ситуации."
+      ],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [
+        "Устанавливать стоп-лосс значительно короче стандартного при работе с уровнем лимитного игрока."
+      ],
+      "visual_summary": "New visual content displayed: IPO levels diagram and definition.. New frame analyzed.. The visual content has changed from a chart diagram to a person sitting at a laptop with a…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_4_101",
+        "evcand_Lesson 2. Levels part 1_4_102",
+        "evcand_Lesson 2. Levels part 1_4_103"
+      ],
+      "confidence": "high",
+      "confidence_score": 1.0,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          4
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:level",
+      "subconcept_id": "subconcept:risk_management",
+      "condition_ids": [
+        "condition:pri_vkhode_ot_urovnya_limitnogo_igroka_stop_dolzhen_byt_namnogo_koroche_chem_v_standartnoy_situatsii"
+      ],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "При уровне лимитного игрока стоп должен быть самым коротким.",
+      "concept_label_ru": "Уровни",
+      "subconcept_label_ru": "Управление риском"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_5_definition_0"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_38",
+      "concept": "Уровень",
+      "subconcept": "Исторический уровень",
+      "title": null,
+      "rule_text": "Уровень, который встречался раньше",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "The instructor is visible, looking at a laptop, with no chart or diagram present.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_5_108"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.9,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "proximity_fallback": true,
+        "proximity_gap_seconds": 56.0,
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          5
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:level",
+      "subconcept_id": "subconcept:historical_level",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "definition",
+      "pattern_tags": [],
+      "rule_text_ru": "Уровень, который встречался раньше",
+      "concept_label_ru": "Уровень",
+      "subconcept_label_ru": "Исторический уровень"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_5_definition_1"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_39",
+      "concept": "Уровень",
+      "subconcept": "Уровень лимитного игрока",
+      "title": null,
+      "rule_text": "Уровень лимитного игрока",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "The instructor is visible, looking at a laptop, with no chart or diagram present.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_5_108"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.9,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "proximity_fallback": true,
+        "proximity_gap_seconds": 45.0,
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          5
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:level",
+      "subconcept_id": "subconcept:limit_player_level",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "definition",
+      "pattern_tags": [],
+      "rule_text_ru": "Уровень лимитного игрока",
+      "concept_label_ru": "Уровень",
+      "subconcept_label_ru": "Уровень лимитного игрока"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_5_definition_2"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_40",
+      "concept": "Инструмент",
+      "subconcept": "Нервный инструмент",
+      "title": null,
+      "rule_text": "Натуральный газ и серебро",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "The instructor is visible, looking at a laptop, with no chart or diagram present.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_5_108"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.9,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "proximity_fallback": true,
+        "proximity_gap_seconds": 0.0,
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          5
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:instrument",
+      "subconcept_id": "subconcept:nervnyy_instrument",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "definition",
+      "pattern_tags": [],
+      "rule_text_ru": "Натуральный газ и серебро",
+      "concept_label_ru": "Инструмент",
+      "subconcept_label_ru": "Нервный инструмент"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_5_rule_statement_0"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_41",
+      "concept": "Уровень",
+      "subconcept": "Повторное тестирование уровня",
+      "title": null,
+      "rule_text": "Если уровень встречался раньше и не был запилен в будущем, то к нему можно прийти.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "The instructor is visible, looking at a laptop, with no chart or diagram present.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_5_108"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.9,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "proximity_fallback": true,
+        "proximity_gap_seconds": 35.0,
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          5
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:level",
+      "subconcept_id": "subconcept:povtornoe_testirovanie_urovnya",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Если уровень встречался раньше и не был запилен в будущем, то к нему можно прийти.",
+      "concept_label_ru": "Уровень",
+      "subconcept_label_ru": "Повторное тестирование уровня"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_5_rule_statement_1"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_42",
+      "concept": "Торговля",
+      "subconcept": "Торговля нервными инструментами",
+      "title": null,
+      "rule_text": "Нервные инструменты (натуральный газ, серебро) нужно торговать только от очень сильных уровней.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "The instructor is visible, looking at a laptop, with no chart or diagram present.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_5_108",
+        "evcand_Lesson 2. Levels part 1_5_109",
+        "evcand_Lesson 2. Levels part 1_5_110"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.9,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          5
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:torgovlya",
+      "subconcept_id": "subconcept:torgovlya_nervnymi_instrumentami",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Нервные инструменты (натуральный газ, серебро) нужно торговать только от очень сильных уровней.",
+      "concept_label_ru": "Торговля",
+      "subconcept_label_ru": "Торговля нервными инструментами"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_5_rule_statement_2"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_43",
+      "concept": "Уровень",
+      "subconcept": "Сила уровня",
+      "title": null,
+      "rule_text": "Если картинка (уровень) не ломается при подходе к нему, то это очень сильный уровень.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "New diagram illustrating a concept with percentage annotation.. The visual content has changed to a diagram illustrating a concept with annotations.. concepts:…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_5_109",
+        "evcand_Lesson 2. Levels part 1_5_110",
+        "evcand_Lesson 2. Levels part 1_5_111"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.9,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          5
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:level",
+      "subconcept_id": "subconcept:sila_urovnya",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Если картинка (уровень) не ломается при подходе к нему, то это очень сильный уровень.",
+      "concept_label_ru": "Уровень",
+      "subconcept_label_ru": "Сила уровня"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_5_rule_statement_3"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_44",
+      "concept": "Торговля",
+      "subconcept": "Важность целостности графика",
+      "title": null,
+      "rule_text": "Самое главное, чтобы картинка не ломалась.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "New diagram illustrating a concept with percentage annotation.. The visual content has changed to a diagram illustrating a concept with annotations.. concepts:…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_5_109"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.9,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "proximity_fallback": true,
+        "proximity_gap_seconds": 32.0,
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          5
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:torgovlya",
+      "subconcept_id": "subconcept:vazhnost_tselostnosti_grafika",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Самое главное, чтобы картинка не ломалась.",
+      "concept_label_ru": "Торговля",
+      "subconcept_label_ru": "Важность целостности графика"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_6_definition_0",
+        "ke_lesson_2_levels_part_1_7_example_0"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_ipo_unknown_50",
+      "concept": "IPO",
+      "subconcept": null,
+      "title": null,
+      "rule_text": "Компании, которые вышли на рынок с первичным размещением.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "New visual content displayed: a chart illustrating historical price levels with annotations.. New chart example showing historical levels with annotations.. Only coach is…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_6_114"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.85,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "proximity_fallback": true,
+        "proximity_gap_seconds": 53.0,
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          6,
+          7
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:ipo",
+      "subconcept_id": null,
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "definition",
+      "pattern_tags": [],
+      "rule_text_ru": "Компании, которые вышли на рынок с первичным размещением.",
+      "concept_label_ru": "IPO",
+      "subconcept_label_ru": null
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_7_rule_statement_0",
+        "ke_lesson_2_levels_part_1_7_example_0"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_ipo_unknown_51",
+      "concept": "IPO",
+      "subconcept": null,
+      "title": null,
+      "rule_text": "Ближайшие уровни к IPO всегда будут очень сильные, потому что это новый инструмент.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": "New visual content displayed: a chart illustrating historical price levels with annotations.. New chart example showing historical levels with annotations.. Only coach is…",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_6_114"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.85,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "proximity_fallback": true,
+        "proximity_gap_seconds": 53.0,
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          7
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:ipo",
+      "subconcept_id": null,
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Ближайшие уровни к IPO всегда будут очень сильные, потому что это новый инструмент.",
+      "concept_label_ru": "IPO",
+      "subconcept_label_ru": null
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_6_definition_1"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_ipo_high_low_ipo_52",
+      "concept": "Уровни IPO",
+      "subconcept": "High-Low IPO",
+      "title": null,
+      "rule_text": "Уровни, соответствующие самым высоким и самым низким точкам в истории компании, вышедшей на IPO.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [],
+      "visual_summary": null,
+      "evidence_refs": [],
+      "confidence": "high",
+      "confidence_score": 0.8,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          6
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:urovni_ipo",
+      "subconcept_id": "subconcept:high_low_ipo",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "definition",
+      "pattern_tags": [],
+      "rule_text_ru": "Уровни, соответствующие самым высоким и самым низким точкам в истории компании, вышедшей на IPO.",
+      "concept_label_ru": "Уровни IPO",
+      "subconcept_label_ru": "High-Low IPO"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_6_rule_statement_0",
+        "ke_lesson_2_levels_part_1_6_example_0"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_53",
+      "concept": "Уровни",
+      "subconcept": "Экстремумы",
+      "title": null,
+      "rule_text": "Экстремумы (all-time high, all-time low) считаются очень сильными уровнями.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [
+        "Consider identifying 'all-time high' and 'all-time low' as strong support/resistance levels."
+      ],
+      "visual_summary": "New chart example showing historical levels with price action.. concepts: abstract_teaching_example, all_time_high, all_time_low",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_6_112",
+        "evcand_Lesson 2. Levels part 1_6_113",
+        "evcand_Lesson 2. Levels part 1_6_114"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.9,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          6
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:level",
+      "subconcept_id": "subconcept:ekstremumy",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Экстремумы (all-time high, all-time low) считаются очень сильными уровнями.",
+      "concept_label_ru": "Уровни",
+      "subconcept_label_ru": "Экстремумы"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_6_rule_statement_1"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_54",
+      "concept": "Уровни",
+      "subconcept": "Исторические уровни",
+      "title": null,
+      "rule_text": "Уровни, которые встречались раньше (дневные, недельные), обязательно требуют внимания.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [
+        "Identify historical price levels (where price has reacted before) as strong support/resistance."
+      ],
+      "visual_summary": "New chart example showing historical levels with price action.. concepts: abstract_teaching_example, all_time_high, all_time_low",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_6_112",
+        "evcand_Lesson 2. Levels part 1_6_113",
+        "evcand_Lesson 2. Levels part 1_6_114"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.9,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          6
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:level",
+      "subconcept_id": "subconcept:istoricheskie_urovni",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Уровни, которые встречались раньше (дневные, недельные), обязательно требуют внимания.",
+      "concept_label_ru": "Уровни",
+      "subconcept_label_ru": "Исторические уровни"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_6_rule_statement_2",
+        "ke_lesson_2_levels_part_1_6_example_1"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_ipo_55",
+      "concept": "Уровни",
+      "subconcept": "Уровни IPO",
+      "title": null,
+      "rule_text": "Уровни IPO, особенно high-low IPO, являются самыми сильными уровнями.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [
+        "Identify IPO levels, specifically the high and low of the IPO period, as strong support/resistance."
+      ],
+      "visual_summary": null,
+      "evidence_refs": [],
+      "confidence": "high",
+      "confidence_score": 0.8,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          6
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:level",
+      "subconcept_id": "subconcept:urovni_ipo",
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Уровни IPO, особенно high-low IPO, являются самыми сильными уровнями.",
+      "concept_label_ru": "Уровни",
+      "subconcept_label_ru": "Уровни IPO"
+    },
+    {
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_6_rule_statement_3"
+      ],
+      "rule_id": "rule_lesson_2_levels_part_1_unknown_unknown_56",
+      "concept": "Пробитие уровней",
+      "subconcept": null,
+      "title": null,
+      "rule_text": "Сильные уровни обычно не пробиваются с первого раза.",
+      "conditions": [],
+      "context": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [
+        "When price approaches a strong historical or extreme level, expect a potential bounce or a period before it's broken."
+      ],
+      "visual_summary": "New chart example showing historical levels with price action.. concepts: abstract_teaching_example, all_time_high, all_time_low",
+      "evidence_refs": [
+        "evcand_Lesson 2. Levels part 1_6_112",
+        "evcand_Lesson 2. Levels part 1_6_113",
+        "evcand_Lesson 2. Levels part 1_6_114"
+      ],
+      "confidence": "high",
+      "confidence_score": 0.85,
+      "candidate_features": [],
+      "positive_example_refs": [],
+      "negative_example_refs": [],
+      "ambiguous_example_refs": [],
+      "labeling_guidance": null,
+      "metadata": {
+        "source_sections": [],
+        "source_subsections": [],
+        "source_chunk_indexes": [
+          6
+        ]
+      },
+      "source_language": "ru",
+      "concept_id": "concept:probitie_urovney",
+      "subconcept_id": null,
+      "condition_ids": [],
+      "invalidation_ids": [],
+      "exception_ids": [],
+      "rule_type": "rule",
+      "pattern_tags": [],
+      "rule_text_ru": "Сильные уровни обычно не пробиваются с первого раза.",
+      "concept_label_ru": "Пробитие уровней",
+      "subconcept_label_ru": null
+    }
+  ]
+}

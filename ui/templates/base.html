@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Operator UI{% endblock %}</title>
+    <link rel="stylesheet" href="{{ request.url_for('static', path='ui.css') }}">
+</head>
+<body>
+    <header class="topbar">
+        <div>
+            <h1>Operator UI</h1>
+            <p class="subtitle">Multi-project dashboard for pipeline operations</p>
+        </div>
+        <nav class="topnav">
+            <a href="{{ request.url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ request.url_for('new_project') }}">New project</a>
+        </nav>
+    </header>
+    <main class="page">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
+

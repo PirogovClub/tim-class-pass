@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<section class="panel">
+    <div class="panel-header">
+        <div>
+            <h2>Projects</h2>
+            <p class="muted" data-testid="dashboard-summary">
+                Showing {{ page_data.rows|length }} of {{ page_data.total_rows }} matching projects.
+            </p>
+        </div>
+        <a class="button" href="{{ request.url_for('new_project') }}">Create / import project</a>
+    </div>
+
+    <div class="counter-grid">
+        {% for status_name, count in page_data.status_counts.items() %}
+        <div class="counter-card" data-testid="counter-{{ status_name }}">
+            <div class="counter-label">{{ status_name }}</div>
+            <div class="counter-value">{{ count }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="panel">
+    <form class="filters" method="get" action="{{ request.url_for('dashboard') }}">
+        <label>
+            Search
+            <input type="text" name="query" value="{{ query }}" placeholder="lesson, slug, path">
+        </label>
+        <label>
+            Status
+            <select name="status_filter">
+                <option value="">all</option>
+                {% for option in status_options %}
+                <option value="{{ option }}" {% if option == status_filter %}selected{% endif %}>{{ option }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>
+            Sort
+            <select name="sort">
+                {% for option_value, option_label in sort_options %}
+                <option value="{{ option_value }}" {% if option_value == sort %}selected{% endif %}>{{ option_label }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <button class="button" type="submit">Apply</button>
+    </form>
+</section>
+
+<section class="panel">
+    {% if page_data.rows %}
+    <table class="dashboard-table" data-testid="project-table">
+        <thead>
+            <tr>
+                <th>Project</th>
+                <th>Transcript</th>
+                <th>Dense</th>
+                <th>Knowledge</th>
+                <th>Exports</th>
+                <th>Latest run</th>
+                <th>Status</th>
+                <th>Next action</th>
+                <th>Updated</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in page_data.rows %}
+            <tr data-testid="project-row">
+                <td>
+                    <a href="{{ request.url_for('project_detail', project_id=row.project.project_id) }}">{{ row.project.title }}</a>
+                    <div class="cell-subtext">{{ row.project.lesson_name }}</div>
+                </td>
+                <td>{{ "yes" if row.artifacts.transcript_exists else "no" }}</td>
+                <td>{{ "yes" if row.artifacts.dense_analysis_exists else "no" }}</td>
+                <td>{{ "yes" if row.artifacts.knowledge_events_exists else "no" }}</td>
+                <td>{{ "yes" if row.artifacts.exports_ready else "no" }}</td>
+                <td>
+                    <div>{{ row.latest_run_mode }}</div>
+                    <div class="cell-subtext">{{ row.latest_run_status }}</div>
+                </td>
+                <td><span class="status-chip">{{ row.effective_status }}</span></td>
+                <td>{{ row.next_action }}</td>
+                <td>{{ row.updated_at }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p data-testid="empty-dashboard">No projects match the current filters.</p>
+    {% endif %}
+</section>
+
+<section class="pagination">
+    <span>Page {{ page_data.page }} / {{ page_data.total_pages }}</span>
+    <div class="pagination-links">
+        {% if prev_url %}
+        <a class="button secondary" href="{{ prev_url }}">Previous</a>
+        {% endif %}
+        {% if next_url %}
+        <a class="button secondary" href="{{ next_url }}">Next</a>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+

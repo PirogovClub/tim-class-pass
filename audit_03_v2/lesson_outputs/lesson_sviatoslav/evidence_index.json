@@ -1,0 +1,2744 @@
+{
+  "schema_version": "1.0",
+  "lesson_id": "2025-09-29-sviatoslav-chornyi",
+  "lesson_title": null,
+  "evidence_refs": [
+    {
+      "timestamp_start": "00:36",
+      "timestamp_end": "00:40",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_0",
+        "ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_1",
+        "ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_2",
+        "ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_3",
+        "ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_4",
+        "ke_2025_09_29_sviatoslav_chornyi_0_condition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_0_condition_1",
+        "ke_2025_09_29_sviatoslav_chornyi_0_condition_2",
+        "ke_2025_09_29_sviatoslav_chornyi_0_warning_0",
+        "ke_2025_09_29_sviatoslav_chornyi_0_process_step_1",
+        "ke_2025_09_29_sviatoslav_chornyi_0_process_step_2",
+        "ke_2025_09_29_sviatoslav_chornyi_0_process_step_3",
+        "ke_2025_09_29_sviatoslav_chornyi_0_process_step_4",
+        "ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_1",
+        "ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_2",
+        "ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_3",
+        "ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_4",
+        "ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_5",
+        "ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_6",
+        "ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_8"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_0_0",
+      "frame_ids": [
+        "000036",
+        "000040"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen.. New slide displayed with title 'Разновидность SL' and a…",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_price_action_movement_near_levels_0",
+        "rule_2025_09_29_sviatoslav_chornyi_price_action_accumulation_1",
+        "rule_2025_09_29_sviatoslav_chornyi_trade_management_take_profit_2",
+        "rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_3",
+        "rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_4",
+        "rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_5",
+        "rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_6"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000036",
+        "ve_raw_000040"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen.. New slide displayed with title 'Разновидность SL' and a…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen.. New slide displayed with title 'Разновидность SL' and a…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "00:58",
+      "timestamp_end": "00:58",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_1",
+        "ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_2",
+        "ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_3",
+        "ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_4",
+        "ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_5",
+        "ke_2025_09_29_sviatoslav_chornyi_0_condition_1",
+        "ke_2025_09_29_sviatoslav_chornyi_0_condition_2",
+        "ke_2025_09_29_sviatoslav_chornyi_0_warning_0",
+        "ke_2025_09_29_sviatoslav_chornyi_0_process_step_3",
+        "ke_2025_09_29_sviatoslav_chornyi_0_process_step_4",
+        "ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_4",
+        "ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_5",
+        "ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_6"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_0_1",
+      "frame_ids": [
+        "000058"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide displayed with title 'Разновидность SL' and content about stop loss calculation and technical types.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_price_action_accumulation_1",
+        "rule_2025_09_29_sviatoslav_chornyi_trade_management_take_profit_2",
+        "rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_3",
+        "rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_4",
+        "rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_5",
+        "rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_6"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000058"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide displayed with title 'Разновидность SL' and content about stop loss calculation and technical types.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide displayed with title 'Разновидность SL' and content about stop loss calculation and technical types.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "01:24",
+      "timestamp_end": "01:24",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_4",
+        "ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_5",
+        "ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_6",
+        "ke_2025_09_29_sviatoslav_chornyi_0_condition_3",
+        "ke_2025_09_29_sviatoslav_chornyi_0_process_step_4",
+        "ke_2025_09_29_sviatoslav_chornyi_0_process_step_5",
+        "ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_6",
+        "ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_7",
+        "ke_2025_09_29_sviatoslav_chornyi_0_example_0",
+        "ke_2025_09_29_sviatoslav_chornyi_0_example_1"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_0_2",
+      "frame_ids": [
+        "000084"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide displayed with title 'Разновидность SL' and two lists: 'Расчетные:' and 'Технические:'.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_5",
+        "rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_6",
+        "rule_2025_09_29_sviatoslav_chornyi_price_action_re_test_7"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000084"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide displayed with title 'Разновидность SL' and two lists: 'Расчетные:' and 'Технические:'.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide displayed with title 'Разновидность SL' and two lists: 'Расчетные:' and 'Технические:'.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "01:42",
+      "timestamp_end": "01:42",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_5",
+        "ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_6",
+        "ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_7",
+        "ke_2025_09_29_sviatoslav_chornyi_0_condition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_0_condition_3",
+        "ke_2025_09_29_sviatoslav_chornyi_0_process_step_5",
+        "ke_2025_09_29_sviatoslav_chornyi_0_process_step_6",
+        "ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_7",
+        "ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_8",
+        "ke_2025_09_29_sviatoslav_chornyi_0_example_0",
+        "ke_2025_09_29_sviatoslav_chornyi_0_example_1"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_0_3",
+      "frame_ids": [
+        "000142"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide with title 'Разновидность SL' and associated diagram and text.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_trade_management_take_profit_2",
+        "rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_3",
+        "rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_4",
+        "rule_2025_09_29_sviatoslav_chornyi_price_action_re_test_7"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000142"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide with title 'Разновидность SL' and associated diagram and text.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide with title 'Разновидность SL' and associated diagram and text.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "01:58",
+      "timestamp_end": "01:58",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_6",
+        "ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_7",
+        "ke_2025_09_29_sviatoslav_chornyi_0_condition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_0_condition_3",
+        "ke_2025_09_29_sviatoslav_chornyi_0_process_step_5",
+        "ke_2025_09_29_sviatoslav_chornyi_0_process_step_6",
+        "ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_7",
+        "ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_8",
+        "ke_2025_09_29_sviatoslav_chornyi_0_example_0",
+        "ke_2025_09_29_sviatoslav_chornyi_0_example_1"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_0_4",
+      "frame_ids": [
+        "000158"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "new slide content about SL types. concepts: abstract_teaching_example, atr_values, break_confirmation",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_price_action_re_test_7"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000158"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "new slide content about SL types. concepts: abstract_teaching_example, atr_values, break_confirmation",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "new slide content about SL types. concepts: abstract_teaching_example, atr_values, break_confirmation",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "02:30",
+      "timestamp_end": "02:30",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_1_rule_statement_0",
+        "ke_2025_09_29_sviatoslav_chornyi_1_condition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_1_comparison_0",
+        "ke_2025_09_29_sviatoslav_chornyi_1_warning_0",
+        "ke_2025_09_29_sviatoslav_chornyi_1_algorithm_hint_0",
+        "ke_2025_09_29_sviatoslav_chornyi_1_example_0",
+        "ke_2025_09_29_sviatoslav_chornyi_1_example_1"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_1_5",
+      "frame_ids": [
+        "000152"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide displayed with title 'Разновидность SL' and two lists of bullet points.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_11"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000152"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide displayed with title 'Разновидность SL' and two lists of bullet points.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide displayed with title 'Разновидность SL' and two lists of bullet points.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "03:32",
+      "timestamp_end": "03:32",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_1_rule_statement_1",
+        "ke_2025_09_29_sviatoslav_chornyi_1_condition_1",
+        "ke_2025_09_29_sviatoslav_chornyi_1_condition_2",
+        "ke_2025_09_29_sviatoslav_chornyi_1_condition_3",
+        "ke_2025_09_29_sviatoslav_chornyi_1_process_step_0",
+        "ke_2025_09_29_sviatoslav_chornyi_1_algorithm_hint_1",
+        "ke_2025_09_29_sviatoslav_chornyi_1_example_2",
+        "ke_2025_09_29_sviatoslav_chornyi_1_example_3"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_1_8",
+      "frame_ids": [
+        "000212"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide with title 'Разновидность SL' and related text content. A hand-drawn diagram illustrating price action relative to horizontal levels.. concepts: 1h, 1m5, 2m5",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_12"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000212"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "insufficient_visual_specificity"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide with title 'Разновидность SL' and related text content. A hand-drawn diagram illustrating price action relative to horizontal levels.. concepts: 1h, 1m5, 2m5",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide with title 'Разновидность SL' and related text content. A hand-drawn diagram illustrating price action relative to horizontal levels.. concepts: 1h, 1m5, 2m5",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "04:32",
+      "timestamp_end": "04:32",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_2_definition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_2_definition_1",
+        "ke_2025_09_29_sviatoslav_chornyi_2_rule_statement_0",
+        "ke_2025_09_29_sviatoslav_chornyi_2_comparison_0",
+        "ke_2025_09_29_sviatoslav_chornyi_2_example_0"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_2_9",
+      "frame_ids": [
+        "000274"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide with text and diagrams explaining trading concepts.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_17",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_18",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_19",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_20",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_21",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_22",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_23"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000274"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide with text and diagrams explaining trading concepts.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide with text and diagrams explaining trading concepts.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "06:16",
+      "timestamp_end": "06:16",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_3_rule_statement_0",
+        "ke_2025_09_29_sviatoslav_chornyi_3_condition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_3_condition_4",
+        "ke_2025_09_29_sviatoslav_chornyi_3_warning_0",
+        "ke_2025_09_29_sviatoslav_chornyi_3_warning_1",
+        "ke_2025_09_29_sviatoslav_chornyi_3_algorithm_hint_0"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_3_10",
+      "frame_ids": [
+        "000616"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide displayed with title 'Применение и минусы' (Application and Minuses).. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_27",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_30",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_28"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000616"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide displayed with title 'Применение и минусы' (Application and Minuses).. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide displayed with title 'Применение и минусы' (Application and Minuses).. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "07:42",
+      "timestamp_end": "07:42",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_3_rule_statement_3",
+        "ke_2025_09_29_sviatoslav_chornyi_3_rule_statement_4",
+        "ke_2025_09_29_sviatoslav_chornyi_3_rule_statement_5",
+        "ke_2025_09_29_sviatoslav_chornyi_3_rule_statement_6",
+        "ke_2025_09_29_sviatoslav_chornyi_3_condition_2",
+        "ke_2025_09_29_sviatoslav_chornyi_3_condition_3",
+        "ke_2025_09_29_sviatoslav_chornyi_3_condition_5",
+        "ke_2025_09_29_sviatoslav_chornyi_3_condition_6",
+        "ke_2025_09_29_sviatoslav_chornyi_3_condition_7",
+        "ke_2025_09_29_sviatoslav_chornyi_3_condition_8",
+        "ke_2025_09_29_sviatoslav_chornyi_3_condition_9",
+        "ke_2025_09_29_sviatoslav_chornyi_3_comparison_0",
+        "ke_2025_09_29_sviatoslav_chornyi_3_warning_3",
+        "ke_2025_09_29_sviatoslav_chornyi_3_warning_4",
+        "ke_2025_09_29_sviatoslav_chornyi_3_warning_5",
+        "ke_2025_09_29_sviatoslav_chornyi_3_process_step_1",
+        "ke_2025_09_29_sviatoslav_chornyi_3_algorithm_hint_2",
+        "ke_2025_09_29_sviatoslav_chornyi_3_algorithm_hint_3",
+        "ke_2025_09_29_sviatoslav_chornyi_3_algorithm_hint_4",
+        "ke_2025_09_29_sviatoslav_chornyi_3_example_0",
+        "ke_2025_09_29_sviatoslav_chornyi_3_example_1"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_3_11",
+      "frame_ids": [
+        "000464"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide displayed with title 'Применение и минусы' (Application and Minuses).. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_30",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_31",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_32",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_33",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_34",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_29"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000464"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide displayed with title 'Применение и минусы' (Application and Minuses).. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide displayed with title 'Применение и минусы' (Application and Minuses).. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "07:54",
+      "timestamp_end": "07:54",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_3_rule_statement_3",
+        "ke_2025_09_29_sviatoslav_chornyi_3_rule_statement_4",
+        "ke_2025_09_29_sviatoslav_chornyi_3_rule_statement_5",
+        "ke_2025_09_29_sviatoslav_chornyi_3_rule_statement_6",
+        "ke_2025_09_29_sviatoslav_chornyi_3_rule_statement_7",
+        "ke_2025_09_29_sviatoslav_chornyi_3_condition_3",
+        "ke_2025_09_29_sviatoslav_chornyi_3_condition_5",
+        "ke_2025_09_29_sviatoslav_chornyi_3_condition_6",
+        "ke_2025_09_29_sviatoslav_chornyi_3_condition_7",
+        "ke_2025_09_29_sviatoslav_chornyi_3_condition_8",
+        "ke_2025_09_29_sviatoslav_chornyi_3_condition_9",
+        "ke_2025_09_29_sviatoslav_chornyi_3_condition_10",
+        "ke_2025_09_29_sviatoslav_chornyi_3_condition_11",
+        "ke_2025_09_29_sviatoslav_chornyi_3_condition_12",
+        "ke_2025_09_29_sviatoslav_chornyi_3_comparison_0",
+        "ke_2025_09_29_sviatoslav_chornyi_3_warning_3",
+        "ke_2025_09_29_sviatoslav_chornyi_3_warning_4",
+        "ke_2025_09_29_sviatoslav_chornyi_3_warning_5",
+        "ke_2025_09_29_sviatoslav_chornyi_3_process_step_1",
+        "ke_2025_09_29_sviatoslav_chornyi_3_algorithm_hint_3",
+        "ke_2025_09_29_sviatoslav_chornyi_3_algorithm_hint_4",
+        "ke_2025_09_29_sviatoslav_chornyi_3_example_1",
+        "ke_2025_09_29_sviatoslav_chornyi_3_example_2"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_3_12",
+      "frame_ids": [
+        "000754"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide with title 'Энергия' and explanatory text. Three chart examples are displayed below the text. The first chart has a purple rectangle highlighting a consolidation area. The second and third charts show different price movements…",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_30",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_31",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_32",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_33",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_34"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000754"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "strong_concrete_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide with title 'Энергия' and explanatory text. Three chart examples are displayed below the text. The first chart has a purple rectangle highlighting a consolidation area. The second and third charts show different price movements…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide with title 'Энергия' and explanatory text. Three chart examples are displayed below the text. The first chart has a purple rectangle highlighting a consolidation area. The second and third charts show different price movements…",
+      "evidence_strength": "strong",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "09:12",
+      "timestamp_end": "09:12",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_4_rule_statement_0",
+        "ke_2025_09_29_sviatoslav_chornyi_4_rule_statement_1",
+        "ke_2025_09_29_sviatoslav_chornyi_4_condition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_4_process_step_0",
+        "ke_2025_09_29_sviatoslav_chornyi_4_process_step_1",
+        "ke_2025_09_29_sviatoslav_chornyi_4_process_step_2",
+        "ke_2025_09_29_sviatoslav_chornyi_4_process_step_3",
+        "ke_2025_09_29_sviatoslav_chornyi_4_algorithm_hint_1",
+        "ke_2025_09_29_sviatoslav_chornyi_4_algorithm_hint_2",
+        "ke_2025_09_29_sviatoslav_chornyi_4_algorithm_hint_3"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_4_13",
+      "frame_ids": [
+        "000912"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "concepts: abstract_teaching_example, accumulation, atr_values",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_36",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_37"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000912"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "concepts: abstract_teaching_example, accumulation, atr_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "concepts: abstract_teaching_example, accumulation, atr_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "09:34",
+      "timestamp_end": "09:34",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_4_rule_statement_0",
+        "ke_2025_09_29_sviatoslav_chornyi_4_rule_statement_1",
+        "ke_2025_09_29_sviatoslav_chornyi_4_condition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_4_process_step_0",
+        "ke_2025_09_29_sviatoslav_chornyi_4_process_step_1",
+        "ke_2025_09_29_sviatoslav_chornyi_4_process_step_2",
+        "ke_2025_09_29_sviatoslav_chornyi_4_process_step_3",
+        "ke_2025_09_29_sviatoslav_chornyi_4_algorithm_hint_2",
+        "ke_2025_09_29_sviatoslav_chornyi_4_algorithm_hint_3"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_4_14",
+      "frame_ids": [
+        "000894",
+        "000934"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide with title 'Энергия' and explanatory text. Three chart examples are displayed below the text. The first chart example has a purple rectangle highlighting a consolidation zone.. New slide displayed with title 'Энергия' and…",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_36",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_37"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000894",
+        "ve_raw_000934"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide with title 'Энергия' and explanatory text. Three chart examples are displayed below the text. The first chart example has a purple rectangle highlighting a consolidation zone.. New slide displayed with title 'Энергия' and…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide with title 'Энергия' and explanatory text. Three chart examples are displayed below the text. The first chart example has a purple rectangle highlighting a consolidation zone.. New slide displayed with title 'Энергия' and…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "10:14",
+      "timestamp_end": "10:34",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_4_rule_statement_2",
+        "ke_2025_09_29_sviatoslav_chornyi_4_condition_1",
+        "ke_2025_09_29_sviatoslav_chornyi_4_condition_2",
+        "ke_2025_09_29_sviatoslav_chornyi_4_warning_0",
+        "ke_2025_09_29_sviatoslav_chornyi_4_process_step_3",
+        "ke_2025_09_29_sviatoslav_chornyi_4_process_step_4",
+        "ke_2025_09_29_sviatoslav_chornyi_4_process_step_5",
+        "ke_2025_09_29_sviatoslav_chornyi_4_algorithm_hint_3",
+        "ke_2025_09_29_sviatoslav_chornyi_4_example_0"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_4_15",
+      "frame_ids": [
+        "001014",
+        "000994"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide displayed with title 'Энергия' and explanatory text. Three chart examples are shown below the text, illustrating price action. The first chart has a purple rectangle highlighting a consolidation zone.. New slide with title…",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_38",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_40",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_41"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_001014",
+        "ve_raw_000994"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide displayed with title 'Энергия' and explanatory text. Three chart examples are shown below the text, illustrating price action. The first chart has a purple rectangle highlighting a consolidation zone.. New slide with title…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide displayed with title 'Энергия' and explanatory text. Three chart examples are shown below the text, illustrating price action. The first chart has a purple rectangle highlighting a consolidation zone.. New slide with title…",
+      "evidence_strength": "strong",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "11:24",
+      "timestamp_end": "11:24",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_5_rule_statement_1",
+        "ke_2025_09_29_sviatoslav_chornyi_5_rule_statement_2",
+        "ke_2025_09_29_sviatoslav_chornyi_5_rule_statement_3",
+        "ke_2025_09_29_sviatoslav_chornyi_5_comparison_0",
+        "ke_2025_09_29_sviatoslav_chornyi_5_warning_0",
+        "ke_2025_09_29_sviatoslav_chornyi_5_process_step_0",
+        "ke_2025_09_29_sviatoslav_chornyi_5_algorithm_hint_1",
+        "ke_2025_09_29_sviatoslav_chornyi_5_algorithm_hint_2",
+        "ke_2025_09_29_sviatoslav_chornyi_5_algorithm_hint_3",
+        "ke_2025_09_29_sviatoslav_chornyi_5_example_2"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_5_16",
+      "frame_ids": [
+        "000686"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide with title 'Энергия' and explanatory text about accumulation and consolidation increasing chances of true breakout. Three chart examples are displayed below the text. The first chart on the left shows a consolidation zone…",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_53",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_54",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_55",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_56"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000686"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "strong_concrete_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide with title 'Энергия' and explanatory text about accumulation and consolidation increasing chances of true breakout. Three chart examples are displayed below the text. The first chart on the left shows a consolidation zone…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide with title 'Энергия' and explanatory text about accumulation and consolidation increasing chances of true breakout. Three chart examples are displayed below the text. The first chart on the left shows a consolidation zone…",
+      "evidence_strength": "strong",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "11:36",
+      "timestamp_end": "11:54",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_5_definition_1",
+        "ke_2025_09_29_sviatoslav_chornyi_5_rule_statement_1",
+        "ke_2025_09_29_sviatoslav_chornyi_5_rule_statement_2",
+        "ke_2025_09_29_sviatoslav_chornyi_5_condition_1",
+        "ke_2025_09_29_sviatoslav_chornyi_5_warning_0",
+        "ke_2025_09_29_sviatoslav_chornyi_5_process_step_0",
+        "ke_2025_09_29_sviatoslav_chornyi_5_process_step_1",
+        "ke_2025_09_29_sviatoslav_chornyi_5_algorithm_hint_1",
+        "ke_2025_09_29_sviatoslav_chornyi_5_algorithm_hint_2",
+        "ke_2025_09_29_sviatoslav_chornyi_5_algorithm_hint_4",
+        "ke_2025_09_29_sviatoslav_chornyi_5_example_2",
+        "ke_2025_09_29_sviatoslav_chornyi_5_example_3"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_5_17",
+      "frame_ids": [
+        "001096",
+        "001154"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide with text and title 'Уровень' (Level).. new slide with title 'Уровень' and explanatory text. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_52",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_53",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_54",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_55"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_001096",
+        "ve_raw_001154"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide with text and title 'Уровень' (Level).. new slide with title 'Уровень' and explanatory text. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide with text and title 'Уровень' (Level).. new slide with title 'Уровень' and explanatory text. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "12:04",
+      "timestamp_end": "12:04",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_5_rule_statement_3",
+        "ke_2025_09_29_sviatoslav_chornyi_5_condition_1",
+        "ke_2025_09_29_sviatoslav_chornyi_5_condition_2",
+        "ke_2025_09_29_sviatoslav_chornyi_5_warning_0",
+        "ke_2025_09_29_sviatoslav_chornyi_5_process_step_0",
+        "ke_2025_09_29_sviatoslav_chornyi_5_process_step_1",
+        "ke_2025_09_29_sviatoslav_chornyi_5_algorithm_hint_3",
+        "ke_2025_09_29_sviatoslav_chornyi_5_algorithm_hint_4",
+        "ke_2025_09_29_sviatoslav_chornyi_5_example_2",
+        "ke_2025_09_29_sviatoslav_chornyi_5_example_3"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_5_18",
+      "frame_ids": [
+        "000726"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "concepts: abstract_teaching_example, atr_values, break_confirmation",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_56"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000726"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "concepts: abstract_teaching_example, atr_values, break_confirmation",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "concepts: abstract_teaching_example, atr_values, break_confirmation",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "12:26",
+      "timestamp_end": "12:26",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_5_definition_1",
+        "ke_2025_09_29_sviatoslav_chornyi_5_rule_statement_3",
+        "ke_2025_09_29_sviatoslav_chornyi_5_condition_1",
+        "ke_2025_09_29_sviatoslav_chornyi_5_condition_2",
+        "ke_2025_09_29_sviatoslav_chornyi_5_process_step_1",
+        "ke_2025_09_29_sviatoslav_chornyi_5_algorithm_hint_3",
+        "ke_2025_09_29_sviatoslav_chornyi_5_algorithm_hint_4",
+        "ke_2025_09_29_sviatoslav_chornyi_5_example_3"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_5_19",
+      "frame_ids": [
+        "001226"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide displayed with title 'Уровень' and explanatory text.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_52",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_56"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_001226"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide displayed with title 'Уровень' and explanatory text.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide displayed with title 'Уровень' and explanatory text.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "12:52",
+      "timestamp_end": "12:52",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_6_rule_statement_0",
+        "ke_2025_09_29_sviatoslav_chornyi_6_condition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_6_condition_1",
+        "ke_2025_09_29_sviatoslav_chornyi_6_warning_0",
+        "ke_2025_09_29_sviatoslav_chornyi_6_process_step_0",
+        "ke_2025_09_29_sviatoslav_chornyi_6_process_step_1",
+        "ke_2025_09_29_sviatoslav_chornyi_6_algorithm_hint_0",
+        "ke_2025_09_29_sviatoslav_chornyi_6_algorithm_hint_1",
+        "ke_2025_09_29_sviatoslav_chornyi_6_example_0"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_6_20",
+      "frame_ids": [
+        "000774"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide with title 'Энергия' and explanatory text. Introduction of three chart examples below the text. A purple rectangle highlights a consolidation area on the leftmost chart.. concepts: abstract_teaching_example, accumulation,…",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_49",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_50",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_51"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000774"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide with title 'Энергия' and explanatory text. Introduction of three chart examples below the text. A purple rectangle highlights a consolidation area on the leftmost chart.. concepts: abstract_teaching_example, accumulation,…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide with title 'Энергия' and explanatory text. Introduction of three chart examples below the text. A purple rectangle highlights a consolidation area on the leftmost chart.. concepts: abstract_teaching_example, accumulation,…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "13:22",
+      "timestamp_end": "13:42",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_6_rule_statement_0",
+        "ke_2025_09_29_sviatoslav_chornyi_6_rule_statement_1",
+        "ke_2025_09_29_sviatoslav_chornyi_6_condition_1",
+        "ke_2025_09_29_sviatoslav_chornyi_6_condition_2",
+        "ke_2025_09_29_sviatoslav_chornyi_6_warning_0",
+        "ke_2025_09_29_sviatoslav_chornyi_6_process_step_0",
+        "ke_2025_09_29_sviatoslav_chornyi_6_process_step_1",
+        "ke_2025_09_29_sviatoslav_chornyi_6_algorithm_hint_1",
+        "ke_2025_09_29_sviatoslav_chornyi_6_algorithm_hint_2",
+        "ke_2025_09_29_sviatoslav_chornyi_6_algorithm_hint_3",
+        "ke_2025_09_29_sviatoslav_chornyi_6_algorithm_hint_4",
+        "ke_2025_09_29_sviatoslav_chornyi_6_example_1"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_6_21",
+      "frame_ids": [
+        "001282",
+        "001340",
+        "001342"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New chart displayed with annotations and instructor overlay.. concepts: atr_values, entry_values, level",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_49",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_50",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_51",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_62"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_001282",
+        "ve_raw_001340",
+        "ve_raw_001342"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "concrete_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New chart displayed with annotations and instructor overlay.. concepts: atr_values, entry_values, level",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New chart displayed with annotations and instructor overlay.. concepts: atr_values, entry_values, level",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "14:14",
+      "timestamp_end": "14:14",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_6_rule_statement_2",
+        "ke_2025_09_29_sviatoslav_chornyi_6_condition_2",
+        "ke_2025_09_29_sviatoslav_chornyi_6_condition_3",
+        "ke_2025_09_29_sviatoslav_chornyi_6_algorithm_hint_4",
+        "ke_2025_09_29_sviatoslav_chornyi_6_algorithm_hint_5",
+        "ke_2025_09_29_sviatoslav_chornyi_6_algorithm_hint_6"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_6_22",
+      "frame_ids": [
+        "001374"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New chart displayed with annotations and a visible instructor.. concepts: atr_values, entry_values, level",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_49",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_50",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_51"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_001374"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "concrete_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New chart displayed with annotations and a visible instructor.. concepts: atr_values, entry_values, level",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New chart displayed with annotations and a visible instructor.. concepts: atr_values, entry_values, level",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "15:18",
+      "timestamp_end": "15:20",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_7_definition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_0",
+        "ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_1",
+        "ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_4",
+        "ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_6",
+        "ke_2025_09_29_sviatoslav_chornyi_7_condition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_7_condition_1",
+        "ke_2025_09_29_sviatoslav_chornyi_7_condition_2",
+        "ke_2025_09_29_sviatoslav_chornyi_7_condition_3",
+        "ke_2025_09_29_sviatoslav_chornyi_7_condition_4",
+        "ke_2025_09_29_sviatoslav_chornyi_7_condition_5",
+        "ke_2025_09_29_sviatoslav_chornyi_7_warning_0",
+        "ke_2025_09_29_sviatoslav_chornyi_7_process_step_0",
+        "ke_2025_09_29_sviatoslav_chornyi_7_process_step_1",
+        "ke_2025_09_29_sviatoslav_chornyi_7_process_step_2",
+        "ke_2025_09_29_sviatoslav_chornyi_7_algorithm_hint_0",
+        "ke_2025_09_29_sviatoslav_chornyi_7_algorithm_hint_1",
+        "ke_2025_09_29_sviatoslav_chornyi_7_algorithm_hint_2",
+        "ke_2025_09_29_sviatoslav_chornyi_7_example_0",
+        "ke_2025_09_29_sviatoslav_chornyi_7_example_2"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_7_23",
+      "frame_ids": [
+        "001518",
+        "001520"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New chart displayed New annotations added New educational event types detected. The Russian text label 'Выберите область' has disappeared. A new horizontal red line has appeared at the 619.00 price level. A new horizontal yellow line has…",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_72",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_75",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_76",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_79",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_81",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_73"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_001518",
+        "ve_raw_001520"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "strong_concrete_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New chart displayed New annotations added New educational event types detected. The Russian text label 'Выберите область' has disappeared. A new horizontal red line has appeared at the 619.00 price level. A new horizontal yellow line has…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New chart displayed New annotations added New educational event types detected. The Russian text label 'Выберите область' has disappeared. A new horizontal red line has appeared at the 619.00 price level. A new horizontal yellow line has…",
+      "evidence_strength": "strong",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "16:32",
+      "timestamp_end": "16:32",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_7_definition_2",
+        "ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_2",
+        "ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_3",
+        "ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_5",
+        "ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_7",
+        "ke_2025_09_29_sviatoslav_chornyi_7_process_step_3",
+        "ke_2025_09_29_sviatoslav_chornyi_7_process_step_4",
+        "ke_2025_09_29_sviatoslav_chornyi_7_algorithm_hint_3",
+        "ke_2025_09_29_sviatoslav_chornyi_7_algorithm_hint_4",
+        "ke_2025_09_29_sviatoslav_chornyi_7_algorithm_hint_5",
+        "ke_2025_09_29_sviatoslav_chornyi_7_example_1"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_7_24",
+      "frame_ids": [
+        "001632"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide displayed with title 'Зона' and definitions of 'Чистая зона' and 'Зараженная зона'. Two chart examples are visible on the right side of the slide.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_74",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_77",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_78",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_80",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_82"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_001632"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide displayed with title 'Зона' and definitions of 'Чистая зона' and 'Зараженная зона'. Two chart examples are visible on the right side of the slide.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide displayed with title 'Зона' and definitions of 'Чистая зона' and 'Зараженная зона'. Two chart examples are visible on the right side of the slide.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "16:34",
+      "timestamp_end": "16:36",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_2",
+        "ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_3",
+        "ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_4",
+        "ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_5",
+        "ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_7",
+        "ke_2025_09_29_sviatoslav_chornyi_7_condition_6",
+        "ke_2025_09_29_sviatoslav_chornyi_7_condition_7",
+        "ke_2025_09_29_sviatoslav_chornyi_7_process_step_2",
+        "ke_2025_09_29_sviatoslav_chornyi_7_process_step_3",
+        "ke_2025_09_29_sviatoslav_chornyi_7_process_step_4",
+        "ke_2025_09_29_sviatoslav_chornyi_7_algorithm_hint_3",
+        "ke_2025_09_29_sviatoslav_chornyi_7_algorithm_hint_4",
+        "ke_2025_09_29_sviatoslav_chornyi_7_algorithm_hint_5",
+        "ke_2025_09_29_sviatoslav_chornyi_7_algorithm_hint_6",
+        "ke_2025_09_29_sviatoslav_chornyi_7_example_0",
+        "ke_2025_09_29_sviatoslav_chornyi_7_example_1",
+        "ke_2025_09_29_sviatoslav_chornyi_7_example_2"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_7_25",
+      "frame_ids": [
+        "001634",
+        "001636"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "The chart has changed to a live trading chart of Ethereum (ETHUSD). A cursor is visible on the chart, pointing to a specific area. A label 'ВЫБОР ОБЛАСТИ' (Selection Area) is visible near the cursor.. The cursor and the label 'ВЫБОР…",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_77",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_78",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_79",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_80",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_82"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_001634",
+        "ve_raw_001636"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "insufficient_visual_specificity"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "The chart has changed to a live trading chart of Ethereum (ETHUSD). A cursor is visible on the chart, pointing to a specific area. A label 'ВЫБОР ОБЛАСТИ' (Selection Area) is visible near the cursor.. The cursor and the label 'ВЫБОР…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "The chart has changed to a live trading chart of Ethereum (ETHUSD). A cursor is visible on the chart, pointing to a specific area. A label 'ВЫБОР ОБЛАСТИ' (Selection Area) is visible near the cursor.. The cursor and the label 'ВЫБОР…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "16:44",
+      "timestamp_end": "16:44",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_3",
+        "ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_5",
+        "ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_7",
+        "ke_2025_09_29_sviatoslav_chornyi_7_condition_6",
+        "ke_2025_09_29_sviatoslav_chornyi_7_condition_7",
+        "ke_2025_09_29_sviatoslav_chornyi_7_process_step_3",
+        "ke_2025_09_29_sviatoslav_chornyi_7_process_step_4",
+        "ke_2025_09_29_sviatoslav_chornyi_7_algorithm_hint_3",
+        "ke_2025_09_29_sviatoslav_chornyi_7_algorithm_hint_4",
+        "ke_2025_09_29_sviatoslav_chornyi_7_algorithm_hint_5",
+        "ke_2025_09_29_sviatoslav_chornyi_7_algorithm_hint_6",
+        "ke_2025_09_29_sviatoslav_chornyi_7_example_1"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_7_26",
+      "frame_ids": [
+        "001644"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "Chart displayed showing Ethereum/TetherUS Perpetual Contract. New horizontal levels identified and annotated. Price action is shown interacting with these levels.. concepts: atr_values, entry_values, level",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_78",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_80",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_82"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_001644"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "strong_concrete_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "Chart displayed showing Ethereum/TetherUS Perpetual Contract. New horizontal levels identified and annotated. Price action is shown interacting with these levels.. concepts: atr_values, entry_values, level",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "Chart displayed showing Ethereum/TetherUS Perpetual Contract. New horizontal levels identified and annotated. Price action is shown interacting with these levels.. concepts: atr_values, entry_values, level",
+      "evidence_strength": "strong",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "17:04",
+      "timestamp_end": "17:04",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_4",
+        "ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_5",
+        "ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_7",
+        "ke_2025_09_29_sviatoslav_chornyi_7_condition_6",
+        "ke_2025_09_29_sviatoslav_chornyi_7_condition_7",
+        "ke_2025_09_29_sviatoslav_chornyi_7_condition_8",
+        "ke_2025_09_29_sviatoslav_chornyi_7_warning_1",
+        "ke_2025_09_29_sviatoslav_chornyi_7_process_step_2",
+        "ke_2025_09_29_sviatoslav_chornyi_7_process_step_3",
+        "ke_2025_09_29_sviatoslav_chornyi_7_process_step_4",
+        "ke_2025_09_29_sviatoslav_chornyi_7_process_step_5",
+        "ke_2025_09_29_sviatoslav_chornyi_7_algorithm_hint_4",
+        "ke_2025_09_29_sviatoslav_chornyi_7_algorithm_hint_5",
+        "ke_2025_09_29_sviatoslav_chornyi_7_algorithm_hint_6",
+        "ke_2025_09_29_sviatoslav_chornyi_7_algorithm_hint_7",
+        "ke_2025_09_29_sviatoslav_chornyi_7_example_0",
+        "ke_2025_09_29_sviatoslav_chornyi_7_example_2"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_7_27",
+      "frame_ids": [
+        "001704"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "Chart displayed is Ethereum / TetherUS PERPETUAL CONTRACT, 1.0, Binance. The chart shows price action with several horizontal levels marked. The timeframe appears to be daily based on the date labels. Volume bars are displayed below the…",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_79"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_001704"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "strong_concrete_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "Chart displayed is Ethereum / TetherUS PERPETUAL CONTRACT, 1.0, Binance. The chart shows price action with several horizontal levels marked. The timeframe appears to be daily based on the date labels. Volume bars are displayed below the…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "Chart displayed is Ethereum / TetherUS PERPETUAL CONTRACT, 1.0, Binance. The chart shows price action with several horizontal levels marked. The timeframe appears to be daily based on the date labels. Volume bars are displayed below the…",
+      "evidence_strength": "strong",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "18:32",
+      "timestamp_end": "18:32",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_8_definition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_8_definition_1",
+        "ke_2025_09_29_sviatoslav_chornyi_8_rule_statement_1",
+        "ke_2025_09_29_sviatoslav_chornyi_8_rule_statement_2",
+        "ke_2025_09_29_sviatoslav_chornyi_8_condition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_8_algorithm_hint_0",
+        "ke_2025_09_29_sviatoslav_chornyi_8_example_0"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_8_30",
+      "frame_ids": [
+        "001832"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide with text and charts explaining 'Zone'.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_89",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_90",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_91",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_92",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_93"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_001832"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide with text and charts explaining 'Zone'.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide with text and charts explaining 'Zone'.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "19:48",
+      "timestamp_end": "19:58",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_9_rule_statement_0",
+        "ke_2025_09_29_sviatoslav_chornyi_9_rule_statement_1",
+        "ke_2025_09_29_sviatoslav_chornyi_9_process_step_0",
+        "ke_2025_09_29_sviatoslav_chornyi_9_algorithm_hint_0",
+        "ke_2025_09_29_sviatoslav_chornyi_9_algorithm_hint_1",
+        "ke_2025_09_29_sviatoslav_chornyi_9_example_0"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_9_31",
+      "frame_ids": [
+        "001948",
+        "001958"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide displayed with title 'Зона' and explanatory text. Two chart windows are visible on the right side of the screen, displaying price action. The left text box defines 'Зона за уровнем' as potentially clean and contaminated. The…",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_99",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_100"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_001948",
+        "ve_raw_001958"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide displayed with title 'Зона' and explanatory text. Two chart windows are visible on the right side of the screen, displaying price action. The left text box defines 'Зона за уровнем' as potentially clean and contaminated. The…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide displayed with title 'Зона' and explanatory text. Two chart windows are visible on the right side of the screen, displaying price action. The left text box defines 'Зона за уровнем' as potentially clean and contaminated. The…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "21:32",
+      "timestamp_end": "21:40",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_9_rule_statement_2",
+        "ke_2025_09_29_sviatoslav_chornyi_9_example_0"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_9_32",
+      "frame_ids": [
+        "002092",
+        "002134",
+        "002140"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide displayed with text and a chart. The slide introduces the concept of 'Zone' related to price levels. A chart is displayed on the right, showing price action with horizontal levels.. New slide with title 'Зона' and explanatory…",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_101",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_97",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_98"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_002092",
+        "ve_raw_002134",
+        "ve_raw_002140"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide displayed with text and a chart. The slide introduces the concept of 'Zone' related to price levels. A chart is displayed on the right, showing price action with horizontal levels.. New slide with title 'Зона' and explanatory…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide displayed with text and a chart. The slide introduces the concept of 'Zone' related to price levels. A chart is displayed on the right, showing price action with horizontal levels.. New slide with title 'Зона' and explanatory…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "22:02",
+      "timestamp_end": "22:02",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_10_rule_statement_0",
+        "ke_2025_09_29_sviatoslav_chornyi_10_warning_0",
+        "ke_2025_09_29_sviatoslav_chornyi_10_process_step_0",
+        "ke_2025_09_29_sviatoslav_chornyi_10_process_step_1",
+        "ke_2025_09_29_sviatoslav_chornyi_10_process_step_2",
+        "ke_2025_09_29_sviatoslav_chornyi_10_process_step_3",
+        "ke_2025_09_29_sviatoslav_chornyi_10_algorithm_hint_0",
+        "ke_2025_09_29_sviatoslav_chornyi_10_algorithm_hint_1",
+        "ke_2025_09_29_sviatoslav_chornyi_10_algorithm_hint_2",
+        "ke_2025_09_29_sviatoslav_chornyi_10_algorithm_hint_3",
+        "ke_2025_09_29_sviatoslav_chornyi_10_example_0",
+        "ke_2025_09_29_sviatoslav_chornyi_10_example_1"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_10_33",
+      "frame_ids": [
+        "002162"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide with text and charts. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_108",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_109"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_002162"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide with text and charts. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide with text and charts. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "22:06",
+      "timestamp_end": "22:18",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_10_rule_statement_0",
+        "ke_2025_09_29_sviatoslav_chornyi_10_warning_0",
+        "ke_2025_09_29_sviatoslav_chornyi_10_process_step_0",
+        "ke_2025_09_29_sviatoslav_chornyi_10_process_step_1",
+        "ke_2025_09_29_sviatoslav_chornyi_10_process_step_2",
+        "ke_2025_09_29_sviatoslav_chornyi_10_process_step_3",
+        "ke_2025_09_29_sviatoslav_chornyi_10_algorithm_hint_0",
+        "ke_2025_09_29_sviatoslav_chornyi_10_algorithm_hint_1",
+        "ke_2025_09_29_sviatoslav_chornyi_10_algorithm_hint_2",
+        "ke_2025_09_29_sviatoslav_chornyi_10_algorithm_hint_3",
+        "ke_2025_09_29_sviatoslav_chornyi_10_example_0",
+        "ke_2025_09_29_sviatoslav_chornyi_10_example_1"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_10_34",
+      "frame_ids": [
+        "002206",
+        "002208",
+        "002178"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "chart changed new annotations appeared. chart area zoomed in new annotations appeared emphasis moved to a different important region. chart changed new annotations appeared new drawn objects appeared. concepts: atr_values,…",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_108",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_109"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_002206",
+        "ve_raw_002208",
+        "ve_raw_002178"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "insufficient_visual_specificity"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "chart changed new annotations appeared. chart area zoomed in new annotations appeared emphasis moved to a different important region. chart changed new annotations appeared new drawn objects appeared. concepts: atr_values,…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "chart changed new annotations appeared. chart area zoomed in new annotations appeared emphasis moved to a different important region. chart changed new annotations appeared new drawn objects appeared. concepts: atr_values,…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "24:00",
+      "timestamp_end": "24:00",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_11_rule_statement_0",
+        "ke_2025_09_29_sviatoslav_chornyi_11_condition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_11_process_step_0"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_11_36",
+      "frame_ids": [
+        "002400"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "The screen shows a Slack interface with a list of channels and direct messages on the left side, and a blank white area on the right. A cursor is hovering over the 'recorder' channel.. concepts: abstract_teaching_example, atr_values,…",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_111",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_110"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_002400"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "The screen shows a Slack interface with a list of channels and direct messages on the left side, and a blank white area on the right. A cursor is hovering over the 'recorder' channel.. concepts: abstract_teaching_example, atr_values,…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "The screen shows a Slack interface with a list of channels and direct messages on the left side, and a blank white area on the right. A cursor is hovering over the 'recorder' channel.. concepts: abstract_teaching_example, atr_values,…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "24:02",
+      "timestamp_end": "24:02",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_11_rule_statement_0",
+        "ke_2025_09_29_sviatoslav_chornyi_11_condition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_11_process_step_0",
+        "ke_2025_09_29_sviatoslav_chornyi_11_example_0"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_11_37",
+      "frame_ids": [
+        "002402"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "positive_example",
+      "compact_visual_summary": "The screen now displays a TradingView chart of Bitcoin (BTC/USDT Perpetual Contract) on Binance. The chart shows price action with candlesticks and volume bars. Several horizontal levels are annotated, including 'BCV' and 'Зараженная…",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_111"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_002402"
+      ],
+      "metadata": {
+        "promotion_reason": "strong_concrete_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "The screen now displays a TradingView chart of Bitcoin (BTC/USDT Perpetual Contract) on Binance. The chart shows price action with candlesticks and volume bars. Several horizontal levels are annotated, including 'BCV' and 'Зараженная…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "The screen now displays a TradingView chart of Bitcoin (BTC/USDT Perpetual Contract) on Binance. The chart shows price action with candlesticks and volume bars. Several horizontal levels are annotated, including 'BCV' and 'Зараженная…",
+      "evidence_strength": "strong",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "25:24",
+      "timestamp_end": "25:36",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_11_rule_statement_1",
+        "ke_2025_09_29_sviatoslav_chornyi_11_condition_1",
+        "ke_2025_09_29_sviatoslav_chornyi_11_comparison_0",
+        "ke_2025_09_29_sviatoslav_chornyi_11_warning_0",
+        "ke_2025_09_29_sviatoslav_chornyi_11_process_step_1",
+        "ke_2025_09_29_sviatoslav_chornyi_11_algorithm_hint_0"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_11_38",
+      "frame_ids": [
+        "002484",
+        "002536"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide displayed with title 'Ответы на вопросы' and GTE logo.. New slide displayed with title 'Ответы на вопросы' (Answers to questions) and GTE logo.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_112"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_002484",
+        "ve_raw_002536"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide displayed with title 'Ответы на вопросы' and GTE logo.. New slide displayed with title 'Ответы на вопросы' (Answers to questions) and GTE logo.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide displayed with title 'Ответы на вопросы' and GTE logo.. New slide displayed with title 'Ответы на вопросы' (Answers to questions) and GTE logo.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "26:10",
+      "timestamp_end": "26:10",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_12_rule_statement_0",
+        "ke_2025_09_29_sviatoslav_chornyi_12_rule_statement_1",
+        "ke_2025_09_29_sviatoslav_chornyi_12_rule_statement_3",
+        "ke_2025_09_29_sviatoslav_chornyi_12_rule_statement_4",
+        "ke_2025_09_29_sviatoslav_chornyi_12_rule_statement_6",
+        "ke_2025_09_29_sviatoslav_chornyi_12_condition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_12_condition_2",
+        "ke_2025_09_29_sviatoslav_chornyi_12_algorithm_hint_0",
+        "ke_2025_09_29_sviatoslav_chornyi_12_example_0"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_12_39",
+      "frame_ids": [
+        "002610"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "new slide with text 'Ответы на вопросы' and GTE logo. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_120",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_121",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_122",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_123",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_124",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_125",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_126",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_127",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_129",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_130"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_002610"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "new slide with text 'Ответы на вопросы' and GTE logo. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "new slide with text 'Ответы на вопросы' and GTE logo. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "26:28",
+      "timestamp_end": "26:28",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_12_definition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_12_rule_statement_0",
+        "ke_2025_09_29_sviatoslav_chornyi_12_rule_statement_1",
+        "ke_2025_09_29_sviatoslav_chornyi_12_rule_statement_2",
+        "ke_2025_09_29_sviatoslav_chornyi_12_rule_statement_3",
+        "ke_2025_09_29_sviatoslav_chornyi_12_condition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_12_algorithm_hint_0",
+        "ke_2025_09_29_sviatoslav_chornyi_12_example_0"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_12_40",
+      "frame_ids": [
+        "001588"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "chart changed to show Ethereum/TetherUS Perpetual Contract new levels and annotations added to the chart. concepts: atr_values, entry_values, level",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_118",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_119",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_122",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_123",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_124",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_125",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_126"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_001588"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "concrete_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "chart changed to show Ethereum/TetherUS Perpetual Contract new levels and annotations added to the chart. concepts: atr_values, entry_values, level",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "chart changed to show Ethereum/TetherUS Perpetual Contract new levels and annotations added to the chart. concepts: atr_values, entry_values, level",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "26:56",
+      "timestamp_end": "26:56",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_12_definition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_12_definition_1",
+        "ke_2025_09_29_sviatoslav_chornyi_12_rule_statement_2",
+        "ke_2025_09_29_sviatoslav_chornyi_12_rule_statement_3"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_12_41",
+      "frame_ids": [
+        "002656"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide displayed with title 'Ответы на вопросы' (Answers to questions).. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_118",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_119",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_120",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_121",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_126"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_002656"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide displayed with title 'Ответы на вопросы' (Answers to questions).. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide displayed with title 'Ответы на вопросы' (Answers to questions).. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "27:36",
+      "timestamp_end": "27:36",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_12_rule_statement_5",
+        "ke_2025_09_29_sviatoslav_chornyi_12_rule_statement_7",
+        "ke_2025_09_29_sviatoslav_chornyi_12_condition_1",
+        "ke_2025_09_29_sviatoslav_chornyi_12_process_step_0",
+        "ke_2025_09_29_sviatoslav_chornyi_12_algorithm_hint_1",
+        "ke_2025_09_29_sviatoslav_chornyi_12_example_1"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_12_42",
+      "frame_ids": [
+        "002696"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide displayed with title 'Ответы на вопросы' and GTE logo.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_122",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_123",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_124",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_127",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_128"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_002696"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide displayed with title 'Ответы на вопросы' and GTE logo.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide displayed with title 'Ответы на вопросы' and GTE logo.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "28:10",
+      "timestamp_end": "28:10",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_12_rule_statement_5",
+        "ke_2025_09_29_sviatoslav_chornyi_12_rule_statement_7",
+        "ke_2025_09_29_sviatoslav_chornyi_12_rule_statement_8",
+        "ke_2025_09_29_sviatoslav_chornyi_12_rule_statement_9",
+        "ke_2025_09_29_sviatoslav_chornyi_12_process_step_0",
+        "ke_2025_09_29_sviatoslav_chornyi_12_example_1"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_12_43",
+      "frame_ids": [
+        "002770"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "new slide displayed with text 'Ответы на вопросы'. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_127",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_128",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_129",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_130",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_131"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_002770"
+      ],
+      "metadata": {
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "new slide displayed with text 'Ответы на вопросы'. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "new slide displayed with text 'Ответы на вопросы'. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "28:40",
+      "timestamp_end": "28:40",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_12_rule_statement_8",
+        "ke_2025_09_29_sviatoslav_chornyi_12_rule_statement_9",
+        "ke_2025_09_29_sviatoslav_chornyi_12_warning_0",
+        "ke_2025_09_29_sviatoslav_chornyi_12_example_2"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_12_44",
+      "frame_ids": [
+        "002840"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide displayed with title 'Ответы на вопросы'.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_129",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_130",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_131"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_002840"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide displayed with title 'Ответы на вопросы'.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide displayed with title 'Ответы на вопросы'.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "29:16",
+      "timestamp_end": "29:30",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_12_rule_statement_4",
+        "ke_2025_09_29_sviatoslav_chornyi_12_rule_statement_6",
+        "ke_2025_09_29_sviatoslav_chornyi_12_rule_statement_9",
+        "ke_2025_09_29_sviatoslav_chornyi_12_rule_statement_10",
+        "ke_2025_09_29_sviatoslav_chornyi_12_condition_2",
+        "ke_2025_09_29_sviatoslav_chornyi_12_comparison_0",
+        "ke_2025_09_29_sviatoslav_chornyi_12_warning_0",
+        "ke_2025_09_29_sviatoslav_chornyi_12_warning_1"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_12_45",
+      "frame_ids": [
+        "002876",
+        "002922",
+        "002890"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide displayed with title 'Ответы на вопросы' and GTE logo.. Screen changed to a title slide with Russian text 'Ответы на вопросы' (Answers to questions) and the GTE logo.. New slide displayed with title 'Ответы на вопросы' (Answers…",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_120",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_121",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_131",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_132"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_002876",
+        "ve_raw_002922",
+        "ve_raw_002890"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide displayed with title 'Ответы на вопросы' and GTE logo.. Screen changed to a title slide with Russian text 'Ответы на вопросы' (Answers to questions) and the GTE logo.. New slide displayed with title 'Ответы на вопросы' (Answers…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide displayed with title 'Ответы на вопросы' and GTE logo.. Screen changed to a title slide with Russian text 'Ответы на вопросы' (Answers to questions) and the GTE logo.. New slide displayed with title 'Ответы на вопросы' (Answers…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "30:34",
+      "timestamp_end": "30:36",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_13_rule_statement_0",
+        "ke_2025_09_29_sviatoslav_chornyi_13_condition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_13_process_step_0",
+        "ke_2025_09_29_sviatoslav_chornyi_13_algorithm_hint_0",
+        "ke_2025_09_29_sviatoslav_chornyi_13_example_0",
+        "ke_2025_09_29_sviatoslav_chornyi_13_example_1"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_13_48",
+      "frame_ids": [
+        "003034",
+        "003036"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "concepts: atr_values, entry_values, level",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_133",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_134"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_003034",
+        "ve_raw_003036"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "insufficient_visual_specificity"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "concepts: atr_values, entry_values, level",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "concepts: atr_values, entry_values, level",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "30:38",
+      "timestamp_end": "30:38",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_13_rule_statement_0",
+        "ke_2025_09_29_sviatoslav_chornyi_13_condition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_13_process_step_0",
+        "ke_2025_09_29_sviatoslav_chornyi_13_algorithm_hint_0",
+        "ke_2025_09_29_sviatoslav_chornyi_13_example_0",
+        "ke_2025_09_29_sviatoslav_chornyi_13_example_1"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_13_49",
+      "frame_ids": [
+        "003038"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "concepts:…",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_133",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_134"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_003038"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "insufficient_visual_specificity"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "concepts:…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "concepts:…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "30:44",
+      "timestamp_end": "31:28",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_13_rule_statement_0",
+        "ke_2025_09_29_sviatoslav_chornyi_13_rule_statement_1",
+        "ke_2025_09_29_sviatoslav_chornyi_13_rule_statement_2",
+        "ke_2025_09_29_sviatoslav_chornyi_13_condition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_13_condition_1",
+        "ke_2025_09_29_sviatoslav_chornyi_13_condition_2",
+        "ke_2025_09_29_sviatoslav_chornyi_13_process_step_0",
+        "ke_2025_09_29_sviatoslav_chornyi_13_process_step_1",
+        "ke_2025_09_29_sviatoslav_chornyi_13_algorithm_hint_0",
+        "ke_2025_09_29_sviatoslav_chornyi_13_algorithm_hint_1",
+        "ke_2025_09_29_sviatoslav_chornyi_13_example_0",
+        "ke_2025_09_29_sviatoslav_chornyi_13_example_1"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_13_50",
+      "frame_ids": [
+        "003044",
+        "003046",
+        "003064",
+        "003084",
+        "003086",
+        "003088"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "chart changed to a different view or symbol new chart data displayed. chart changed to SNXUSDT Perpetual Contract on Bybit new chart displayed with price action and order book data. concepts: atr_values,…",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_133",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_134",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_135"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_003044",
+        "ve_raw_003046",
+        "ve_raw_003064",
+        "ve_raw_003084",
+        "ve_raw_003086",
+        "ve_raw_003088"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "concrete_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "chart changed to a different view or symbol new chart data displayed. chart changed to SNXUSDT Perpetual Contract on Bybit new chart displayed with price action and order book data. concepts: atr_values,…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "chart changed to a different view or symbol new chart data displayed. chart changed to SNXUSDT Perpetual Contract on Bybit new chart displayed with price action and order book data. concepts: atr_values,…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "32:00",
+      "timestamp_end": "32:24",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_13_rule_statement_2",
+        "ke_2025_09_29_sviatoslav_chornyi_13_rule_statement_3",
+        "ke_2025_09_29_sviatoslav_chornyi_13_condition_1",
+        "ke_2025_09_29_sviatoslav_chornyi_13_condition_2",
+        "ke_2025_09_29_sviatoslav_chornyi_13_warning_0",
+        "ke_2025_09_29_sviatoslav_chornyi_13_warning_1",
+        "ke_2025_09_29_sviatoslav_chornyi_13_process_step_2",
+        "ke_2025_09_29_sviatoslav_chornyi_13_algorithm_hint_1",
+        "ke_2025_09_29_sviatoslav_chornyi_13_algorithm_hint_2",
+        "ke_2025_09_29_sviatoslav_chornyi_13_example_1"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_13_51",
+      "frame_ids": [
+        "003200",
+        "003206",
+        "003224"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "a search dialog for instruments has appeared on the chart. chart changed from previous frame new chart displayed with different symbols and price action cursor is visible on the lower chart. concepts:…",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_135",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_136"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_003200",
+        "ve_raw_003206",
+        "ve_raw_003224"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "concrete_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "a search dialog for instruments has appeared on the chart. chart changed from previous frame new chart displayed with different symbols and price action cursor is visible on the lower chart. concepts:…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "a search dialog for instruments has appeared on the chart. chart changed from previous frame new chart displayed with different symbols and price action cursor is visible on the lower chart. concepts:…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "32:40",
+      "timestamp_end": "32:40",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_14_definition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_14_definition_1",
+        "ke_2025_09_29_sviatoslav_chornyi_14_comparison_0",
+        "ke_2025_09_29_sviatoslav_chornyi_14_process_step_0",
+        "ke_2025_09_29_sviatoslav_chornyi_14_process_step_1",
+        "ke_2025_09_29_sviatoslav_chornyi_14_algorithm_hint_0",
+        "ke_2025_09_29_sviatoslav_chornyi_14_example_0",
+        "ke_2025_09_29_sviatoslav_chornyi_14_example_1"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_14_52",
+      "frame_ids": [
+        "003240"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "chart changed new annotations appeared. concepts: atr_values, chart_changed_new_annotations_appeared, entry_values",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_142",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_143",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_144"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_003240"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "insufficient_visual_specificity"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "chart changed new annotations appeared. concepts: atr_values, chart_changed_new_annotations_appeared, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "chart changed new annotations appeared. concepts: atr_values, chart_changed_new_annotations_appeared, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "33:30",
+      "timestamp_end": "33:30",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_14_definition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_14_rule_statement_0",
+        "ke_2025_09_29_sviatoslav_chornyi_14_condition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_14_warning_0",
+        "ke_2025_09_29_sviatoslav_chornyi_14_warning_1",
+        "ke_2025_09_29_sviatoslav_chornyi_14_process_step_2",
+        "ke_2025_09_29_sviatoslav_chornyi_14_process_step_3",
+        "ke_2025_09_29_sviatoslav_chornyi_14_process_step_4",
+        "ke_2025_09_29_sviatoslav_chornyi_14_algorithm_hint_0",
+        "ke_2025_09_29_sviatoslav_chornyi_14_example_1",
+        "ke_2025_09_29_sviatoslav_chornyi_14_example_2"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_14_53",
+      "frame_ids": [
+        "003290"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "concepts: atr_values, entry_values, level",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_142",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_143"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_003290"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "insufficient_visual_specificity"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "concepts: atr_values, entry_values, level",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "concepts: atr_values, entry_values, level",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "34:54",
+      "timestamp_end": "34:54",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_15_comparison_0",
+        "ke_2025_09_29_sviatoslav_chornyi_15_process_step_0",
+        "ke_2025_09_29_sviatoslav_chornyi_15_algorithm_hint_0",
+        "ke_2025_09_29_sviatoslav_chornyi_15_example_0"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_15_54",
+      "frame_ids": [
+        "003454"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "concepts: atr_values, chart_changed_to_usdchf_currency_pair_new_chart_window_with_multiple_crypto_assets_displayed_on_the_right, entry_values",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_161",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_145",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_148"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_003454"
+      ],
+      "metadata": {
+        "promotion_reason": "insufficient_visual_specificity"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "concepts: atr_values, chart_changed_to_usdchf_currency_pair_new_chart_window_with_multiple_crypto_assets_displayed_on_the_right, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "concepts: atr_values, chart_changed_to_usdchf_currency_pair_new_chart_window_with_multiple_crypto_assets_displayed_on_the_right, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "ambiguous_chart_context"
+    },
+    {
+      "timestamp_start": "35:22",
+      "timestamp_end": "35:24",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_15_rule_statement_0",
+        "ke_2025_09_29_sviatoslav_chornyi_15_condition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_15_comparison_0",
+        "ke_2025_09_29_sviatoslav_chornyi_15_process_step_0",
+        "ke_2025_09_29_sviatoslav_chornyi_15_process_step_1",
+        "ke_2025_09_29_sviatoslav_chornyi_15_algorithm_hint_0",
+        "ke_2025_09_29_sviatoslav_chornyi_15_example_0",
+        "ke_2025_09_29_sviatoslav_chornyi_15_example_1"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_15_55",
+      "frame_ids": [
+        "003522",
+        "003524"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "chart changed to a different symbol/pair chart zoomed out or panned to a different area new annotations and price levels visible. chart zoomed in or panned to a different relevant area new annotations and price levels visible a cursor or…",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_161"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_003522",
+        "ve_raw_003524"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "concrete_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "chart changed to a different symbol/pair chart zoomed out or panned to a different area new annotations and price levels visible. chart zoomed in or panned to a different relevant area new annotations and price levels visible a cursor or…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "chart changed to a different symbol/pair chart zoomed out or panned to a different area new annotations and price levels visible. chart zoomed in or panned to a different relevant area new annotations and price levels visible a cursor or…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "36:32",
+      "timestamp_end": "36:32",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_15_condition_1",
+        "ke_2025_09_29_sviatoslav_chornyi_15_comparison_0",
+        "ke_2025_09_29_sviatoslav_chornyi_15_process_step_2",
+        "ke_2025_09_29_sviatoslav_chornyi_15_algorithm_hint_1",
+        "ke_2025_09_29_sviatoslav_chornyi_15_example_0"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_15_57",
+      "frame_ids": [
+        "003592"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "The instructor opened a search bar for financial instruments.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_161",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_164",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_166",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_168",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_171",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_178",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_179",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_180"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_003592"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "The instructor opened a search bar for financial instruments.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "The instructor opened a search bar for financial instruments.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "41:24",
+      "timestamp_end": "41:24",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_17_rule_statement_0",
+        "ke_2025_09_29_sviatoslav_chornyi_17_condition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_17_algorithm_hint_0"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_17_58",
+      "frame_ids": [
+        "004084"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "chart changed new chart displayed new annotations and levels added. concepts: atr_values, entry_values, level",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_186",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_173",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_174",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_175",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_176",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_177"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_004084"
+      ],
+      "metadata": {
+        "promotion_reason": "concrete_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "chart changed new chart displayed new annotations and levels added. concepts: atr_values, entry_values, level",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "chart changed new chart displayed new annotations and levels added. concepts: atr_values, entry_values, level",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "64:16",
+      "timestamp_end": "64:18",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_28_definition_0",
+        "ke_2025_09_29_sviatoslav_chornyi_28_definition_1",
+        "ke_2025_09_29_sviatoslav_chornyi_28_definition_2",
+        "ke_2025_09_29_sviatoslav_chornyi_28_rule_statement_2",
+        "ke_2025_09_29_sviatoslav_chornyi_28_comparison_0",
+        "ke_2025_09_29_sviatoslav_chornyi_28_warning_1",
+        "ke_2025_09_29_sviatoslav_chornyi_28_algorithm_hint_0",
+        "ke_2025_09_29_sviatoslav_chornyi_28_algorithm_hint_1",
+        "ke_2025_09_29_sviatoslav_chornyi_28_example_1",
+        "ke_2025_09_29_sviatoslav_chornyi_28_example_2",
+        "ke_2025_09_29_sviatoslav_chornyi_28_example_3"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_28_59",
+      "frame_ids": [
+        "003856",
+        "003858"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "concepts: atr_values, entry_values, level",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_255",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_256",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_257",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_260",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_250",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_258",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_259",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_261"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_003856",
+        "ve_raw_003858"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "insufficient_visual_specificity"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "concepts: atr_values, entry_values, level",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "concepts: atr_values, entry_values, level",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "69:20",
+      "timestamp_end": "69:20",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_30_rule_statement_3",
+        "ke_2025_09_29_sviatoslav_chornyi_30_example_1"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_30_60",
+      "frame_ids": [
+        "004162"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "positive_example",
+      "compact_visual_summary": "Search bar opened with text input 'ru' and no results found.. concepts: atr_values, entry_values, level",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_40",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_41",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_286",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_292"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_004162"
+      ],
+      "metadata": {
+        "promotion_reason": "concrete_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "Search bar opened with text input 'ru' and no results found.. concepts: atr_values, entry_values, level",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "Search bar opened with text input 'ru' and no results found.. concepts: atr_values, entry_values, level",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "shows_setup"
+    },
+    {
+      "timestamp_start": "73:46",
+      "timestamp_end": "73:46",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_2025_09_29_sviatoslav_chornyi_32_rule_statement_4",
+        "ke_2025_09_29_sviatoslav_chornyi_32_rule_statement_5",
+        "ke_2025_09_29_sviatoslav_chornyi_32_rule_statement_6",
+        "ke_2025_09_29_sviatoslav_chornyi_32_condition_7",
+        "ke_2025_09_29_sviatoslav_chornyi_32_condition_8",
+        "ke_2025_09_29_sviatoslav_chornyi_32_process_step_5",
+        "ke_2025_09_29_sviatoslav_chornyi_32_algorithm_hint_0",
+        "ke_2025_09_29_sviatoslav_chornyi_32_algorithm_hint_2",
+        "ke_2025_09_29_sviatoslav_chornyi_32_example_1",
+        "ke_2025_09_29_sviatoslav_chornyi_32_example_5",
+        "ke_2025_09_29_sviatoslav_chornyi_32_example_6"
+      ],
+      "evidence_id": "evcand_2025-09-29-sviatoslav-chornyi_32_61",
+      "frame_ids": [
+        "004428"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "The screen shows a trading platform with two chart windows and a watchlist. The top chart displays USDCHF, and the bottom chart also displays USDCHF. A watchlist of various currency pairs and cryptocurrencies is visible on the right. The…",
+      "linked_rule_ids": [
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_304",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_305",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_306",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_307",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_300",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_301",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_302",
+        "rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_303"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_004428"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "insufficient_visual_specificity"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "The screen shows a trading platform with two chart windows and a watchlist. The top chart displays USDCHF, and the bottom chart also displays USDCHF. A watchlist of various currency pairs and cryptocurrencies is visible on the right. The…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "The screen shows a trading platform with two chart windows and a watchlist. The top chart displays USDCHF, and the bottom chart also displays USDCHF. A watchlist of various currency pairs and cryptocurrencies is visible on the right. The…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    }
+  ],
+  "metadata": {}
+}

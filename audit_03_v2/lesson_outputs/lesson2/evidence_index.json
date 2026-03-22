@@ -1,0 +1,1919 @@
+{
+  "schema_version": "1.0",
+  "lesson_id": "Lesson 2. Levels part 1",
+  "lesson_title": null,
+  "evidence_refs": [
+    {
+      "timestamp_start": "00:02",
+      "timestamp_end": "00:08",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_0_definition_0",
+        "ke_lesson_2_levels_part_1_0_definition_2",
+        "ke_lesson_2_levels_part_1_0_algorithm_hint_0",
+        "ke_lesson_2_levels_part_1_0_example_0"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_0_0",
+      "frame_ids": [
+        "000002",
+        "000004",
+        "000006",
+        "000008"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "First frame: introduction slide with GTE logo and title 'Уровни (часть №1)'. Instructor is visible, with a laptop displaying a name tag. No chart or diagram is present.. The screen now displays a green overlay with text and a horizontal…",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_0",
+        "rule_lesson_2_levels_part_1_unknown_unknown_3"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000002",
+        "ve_raw_000004",
+        "ve_raw_000006",
+        "ve_raw_000008"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "First frame: introduction slide with GTE logo and title 'Уровни (часть №1)'. Instructor is visible, with a laptop displaying a name tag. No chart or diagram is present.. The screen now displays a green overlay with text and a horizontal…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "First frame: introduction slide with GTE logo and title 'Уровни (часть №1)'. Instructor is visible, with a laptop displaying a name tag. No chart or diagram is present.. The screen now displays a green overlay with text and a horizontal…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "00:10",
+      "timestamp_end": "00:10",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_0_definition_0",
+        "ke_lesson_2_levels_part_1_0_definition_2",
+        "ke_lesson_2_levels_part_1_0_algorithm_hint_0",
+        "ke_lesson_2_levels_part_1_0_example_0"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_0_1",
+      "frame_ids": [
+        "000010"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "The visual representation has changed from a whiteboard explanation to a candlestick sketch. A simplified candlestick chart has appeared below the 'Уровень излома тренда' label. The horizontal line is still present but now serves as a…",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_0",
+        "rule_lesson_2_levels_part_1_unknown_unknown_3"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000010"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "insufficient_visual_specificity"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "The visual representation has changed from a whiteboard explanation to a candlestick sketch. A simplified candlestick chart has appeared below the 'Уровень излома тренда' label. The horizontal line is still present but now serves as a…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "The visual representation has changed from a whiteboard explanation to a candlestick sketch. A simplified candlestick chart has appeared below the 'Уровень излома тренда' label. The horizontal line is still present but now serves as a…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "00:14",
+      "timestamp_end": "00:14",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_0_definition_0",
+        "ke_lesson_2_levels_part_1_0_definition_2",
+        "ke_lesson_2_levels_part_1_0_algorithm_hint_0",
+        "ke_lesson_2_levels_part_1_0_example_0"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_0_2",
+      "frame_ids": [
+        "000014"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New frame analyzed. Instructor visible on the left, a diagram on the right. The diagram shows a horizontal line labeled 'Уровень излома тренда' (Trend Reversal Level). Below the line, a series of green and red bars/candles are depicted,…",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_0",
+        "rule_lesson_2_levels_part_1_unknown_unknown_3"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000014"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "strong_concrete_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New frame analyzed. Instructor visible on the left, a diagram on the right. The diagram shows a horizontal line labeled 'Уровень излома тренда' (Trend Reversal Level). Below the line, a series of green and red bars/candles are depicted,…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New frame analyzed. Instructor visible on the left, a diagram on the right. The diagram shows a horizontal line labeled 'Уровень излома тренда' (Trend Reversal Level). Below the line, a series of green and red bars/candles are depicted,…",
+      "evidence_strength": "strong",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "00:18",
+      "timestamp_end": "00:30",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_0_definition_0",
+        "ke_lesson_2_levels_part_1_0_definition_1",
+        "ke_lesson_2_levels_part_1_0_definition_2",
+        "ke_lesson_2_levels_part_1_0_rule_statement_0",
+        "ke_lesson_2_levels_part_1_0_rule_statement_1",
+        "ke_lesson_2_levels_part_1_0_algorithm_hint_0",
+        "ke_lesson_2_levels_part_1_0_example_0"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_0_3",
+      "frame_ids": [
+        "000018",
+        "000022",
+        "000024",
+        "000026",
+        "000030"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New visual content displayed on the right side of the screen, showing a diagram with price bars and a horizontal line.. New chart example showing price action relative to a trend break level.. The chart now shows price action below the…",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_1",
+        "rule_lesson_2_levels_part_1_unknown_unknown_2",
+        "rule_lesson_2_levels_part_1_unknown_unknown_4"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000018",
+        "ve_raw_000022",
+        "ve_raw_000024",
+        "ve_raw_000026",
+        "ve_raw_000030"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "strong_concrete_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New visual content displayed on the right side of the screen, showing a diagram with price bars and a horizontal line.. New chart example showing price action relative to a trend break level.. The chart now shows price action below the…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New visual content displayed on the right side of the screen, showing a diagram with price bars and a horizontal line.. New chart example showing price action relative to a trend break level.. The chart now shows price action below the…",
+      "evidence_strength": "strong",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "00:34",
+      "timestamp_end": "00:34",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_0_definition_1",
+        "ke_lesson_2_levels_part_1_0_rule_statement_0",
+        "ke_lesson_2_levels_part_1_0_rule_statement_1",
+        "ke_lesson_2_levels_part_1_0_example_0"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_0_4",
+      "frame_ids": [
+        "000034"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New text slide with title 'Уровень излома тренда' appeared.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_1",
+        "rule_lesson_2_levels_part_1_unknown_unknown_2",
+        "rule_lesson_2_levels_part_1_unknown_unknown_4"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000034"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New text slide with title 'Уровень излома тренда' appeared.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New text slide with title 'Уровень излома тренда' appeared.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "00:36",
+      "timestamp_end": "00:36",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_0_definition_1",
+        "ke_lesson_2_levels_part_1_0_rule_statement_0",
+        "ke_lesson_2_levels_part_1_0_rule_statement_1",
+        "ke_lesson_2_levels_part_1_0_example_0"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_0_5",
+      "frame_ids": [
+        "000036"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "The instructor is visible, and the previous text slide has been replaced by a diagram illustrating a concept.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_1",
+        "rule_lesson_2_levels_part_1_unknown_unknown_2",
+        "rule_lesson_2_levels_part_1_unknown_unknown_4"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000036"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "The instructor is visible, and the previous text slide has been replaced by a diagram illustrating a concept.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "The instructor is visible, and the previous text slide has been replaced by a diagram illustrating a concept.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "00:46",
+      "timestamp_end": "01:38",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_0_definition_0",
+        "ke_lesson_2_levels_part_1_0_definition_1",
+        "ke_lesson_2_levels_part_1_0_definition_2",
+        "ke_lesson_2_levels_part_1_0_rule_statement_0",
+        "ke_lesson_2_levels_part_1_0_rule_statement_1",
+        "ke_lesson_2_levels_part_1_0_rule_statement_2",
+        "ke_lesson_2_levels_part_1_0_condition_0",
+        "ke_lesson_2_levels_part_1_0_warning_0",
+        "ke_lesson_2_levels_part_1_0_algorithm_hint_1",
+        "ke_lesson_2_levels_part_1_0_example_0",
+        "ke_lesson_2_levels_part_1_0_example_1"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_0_7",
+      "frame_ids": [
+        "000046",
+        "000050",
+        "000052",
+        "000100",
+        "000102",
+        "000064",
+        "000104",
+        "000066",
+        "000106",
+        "000108",
+        "000070",
+        "000072"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New diagram illustrating a trend reversal level with a visual representation of price action.. New diagram showing a trend reversal level with price action.. The instructor is now visible, sitting at a desk with a laptop, and no chart or…",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_5"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000046",
+        "ve_raw_000050",
+        "ve_raw_000052",
+        "ve_raw_000100",
+        "ve_raw_000102",
+        "ve_raw_000064",
+        "ve_raw_000104",
+        "ve_raw_000066",
+        "ve_raw_000106",
+        "ve_raw_000108",
+        "ve_raw_000070",
+        "ve_raw_000072"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "strong_concrete_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New diagram illustrating a trend reversal level with a visual representation of price action.. New diagram showing a trend reversal level with price action.. The instructor is now visible, sitting at a desk with a laptop, and no chart or…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New diagram illustrating a trend reversal level with a visual representation of price action.. New diagram showing a trend reversal level with price action.. The instructor is now visible, sitting at a desk with a laptop, and no chart or…",
+      "evidence_strength": "strong",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "01:38",
+      "timestamp_end": "01:40",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_0_definition_0",
+        "ke_lesson_2_levels_part_1_0_definition_2",
+        "ke_lesson_2_levels_part_1_0_rule_statement_2",
+        "ke_lesson_2_levels_part_1_0_condition_0",
+        "ke_lesson_2_levels_part_1_0_warning_0",
+        "ke_lesson_2_levels_part_1_0_algorithm_hint_1",
+        "ke_lesson_2_levels_part_1_0_example_1"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_0_8",
+      "frame_ids": [
+        "000138",
+        "000140"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New visual example explaining a level formed by a false breakout.. The instructor is visible and pointing, but the core educational content remains the same as the previous frame, focusing on the concept of a false breakout level..…",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_5"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000138",
+        "ve_raw_000140"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "strong_concrete_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New visual example explaining a level formed by a false breakout.. The instructor is visible and pointing, but the core educational content remains the same as the previous frame, focusing on the concept of a false breakout level..…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New visual example explaining a level formed by a false breakout.. The instructor is visible and pointing, but the core educational content remains the same as the previous frame, focusing on the concept of a false breakout level..…",
+      "evidence_strength": "strong",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "01:44",
+      "timestamp_end": "01:46",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_0_definition_0",
+        "ke_lesson_2_levels_part_1_0_definition_2",
+        "ke_lesson_2_levels_part_1_0_rule_statement_2",
+        "ke_lesson_2_levels_part_1_0_condition_0",
+        "ke_lesson_2_levels_part_1_0_warning_0",
+        "ke_lesson_2_levels_part_1_0_algorithm_hint_1"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_0_9",
+      "frame_ids": [
+        "000144",
+        "000146"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New visual content displayed, explaining a false breakout concept.. The visual content remains the same as the previous frame, focusing on the concept of a false breakout.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_5"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000144",
+        "ve_raw_000146"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New visual content displayed, explaining a false breakout concept.. The visual content remains the same as the previous frame, focusing on the concept of a false breakout.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New visual content displayed, explaining a false breakout concept.. The visual content remains the same as the previous frame, focusing on the concept of a false breakout.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "02:06",
+      "timestamp_end": "02:06",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_1_definition_0",
+        "ke_lesson_2_levels_part_1_1_definition_1",
+        "ke_lesson_2_levels_part_1_1_rule_statement_0",
+        "ke_lesson_2_levels_part_1_1_condition_0",
+        "ke_lesson_2_levels_part_1_1_condition_1",
+        "ke_lesson_2_levels_part_1_1_warning_0",
+        "ke_lesson_2_levels_part_1_1_algorithm_hint_0"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_1_17",
+      "frame_ids": [
+        "000166"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "The instructor's gaze has shifted slightly, and the laptop is now more prominent in the frame. The abstract diagrams on the screen have been updated to show price action interacting with a horizontal line, illustrating a potential false…",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_7",
+        "rule_lesson_2_levels_part_1_unknown_unknown_8",
+        "rule_lesson_2_levels_part_1_unknown_unknown_9",
+        "rule_lesson_2_levels_part_1_high_low_unknown_10"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000166"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "insufficient_visual_specificity"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "The instructor's gaze has shifted slightly, and the laptop is now more prominent in the frame. The abstract diagrams on the screen have been updated to show price action interacting with a horizontal line, illustrating a potential false…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "The instructor's gaze has shifted slightly, and the laptop is now more prominent in the frame. The abstract diagrams on the screen have been updated to show price action interacting with a horizontal line, illustrating a potential false…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "02:06",
+      "timestamp_end": "02:12",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_1_definition_0",
+        "ke_lesson_2_levels_part_1_1_definition_1",
+        "ke_lesson_2_levels_part_1_1_rule_statement_0",
+        "ke_lesson_2_levels_part_1_1_condition_0",
+        "ke_lesson_2_levels_part_1_1_condition_1",
+        "ke_lesson_2_levels_part_1_1_warning_0",
+        "ke_lesson_2_levels_part_1_1_algorithm_hint_0"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_1_18",
+      "frame_ids": [
+        "000206",
+        "000208",
+        "000210",
+        "000212"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "A white arrow has appeared on the right side of the diagram, pointing left. The instructor is no longer pointing at the diagram.. concepts:…",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_7",
+        "rule_lesson_2_levels_part_1_unknown_unknown_8",
+        "rule_lesson_2_levels_part_1_unknown_unknown_9",
+        "rule_lesson_2_levels_part_1_high_low_unknown_10"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000206",
+        "ve_raw_000208",
+        "ve_raw_000210",
+        "ve_raw_000212"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "insufficient_visual_specificity"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "A white arrow has appeared on the right side of the diagram, pointing left. The instructor is no longer pointing at the diagram.. concepts:…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "A white arrow has appeared on the right side of the diagram, pointing left. The instructor is no longer pointing at the diagram.. concepts:…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "02:14",
+      "timestamp_end": "02:14",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_1_definition_0",
+        "ke_lesson_2_levels_part_1_1_definition_1",
+        "ke_lesson_2_levels_part_1_1_rule_statement_0",
+        "ke_lesson_2_levels_part_1_1_condition_0",
+        "ke_lesson_2_levels_part_1_1_condition_1",
+        "ke_lesson_2_levels_part_1_1_warning_0",
+        "ke_lesson_2_levels_part_1_1_algorithm_hint_0"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_1_19",
+      "frame_ids": [
+        "000174"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "The visual has changed from the previous frame, displaying a new abstract diagram illustrating a level formed by a false breakout.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_7",
+        "rule_lesson_2_levels_part_1_unknown_unknown_8",
+        "rule_lesson_2_levels_part_1_unknown_unknown_9",
+        "rule_lesson_2_levels_part_1_high_low_unknown_10"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000174"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "The visual has changed from the previous frame, displaying a new abstract diagram illustrating a level formed by a false breakout.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "The visual has changed from the previous frame, displaying a new abstract diagram illustrating a level formed by a false breakout.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "strong",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "02:36",
+      "timestamp_end": "02:36",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_1_rule_statement_1",
+        "ke_lesson_2_levels_part_1_1_condition_0",
+        "ke_lesson_2_levels_part_1_1_condition_1"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_1_28",
+      "frame_ids": [
+        "000196"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "positive_example",
+      "compact_visual_summary": "New diagram illustrating price action around a level, with two distinct sections separated by a dashed line. The left side shows green bars interacting with a horizontal line from below, suggesting upward price movement. The right side…",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_11",
+        "rule_lesson_2_levels_part_1_unknown_unknown_12"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000196"
+      ],
+      "metadata": {
+        "promotion_reason": "strong_concrete_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New diagram illustrating price action around a level, with two distinct sections separated by a dashed line. The left side shows green bars interacting with a horizontal line from below, suggesting upward price movement. The right side…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New diagram illustrating price action around a level, with two distinct sections separated by a dashed line. The left side shows green bars interacting with a horizontal line from below, suggesting upward price movement. The right side…",
+      "evidence_strength": "strong",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "02:36",
+      "timestamp_end": "02:36",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_1_rule_statement_1",
+        "ke_lesson_2_levels_part_1_1_condition_0",
+        "ke_lesson_2_levels_part_1_1_condition_1"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_1_29",
+      "frame_ids": [
+        "000236"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "new diagram illustrating a level formed by a false breakout. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_11",
+        "rule_lesson_2_levels_part_1_unknown_unknown_12"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000236"
+      ],
+      "metadata": {
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "new diagram illustrating a level formed by a false breakout. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "new diagram illustrating a level formed by a false breakout. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "strong",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "02:38",
+      "timestamp_end": "02:42",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_1_definition_0",
+        "ke_lesson_2_levels_part_1_1_definition_1",
+        "ke_lesson_2_levels_part_1_1_rule_statement_0",
+        "ke_lesson_2_levels_part_1_1_rule_statement_1",
+        "ke_lesson_2_levels_part_1_1_condition_0",
+        "ke_lesson_2_levels_part_1_1_condition_1",
+        "ke_lesson_2_levels_part_1_1_warning_0",
+        "ke_lesson_2_levels_part_1_1_algorithm_hint_0"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_1_30",
+      "frame_ids": [
+        "000198",
+        "000238",
+        "000240",
+        "000242"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "The right side of the diagram now shows a white arrow pointing to the right, originating from the horizontal line and extending past the red bars. The red bars on the right have been redrawn to show a more pronounced downward movement,…",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_11",
+        "rule_lesson_2_levels_part_1_unknown_unknown_12"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000198",
+        "ve_raw_000238",
+        "ve_raw_000240",
+        "ve_raw_000242"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "insufficient_visual_specificity"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "The right side of the diagram now shows a white arrow pointing to the right, originating from the horizontal line and extending past the red bars. The red bars on the right have been redrawn to show a more pronounced downward movement,…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "The right side of the diagram now shows a white arrow pointing to the right, originating from the horizontal line and extending past the red bars. The red bars on the right have been redrawn to show a more pronounced downward movement,…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "04:18",
+      "timestamp_end": "04:18",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_2_rule_statement_0",
+        "ke_lesson_2_levels_part_1_2_rule_statement_1",
+        "ke_lesson_2_levels_part_1_2_rule_statement_2",
+        "ke_lesson_2_levels_part_1_2_rule_statement_4",
+        "ke_lesson_2_levels_part_1_2_process_step_0",
+        "ke_lesson_2_levels_part_1_2_algorithm_hint_0"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_2_54",
+      "frame_ids": [
+        "000378"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New text slide with instructions on level selection.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_14",
+        "rule_lesson_2_levels_part_1_unknown_unknown_15",
+        "rule_lesson_2_levels_part_1_unknown_unknown_16",
+        "rule_lesson_2_levels_part_1_unknown_unknown_17",
+        "rule_lesson_2_levels_part_1_unknown_unknown_19"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000378"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New text slide with instructions on level selection.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New text slide with instructions on level selection.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "04:20",
+      "timestamp_end": "04:30",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_2_rule_statement_0",
+        "ke_lesson_2_levels_part_1_2_rule_statement_1",
+        "ke_lesson_2_levels_part_1_2_rule_statement_2",
+        "ke_lesson_2_levels_part_1_2_rule_statement_3",
+        "ke_lesson_2_levels_part_1_2_rule_statement_4",
+        "ke_lesson_2_levels_part_1_2_process_step_0",
+        "ke_lesson_2_levels_part_1_2_algorithm_hint_0",
+        "ke_lesson_2_levels_part_1_2_algorithm_hint_1"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_2_55",
+      "frame_ids": [
+        "000420",
+        "000382",
+        "000422",
+        "000384",
+        "000424",
+        "000386",
+        "000426",
+        "000388",
+        "000390"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New frame analyzed.. The instructor is visible, and no chart or diagram is present.. The chart area has been updated with new price bars and annotations. The instructor is now pointing at the chart, indicating a specific area of…",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_14",
+        "rule_lesson_2_levels_part_1_unknown_unknown_15",
+        "rule_lesson_2_levels_part_1_unknown_unknown_16",
+        "rule_lesson_2_levels_part_1_unknown_unknown_17",
+        "rule_lesson_2_levels_part_1_unknown_unknown_19"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000420",
+        "ve_raw_000382",
+        "ve_raw_000422",
+        "ve_raw_000384",
+        "ve_raw_000424",
+        "ve_raw_000386",
+        "ve_raw_000426",
+        "ve_raw_000388",
+        "ve_raw_000390"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "strong_concrete_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New frame analyzed.. The instructor is visible, and no chart or diagram is present.. The chart area has been updated with new price bars and annotations. The instructor is now pointing at the chart, indicating a specific area of…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New frame analyzed.. The instructor is visible, and no chart or diagram is present.. The chart area has been updated with new price bars and annotations. The instructor is now pointing at the chart, indicating a specific area of…",
+      "evidence_strength": "strong",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "04:30",
+      "timestamp_end": "04:32",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_2_rule_statement_0",
+        "ke_lesson_2_levels_part_1_2_rule_statement_1",
+        "ke_lesson_2_levels_part_1_2_rule_statement_2",
+        "ke_lesson_2_levels_part_1_2_rule_statement_3",
+        "ke_lesson_2_levels_part_1_2_rule_statement_4",
+        "ke_lesson_2_levels_part_1_2_process_step_0",
+        "ke_lesson_2_levels_part_1_2_algorithm_hint_0",
+        "ke_lesson_2_levels_part_1_2_algorithm_hint_1"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_2_56",
+      "frame_ids": [
+        "000430",
+        "000432"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "The chart display has changed to illustrate the concept of a 'Mirror Level' (Зеркальный уровень) with the label 'HLF'. A horizontal white line is drawn across the chart, labeled 'ПОДДЕРЖКА' (Support) below it. Candlesticks are shown…",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_14",
+        "rule_lesson_2_levels_part_1_unknown_unknown_15",
+        "rule_lesson_2_levels_part_1_unknown_unknown_16",
+        "rule_lesson_2_levels_part_1_unknown_unknown_17",
+        "rule_lesson_2_levels_part_1_unknown_unknown_19"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000430",
+        "ve_raw_000432"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "concrete_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "The chart display has changed to illustrate the concept of a 'Mirror Level' (Зеркальный уровень) with the label 'HLF'. A horizontal white line is drawn across the chart, labeled 'ПОДДЕРЖКА' (Support) below it. Candlesticks are shown…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "The chart display has changed to illustrate the concept of a 'Mirror Level' (Зеркальный уровень) with the label 'HLF'. A horizontal white line is drawn across the chart, labeled 'ПОДДЕРЖКА' (Support) below it. Candlesticks are shown…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "05:44",
+      "timestamp_end": "06:00",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_2_definition_0",
+        "ke_lesson_2_levels_part_1_2_definition_1",
+        "ke_lesson_2_levels_part_1_2_rule_statement_2",
+        "ke_lesson_2_levels_part_1_2_rule_statement_4",
+        "ke_lesson_2_levels_part_1_2_rule_statement_5",
+        "ke_lesson_2_levels_part_1_2_rule_statement_6",
+        "ke_lesson_2_levels_part_1_2_condition_1",
+        "ke_lesson_2_levels_part_1_2_condition_2",
+        "ke_lesson_2_levels_part_1_2_process_step_1",
+        "ke_lesson_2_levels_part_1_2_algorithm_hint_0",
+        "ke_lesson_2_levels_part_1_2_algorithm_hint_2"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_2_69",
+      "frame_ids": [
+        "000544",
+        "000546",
+        "000548",
+        "000550",
+        "000552",
+        "000554",
+        "000556",
+        "000558",
+        "000560"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New diagram showing price action relative to a level.. The diagram has evolved to show more bars and a slightly different interaction with the level. New grey bars have appeared to the right of the existing green and red bars. The…",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_18"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000544",
+        "ve_raw_000546",
+        "ve_raw_000548",
+        "ve_raw_000550",
+        "ve_raw_000552",
+        "ve_raw_000554",
+        "ve_raw_000556",
+        "ve_raw_000558",
+        "ve_raw_000560"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "strong_concrete_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New diagram showing price action relative to a level.. The diagram has evolved to show more bars and a slightly different interaction with the level. New grey bars have appeared to the right of the existing green and red bars. The…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New diagram showing price action relative to a level.. The diagram has evolved to show more bars and a slightly different interaction with the level. New grey bars have appeared to the right of the existing green and red bars. The…",
+      "evidence_strength": "strong",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "06:00",
+      "timestamp_end": "06:00",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_2_definition_0",
+        "ke_lesson_2_levels_part_1_2_definition_1",
+        "ke_lesson_2_levels_part_1_2_rule_statement_2",
+        "ke_lesson_2_levels_part_1_2_rule_statement_4",
+        "ke_lesson_2_levels_part_1_2_rule_statement_5",
+        "ke_lesson_2_levels_part_1_2_rule_statement_6",
+        "ke_lesson_2_levels_part_1_2_condition_1",
+        "ke_lesson_2_levels_part_1_2_condition_2",
+        "ke_lesson_2_levels_part_1_2_process_step_1",
+        "ke_lesson_2_levels_part_1_2_algorithm_hint_0",
+        "ke_lesson_2_levels_part_1_2_algorithm_hint_2"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_2_70",
+      "frame_ids": [
+        "000600"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "The visual content has changed to an abstract bar diagram illustrating price action around a liquidity level, with a new annotation box for 'СТОПЫ' and the label 'КОРОТКИЙ СТОП' is now visible above the central line.. concepts:…",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_18"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000600"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "strong_concrete_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "The visual content has changed to an abstract bar diagram illustrating price action around a liquidity level, with a new annotation box for 'СТОПЫ' and the label 'КОРОТКИЙ СТОП' is now visible above the central line.. concepts:…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "The visual content has changed to an abstract bar diagram illustrating price action around a liquidity level, with a new annotation box for 'СТОПЫ' and the label 'КОРОТКИЙ СТОП' is now visible above the central line.. concepts:…",
+      "evidence_strength": "strong",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "06:02",
+      "timestamp_end": "06:02",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_2_definition_0",
+        "ke_lesson_2_levels_part_1_2_definition_1",
+        "ke_lesson_2_levels_part_1_2_rule_statement_2",
+        "ke_lesson_2_levels_part_1_2_rule_statement_4",
+        "ke_lesson_2_levels_part_1_2_rule_statement_5",
+        "ke_lesson_2_levels_part_1_2_rule_statement_6",
+        "ke_lesson_2_levels_part_1_2_condition_1",
+        "ke_lesson_2_levels_part_1_2_condition_2",
+        "ke_lesson_2_levels_part_1_2_process_step_1",
+        "ke_lesson_2_levels_part_1_2_algorithm_hint_0",
+        "ke_lesson_2_levels_part_1_2_algorithm_hint_2"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_2_71",
+      "frame_ids": [
+        "000562"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "The cluster of bars to the left has been replaced by a new sequence of bars. The horizontal dash to the right of the bars has been removed. The 'КОРОТКИЙ СТОП' label and dashed line remain, but the price action illustration has changed..…",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_18"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000562"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "concrete_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "The cluster of bars to the left has been replaced by a new sequence of bars. The horizontal dash to the right of the bars has been removed. The 'КОРОТКИЙ СТОП' label and dashed line remain, but the price action illustration has changed..…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "The cluster of bars to the left has been replaced by a new sequence of bars. The horizontal dash to the right of the bars has been removed. The 'КОРОТКИЙ СТОП' label and dashed line remain, but the price action illustration has changed..…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "06:20",
+      "timestamp_end": "06:20",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_3_definition_0",
+        "ke_lesson_2_levels_part_1_3_condition_0",
+        "ke_lesson_2_levels_part_1_3_warning_0",
+        "ke_lesson_2_levels_part_1_3_algorithm_hint_0",
+        "ke_lesson_2_levels_part_1_3_example_0"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_3_84",
+      "frame_ids": [
+        "000580"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New diagram illustrating price action relative to a liquidity level.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_21"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000580"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New diagram illustrating price action relative to a liquidity level.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New diagram illustrating price action relative to a liquidity level.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "06:20",
+      "timestamp_end": "06:22",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_3_definition_0",
+        "ke_lesson_2_levels_part_1_3_condition_0",
+        "ke_lesson_2_levels_part_1_3_warning_0",
+        "ke_lesson_2_levels_part_1_3_algorithm_hint_0",
+        "ke_lesson_2_levels_part_1_3_example_0"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_3_85",
+      "frame_ids": [
+        "000620",
+        "000622"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New diagram showing abstract bars interacting with a level.. A new label 'КОРОТКИЙ СТОП' has appeared below the horizontal line. The arrow has been removed.. concepts:…",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_21"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000620",
+        "ve_raw_000622"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "concrete_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New diagram showing abstract bars interacting with a level.. A new label 'КОРОТКИЙ СТОП' has appeared below the horizontal line. The arrow has been removed.. concepts:…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New diagram showing abstract bars interacting with a level.. A new label 'КОРОТКИЙ СТОП' has appeared below the horizontal line. The arrow has been removed.. concepts:…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "06:24",
+      "timestamp_end": "06:24",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_3_definition_0",
+        "ke_lesson_2_levels_part_1_3_condition_0",
+        "ke_lesson_2_levels_part_1_3_warning_0",
+        "ke_lesson_2_levels_part_1_3_algorithm_hint_0",
+        "ke_lesson_2_levels_part_1_3_example_0"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_3_86",
+      "frame_ids": [
+        "000584"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New diagram displayed showing price action relative to a liquidity level.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_21"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000584"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New diagram displayed showing price action relative to a liquidity level.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New diagram displayed showing price action relative to a liquidity level.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "07:46",
+      "timestamp_end": "07:46",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_3_rule_statement_0",
+        "ke_lesson_2_levels_part_1_3_rule_statement_1",
+        "ke_lesson_2_levels_part_1_3_rule_statement_2",
+        "ke_lesson_2_levels_part_1_3_condition_1",
+        "ke_lesson_2_levels_part_1_3_comparison_0",
+        "ke_lesson_2_levels_part_1_3_warning_1",
+        "ke_lesson_2_levels_part_1_3_warning_2",
+        "ke_lesson_2_levels_part_1_3_process_step_1",
+        "ke_lesson_2_levels_part_1_3_algorithm_hint_1",
+        "ke_lesson_2_levels_part_1_3_algorithm_hint_2"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_3_94",
+      "frame_ids": [
+        "000746"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "A small chart diagram has appeared on the screen. The chart displays a few candlesticks with red and green colors. Text annotations in Russian are present above the chart.. concepts:…",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_22",
+        "rule_lesson_2_levels_part_1_unknown_unknown_23",
+        "rule_lesson_2_levels_part_1_unknown_unknown_24"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000746"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "insufficient_visual_specificity"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "A small chart diagram has appeared on the screen. The chart displays a few candlesticks with red and green colors. Text annotations in Russian are present above the chart.. concepts:…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "A small chart diagram has appeared on the screen. The chart displays a few candlesticks with red and green colors. Text annotations in Russian are present above the chart.. concepts:…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "07:50",
+      "timestamp_end": "07:50",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_3_rule_statement_0",
+        "ke_lesson_2_levels_part_1_3_rule_statement_1",
+        "ke_lesson_2_levels_part_1_3_rule_statement_2",
+        "ke_lesson_2_levels_part_1_3_condition_1",
+        "ke_lesson_2_levels_part_1_3_comparison_0",
+        "ke_lesson_2_levels_part_1_3_warning_1",
+        "ke_lesson_2_levels_part_1_3_warning_2",
+        "ke_lesson_2_levels_part_1_3_algorithm_hint_1",
+        "ke_lesson_2_levels_part_1_3_algorithm_hint_2"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_3_95",
+      "frame_ids": [
+        "000750"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "Chart displayed with title 'Уровень, который встречался раньше (Исторический уровень)' and a horizontal line labeled '2005 год'.. concepts: abstract_teaching_example, atr_values,…",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_22",
+        "rule_lesson_2_levels_part_1_unknown_unknown_23",
+        "rule_lesson_2_levels_part_1_unknown_unknown_24"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000750"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "Chart displayed with title 'Уровень, который встречался раньше (Исторический уровень)' and a horizontal line labeled '2005 год'.. concepts: abstract_teaching_example, atr_values,…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "Chart displayed with title 'Уровень, который встречался раньше (Исторический уровень)' and a horizontal line labeled '2005 год'.. concepts: abstract_teaching_example, atr_values,…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "07:54",
+      "timestamp_end": "07:54",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_3_rule_statement_0",
+        "ke_lesson_2_levels_part_1_3_rule_statement_1",
+        "ke_lesson_2_levels_part_1_3_rule_statement_2",
+        "ke_lesson_2_levels_part_1_3_condition_1",
+        "ke_lesson_2_levels_part_1_3_comparison_0",
+        "ke_lesson_2_levels_part_1_3_warning_1",
+        "ke_lesson_2_levels_part_1_3_warning_2",
+        "ke_lesson_2_levels_part_1_3_algorithm_hint_1",
+        "ke_lesson_2_levels_part_1_3_algorithm_hint_2"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_3_96",
+      "frame_ids": [
+        "000754"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New chart displayed showing price action relative to a historical level.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_22",
+        "rule_lesson_2_levels_part_1_unknown_unknown_23",
+        "rule_lesson_2_levels_part_1_unknown_unknown_24"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000754"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New chart displayed showing price action relative to a historical level.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New chart displayed showing price action relative to a historical level.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "strong",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "08:42",
+      "timestamp_end": "08:50",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_4_definition_0",
+        "ke_lesson_2_levels_part_1_4_rule_statement_0",
+        "ke_lesson_2_levels_part_1_4_rule_statement_1",
+        "ke_lesson_2_levels_part_1_4_rule_statement_2",
+        "ke_lesson_2_levels_part_1_4_rule_statement_3",
+        "ke_lesson_2_levels_part_1_4_condition_0",
+        "ke_lesson_2_levels_part_1_4_condition_2",
+        "ke_lesson_2_levels_part_1_4_process_step_1",
+        "ke_lesson_2_levels_part_1_4_process_step_2",
+        "ke_lesson_2_levels_part_1_4_algorithm_hint_0",
+        "ke_lesson_2_levels_part_1_4_algorithm_hint_1"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_4_100",
+      "frame_ids": [
+        "000842",
+        "000846",
+        "000850"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New slide with title 'IPO уровни' appeared.. Instructor is visible, and a text slide with the title \"IPO уровни\" is displayed.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_30",
+        "rule_lesson_2_levels_part_1_unknown_unknown_31",
+        "rule_lesson_2_levels_part_1_unknown_unknown_32",
+        "rule_lesson_2_levels_part_1_unknown_unknown_33",
+        "rule_lesson_2_levels_part_1_unknown_unknown_34",
+        "rule_lesson_2_levels_part_1_unknown_unknown_35"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000842",
+        "ve_raw_000846",
+        "ve_raw_000850"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New slide with title 'IPO уровни' appeared.. Instructor is visible, and a text slide with the title \"IPO уровни\" is displayed.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New slide with title 'IPO уровни' appeared.. Instructor is visible, and a text slide with the title \"IPO уровни\" is displayed.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "08:54",
+      "timestamp_end": "09:02",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_4_definition_0",
+        "ke_lesson_2_levels_part_1_4_rule_statement_0",
+        "ke_lesson_2_levels_part_1_4_rule_statement_1",
+        "ke_lesson_2_levels_part_1_4_rule_statement_2",
+        "ke_lesson_2_levels_part_1_4_rule_statement_3",
+        "ke_lesson_2_levels_part_1_4_rule_statement_4",
+        "ke_lesson_2_levels_part_1_4_condition_0",
+        "ke_lesson_2_levels_part_1_4_condition_2",
+        "ke_lesson_2_levels_part_1_4_process_step_1",
+        "ke_lesson_2_levels_part_1_4_process_step_2",
+        "ke_lesson_2_levels_part_1_4_algorithm_hint_0",
+        "ke_lesson_2_levels_part_1_4_algorithm_hint_1"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_4_101",
+      "frame_ids": [
+        "000854",
+        "000858",
+        "000900",
+        "000862"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New visual content displayed: IPO levels diagram and definition.. New frame analyzed.. The visual content has changed from a chart diagram to a person sitting at a laptop with a green overlay.. concepts: abstract_teaching_example,…",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_30",
+        "rule_lesson_2_levels_part_1_unknown_unknown_31",
+        "rule_lesson_2_levels_part_1_unknown_unknown_32",
+        "rule_lesson_2_levels_part_1_unknown_unknown_33",
+        "rule_lesson_2_levels_part_1_unknown_unknown_34",
+        "rule_lesson_2_levels_part_1_unknown_unknown_35",
+        "rule_lesson_2_levels_part_1_unknown_unknown_36",
+        "rule_lesson_2_levels_part_1_unknown_unknown_37"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000854",
+        "ve_raw_000858",
+        "ve_raw_000900",
+        "ve_raw_000862"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New visual content displayed: IPO levels diagram and definition.. New frame analyzed.. The visual content has changed from a chart diagram to a person sitting at a laptop with a green overlay.. concepts: abstract_teaching_example,…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New visual content displayed: IPO levels diagram and definition.. New frame analyzed.. The visual content has changed from a chart diagram to a person sitting at a laptop with a green overlay.. concepts: abstract_teaching_example,…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "09:02",
+      "timestamp_end": "09:02",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_4_rule_statement_1",
+        "ke_lesson_2_levels_part_1_4_rule_statement_2",
+        "ke_lesson_2_levels_part_1_4_rule_statement_3",
+        "ke_lesson_2_levels_part_1_4_rule_statement_4",
+        "ke_lesson_2_levels_part_1_4_process_step_1",
+        "ke_lesson_2_levels_part_1_4_algorithm_hint_0",
+        "ke_lesson_2_levels_part_1_4_algorithm_hint_1"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_4_102",
+      "frame_ids": [
+        "000902"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "The visual content has changed from a person at a laptop to a slide with text and a logo.. concepts: abstract, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_30",
+        "rule_lesson_2_levels_part_1_unknown_unknown_31",
+        "rule_lesson_2_levels_part_1_unknown_unknown_32",
+        "rule_lesson_2_levels_part_1_unknown_unknown_33",
+        "rule_lesson_2_levels_part_1_unknown_unknown_34",
+        "rule_lesson_2_levels_part_1_unknown_unknown_36",
+        "rule_lesson_2_levels_part_1_unknown_unknown_37"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000902"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "insufficient_visual_specificity"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "The visual content has changed from a person at a laptop to a slide with text and a logo.. concepts: abstract, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "The visual content has changed from a person at a laptop to a slide with text and a logo.. concepts: abstract, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "09:06",
+      "timestamp_end": "09:10",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_4_definition_0",
+        "ke_lesson_2_levels_part_1_4_rule_statement_1",
+        "ke_lesson_2_levels_part_1_4_rule_statement_2",
+        "ke_lesson_2_levels_part_1_4_rule_statement_3",
+        "ke_lesson_2_levels_part_1_4_rule_statement_4",
+        "ke_lesson_2_levels_part_1_4_condition_1",
+        "ke_lesson_2_levels_part_1_4_condition_2",
+        "ke_lesson_2_levels_part_1_4_warning_0",
+        "ke_lesson_2_levels_part_1_4_process_step_0",
+        "ke_lesson_2_levels_part_1_4_process_step_1",
+        "ke_lesson_2_levels_part_1_4_process_step_2",
+        "ke_lesson_2_levels_part_1_4_algorithm_hint_0",
+        "ke_lesson_2_levels_part_1_4_algorithm_hint_1",
+        "ke_lesson_2_levels_part_1_4_algorithm_hint_2"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_4_103",
+      "frame_ids": [
+        "000866",
+        "000870"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New frame analyzed.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_36",
+        "rule_lesson_2_levels_part_1_unknown_unknown_37"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000866",
+        "ve_raw_000870"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New frame analyzed.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New frame analyzed.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "11:30",
+      "timestamp_end": "11:30",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_5_rule_statement_1",
+        "ke_lesson_2_levels_part_1_5_warning_0",
+        "ke_lesson_2_levels_part_1_5_algorithm_hint_1",
+        "ke_lesson_2_levels_part_1_5_example_0",
+        "ke_lesson_2_levels_part_1_5_example_1",
+        "ke_lesson_2_levels_part_1_5_example_2"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_5_108",
+      "frame_ids": [
+        "000692"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "The instructor is visible, looking at a laptop, with no chart or diagram present.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_42",
+        "rule_lesson_2_levels_part_1_unknown_unknown_38",
+        "rule_lesson_2_levels_part_1_unknown_unknown_39",
+        "rule_lesson_2_levels_part_1_unknown_unknown_40",
+        "rule_lesson_2_levels_part_1_unknown_unknown_41"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000692"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "The instructor is visible, looking at a laptop, with no chart or diagram present.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "The instructor is visible, looking at a laptop, with no chart or diagram present.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "11:46",
+      "timestamp_end": "11:46",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_5_rule_statement_1",
+        "ke_lesson_2_levels_part_1_5_rule_statement_2",
+        "ke_lesson_2_levels_part_1_5_condition_1",
+        "ke_lesson_2_levels_part_1_5_warning_0",
+        "ke_lesson_2_levels_part_1_5_algorithm_hint_1",
+        "ke_lesson_2_levels_part_1_5_example_0",
+        "ke_lesson_2_levels_part_1_5_example_1",
+        "ke_lesson_2_levels_part_1_5_example_2"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_5_109",
+      "frame_ids": [
+        "000708",
+        "000712"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New diagram illustrating a concept with percentage annotation.. The visual content has changed to a diagram illustrating a concept with annotations.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_42",
+        "rule_lesson_2_levels_part_1_unknown_unknown_43",
+        "rule_lesson_2_levels_part_1_unknown_unknown_44"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000708",
+        "ve_raw_000712"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New diagram illustrating a concept with percentage annotation.. The visual content has changed to a diagram illustrating a concept with annotations.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New diagram illustrating a concept with percentage annotation.. The visual content has changed to a diagram illustrating a concept with annotations.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "11:46",
+      "timestamp_end": "11:46",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_5_rule_statement_1",
+        "ke_lesson_2_levels_part_1_5_rule_statement_2",
+        "ke_lesson_2_levels_part_1_5_condition_1",
+        "ke_lesson_2_levels_part_1_5_warning_0",
+        "ke_lesson_2_levels_part_1_5_algorithm_hint_1",
+        "ke_lesson_2_levels_part_1_5_example_0",
+        "ke_lesson_2_levels_part_1_5_example_1",
+        "ke_lesson_2_levels_part_1_5_example_2"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_5_110",
+      "frame_ids": [
+        "000716"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "The instructor is visible, and a diagram illustrating a percentage change between two conceptual levels is displayed. The visual representation type has changed to an abstract bar diagram. The example type is an abstract teaching…",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_42",
+        "rule_lesson_2_levels_part_1_unknown_unknown_43"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000716"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "insufficient_visual_specificity"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "The instructor is visible, and a diagram illustrating a percentage change between two conceptual levels is displayed. The visual representation type has changed to an abstract bar diagram. The example type is an abstract teaching…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "The instructor is visible, and a diagram illustrating a percentage change between two conceptual levels is displayed. The visual representation type has changed to an abstract bar diagram. The example type is an abstract teaching…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "11:46",
+      "timestamp_end": "11:46",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_5_rule_statement_1",
+        "ke_lesson_2_levels_part_1_5_rule_statement_2",
+        "ke_lesson_2_levels_part_1_5_condition_1",
+        "ke_lesson_2_levels_part_1_5_warning_0",
+        "ke_lesson_2_levels_part_1_5_algorithm_hint_1",
+        "ke_lesson_2_levels_part_1_5_example_0",
+        "ke_lesson_2_levels_part_1_5_example_1",
+        "ke_lesson_2_levels_part_1_5_example_2"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_5_111",
+      "frame_ids": [
+        "000720",
+        "000724",
+        "000728"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New chart displayed with a historical level annotation and date range.. New chart displayed showing historical price movement with annotations.. new chart example shown. concepts: abstract_teaching_example, atr_values, entry_values",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_43"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000720",
+        "ve_raw_000724",
+        "ve_raw_000728"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New chart displayed with a historical level annotation and date range.. New chart displayed showing historical price movement with annotations.. new chart example shown. concepts: abstract_teaching_example, atr_values, entry_values",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New chart displayed with a historical level annotation and date range.. New chart displayed showing historical price movement with annotations.. new chart example shown. concepts: abstract_teaching_example, atr_values, entry_values",
+      "evidence_strength": "strong",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "12:56",
+      "timestamp_end": "12:56",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_6_rule_statement_0",
+        "ke_lesson_2_levels_part_1_6_rule_statement_1",
+        "ke_lesson_2_levels_part_1_6_rule_statement_3",
+        "ke_lesson_2_levels_part_1_6_process_step_0",
+        "ke_lesson_2_levels_part_1_6_algorithm_hint_0",
+        "ke_lesson_2_levels_part_1_6_algorithm_hint_1",
+        "ke_lesson_2_levels_part_1_6_algorithm_hint_3",
+        "ke_lesson_2_levels_part_1_6_example_0"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_6_112",
+      "frame_ids": [
+        "000778"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New chart example showing historical levels with price action.. concepts: abstract_teaching_example, all_time_high, all_time_low",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_53",
+        "rule_lesson_2_levels_part_1_unknown_unknown_54",
+        "rule_lesson_2_levels_part_1_unknown_unknown_56"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000778"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New chart example showing historical levels with price action.. concepts: abstract_teaching_example, all_time_high, all_time_low",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New chart example showing historical levels with price action.. concepts: abstract_teaching_example, all_time_high, all_time_low",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "12:56",
+      "timestamp_end": "12:56",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_6_rule_statement_0",
+        "ke_lesson_2_levels_part_1_6_rule_statement_1",
+        "ke_lesson_2_levels_part_1_6_rule_statement_3",
+        "ke_lesson_2_levels_part_1_6_process_step_0",
+        "ke_lesson_2_levels_part_1_6_algorithm_hint_0",
+        "ke_lesson_2_levels_part_1_6_algorithm_hint_1",
+        "ke_lesson_2_levels_part_1_6_algorithm_hint_3",
+        "ke_lesson_2_levels_part_1_6_example_0"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_6_113",
+      "frame_ids": [
+        "000782"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New chart example showing historical levels with price action.. concepts: abstract_teaching_example, all_time_high, all_time_low",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_53",
+        "rule_lesson_2_levels_part_1_unknown_unknown_54",
+        "rule_lesson_2_levels_part_1_unknown_unknown_56"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000782"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "generic_teaching_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New chart example showing historical levels with price action.. concepts: abstract_teaching_example, all_time_high, all_time_low",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New chart example showing historical levels with price action.. concepts: abstract_teaching_example, all_time_high, all_time_low",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    },
+    {
+      "timestamp_start": "12:56",
+      "timestamp_end": "13:14",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "source_event_ids": [
+        "ke_lesson_2_levels_part_1_6_rule_statement_0",
+        "ke_lesson_2_levels_part_1_6_rule_statement_1",
+        "ke_lesson_2_levels_part_1_6_rule_statement_3",
+        "ke_lesson_2_levels_part_1_6_condition_0",
+        "ke_lesson_2_levels_part_1_6_comparison_0",
+        "ke_lesson_2_levels_part_1_6_warning_0",
+        "ke_lesson_2_levels_part_1_6_process_step_0",
+        "ke_lesson_2_levels_part_1_6_process_step_1",
+        "ke_lesson_2_levels_part_1_6_process_step_2",
+        "ke_lesson_2_levels_part_1_6_algorithm_hint_0",
+        "ke_lesson_2_levels_part_1_6_algorithm_hint_1",
+        "ke_lesson_2_levels_part_1_6_algorithm_hint_3",
+        "ke_lesson_2_levels_part_1_6_algorithm_hint_4",
+        "ke_lesson_2_levels_part_1_6_example_0"
+      ],
+      "evidence_id": "evcand_Lesson 2. Levels part 1_6_114",
+      "frame_ids": [
+        "000786",
+        "000790",
+        "000796",
+        "000798"
+      ],
+      "screenshot_paths": [],
+      "visual_type": "unknown",
+      "example_role": "illustration",
+      "compact_visual_summary": "New visual content displayed: a chart illustrating historical price levels with annotations.. New chart example showing historical levels with annotations.. Only coach is visible, no chart or diagram present.. concepts:…",
+      "linked_rule_ids": [
+        "rule_lesson_2_levels_part_1_unknown_unknown_53",
+        "rule_lesson_2_levels_part_1_unknown_unknown_54",
+        "rule_lesson_2_levels_part_1_unknown_unknown_56",
+        "rule_lesson_2_levels_part_1_ipo_unknown_50",
+        "rule_lesson_2_levels_part_1_ipo_unknown_51"
+      ],
+      "raw_visual_event_ids": [
+        "ve_raw_000786",
+        "ve_raw_000790",
+        "ve_raw_000796",
+        "ve_raw_000798"
+      ],
+      "metadata": {
+        "semantic_warnings": [
+          "downgraded_to_illustration_due_to_generic_teaching_visual"
+        ],
+        "promotion_reason": "concrete_visual"
+      },
+      "source_language": "ru",
+      "related_concept_ids": [],
+      "summary_primary": "New visual content displayed: a chart illustrating historical price levels with annotations.. New chart example showing historical levels with annotations.. Only coach is visible, no chart or diagram present.. concepts:…",
+      "summary_language": "en",
+      "summary_ru": null,
+      "summary_en": "New visual content displayed: a chart illustrating historical price levels with annotations.. New chart example showing historical levels with annotations.. Only coach is visible, no chart or diagram present.. concepts:…",
+      "evidence_strength": "moderate",
+      "evidence_role_detail": "illustrates_rule"
+    }
+  ],
+  "metadata": {}
+}
