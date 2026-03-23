@@ -1,0 +1,1066 @@
+{
+  "method": "POST",
+  "path": "/rag/search",
+  "request": {
+    "query": "Покажи пример накопления на графике",
+    "top_k": 5,
+    "unit_types": [
+      "evidence_ref",
+      "rule_card",
+      "knowledge_event"
+    ],
+    "filters": {
+      "lesson_ids": [],
+      "concept_ids": [],
+      "min_confidence_score": null
+    },
+    "return_summary": true
+  },
+  "status_code": 200,
+  "response": {
+    "query": "Покажи пример накопления на графике",
+    "query_analysis": {
+      "normalized_query": "покажи пример накопления на графике",
+      "detected_concepts": [],
+      "detected_unit_bias": "evidence",
+      "expansion_trace": {
+        "detected_terms": [],
+        "exact_alias_matches": {},
+        "normalized_alias_matches": {},
+        "canonical_concept_ids": [],
+        "expanded_concept_ids": [],
+        "boosted_rule_ids": [],
+        "related_terms": [],
+        "expansion_trace": []
+      }
+    },
+    "top_hits": [
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_9_example_0",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "example / Излом тренда",
+        "text_snippet": "[example] [Concept] Излом тренда Пример излома тренда на битке. [Time] 19:39–21:40 [Support Basis] transcript_plus_visual",
+        "timestamps": [
+          {
+            "start": "19:39",
+            "end": "21:40"
+          },
+          {
+            "start": "19:48",
+            "end": "19:58"
+          },
+          {
+            "start": "21:32",
+            "end": "21:40"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_9_31",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_9_32"
+        ],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "raw_lexical_score": 7.664,
+        "raw_vector_score": 0.5585,
+        "graph_boost": 0.0,
+        "score": 0.8301,
+        "score_breakdown": {
+          "lexical_score": 0.9395,
+          "vector_score": 0.8657,
+          "concept_exact_match": 0.0,
+          "alias_match": 0.0,
+          "confidence_score": 0.85,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 0.3333,
+          "unit_type_relevance": 0.95,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 1.0,
+          "groundedness": 0.8333,
+          "lesson_diversity_bonus": 1.0
+        },
+        "why_retrieved": [
+          "strong_lexical",
+          "strong_vector",
+          "example_mode_match",
+          "well_grounded"
+        ]
+      },
+      {
+        "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_136",
+        "unit_type": "rule_card",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "удержание позиции / выход из накопления",
+        "text_snippet": "[Concept] удержание позиции\n[Subconcept] выход из накопления\n[Rule] Удерживать инструмент после выхода из накопления обычно больше, чем один день.\n[Visual] a search dialog for instruments has appeared",
+        "timestamps": [
+          {
+            "start": "32:12",
+            "end": "32:18"
+          },
+          {
+            "start": "32:00",
+            "end": "32:24"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_13_51"
+        ],
+        "source_event_ids": [
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_13_rule_statement_3"
+        ],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_136"
+        ],
+        "raw_lexical_score": 5.8861,
+        "raw_vector_score": 0.5965,
+        "graph_boost": 0.0,
+        "score": 0.7709,
+        "score_breakdown": {
+          "lexical_score": 0.7216,
+          "vector_score": 0.9247,
+          "concept_exact_match": 0.0,
+          "alias_match": 0.0,
+          "confidence_score": 0.9,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 0.6667,
+          "unit_type_relevance": 1.0,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.7,
+          "groundedness": 0.9167,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "strong_lexical",
+          "strong_vector",
+          "unit_bias_match",
+          "example_mode_match",
+          "well_grounded"
+        ]
+      },
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_6",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "rule_statement / Торговля на пробой",
+        "text_snippet": "[rule_statement] [Concept] Торговля на пробой При выходе из накопления или консолидации, особенно в начале, инструмент может идти далеко в нужном направлении. [Time] 15:32–15:44 [Support Basis] transc",
+        "timestamps": [
+          {
+            "start": "15:32",
+            "end": "15:44"
+          },
+          {
+            "start": "15:18",
+            "end": "15:20"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_7_23"
+        ],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "raw_lexical_score": 7.9356,
+        "raw_vector_score": 0.0,
+        "graph_boost": 0.0,
+        "score": 0.5893,
+        "score_breakdown": {
+          "lexical_score": 0.9728,
+          "vector_score": 0.0,
+          "concept_exact_match": 0.0,
+          "alias_match": 0.0,
+          "confidence_score": 0.95,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 1.0,
+          "unit_type_relevance": 0.95,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.7,
+          "groundedness": 1.0,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "strong_lexical",
+          "example_mode_match",
+          "well_grounded"
+        ]
+      },
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_7_condition_5",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "condition / Торговля на пробой",
+        "text_snippet": "[condition] [Concept] Торговля на пробой Если это начало выхода из накопления или консолидации, инструмент может идти далеко. [Time] 15:40–15:44 [Support Basis] transcript_plus_visual",
+        "timestamps": [
+          {
+            "start": "15:40",
+            "end": "15:44"
+          },
+          {
+            "start": "15:18",
+            "end": "15:20"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_7_23"
+        ],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "raw_lexical_score": 8.1572,
+        "raw_vector_score": 0.0,
+        "graph_boost": 0.0,
+        "score": 0.5785,
+        "score_breakdown": {
+          "lexical_score": 1.0,
+          "vector_score": 0.0,
+          "concept_exact_match": 0.0,
+          "alias_match": 0.0,
+          "confidence_score": 0.85,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 1.0,
+          "unit_type_relevance": 0.95,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.0,
+          "groundedness": 1.0,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "strong_lexical",
+          "well_grounded"
+        ]
+      },
+      {
+        "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_101",
+        "unit_type": "rule_card",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "Уровень проторговки / Пробитие",
+        "text_snippet": "[Concept] Уровень проторговки\n[Subconcept] Пробитие\n[Rule] Пробить уровень проторговки с первого раза крайне сложно.\n[Visual] New slide displayed with text and a chart. The slide introduces the concep",
+        "timestamps": [
+          {
+            "start": "21:08",
+            "end": "21:13"
+          },
+          {
+            "start": "21:32",
+            "end": "21:40"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_9_32"
+        ],
+        "source_event_ids": [
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_9_rule_statement_2"
+        ],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_101"
+        ],
+        "raw_lexical_score": 0.0,
+        "raw_vector_score": 0.6451,
+        "graph_boost": 0.0,
+        "score": 0.577,
+        "score_breakdown": {
+          "lexical_score": 0.0,
+          "vector_score": 1.0,
+          "concept_exact_match": 0.0,
+          "alias_match": 0.0,
+          "confidence_score": 0.9,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 0.6667,
+          "unit_type_relevance": 1.0,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.7,
+          "groundedness": 0.9167,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "strong_vector",
+          "unit_bias_match",
+          "example_mode_match",
+          "well_grounded"
+        ]
+      }
+    ],
+    "grouped_results": {
+      "rule_cards": [
+        {
+          "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_136",
+          "unit_type": "rule_card",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "удержание позиции / выход из накопления",
+          "text_snippet": "[Concept] удержание позиции\n[Subconcept] выход из накопления\n[Rule] Удерживать инструмент после выхода из накопления обычно больше, чем один день.\n[Visual] a search dialog for instruments has appeared",
+          "timestamps": [
+            {
+              "start": "32:12",
+              "end": "32:18"
+            },
+            {
+              "start": "32:00",
+              "end": "32:24"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_13_51"
+          ],
+          "source_event_ids": [
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_13_rule_statement_3"
+          ],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_136"
+          ],
+          "raw_lexical_score": 5.8861,
+          "raw_vector_score": 0.5965,
+          "graph_boost": 0.0,
+          "score": 0.7709,
+          "score_breakdown": {
+            "lexical_score": 0.7216,
+            "vector_score": 0.9247,
+            "concept_exact_match": 0.0,
+            "alias_match": 0.0,
+            "confidence_score": 0.9,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 0.6667,
+            "unit_type_relevance": 1.0,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.7,
+            "groundedness": 0.9167,
+            "lesson_diversity_bonus": 0.0
+          },
+          "why_retrieved": [
+            "strong_lexical",
+            "strong_vector",
+            "unit_bias_match",
+            "example_mode_match",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_136",
+            "unit_type": "rule_card",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:uderzhanie_pozitsii"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:vykhod_iz_nakopleniya"
+            ],
+            "alias_terms": [
+              "удержание позиции",
+              "выход из накопления"
+            ],
+            "title": "удержание позиции / выход из накопления",
+            "text": "[Concept] удержание позиции\n[Subconcept] выход из накопления\n[Rule] Удерживать инструмент после выхода из накопления обычно больше, чем один день.\n[Visual] a search dialog for instruments has appeared on the chart. chart changed from previous frame new chart displayed with different symbols and price action cursor is visible on the…\n[Support Basis] transcript_primary\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+            "short_text": "[Concept] удержание позиции\n[Subconcept] выход из накопления\n[Rule] Удерживать инструмент после выхода из накопления обычно больше, чем один день.\n[Visual] a search dialog for instruments has appeared",
+            "keywords": [
+              "удержание позиции",
+              "выход из накопления"
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "confidence": "high",
+              "support_basis": "transcript_primary"
+            },
+            "confidence_score": 0.9,
+            "support_basis": "transcript_primary",
+            "evidence_requirement": "optional",
+            "teaching_mode": "mixed",
+            "timestamps": [
+              {
+                "start": "32:12",
+                "end": "32:18"
+              },
+              {
+                "start": "32:00",
+                "end": "32:24"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_13_51"
+            ],
+            "source_event_ids": [
+              "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_13_rule_statement_3"
+            ],
+            "source_rule_ids": [
+              "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_136"
+            ],
+            "metadata": {
+              "source_sections": [],
+              "source_subsections": [],
+              "source_chunk_indexes": [
+                13
+              ],
+              "conditions": [],
+              "invalidation": [],
+              "exceptions": [],
+              "comparisons": [],
+              "algorithm_notes": [],
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 0.95,
+              "visual_support_score": 0.2,
+              "has_visual_evidence": true,
+              "transcript_anchor_count": 2,
+              "transcript_repetition_count": 1
+            },
+            "rule_text": "Удерживать инструмент после выхода из накопления обычно больше, чем один день.",
+            "rule_text_ru": "Удерживать инструмент после выхода из накопления обычно больше, чем один день.",
+            "conditions": [],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "visual_summary": "a search dialog for instruments has appeared on the chart. chart changed from previous frame new chart displayed with different symbols and price action cursor is visible on the…",
+            "concept": "удержание позиции",
+            "subconcept": "выход из накопления"
+          }
+        },
+        {
+          "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_101",
+          "unit_type": "rule_card",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "Уровень проторговки / Пробитие",
+          "text_snippet": "[Concept] Уровень проторговки\n[Subconcept] Пробитие\n[Rule] Пробить уровень проторговки с первого раза крайне сложно.\n[Visual] New slide displayed with text and a chart. The slide introduces the concep",
+          "timestamps": [
+            {
+              "start": "21:08",
+              "end": "21:13"
+            },
+            {
+              "start": "21:32",
+              "end": "21:40"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_9_32"
+          ],
+          "source_event_ids": [
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_9_rule_statement_2"
+          ],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_101"
+          ],
+          "raw_lexical_score": 0.0,
+          "raw_vector_score": 0.6451,
+          "graph_boost": 0.0,
+          "score": 0.577,
+          "score_breakdown": {
+            "lexical_score": 0.0,
+            "vector_score": 1.0,
+            "concept_exact_match": 0.0,
+            "alias_match": 0.0,
+            "confidence_score": 0.9,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 0.6667,
+            "unit_type_relevance": 1.0,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.7,
+            "groundedness": 0.9167,
+            "lesson_diversity_bonus": 0.0
+          },
+          "why_retrieved": [
+            "strong_vector",
+            "unit_bias_match",
+            "example_mode_match",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_101",
+            "unit_type": "rule_card",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:uroven_protorgovki"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:probitie"
+            ],
+            "alias_terms": [
+              "Уровень проторговки",
+              "Пробитие"
+            ],
+            "title": "Уровень проторговки / Пробитие",
+            "text": "[Concept] Уровень проторговки\n[Subconcept] Пробитие\n[Rule] Пробить уровень проторговки с первого раза крайне сложно.\n[Visual] New slide displayed with text and a chart. The slide introduces the concept of 'Zone' related to price levels. A chart is displayed on the right, showing price action with…\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+            "short_text": "[Concept] Уровень проторговки\n[Subconcept] Пробитие\n[Rule] Пробить уровень проторговки с первого раза крайне сложно.\n[Visual] New slide displayed with text and a chart. The slide introduces the concep",
+            "keywords": [
+              "Уровень проторговки",
+              "Пробитие"
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "confidence": "high",
+              "support_basis": "transcript_plus_visual"
+            },
+            "confidence_score": 0.9,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "optional",
+            "teaching_mode": "mixed",
+            "timestamps": [
+              {
+                "start": "21:08",
+                "end": "21:13"
+              },
+              {
+                "start": "21:32",
+                "end": "21:40"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_9_32"
+            ],
+            "source_event_ids": [
+              "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_9_rule_statement_2"
+            ],
+            "source_rule_ids": [
+              "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_101"
+            ],
+            "metadata": {
+              "source_sections": [],
+              "source_subsections": [],
+              "source_chunk_indexes": [
+                9
+              ],
+              "conditions": [],
+              "invalidation": [],
+              "exceptions": [],
+              "comparisons": [],
+              "algorithm_notes": [],
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 1.0,
+              "visual_support_score": 0.4,
+              "has_visual_evidence": true,
+              "transcript_anchor_count": 3,
+              "transcript_repetition_count": 1
+            },
+            "rule_text": "Пробить уровень проторговки с первого раза крайне сложно.",
+            "rule_text_ru": "Пробить уровень проторговки с первого раза крайне сложно.",
+            "conditions": [],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "visual_summary": "New slide displayed with text and a chart. The slide introduces the concept of 'Zone' related to price levels. A chart is displayed on the right, showing price action with…",
+            "concept": "Уровень проторговки",
+            "subconcept": "Пробитие"
+          }
+        }
+      ],
+      "knowledge_events": [
+        {
+          "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_9_example_0",
+          "unit_type": "knowledge_event",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "example / Излом тренда",
+          "text_snippet": "[example] [Concept] Излом тренда Пример излома тренда на битке. [Time] 19:39–21:40 [Support Basis] transcript_plus_visual",
+          "timestamps": [
+            {
+              "start": "19:39",
+              "end": "21:40"
+            },
+            {
+              "start": "19:48",
+              "end": "19:58"
+            },
+            {
+              "start": "21:32",
+              "end": "21:40"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_9_31",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_9_32"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "raw_lexical_score": 7.664,
+          "raw_vector_score": 0.5585,
+          "graph_boost": 0.0,
+          "score": 0.8301,
+          "score_breakdown": {
+            "lexical_score": 0.9395,
+            "vector_score": 0.8657,
+            "concept_exact_match": 0.0,
+            "alias_match": 0.0,
+            "confidence_score": 0.85,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 0.3333,
+            "unit_type_relevance": 0.95,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 1.0,
+            "groundedness": 0.8333,
+            "lesson_diversity_bonus": 1.0
+          },
+          "why_retrieved": [
+            "strong_lexical",
+            "strong_vector",
+            "example_mode_match",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_9_example_0",
+            "unit_type": "knowledge_event",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:izlom_trenda"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:primer"
+            ],
+            "alias_terms": [
+              "Излом тренда",
+              "Пример"
+            ],
+            "title": "example / Излом тренда",
+            "text": "[example] [Concept] Излом тренда Пример излома тренда на битке. [Time] 19:39–21:40 [Support Basis] transcript_plus_visual",
+            "short_text": "[example] [Concept] Излом тренда Пример излома тренда на битке. [Time] 19:39–21:40 [Support Basis] transcript_plus_visual",
+            "keywords": [
+              "Излом тренда",
+              "Пример",
+              "example"
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "chunk_index": 9,
+              "source_line_start": null,
+              "source_line_end": null
+            },
+            "confidence_score": 0.85,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "required",
+            "teaching_mode": "example",
+            "timestamps": [
+              {
+                "start": "19:39",
+                "end": "21:40"
+              },
+              {
+                "start": "19:48",
+                "end": "19:58"
+              },
+              {
+                "start": "21:32",
+                "end": "21:40"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_9_31",
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_9_32"
+            ],
+            "source_event_ids": [],
+            "source_rule_ids": [],
+            "metadata": {
+              "chunk_index": 9,
+              "chunk_start_time_seconds": 1179.2,
+              "chunk_end_time_seconds": 1300.94,
+              "transcript_line_count": 45,
+              "candidate_visual_frame_keys": [
+                "001948",
+                "001958",
+                "002092",
+                "002134",
+                "002140"
+              ],
+              "candidate_visual_types": [
+                "mixed_visual"
+              ],
+              "candidate_example_types": [
+                "abstract_teaching_example"
+              ],
+              "rule_type": "example",
+              "pattern_tags": [],
+              "source_quote": "То, что, в принципе, произошло на битке, то есть там как раз пример есть, его можно будет посмотреть. Но здесь вот на примере SNX сегодня созванивался",
+              "transcript_anchors": [],
+              "timestamp_confidence": "chunk",
+              "anchor_match_source": "chunk_fallback",
+              "anchor_line_count": 4,
+              "anchor_span_width": 6,
+              "anchor_density": 0.6666666666666666,
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "moderate",
+              "transcript_support_score": 0.6,
+              "visual_support_score": 0.4
+            },
+            "event_type": "example",
+            "normalized_text": "Пример излома тренда на битке.",
+            "normalized_text_ru": "Пример излома тренда на битке.",
+            "concept": "Излом тренда",
+            "subconcept": "Пример"
+          }
+        },
+        {
+          "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_6",
+          "unit_type": "knowledge_event",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "rule_statement / Торговля на пробой",
+          "text_snippet": "[rule_statement] [Concept] Торговля на пробой При выходе из накопления или консолидации, особенно в начале, инструмент может идти далеко в нужном направлении. [Time] 15:32–15:44 [Support Basis] transc",
+          "timestamps": [
+            {
+              "start": "15:32",
+              "end": "15:44"
+            },
+            {
+              "start": "15:18",
+              "end": "15:20"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_7_23"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "raw_lexical_score": 7.9356,
+          "raw_vector_score": 0.0,
+          "graph_boost": 0.0,
+          "score": 0.5893,
+          "score_breakdown": {
+            "lexical_score": 0.9728,
+            "vector_score": 0.0,
+            "concept_exact_match": 0.0,
+            "alias_match": 0.0,
+            "confidence_score": 0.95,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 1.0,
+            "unit_type_relevance": 0.95,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.7,
+            "groundedness": 1.0,
+            "lesson_diversity_bonus": 0.0
+          },
+          "why_retrieved": [
+            "strong_lexical",
+            "example_mode_match",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_6",
+            "unit_type": "knowledge_event",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:torgovlya_na_proboy"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:vykhod_iz_nakopleniya"
+            ],
+            "alias_terms": [
+              "Торговля на пробой",
+              "Выход из накопления"
+            ],
+            "title": "rule_statement / Торговля на пробой",
+            "text": "[rule_statement] [Concept] Торговля на пробой При выходе из накопления или консолидации, особенно в начале, инструмент может идти далеко в нужном направлении. [Time] 15:32–15:44 [Support Basis] transcript_plus_visual",
+            "short_text": "[rule_statement] [Concept] Торговля на пробой При выходе из накопления или консолидации, особенно в начале, инструмент может идти далеко в нужном направлении. [Time] 15:32–15:44 [Support Basis] transc",
+            "keywords": [
+              "Торговля на пробой",
+              "Выход из накопления",
+              "rule_statement",
+              "rule"
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "chunk_index": 7,
+              "source_line_start": 15,
+              "source_line_end": 18
+            },
+            "confidence_score": 0.95,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "optional",
+            "teaching_mode": "mixed",
+            "timestamps": [
+              {
+                "start": "15:32",
+                "end": "15:44"
+              },
+              {
+                "start": "15:18",
+                "end": "15:20"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_7_23"
+            ],
+            "source_event_ids": [],
+            "source_rule_ids": [],
+            "metadata": {
+              "chunk_index": 7,
+              "chunk_start_time_seconds": 891.96,
+              "chunk_end_time_seconds": 1048.76,
+              "transcript_line_count": 55,
+              "candidate_visual_frame_keys": [
+                "001518",
+                "001520",
+                "001632",
+                "001634",
+                "001636",
+                "001644",
+                "001704",
+                "001672",
+                "001718"
+              ],
+              "candidate_visual_types": [
+                "live_chart",
+                "mixed_visual",
+                "static_chart_screenshot"
+              ],
+              "candidate_example_types": [
+                "real_market",
+                "abstract_teaching_example",
+                "real_market_example",
+                "real market example"
+              ],
+              "rule_type": "rule",
+              "pattern_tags": [],
+              "source_quote": "особенно если это только начало выхода из накопления и выход из какой-то консолидации. инструмент сможет идти в нужном направлении",
+              "transcript_anchors": [
+                {
+                  "line_index": 15,
+                  "text": "на то, как далеко и сколько инструмент сможет",
+                  "timestamp_start": "15:32",
+                  "timestamp_end": "15:37",
+                  "match_source": "llm_line_indices"
+                },
+                {
+                  "line_index": 16,
+                  "text": "идти в нужном направлении, особенно если это только",
+                  "timestamp_start": "15:37",
+                  "timestamp_end": "15:40",
+                  "match_source": "llm_line_indices"
+                },
+                {
+                  "line_index": 17,
+                  "text": "начало выхода из накопления и выход из какой",
+                  "timestamp_start": "15:40",
+                  "timestamp_end": "15:44",
+                  "match_source": "llm_line_indices"
+                },
+                {
+                  "line_index": 18,
+                  "text": "-то консолидации.",
+                  "timestamp_start": "15:44",
+                  "timestamp_end": "15:44",
+                  "match_source": "llm_line_indices"
+                }
+              ],
+              "timestamp_confidence": "span",
+              "anchor_match_source": "llm_line_indices",
+              "anchor_line_count": 4,
+              "anchor_span_width": 4,
+              "anchor_density": 1.0,
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 0.85,
+              "visual_support_score": 0.4
+            },
+            "event_type": "rule_statement",
+            "normalized_text": "При выходе из накопления или консолидации, особенно в начале, инструмент может идти далеко в нужном направлении.",
+            "normalized_text_ru": "При выходе из накопления или консолидации, особенно в начале, инструмент может идти далеко в нужном направлении.",
+            "concept": "Торговля на пробой",
+            "subconcept": "Выход из накопления"
+          }
+        },
+        {
+          "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_7_condition_5",
+          "unit_type": "knowledge_event",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "condition / Торговля на пробой",
+          "text_snippet": "[condition] [Concept] Торговля на пробой Если это начало выхода из накопления или консолидации, инструмент может идти далеко. [Time] 15:40–15:44 [Support Basis] transcript_plus_visual",
+          "timestamps": [
+            {
+              "start": "15:40",
+              "end": "15:44"
+            },
+            {
+              "start": "15:18",
+              "end": "15:20"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_7_23"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "raw_lexical_score": 8.1572,
+          "raw_vector_score": 0.0,
+          "graph_boost": 0.0,
+          "score": 0.5785,
+          "score_breakdown": {
+            "lexical_score": 1.0,
+            "vector_score": 0.0,
+            "concept_exact_match": 0.0,
+            "alias_match": 0.0,
+            "confidence_score": 0.85,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 1.0,
+            "unit_type_relevance": 0.95,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.0,
+            "groundedness": 1.0,
+            "lesson_diversity_bonus": 0.0
+          },
+          "why_retrieved": [
+            "strong_lexical",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_7_condition_5",
+            "unit_type": "knowledge_event",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:torgovlya_na_proboy"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:vykhod_iz_nakopleniya"
+            ],
+            "alias_terms": [
+              "Торговля на пробой",
+              "Выход из накопления"
+            ],
+            "title": "condition / Торговля на пробой",
+            "text": "[condition] [Concept] Торговля на пробой Если это начало выхода из накопления или консолидации, инструмент может идти далеко. [Time] 15:40–15:44 [Support Basis] transcript_plus_visual",
+            "short_text": "[condition] [Concept] Торговля на пробой Если это начало выхода из накопления или консолидации, инструмент может идти далеко. [Time] 15:40–15:44 [Support Basis] transcript_plus_visual",
+            "keywords": [
+              "Торговля на пробой",
+              "Выход из накопления",
+              "condition"
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "chunk_index": 7,
+              "source_line_start": 17,
+              "source_line_end": 18
+            },
+            "confidence_score": 0.85,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "optional",
+            "teaching_mode": "theory",
+            "timestamps": [
+              {
+                "start": "15:40",
+                "end": "15:44"
+              },
+              {
+                "start": "15:18",
+                "end": "15:20"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_7_23"
+            ],
+            "source_event_ids": [],
+            "source_rule_ids": [],
+            "metadata": {
+              "chunk_index": 7,
+              "chunk_start_time_seconds": 891.96,
+              "chunk_end_time_seconds": 1048.76,
+              "transcript_line_count": 55,
+              "candidate_visual_frame_keys": [
+                "001518",
+                "001520",
+                "001632",
+                "001634",
+                "001636",
+                "001644",
+                "001704",
+                "001672",
+                "001718"
+              ],
+              "candidate_visual_types": [
+                "live_chart",
+                "mixed_visual",
+                "static_chart_screenshot"
+              ],
+              "candidate_example_types": [
+                "real_market",
+                "abstract_teaching_example",
+                "real_market_example",
+                "real market example"
+              ],
+              "rule_type": "condition",
+              "pattern_tags": [],
+              "source_quote": "особенно если это только начало выхода из накопления и выход из какой-то консолидации.",
+              "transcript_anchors": [
+                {
+                  "line_index": 17,
+                  "text": "начало выхода из накопления и выход из какой",
+                  "timestamp_start": "15:40",
+                  "timestamp_end": "15:44",
+                  "match_source": "llm_line_indices"
+                },
+                {
+                  "line_index": 18,
+                  "text": "-то консолидации.",
+                  "timestamp_start": "15:44",
+                  "timestamp_end": "15:44",
+                  "match_source": "llm_line_indices"
+                }
+              ],
+              "timestamp_confidence": "line",
+              "anchor_match_source": "llm_line_indices",
+              "anchor_line_count": 2,
+              "anchor_span_width": 2,
+              "anchor_density": 1.0,
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 0.95,
+              "visual_support_score": 0.4
+            },
+            "event_type": "condition",
+            "normalized_text": "Если это начало выхода из накопления или консолидации, инструмент может идти далеко.",
+            "normalized_text_ru": "Если это начало выхода из накопления или консолидации, инструмент может идти далеко.",
+            "concept": "Торговля на пробой",
+            "subconcept": "Выход из накопления"
+          }
+        }
+      ],
+      "evidence_refs": [],
+      "concepts": []
+    },
+    "summary": {
+      "answer_text": "[Concept] удержание позиции\n[Subconcept] выход из накопления\n[Rule] Удерживать инструмент после выхода из накопления обычно больше, чем один день.\n[Visual] a search dialog for instruments has appeared\n[Concept] Уровень проторговки\n[Subconcept] Пробитие\n[Rule] Пробить уровень проторговки с первого раза крайне сложно.\n[Visual] New slide displayed with text and a chart. The slide introduces the concep",
+      "limitations": [],
+      "citation_doc_ids": [
+        "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_9_example_0",
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_136",
+        "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_6",
+        "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_7_condition_5",
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_101"
+      ]
+    },
+    "facets": {
+      "by_unit_type": {
+        "knowledge_event": 3,
+        "rule_card": 2
+      },
+      "by_lesson": {
+        "2025-09-29-sviatoslav-chornyi": 5
+      },
+      "by_concept": {
+        "concept:torgovlya_na_proboy": 2,
+        "concept:uderzhanie_pozitsii": 1,
+        "concept:izlom_trenda": 1,
+        "concept:uroven_protorgovki": 1
+      }
+    },
+    "hit_count": 5
+  }
+}

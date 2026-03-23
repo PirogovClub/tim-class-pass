@@ -1,0 +1,905 @@
+{
+  "method": "GET",
+  "path": "/rag/concept/node:stop_loss",
+  "status_code": 200,
+  "response": {
+    "concept_id": "node:stop_loss",
+    "doc_count": 17,
+    "docs": [
+      {
+        "doc_id": "node:stop_loss",
+        "unit_type": "concept_node",
+        "lesson_id": "corpus",
+        "lesson_slug": null,
+        "language": "ru",
+        "canonical_concept_ids": [
+          "node:stop_loss"
+        ],
+        "canonical_subconcept_ids": [],
+        "alias_terms": [
+          "Stop Loss"
+        ],
+        "title": "Stop Loss",
+        "text": "[Concept] Stop Loss\n[Type] concept\n[Lessons] 2025_09_29_sviatoslav_chornyi\n[Frequency] rules=2, events=6, lessons=1",
+        "short_text": "[Concept] Stop Loss\n[Type] concept\n[Lessons] 2025_09_29_sviatoslav_chornyi\n[Frequency] rules=2, events=6, lessons=1",
+        "keywords": [
+          "Stop Loss",
+          "concept",
+          "stop_loss"
+        ],
+        "provenance": {
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ],
+          "type": "concept"
+        },
+        "confidence_score": null,
+        "support_basis": null,
+        "evidence_requirement": null,
+        "teaching_mode": null,
+        "timestamps": [],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_5",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_6",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_3",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_4",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_173",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_174",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_175",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_176",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_177",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_20",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_21",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_27",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_40",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_41"
+        ],
+        "metadata": {
+          "canonical_label": "stop_loss",
+          "parent_id": "node:trade_management"
+        },
+        "concept_name": "Stop Loss",
+        "concept_type": "concept",
+        "aliases": [],
+        "source_lessons": [
+          "2025_09_29_sviatoslav_chornyi"
+        ]
+      },
+      {
+        "doc_id": "rel:node:stop_loss:co_occurs_with:node:technical_stop_loss",
+        "unit_type": "concept_relation",
+        "lesson_id": "corpus",
+        "lesson_slug": null,
+        "language": "ru",
+        "canonical_concept_ids": [
+          "node:stop_loss",
+          "node:technical_stop_loss"
+        ],
+        "canonical_subconcept_ids": [],
+        "alias_terms": [
+          "Stop Loss",
+          "Technical Stop Loss"
+        ],
+        "title": "Stop Loss → Technical Stop Loss",
+        "text": "Stop Loss –[co_occurs_with]→ Technical Stop Loss",
+        "short_text": "Stop Loss –[co_occurs_with]→ Technical Stop Loss",
+        "keywords": [
+          "Stop Loss",
+          "Technical Stop Loss",
+          "co_occurs_with"
+        ],
+        "provenance": {
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ],
+          "relation_type": "co_occurs_with"
+        },
+        "confidence_score": null,
+        "support_basis": null,
+        "evidence_requirement": null,
+        "teaching_mode": null,
+        "timestamps": [],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_5",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_6"
+        ],
+        "metadata": {
+          "source_id": "node:stop_loss",
+          "target_id": "node:technical_stop_loss",
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ]
+        },
+        "source_concept": "Stop Loss",
+        "target_concept": "Technical Stop Loss",
+        "relation_type": "co_occurs_with",
+        "weight": 2
+      },
+      {
+        "doc_id": "rel:node:stop_loss:co_occurs_with:node:trade_management",
+        "unit_type": "concept_relation",
+        "lesson_id": "corpus",
+        "lesson_slug": null,
+        "language": "ru",
+        "canonical_concept_ids": [
+          "node:stop_loss",
+          "node:trade_management"
+        ],
+        "canonical_subconcept_ids": [],
+        "alias_terms": [
+          "Stop Loss",
+          "Trade Management"
+        ],
+        "title": "Stop Loss → Trade Management",
+        "text": "Stop Loss –[co_occurs_with]→ Trade Management",
+        "short_text": "Stop Loss –[co_occurs_with]→ Trade Management",
+        "keywords": [
+          "Stop Loss",
+          "Trade Management",
+          "co_occurs_with"
+        ],
+        "provenance": {
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ],
+          "relation_type": "co_occurs_with"
+        },
+        "confidence_score": null,
+        "support_basis": null,
+        "evidence_requirement": null,
+        "teaching_mode": null,
+        "timestamps": [],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_3",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_4"
+        ],
+        "metadata": {
+          "source_id": "node:stop_loss",
+          "target_id": "node:trade_management",
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ]
+        },
+        "source_concept": "Stop Loss",
+        "target_concept": "Trade Management",
+        "relation_type": "co_occurs_with",
+        "weight": 2
+      },
+      {
+        "doc_id": "rel:node:stop_loss:co_occurs_with:node:upravlenie_kapitalom",
+        "unit_type": "concept_relation",
+        "lesson_id": "corpus",
+        "lesson_slug": null,
+        "language": "ru",
+        "canonical_concept_ids": [
+          "node:stop_loss",
+          "node:upravlenie_kapitalom"
+        ],
+        "canonical_subconcept_ids": [],
+        "alias_terms": [
+          "Stop Loss",
+          "управление капиталом"
+        ],
+        "title": "Stop Loss → управление капиталом",
+        "text": "Stop Loss –[co_occurs_with]→ управление капиталом",
+        "short_text": "Stop Loss –[co_occurs_with]→ управление капиталом",
+        "keywords": [
+          "Stop Loss",
+          "управление капиталом",
+          "co_occurs_with"
+        ],
+        "provenance": {
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ],
+          "relation_type": "co_occurs_with"
+        },
+        "confidence_score": null,
+        "support_basis": null,
+        "evidence_requirement": null,
+        "teaching_mode": null,
+        "timestamps": [],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_173",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_174",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_175",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_176",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_177"
+        ],
+        "metadata": {
+          "source_id": "node:stop_loss",
+          "target_id": "node:upravlenie_kapitalom",
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ]
+        },
+        "source_concept": "Stop Loss",
+        "target_concept": "управление капиталом",
+        "relation_type": "co_occurs_with",
+        "weight": 5
+      },
+      {
+        "doc_id": "rel:node:stop_loss:co_occurs_with:node:upravlenie_riskom",
+        "unit_type": "concept_relation",
+        "lesson_id": "corpus",
+        "lesson_slug": null,
+        "language": "ru",
+        "canonical_concept_ids": [
+          "node:stop_loss",
+          "node:upravlenie_riskom"
+        ],
+        "canonical_subconcept_ids": [],
+        "alias_terms": [
+          "Stop Loss",
+          "Управление риском"
+        ],
+        "title": "Stop Loss → Управление риском",
+        "text": "Stop Loss –[co_occurs_with]→ Управление риском",
+        "short_text": "Stop Loss –[co_occurs_with]→ Управление риском",
+        "keywords": [
+          "Stop Loss",
+          "Управление риском",
+          "co_occurs_with"
+        ],
+        "provenance": {
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ],
+          "relation_type": "co_occurs_with"
+        },
+        "confidence_score": null,
+        "support_basis": null,
+        "evidence_requirement": null,
+        "teaching_mode": null,
+        "timestamps": [],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_40",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_41"
+        ],
+        "metadata": {
+          "source_id": "node:stop_loss",
+          "target_id": "node:upravlenie_riskom",
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ]
+        },
+        "source_concept": "Stop Loss",
+        "target_concept": "Управление риском",
+        "relation_type": "co_occurs_with",
+        "weight": 2
+      },
+      {
+        "doc_id": "rel:node:stop_loss:has_condition:node:byt_gotovym_k_tomu_chto_instrument_libo_ochen_bystro_otstopit_libo_bystro_dast_teyk_pri_ispolzovanii_korotkikh_stopov",
+        "unit_type": "concept_relation",
+        "lesson_id": "corpus",
+        "lesson_slug": null,
+        "language": "ru",
+        "canonical_concept_ids": [
+          "node:stop_loss",
+          "node:byt_gotovym_k_tomu_chto_instrument_libo_ochen_bystro_otstopit_libo_bystro_dast_teyk_pri_ispolzovanii_korotkikh_stopov"
+        ],
+        "canonical_subconcept_ids": [],
+        "alias_terms": [
+          "Stop Loss",
+          "Быть готовым к тому, что инструмент либо очень быстро отстопит, либо быстро даст тейк при использовании коротких стопов."
+        ],
+        "title": "Stop Loss → Быть готовым к тому, что инструмент либо очень быстро отстопит, либо быстро даст тейк при использовании коротких стопов.",
+        "text": "Stop Loss –[has_condition]→ Быть готовым к тому, что инструмент либо очень быстро отстопит, либо быстро даст тейк при использовании коротких стопов.",
+        "short_text": "Stop Loss –[has_condition]→ Быть готовым к тому, что инструмент либо очень быстро отстопит, либо быстро даст тейк при использовании коротких стопов.",
+        "keywords": [
+          "Stop Loss",
+          "Быть готовым к тому, что инструмент либо очень быстро отстопит, либо быстро даст тейк при использовании коротких стопов.",
+          "has_condition"
+        ],
+        "provenance": {
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ],
+          "relation_type": "has_condition"
+        },
+        "confidence_score": null,
+        "support_basis": null,
+        "evidence_requirement": null,
+        "teaching_mode": null,
+        "timestamps": [],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_40",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_41"
+        ],
+        "metadata": {
+          "source_id": "node:stop_loss",
+          "target_id": "node:byt_gotovym_k_tomu_chto_instrument_libo_ochen_bystro_otstopit_libo_bystro_dast_teyk_pri_ispolzovanii_korotkikh_stopov",
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ]
+        },
+        "source_concept": "Stop Loss",
+        "target_concept": "Быть готовым к тому, что инструмент либо очень быстро отстопит, либо быстро даст тейк при использовании коротких стопов.",
+        "relation_type": "has_condition",
+        "weight": 2
+      },
+      {
+        "doc_id": "rel:node:stop_loss:has_condition:node:dlya_tekh_kto_torguet_s_korotkim_stopom_pri_uvelichenii_stopa_do_10_15_ot_atar_vremya_v_sdelke_u_nego_uvelichivaetsya",
+        "unit_type": "concept_relation",
+        "lesson_id": "corpus",
+        "lesson_slug": null,
+        "language": "ru",
+        "canonical_concept_ids": [
+          "node:stop_loss",
+          "node:dlya_tekh_kto_torguet_s_korotkim_stopom_pri_uvelichenii_stopa_do_10_15_ot_atar_vremya_v_sdelke_u_nego_uvelichivaetsya"
+        ],
+        "canonical_subconcept_ids": [],
+        "alias_terms": [
+          "Stop Loss",
+          "Для тех, кто торгует с коротким стопом, при увеличении стопа до 10-15% от АТАР время в сделке у него увеличивается."
+        ],
+        "title": "Stop Loss → Для тех, кто торгует с коротким стопом, при увеличении стопа до 10-15% от АТАР время в сделке у него увеличивается.",
+        "text": "Stop Loss –[has_condition]→ Для тех, кто торгует с коротким стопом, при увеличении стопа до 10-15% от АТАР время в сделке у него увеличивается.",
+        "short_text": "Stop Loss –[has_condition]→ Для тех, кто торгует с коротким стопом, при увеличении стопа до 10-15% от АТАР время в сделке у него увеличивается.",
+        "keywords": [
+          "Stop Loss",
+          "Для тех, кто торгует с коротким стопом, при увеличении стопа до 10-15% от АТАР время в сделке у него увеличивается.",
+          "has_condition"
+        ],
+        "provenance": {
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ],
+          "relation_type": "has_condition"
+        },
+        "confidence_score": null,
+        "support_basis": null,
+        "evidence_requirement": null,
+        "teaching_mode": null,
+        "timestamps": [],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_27"
+        ],
+        "metadata": {
+          "source_id": "node:stop_loss",
+          "target_id": "node:dlya_tekh_kto_torguet_s_korotkim_stopom_pri_uvelichenii_stopa_do_10_15_ot_atar_vremya_v_sdelke_u_nego_uvelichivaetsya",
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ]
+        },
+        "source_concept": "Stop Loss",
+        "target_concept": "Для тех, кто торгует с коротким стопом, при увеличении стопа до 10-15% от АТАР время в сделке у него увеличивается.",
+        "relation_type": "has_condition",
+        "weight": 1
+      },
+      {
+        "doc_id": "rel:node:stop_loss:has_condition:node:esli_stop_dostatochno_bolshoy_vremya_v_sdelke_uvelichivaetsya",
+        "unit_type": "concept_relation",
+        "lesson_id": "corpus",
+        "lesson_slug": null,
+        "language": "ru",
+        "canonical_concept_ids": [
+          "node:stop_loss",
+          "node:esli_stop_dostatochno_bolshoy_vremya_v_sdelke_uvelichivaetsya"
+        ],
+        "canonical_subconcept_ids": [],
+        "alias_terms": [
+          "Stop Loss",
+          "Если стоп достаточно большой, время в сделке увеличивается."
+        ],
+        "title": "Stop Loss → Если стоп достаточно большой, время в сделке увеличивается.",
+        "text": "Stop Loss –[has_condition]→ Если стоп достаточно большой, время в сделке увеличивается.",
+        "short_text": "Stop Loss –[has_condition]→ Если стоп достаточно большой, время в сделке увеличивается.",
+        "keywords": [
+          "Stop Loss",
+          "Если стоп достаточно большой, время в сделке увеличивается.",
+          "has_condition"
+        ],
+        "provenance": {
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ],
+          "relation_type": "has_condition"
+        },
+        "confidence_score": null,
+        "support_basis": null,
+        "evidence_requirement": null,
+        "teaching_mode": null,
+        "timestamps": [],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_3",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_4"
+        ],
+        "metadata": {
+          "source_id": "node:stop_loss",
+          "target_id": "node:esli_stop_dostatochno_bolshoy_vremya_v_sdelke_uvelichivaetsya",
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ]
+        },
+        "source_concept": "Stop Loss",
+        "target_concept": "Если стоп достаточно большой, время в сделке увеличивается.",
+        "relation_type": "has_condition",
+        "weight": 2
+      },
+      {
+        "doc_id": "rel:node:stop_loss:has_condition:node:esli_stop_loss_dostatochno_bolshoy_vam_tozhe_pridetsya_sidet_krayne_dolgo",
+        "unit_type": "concept_relation",
+        "lesson_id": "corpus",
+        "lesson_slug": null,
+        "language": "ru",
+        "canonical_concept_ids": [
+          "node:stop_loss",
+          "node:esli_stop_loss_dostatochno_bolshoy_vam_tozhe_pridetsya_sidet_krayne_dolgo"
+        ],
+        "canonical_subconcept_ids": [],
+        "alias_terms": [
+          "Stop Loss",
+          "Если стоп-лосс достаточно большой, вам тоже придется сидеть крайне долго."
+        ],
+        "title": "Stop Loss → Если стоп-лосс достаточно большой, вам тоже придется сидеть крайне долго.",
+        "text": "Stop Loss –[has_condition]→ Если стоп-лосс достаточно большой, вам тоже придется сидеть крайне долго.",
+        "short_text": "Stop Loss –[has_condition]→ Если стоп-лосс достаточно большой, вам тоже придется сидеть крайне долго.",
+        "keywords": [
+          "Stop Loss",
+          "Если стоп-лосс достаточно большой, вам тоже придется сидеть крайне долго.",
+          "has_condition"
+        ],
+        "provenance": {
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ],
+          "relation_type": "has_condition"
+        },
+        "confidence_score": null,
+        "support_basis": null,
+        "evidence_requirement": null,
+        "teaching_mode": null,
+        "timestamps": [],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_27"
+        ],
+        "metadata": {
+          "source_id": "node:stop_loss",
+          "target_id": "node:esli_stop_loss_dostatochno_bolshoy_vam_tozhe_pridetsya_sidet_krayne_dolgo",
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ]
+        },
+        "source_concept": "Stop Loss",
+        "target_concept": "Если стоп-лосс достаточно большой, вам тоже придется сидеть крайне долго.",
+        "relation_type": "has_condition",
+        "weight": 1
+      },
+      {
+        "doc_id": "rel:node:stop_loss:has_condition:node:ispolzovat_korotkie_stopy",
+        "unit_type": "concept_relation",
+        "lesson_id": "corpus",
+        "lesson_slug": null,
+        "language": "ru",
+        "canonical_concept_ids": [
+          "node:stop_loss",
+          "node:ispolzovat_korotkie_stopy"
+        ],
+        "canonical_subconcept_ids": [],
+        "alias_terms": [
+          "Stop Loss",
+          "Использовать короткие стопы."
+        ],
+        "title": "Stop Loss → Использовать короткие стопы.",
+        "text": "Stop Loss –[has_condition]→ Использовать короткие стопы.",
+        "short_text": "Stop Loss –[has_condition]→ Использовать короткие стопы.",
+        "keywords": [
+          "Stop Loss",
+          "Использовать короткие стопы.",
+          "has_condition"
+        ],
+        "provenance": {
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ],
+          "relation_type": "has_condition"
+        },
+        "confidence_score": null,
+        "support_basis": null,
+        "evidence_requirement": null,
+        "teaching_mode": null,
+        "timestamps": [],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_40",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_41"
+        ],
+        "metadata": {
+          "source_id": "node:stop_loss",
+          "target_id": "node:ispolzovat_korotkie_stopy",
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ]
+        },
+        "source_concept": "Stop Loss",
+        "target_concept": "Использовать короткие стопы.",
+        "relation_type": "has_condition",
+        "weight": 2
+      },
+      {
+        "doc_id": "rel:node:stop_loss:has_subconcept:node:razmer_stop_lossa",
+        "unit_type": "concept_relation",
+        "lesson_id": "corpus",
+        "lesson_slug": null,
+        "language": "ru",
+        "canonical_concept_ids": [
+          "node:stop_loss",
+          "node:razmer_stop_lossa"
+        ],
+        "canonical_subconcept_ids": [],
+        "alias_terms": [
+          "Stop Loss",
+          "Размер стоп-лосса"
+        ],
+        "title": "Stop Loss → Размер стоп-лосса",
+        "text": "Stop Loss –[has_subconcept]→ Размер стоп-лосса",
+        "short_text": "Stop Loss –[has_subconcept]→ Размер стоп-лосса",
+        "keywords": [
+          "Stop Loss",
+          "Размер стоп-лосса",
+          "has_subconcept"
+        ],
+        "provenance": {
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ],
+          "relation_type": "has_subconcept"
+        },
+        "confidence_score": null,
+        "support_basis": null,
+        "evidence_requirement": null,
+        "teaching_mode": null,
+        "timestamps": [],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_20"
+        ],
+        "metadata": {
+          "source_id": "node:stop_loss",
+          "target_id": "node:razmer_stop_lossa",
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ]
+        },
+        "source_concept": "Stop Loss",
+        "target_concept": "Размер стоп-лосса",
+        "relation_type": "has_subconcept",
+        "weight": 1
+      },
+      {
+        "doc_id": "rel:node:stop_loss:has_subconcept:node:technical_stop_loss",
+        "unit_type": "concept_relation",
+        "lesson_id": "corpus",
+        "lesson_slug": null,
+        "language": "ru",
+        "canonical_concept_ids": [
+          "node:stop_loss",
+          "node:technical_stop_loss"
+        ],
+        "canonical_subconcept_ids": [],
+        "alias_terms": [
+          "Stop Loss",
+          "Technical Stop Loss"
+        ],
+        "title": "Stop Loss → Technical Stop Loss",
+        "text": "Stop Loss –[has_subconcept]→ Technical Stop Loss",
+        "short_text": "Stop Loss –[has_subconcept]→ Technical Stop Loss",
+        "keywords": [
+          "Stop Loss",
+          "Technical Stop Loss",
+          "has_subconcept"
+        ],
+        "provenance": {
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ],
+          "relation_type": "has_subconcept"
+        },
+        "confidence_score": null,
+        "support_basis": null,
+        "evidence_requirement": null,
+        "teaching_mode": null,
+        "timestamps": [],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_5",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_6"
+        ],
+        "metadata": {
+          "source_id": "node:stop_loss",
+          "target_id": "node:technical_stop_loss",
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ]
+        },
+        "source_concept": "Stop Loss",
+        "target_concept": "Technical Stop Loss",
+        "relation_type": "has_subconcept",
+        "weight": 2
+      },
+      {
+        "doc_id": "rel:node:stop_loss:has_subconcept:node:tekhnicheskiy_stop_loss",
+        "unit_type": "concept_relation",
+        "lesson_id": "corpus",
+        "lesson_slug": null,
+        "language": "ru",
+        "canonical_concept_ids": [
+          "node:stop_loss",
+          "node:tekhnicheskiy_stop_loss"
+        ],
+        "canonical_subconcept_ids": [],
+        "alias_terms": [
+          "Stop Loss",
+          "Технический стоп-лосс"
+        ],
+        "title": "Stop Loss → Технический стоп-лосс",
+        "text": "Stop Loss –[has_subconcept]→ Технический стоп-лосс",
+        "short_text": "Stop Loss –[has_subconcept]→ Технический стоп-лосс",
+        "keywords": [
+          "Stop Loss",
+          "Технический стоп-лосс",
+          "has_subconcept"
+        ],
+        "provenance": {
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ],
+          "relation_type": "has_subconcept"
+        },
+        "confidence_score": null,
+        "support_basis": null,
+        "evidence_requirement": null,
+        "teaching_mode": null,
+        "timestamps": [],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_21"
+        ],
+        "metadata": {
+          "source_id": "node:stop_loss",
+          "target_id": "node:tekhnicheskiy_stop_loss",
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ]
+        },
+        "source_concept": "Stop Loss",
+        "target_concept": "Технический стоп-лосс",
+        "relation_type": "has_subconcept",
+        "weight": 1
+      },
+      {
+        "doc_id": "rel:node:trade_management:has_subconcept:node:stop_loss",
+        "unit_type": "concept_relation",
+        "lesson_id": "corpus",
+        "lesson_slug": null,
+        "language": "ru",
+        "canonical_concept_ids": [
+          "node:trade_management",
+          "node:stop_loss"
+        ],
+        "canonical_subconcept_ids": [],
+        "alias_terms": [
+          "Trade Management",
+          "Stop Loss"
+        ],
+        "title": "Trade Management → Stop Loss",
+        "text": "Trade Management –[has_subconcept]→ Stop Loss",
+        "short_text": "Trade Management –[has_subconcept]→ Stop Loss",
+        "keywords": [
+          "Trade Management",
+          "Stop Loss",
+          "has_subconcept"
+        ],
+        "provenance": {
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ],
+          "relation_type": "has_subconcept"
+        },
+        "confidence_score": null,
+        "support_basis": null,
+        "evidence_requirement": null,
+        "teaching_mode": null,
+        "timestamps": [],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_3",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_4"
+        ],
+        "metadata": {
+          "source_id": "node:trade_management",
+          "target_id": "node:stop_loss",
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ]
+        },
+        "source_concept": "Trade Management",
+        "target_concept": "Stop Loss",
+        "relation_type": "has_subconcept",
+        "weight": 2
+      },
+      {
+        "doc_id": "rel:node:upravlenie_kapitalom:has_subconcept:node:stop_loss",
+        "unit_type": "concept_relation",
+        "lesson_id": "corpus",
+        "lesson_slug": null,
+        "language": "ru",
+        "canonical_concept_ids": [
+          "node:upravlenie_kapitalom",
+          "node:stop_loss"
+        ],
+        "canonical_subconcept_ids": [],
+        "alias_terms": [
+          "управление капиталом",
+          "Stop Loss"
+        ],
+        "title": "управление капиталом → Stop Loss",
+        "text": "управление капиталом –[has_subconcept]→ Stop Loss",
+        "short_text": "управление капиталом –[has_subconcept]→ Stop Loss",
+        "keywords": [
+          "управление капиталом",
+          "Stop Loss",
+          "has_subconcept"
+        ],
+        "provenance": {
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ],
+          "relation_type": "has_subconcept"
+        },
+        "confidence_score": null,
+        "support_basis": null,
+        "evidence_requirement": null,
+        "teaching_mode": null,
+        "timestamps": [],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_173",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_174",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_175",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_176",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_177"
+        ],
+        "metadata": {
+          "source_id": "node:upravlenie_kapitalom",
+          "target_id": "node:stop_loss",
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ]
+        },
+        "source_concept": "управление капиталом",
+        "target_concept": "Stop Loss",
+        "relation_type": "has_subconcept",
+        "weight": 5
+      },
+      {
+        "doc_id": "rel:node:upravlenie_pozitsiey:has_subconcept:node:stop_loss",
+        "unit_type": "concept_relation",
+        "lesson_id": "corpus",
+        "lesson_slug": null,
+        "language": "ru",
+        "canonical_concept_ids": [
+          "node:upravlenie_pozitsiey",
+          "node:stop_loss"
+        ],
+        "canonical_subconcept_ids": [],
+        "alias_terms": [
+          "управление позицией",
+          "Stop Loss"
+        ],
+        "title": "управление позицией → Stop Loss",
+        "text": "управление позицией –[has_subconcept]→ Stop Loss",
+        "short_text": "управление позицией –[has_subconcept]→ Stop Loss",
+        "keywords": [
+          "управление позицией",
+          "Stop Loss",
+          "has_subconcept"
+        ],
+        "provenance": {
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ],
+          "relation_type": "has_subconcept"
+        },
+        "confidence_score": null,
+        "support_basis": null,
+        "evidence_requirement": null,
+        "teaching_mode": null,
+        "timestamps": [],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_27"
+        ],
+        "metadata": {
+          "source_id": "node:upravlenie_pozitsiey",
+          "target_id": "node:stop_loss",
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ]
+        },
+        "source_concept": "управление позицией",
+        "target_concept": "Stop Loss",
+        "relation_type": "has_subconcept",
+        "weight": 1
+      },
+      {
+        "doc_id": "rel:node:upravlenie_riskom:has_subconcept:node:stop_loss",
+        "unit_type": "concept_relation",
+        "lesson_id": "corpus",
+        "lesson_slug": null,
+        "language": "ru",
+        "canonical_concept_ids": [
+          "node:upravlenie_riskom",
+          "node:stop_loss"
+        ],
+        "canonical_subconcept_ids": [],
+        "alias_terms": [
+          "Управление риском",
+          "Stop Loss"
+        ],
+        "title": "Управление риском → Stop Loss",
+        "text": "Управление риском –[has_subconcept]→ Stop Loss",
+        "short_text": "Управление риском –[has_subconcept]→ Stop Loss",
+        "keywords": [
+          "Управление риском",
+          "Stop Loss",
+          "has_subconcept"
+        ],
+        "provenance": {
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ],
+          "relation_type": "has_subconcept"
+        },
+        "confidence_score": null,
+        "support_basis": null,
+        "evidence_requirement": null,
+        "teaching_mode": null,
+        "timestamps": [],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_40",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_41"
+        ],
+        "metadata": {
+          "source_id": "node:upravlenie_riskom",
+          "target_id": "node:stop_loss",
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ]
+        },
+        "source_concept": "Управление риском",
+        "target_concept": "Stop Loss",
+        "relation_type": "has_subconcept",
+        "weight": 2
+      }
+    ]
+  }
+}

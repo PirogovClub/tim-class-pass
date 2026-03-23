@@ -4,7 +4,7 @@ from pathlib import Path
 
 from ui.models import ProjectRecord, RunEventRecord, RunRecord
 from ui.services.dashboard import _row_to_project, _row_to_run
-from ui.services.projects import inspect_artifacts
+from ui.services.projects import inspect_artifacts, inspect_run_prerequisites
 from ui.settings import UISettings
 from ui.storage import UIStateStore
 
@@ -17,6 +17,75 @@ SUPPORTED_RUN_MODES = [
     "deterministic_postprocess_only",
     "corpus_only",
 ]
+
+RUN_MODE_DETAILS = {
+    "sync_full": {
+        "title": "Full local pipeline",
+        "summary": "Runs the whole single-project pipeline in one background worker without waiting for remote batch completion.",
+        "when_to_use": "Use this when you want the fastest operator path for one project and the machine can do the vision step locally.",
+        "steps": [
+            "Run sync visual analysis if dense analysis is missing.",
+            "Run component 2 extraction, evidence linking, graph building, and export generation.",
+            "Refresh the project artifacts in the dashboard when processing finishes.",
+        ],
+        "outputs": "Expected outputs include dense analysis, intermediate exports, review markdown, and RAG-ready artifacts.",
+    },
+    "batch_vision_only": {
+        "title": "Remote batch vision only",
+        "summary": "Prepares and submits only the vision stage to the batch backend, then leaves the run waiting for remote completion until reconcile resumes it.",
+        "when_to_use": "Use this when you only need dense visual analysis or want to split the remote vision stage from the later knowledge stage.",
+        "steps": [
+            "Build the batch request payloads for the vision stage.",
+            "Submit the vision batch job and record the remote job name.",
+            "Wait for operator reconcile or scheduled polling to download and materialize results.",
+        ],
+        "outputs": "Expected outputs are filtered visuals and dense analysis artifacts for the project.",
+    },
+    "batch_knowledge_only": {
+        "title": "Remote batch knowledge only",
+        "summary": "Submits only the knowledge extraction batch for a project that already has the required visual inputs.",
+        "when_to_use": "Use this when dense analysis already exists and you want only the LLM extraction and materialization stages.",
+        "steps": [
+            "Build knowledge extraction queue items from the existing project artifacts.",
+            "Submit the remote knowledge batch and track its status in the UI database.",
+            "Reconcile later to download results, materialize them, and refresh project readiness.",
+        ],
+        "outputs": "Expected outputs include knowledge events, rule cards, evidence index, concept graph, and review markdown.",
+    },
+    "batch_full": {
+        "title": "Remote batch pipeline",
+        "summary": "Runs the batch-backed pipeline for the project, starting from the earliest missing remote stage and continuing through reconcile.",
+        "when_to_use": "Use this when you want the operator flow to rely on remote batch processing instead of the fully local sync path.",
+        "steps": [
+            "If dense analysis is missing, submit the vision batch stage first.",
+            "If dense analysis already exists, skip directly to the knowledge batch stage.",
+            "Use reconcile to poll, download, materialize, and move the project toward completed exports.",
+        ],
+        "outputs": "Expected outputs depend on the starting point, but a full successful run should end with the same exported artifacts as the sync path.",
+    },
+    "deterministic_postprocess_only": {
+        "title": "Deterministic post-processing only",
+        "summary": "Runs only the non-LLM post-processing and export generation steps against artifacts that already exist in the project folder.",
+        "when_to_use": "Use this after you already have the needed raw extraction outputs and want to rebuild downstream files without re-running provider calls.",
+        "steps": [
+            "Read the already available project artifacts.",
+            "Rebuild deterministic outputs such as linked evidence, graphs, manifests, and exports.",
+            "Refresh the project record so the dashboard shows the newly rebuilt outputs.",
+        ],
+        "outputs": "Expected outputs are regenerated downstream exports without creating a new remote job.",
+    },
+    "corpus_only": {
+        "title": "Corpus build",
+        "summary": "Builds corpus outputs from one or more ready projects and writes the consolidated corpus artifacts into the configured UI corpus output folder.",
+        "when_to_use": "Use this when projects are already export-ready and you want to prepare corpus data for downstream RAG import or review.",
+        "steps": [
+            "Collect the selected ready project roots.",
+            "Run corpus discovery, validation, and export generation.",
+            "Write corpus outputs and validation summaries, then record the result in the UI status ledger.",
+        ],
+        "outputs": "Expected outputs include corpus files, summary metadata, and validation reports under the corpus output directory.",
+    },
+}
 
 
 def _run_id_prefix(project_id: str, run_mode: str) -> str:
@@ -162,17 +231,5 @@ def get_run_detail(
 
 
 def validate_run_prerequisites(project: ProjectRecord) -> dict[str, bool]:
-    artifacts = inspect_artifacts(
-        project.project_root,
-        project.lesson_name,
-        project.transcript_path,
-        project.source_video_path,
-    )
-    return {
-        "has_transcript": artifacts.transcript_exists,
-        "has_dense_analysis": artifacts.dense_analysis_exists,
-        "has_queue_manifest": (project.project_root / "llm_queue" / "manifest.json").exists(),
-        "has_dense_index": (project.project_root / "dense_index.json").exists(),
-        "corpus_ready": artifacts.corpus_ready,
-    }
+    return inspect_run_prerequisites(project)
 

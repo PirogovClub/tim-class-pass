@@ -1,0 +1,2074 @@
+{
+  "method": "GET",
+  "path": "/rag/concept/concept:stop_loss",
+  "status_code": 200,
+  "response": {
+    "concept_id": "concept:stop_loss",
+    "doc_count": 20,
+    "docs": [
+      {
+        "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_5",
+        "unit_type": "rule_card",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+        "language": "ru",
+        "canonical_concept_ids": [
+          "concept:stop_loss"
+        ],
+        "canonical_subconcept_ids": [
+          "subconcept:technical_stop_loss"
+        ],
+        "alias_terms": [
+          "Stop Loss",
+          "Technical Stop Loss"
+        ],
+        "title": "Stop Loss / Technical Stop Loss",
+        "text": "[Concept] Stop Loss\n[Subconcept] Technical Stop Loss\n[Rule] Технические стопы могут быть основаны на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, откате и хвосте ложного пробоя.\n[Visual] New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+        "short_text": "[Concept] Stop Loss\n[Subconcept] Technical Stop Loss\n[Rule] Технические стопы могут быть основаны на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, от",
+        "keywords": [
+          "Stop Loss",
+          "Technical Stop Loss",
+          "Стоп должен быть техническим и прятаться за откат.",
+          "Технические стопы могут быть основаны на различных формациях и временных интервалах: 1/2 пятиминутки, часовик, полчасовика, проторговка, закругление, поджатие, откат, хвост ложного пробоя.",
+          "Использовать закругление или проторговку для установки большего стопа."
+        ],
+        "provenance": {
+          "lesson_title": null,
+          "section": null,
+          "subsection": null,
+          "confidence": "high",
+          "support_basis": "transcript_plus_visual"
+        },
+        "confidence_score": 0.9,
+        "support_basis": "transcript_plus_visual",
+        "evidence_requirement": "optional",
+        "teaching_mode": "mixed",
+        "timestamps": [
+          {
+            "start": "01:03",
+            "end": "01:12"
+          },
+          {
+            "start": "00:36",
+            "end": "00:40"
+          },
+          {
+            "start": "00:58",
+            "end": "00:58"
+          },
+          {
+            "start": "01:24",
+            "end": "01:24"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2"
+        ],
+        "source_event_ids": [
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_4"
+        ],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_5"
+        ],
+        "metadata": {
+          "source_sections": [],
+          "source_subsections": [],
+          "source_chunk_indexes": [
+            0
+          ],
+          "conditions": [],
+          "invalidation": [],
+          "exceptions": [],
+          "comparisons": [],
+          "algorithm_notes": [
+            "Стоп должен быть техническим и прятаться за откат.",
+            "Технические стопы могут быть основаны на различных формациях и временных интервалах: 1/2 пятиминутки, часовик, полчасовика, проторговка, закругление, поджатие, откат, хвост ложного пробоя.",
+            "Использовать закругление или проторговку для установки большего стопа."
+          ],
+          "visual_support_level": "supporting_example",
+          "transcript_support_level": "strong",
+          "transcript_support_score": 0.85,
+          "visual_support_score": 0.4,
+          "has_visual_evidence": true,
+          "transcript_anchor_count": 3,
+          "transcript_repetition_count": 0
+        },
+        "rule_text": "Технические стопы могут быть основаны на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, откате и хвосте ложного пробоя.",
+        "rule_text_ru": "Технические стопы могут быть основаны на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, откате и хвосте ложного пробоя.",
+        "conditions": [],
+        "invalidation": [],
+        "exceptions": [],
+        "comparisons": [],
+        "visual_summary": "New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…",
+        "concept": "Stop Loss",
+        "subconcept": "Technical Stop Loss"
+      },
+      {
+        "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_6",
+        "unit_type": "rule_card",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+        "language": "ru",
+        "canonical_concept_ids": [
+          "concept:stop_loss"
+        ],
+        "canonical_subconcept_ids": [
+          "subconcept:technical_stop_loss"
+        ],
+        "alias_terms": [
+          "Stop Loss",
+          "Technical Stop Loss"
+        ],
+        "title": "Stop Loss / Technical Stop Loss",
+        "text": "[Concept] Stop Loss\n[Subconcept] Technical Stop Loss\n[Rule] Технический стоп защищает от того, что крупный игрок показал на графике.\n[Visual] New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+        "short_text": "[Concept] Stop Loss\n[Subconcept] Technical Stop Loss\n[Rule] Технический стоп защищает от того, что крупный игрок показал на графике.\n[Visual] New slide displayed with title 'Разновидность SL' and two ",
+        "keywords": [
+          "Stop Loss",
+          "Technical Stop Loss",
+          "Стоп должен быть техническим и прятаться за откат.",
+          "Технические стопы могут быть основаны на различных формациях и временных интервалах: 1/2 пятиминутки, часовик, полчасовика, проторговка, закругление, поджатие, откат, хвост ложного пробоя.",
+          "Использовать закругление или проторговку для установки большего стопа."
+        ],
+        "provenance": {
+          "lesson_title": null,
+          "section": null,
+          "subsection": null,
+          "confidence": "high",
+          "support_basis": "transcript_plus_visual"
+        },
+        "confidence_score": 0.9,
+        "support_basis": "transcript_plus_visual",
+        "evidence_requirement": "optional",
+        "teaching_mode": "mixed",
+        "timestamps": [
+          {
+            "start": "01:16",
+            "end": "01:21"
+          },
+          {
+            "start": "00:36",
+            "end": "00:40"
+          },
+          {
+            "start": "00:58",
+            "end": "00:58"
+          },
+          {
+            "start": "01:24",
+            "end": "01:24"
+          },
+          {
+            "start": "01:42",
+            "end": "01:42"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3"
+        ],
+        "source_event_ids": [
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_5"
+        ],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_6"
+        ],
+        "metadata": {
+          "source_sections": [],
+          "source_subsections": [],
+          "source_chunk_indexes": [
+            0
+          ],
+          "conditions": [],
+          "invalidation": [],
+          "exceptions": [],
+          "comparisons": [],
+          "algorithm_notes": [
+            "Стоп должен быть техническим и прятаться за откат.",
+            "Технические стопы могут быть основаны на различных формациях и временных интервалах: 1/2 пятиминутки, часовик, полчасовика, проторговка, закругление, поджатие, откат, хвост ложного пробоя.",
+            "Использовать закругление или проторговку для установки большего стопа."
+          ],
+          "visual_support_level": "supporting_example",
+          "transcript_support_level": "strong",
+          "transcript_support_score": 0.8,
+          "visual_support_score": 0.4,
+          "has_visual_evidence": true,
+          "transcript_anchor_count": 2,
+          "transcript_repetition_count": 0
+        },
+        "rule_text": "Технический стоп защищает от того, что крупный игрок показал на графике.",
+        "rule_text_ru": "Технический стоп защищает от того, что крупный игрок показал на графике.",
+        "conditions": [],
+        "invalidation": [],
+        "exceptions": [],
+        "comparisons": [],
+        "visual_summary": "New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…",
+        "concept": "Stop Loss",
+        "subconcept": "Technical Stop Loss"
+      },
+      {
+        "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_20",
+        "unit_type": "rule_card",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+        "language": "ru",
+        "canonical_concept_ids": [
+          "concept:stop_loss"
+        ],
+        "canonical_subconcept_ids": [
+          "subconcept:razmer_stop_lossa"
+        ],
+        "alias_terms": [
+          "Стоп-лосс",
+          "Размер стоп-лосса"
+        ],
+        "title": "Стоп-лосс / Размер стоп-лосса",
+        "text": "[Concept] Стоп-лосс\n[Subconcept] Размер стоп-лосса\n[Rule] Чем меньше стоп-лосс, тем меньше трейдер будет находиться в сделке по времени и тем больше он сможет забрать в плане своего тейка.\n[Visual] New slide with text and diagrams explaining trading concepts.. concepts: abstract_teaching_example, atr_values, entry_values\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+        "short_text": "[Concept] Стоп-лосс\n[Subconcept] Размер стоп-лосса\n[Rule] Чем меньше стоп-лосс, тем меньше трейдер будет находиться в сделке по времени и тем больше он сможет забрать в плане своего тейка.\n[Visual] Ne",
+        "keywords": [
+          "Стоп-лосс",
+          "Размер стоп-лосса",
+          "Стоп на форексе 13-15%."
+        ],
+        "provenance": {
+          "lesson_title": null,
+          "section": null,
+          "subsection": null,
+          "confidence": "high",
+          "support_basis": "transcript_plus_visual"
+        },
+        "confidence_score": 0.9,
+        "support_basis": "transcript_plus_visual",
+        "evidence_requirement": "optional",
+        "teaching_mode": "mixed",
+        "timestamps": [
+          {
+            "start": "04:19",
+            "end": "04:30"
+          },
+          {
+            "start": "04:32",
+            "end": "04:32"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_2_9"
+        ],
+        "source_event_ids": [
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_2_rule_statement_0"
+        ],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_20"
+        ],
+        "metadata": {
+          "source_sections": [],
+          "source_subsections": [],
+          "source_chunk_indexes": [
+            2
+          ],
+          "conditions": [],
+          "invalidation": [],
+          "exceptions": [],
+          "comparisons": [],
+          "algorithm_notes": [
+            "Стоп на форексе 13-15%."
+          ],
+          "visual_support_level": "supporting_example",
+          "transcript_support_level": "strong",
+          "transcript_support_score": 1.0,
+          "visual_support_score": 0.4,
+          "has_visual_evidence": true,
+          "transcript_anchor_count": 3,
+          "transcript_repetition_count": 1
+        },
+        "rule_text": "Чем меньше стоп-лосс, тем меньше трейдер будет находиться в сделке по времени и тем больше он сможет забрать в плане своего тейка.",
+        "rule_text_ru": "Чем меньше стоп-лосс, тем меньше трейдер будет находиться в сделке по времени и тем больше он сможет забрать в плане своего тейка.",
+        "conditions": [],
+        "invalidation": [],
+        "exceptions": [],
+        "comparisons": [],
+        "visual_summary": "New slide with text and diagrams explaining trading concepts.. concepts: abstract_teaching_example, atr_values, entry_values",
+        "concept": "Стоп-лосс",
+        "subconcept": "Размер стоп-лосса"
+      },
+      {
+        "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_21",
+        "unit_type": "rule_card",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+        "language": "ru",
+        "canonical_concept_ids": [
+          "concept:stop_loss"
+        ],
+        "canonical_subconcept_ids": [
+          "subconcept:tekhnicheskiy_stop_loss"
+        ],
+        "alias_terms": [
+          "Стоп-лосс",
+          "Технический стоп-лосс"
+        ],
+        "title": "Стоп-лосс / Технический стоп-лосс",
+        "text": "[Concept] Стоп-лосс\n[Subconcept] Технический стоп-лосс\n[Rule] При отбойной модели можно взять стоп даже меньше, чем 1 пятиминутка, спрятать его за уровень и забрать свой тейк 1 к 1.\n[Visual] New slide with text and diagrams explaining trading concepts.. concepts: abstract_teaching_example, atr_values, entry_values\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+        "short_text": "[Concept] Стоп-лосс\n[Subconcept] Технический стоп-лосс\n[Rule] При отбойной модели можно взять стоп даже меньше, чем 1 пятиминутка, спрятать его за уровень и забрать свой тейк 1 к 1.\n[Visual] New slide",
+        "keywords": [
+          "Стоп-лосс",
+          "Технический стоп-лосс",
+          "При отбойной модели использовать стоп меньше 1 пятиминутки, спрятав его за уровень."
+        ],
+        "provenance": {
+          "lesson_title": null,
+          "section": null,
+          "subsection": null,
+          "confidence": "high",
+          "support_basis": "transcript_plus_visual"
+        },
+        "confidence_score": 0.9,
+        "support_basis": "transcript_plus_visual",
+        "evidence_requirement": "optional",
+        "teaching_mode": "mixed",
+        "timestamps": [
+          {
+            "start": "05:06",
+            "end": "05:16"
+          },
+          {
+            "start": "04:32",
+            "end": "04:32"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_2_9"
+        ],
+        "source_event_ids": [
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_2_rule_statement_1"
+        ],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_21"
+        ],
+        "metadata": {
+          "proximity_fallback": true,
+          "proximity_gap_seconds": 34.0,
+          "source_sections": [],
+          "source_subsections": [],
+          "source_chunk_indexes": [
+            2
+          ],
+          "conditions": [],
+          "invalidation": [],
+          "exceptions": [],
+          "comparisons": [],
+          "algorithm_notes": [
+            "При отбойной модели использовать стоп меньше 1 пятиминутки, спрятав его за уровень."
+          ],
+          "visual_support_level": "supporting_example",
+          "transcript_support_level": "strong",
+          "transcript_support_score": 0.85,
+          "visual_support_score": 0.4,
+          "has_visual_evidence": true,
+          "transcript_anchor_count": 4,
+          "transcript_repetition_count": 0
+        },
+        "rule_text": "При отбойной модели можно взять стоп даже меньше, чем 1 пятиминутка, спрятать его за уровень и забрать свой тейк 1 к 1.",
+        "rule_text_ru": "При отбойной модели можно взять стоп даже меньше, чем 1 пятиминутка, спрятать его за уровень и забрать свой тейк 1 к 1.",
+        "conditions": [],
+        "invalidation": [],
+        "exceptions": [],
+        "comparisons": [],
+        "visual_summary": "New slide with text and diagrams explaining trading concepts.. concepts: abstract_teaching_example, atr_values, entry_values",
+        "concept": "Стоп-лосс",
+        "subconcept": "Технический стоп-лосс"
+      },
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_4",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+        "language": "ru",
+        "canonical_concept_ids": [
+          "concept:stop_loss"
+        ],
+        "canonical_subconcept_ids": [
+          "subconcept:technical_stop_loss"
+        ],
+        "alias_terms": [
+          "Stop Loss",
+          "Technical Stop Loss"
+        ],
+        "title": "rule_statement / Stop Loss",
+        "text": "[rule_statement] [Concept] Stop Loss Технические стопы могут быть основаны на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, откате и хвосте ложного пробоя. [Time] 01:03–01:12 [Support Basis] transcript_plus_visual",
+        "short_text": "[rule_statement] [Concept] Stop Loss Технические стопы могут быть основаны на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, откате и хвосте ложного п",
+        "keywords": [
+          "Stop Loss",
+          "Technical Stop Loss",
+          "rule_statement",
+          "rule"
+        ],
+        "provenance": {
+          "lesson_title": null,
+          "section": null,
+          "subsection": null,
+          "chunk_index": 0,
+          "source_line_start": 25,
+          "source_line_end": 27
+        },
+        "confidence_score": 0.95,
+        "support_basis": "transcript_plus_visual",
+        "evidence_requirement": "optional",
+        "teaching_mode": "mixed",
+        "timestamps": [
+          {
+            "start": "01:03",
+            "end": "01:12"
+          },
+          {
+            "start": "00:36",
+            "end": "00:40"
+          },
+          {
+            "start": "00:58",
+            "end": "00:58"
+          },
+          {
+            "start": "01:24",
+            "end": "01:24"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2"
+        ],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "metadata": {
+          "chunk_index": 0,
+          "chunk_start_time_seconds": 0.44,
+          "chunk_end_time_seconds": 122.02,
+          "transcript_line_count": 49,
+          "candidate_visual_frame_keys": [
+            "000036",
+            "000040",
+            "000058",
+            "000084",
+            "000142",
+            "000158"
+          ],
+          "candidate_visual_types": [
+            "hand_drawn_pattern",
+            "text_slide",
+            "mixed_visual"
+          ],
+          "candidate_example_types": [
+            "abstract_teaching_example"
+          ],
+          "rule_type": "rule",
+          "pattern_tags": [],
+          "source_quote": "это такие стопы, я немного повторюсь, 1 пятиминутка, 2 пятиминутки, это может быть часовик, полчасовика это может быть проторговка, закругление, поджатие, откат, и хвост ложного пробоя.",
+          "transcript_anchors": [
+            {
+              "line_index": 25,
+              "text": "пятиминутка, 2 пятиминутки, это может быть часовик, полчасовика",
+              "timestamp_start": "01:03",
+              "timestamp_end": "01:07",
+              "match_source": "llm_source_quote"
+            },
+            {
+              "line_index": 26,
+              "text": "это может быть проторговка, закругление, поджатие, откат, и",
+              "timestamp_start": "01:07",
+              "timestamp_end": "01:10",
+              "match_source": "llm_source_quote"
+            },
+            {
+              "line_index": 27,
+              "text": "хвост ложного пробоя.",
+              "timestamp_start": "01:10",
+              "timestamp_end": "01:12",
+              "match_source": "llm_source_quote"
+            }
+          ],
+          "timestamp_confidence": "span",
+          "anchor_match_source": "llm_source_quote",
+          "anchor_line_count": 3,
+          "anchor_span_width": 3,
+          "anchor_density": 1.0,
+          "visual_support_level": "supporting_example",
+          "transcript_support_level": "strong",
+          "transcript_support_score": 0.85,
+          "visual_support_score": 0.4
+        },
+        "event_type": "rule_statement",
+        "normalized_text": "Технические стопы могут быть основаны на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, откате и хвосте ложного пробоя.",
+        "normalized_text_ru": "Технические стопы могут быть основаны на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, откате и хвосте ложного пробоя.",
+        "concept": "Stop Loss",
+        "subconcept": "Technical Stop Loss"
+      },
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_5",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+        "language": "ru",
+        "canonical_concept_ids": [
+          "concept:stop_loss"
+        ],
+        "canonical_subconcept_ids": [
+          "subconcept:technical_stop_loss"
+        ],
+        "alias_terms": [
+          "Stop Loss",
+          "Technical Stop Loss"
+        ],
+        "title": "rule_statement / Stop Loss",
+        "text": "[rule_statement] [Concept] Stop Loss Технический стоп защищает от того, что крупный игрок показал на графике. [Time] 01:16–01:21 [Support Basis] transcript_plus_visual",
+        "short_text": "[rule_statement] [Concept] Stop Loss Технический стоп защищает от того, что крупный игрок показал на графике. [Time] 01:16–01:21 [Support Basis] transcript_plus_visual",
+        "keywords": [
+          "Stop Loss",
+          "Technical Stop Loss",
+          "rule_statement",
+          "rule"
+        ],
+        "provenance": {
+          "lesson_title": null,
+          "section": null,
+          "subsection": null,
+          "chunk_index": 0,
+          "source_line_start": 30,
+          "source_line_end": 31
+        },
+        "confidence_score": 0.95,
+        "support_basis": "transcript_plus_visual",
+        "evidence_requirement": "optional",
+        "teaching_mode": "mixed",
+        "timestamps": [
+          {
+            "start": "01:16",
+            "end": "01:21"
+          },
+          {
+            "start": "00:58",
+            "end": "00:58"
+          },
+          {
+            "start": "01:24",
+            "end": "01:24"
+          },
+          {
+            "start": "01:42",
+            "end": "01:42"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3"
+        ],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "metadata": {
+          "chunk_index": 0,
+          "chunk_start_time_seconds": 0.44,
+          "chunk_end_time_seconds": 122.02,
+          "transcript_line_count": 49,
+          "candidate_visual_frame_keys": [
+            "000036",
+            "000040",
+            "000058",
+            "000084",
+            "000142",
+            "000158"
+          ],
+          "candidate_visual_types": [
+            "hand_drawn_pattern",
+            "text_slide",
+            "mixed_visual"
+          ],
+          "candidate_example_types": [
+            "abstract_teaching_example"
+          ],
+          "rule_type": "rule",
+          "pattern_tags": [],
+          "source_quote": "То есть таким образом вы себя защищаете от того, что крупный игрок вам показал на графике.",
+          "transcript_anchors": [
+            {
+              "line_index": 30,
+              "text": "То есть таким образом вы себя защищаете от",
+              "timestamp_start": "01:16",
+              "timestamp_end": "01:18",
+              "match_source": "llm_source_quote"
+            },
+            {
+              "line_index": 31,
+              "text": "того, что крупный игрок вам показал на графике.",
+              "timestamp_start": "01:18",
+              "timestamp_end": "01:21",
+              "match_source": "llm_source_quote"
+            }
+          ],
+          "timestamp_confidence": "span",
+          "anchor_match_source": "llm_source_quote",
+          "anchor_line_count": 2,
+          "anchor_span_width": 2,
+          "anchor_density": 1.0,
+          "visual_support_level": "supporting_example",
+          "transcript_support_level": "strong",
+          "transcript_support_score": 0.8,
+          "visual_support_score": 0.4
+        },
+        "event_type": "rule_statement",
+        "normalized_text": "Технический стоп защищает от того, что крупный игрок показал на графике.",
+        "normalized_text_ru": "Технический стоп защищает от того, что крупный игрок показал на графике.",
+        "concept": "Stop Loss",
+        "subconcept": "Technical Stop Loss"
+      },
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_process_step_4",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+        "language": "ru",
+        "canonical_concept_ids": [
+          "concept:stop_loss"
+        ],
+        "canonical_subconcept_ids": [
+          "subconcept:technical_stop_loss"
+        ],
+        "alias_terms": [
+          "Stop Loss",
+          "Technical Stop Loss"
+        ],
+        "title": "process_step / Stop Loss",
+        "text": "[process_step] [Concept] Stop Loss Применить технический стоп, основанный на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, откате или хвосте ложного пробоя. [Time] 01:03–01:16 [Support Basis] transcript_plus_visual",
+        "short_text": "[process_step] [Concept] Stop Loss Применить технический стоп, основанный на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, откате или хвосте ложного ",
+        "keywords": [
+          "Stop Loss",
+          "Technical Stop Loss",
+          "process_step"
+        ],
+        "provenance": {
+          "lesson_title": null,
+          "section": null,
+          "subsection": null,
+          "chunk_index": 0,
+          "source_line_start": 25,
+          "source_line_end": 29
+        },
+        "confidence_score": 0.85,
+        "support_basis": "transcript_plus_visual",
+        "evidence_requirement": "optional",
+        "teaching_mode": "theory",
+        "timestamps": [
+          {
+            "start": "01:03",
+            "end": "01:16"
+          },
+          {
+            "start": "00:36",
+            "end": "00:40"
+          },
+          {
+            "start": "00:58",
+            "end": "00:58"
+          },
+          {
+            "start": "01:24",
+            "end": "01:24"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2"
+        ],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "metadata": {
+          "chunk_index": 0,
+          "chunk_start_time_seconds": 0.44,
+          "chunk_end_time_seconds": 122.02,
+          "transcript_line_count": 49,
+          "candidate_visual_frame_keys": [
+            "000036",
+            "000040",
+            "000058",
+            "000084",
+            "000142",
+            "000158"
+          ],
+          "candidate_visual_types": [
+            "hand_drawn_pattern",
+            "text_slide",
+            "mixed_visual"
+          ],
+          "candidate_example_types": [
+            "abstract_teaching_example"
+          ],
+          "rule_type": "process_step",
+          "pattern_tags": [],
+          "source_quote": "это такие стопы, я немного повторюсь, 1 пятиминутка, 2 пятиминутки, это может быть часовик, полчасовика это может быть проторговка, закругление, поджатие, откат, и хвост ложного пробоя. То есть это тоже технический стоп, который вы можете применять.",
+          "transcript_anchors": [
+            {
+              "line_index": 25,
+              "text": "пятиминутка, 2 пятиминутки, это может быть часовик, полчасовика",
+              "timestamp_start": "01:03",
+              "timestamp_end": "01:07",
+              "match_source": "llm_source_quote"
+            },
+            {
+              "line_index": 26,
+              "text": "это может быть проторговка, закругление, поджатие, откат, и",
+              "timestamp_start": "01:07",
+              "timestamp_end": "01:10",
+              "match_source": "llm_source_quote"
+            },
+            {
+              "line_index": 27,
+              "text": "хвост ложного пробоя.",
+              "timestamp_start": "01:10",
+              "timestamp_end": "01:12",
+              "match_source": "llm_source_quote"
+            },
+            {
+              "line_index": 28,
+              "text": "То есть это тоже технический стоп, который вы",
+              "timestamp_start": "01:12",
+              "timestamp_end": "01:15",
+              "match_source": "llm_source_quote"
+            },
+            {
+              "line_index": 29,
+              "text": "можете применять.",
+              "timestamp_start": "01:15",
+              "timestamp_end": "01:16",
+              "match_source": "llm_source_quote"
+            }
+          ],
+          "timestamp_confidence": "span",
+          "anchor_match_source": "llm_source_quote",
+          "anchor_line_count": 5,
+          "anchor_span_width": 5,
+          "anchor_density": 1.0,
+          "visual_support_level": "supporting_example",
+          "transcript_support_level": "strong",
+          "transcript_support_score": 0.85,
+          "visual_support_score": 0.4
+        },
+        "event_type": "process_step",
+        "normalized_text": "Применить технический стоп, основанный на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, откате или хвосте ложного пробоя.",
+        "normalized_text_ru": "Применить технический стоп, основанный на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, откате или хвосте ложного пробоя.",
+        "concept": "Stop Loss",
+        "subconcept": "Technical Stop Loss"
+      },
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_2",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+        "language": "ru",
+        "canonical_concept_ids": [
+          "concept:stop_loss"
+        ],
+        "canonical_subconcept_ids": [
+          "subconcept:technical_stop_loss"
+        ],
+        "alias_terms": [
+          "Stop Loss",
+          "Technical Stop Loss"
+        ],
+        "title": "algorithm_hint / Stop Loss",
+        "text": "[algorithm_hint] [Concept] Stop Loss Стоп должен быть техническим и прятаться за откат. [Time] 00:19–00:20 [Support Basis] transcript_plus_visual",
+        "short_text": "[algorithm_hint] [Concept] Stop Loss Стоп должен быть техническим и прятаться за откат. [Time] 00:19–00:20 [Support Basis] transcript_plus_visual",
+        "keywords": [
+          "Stop Loss",
+          "Technical Stop Loss",
+          "algorithm_hint"
+        ],
+        "provenance": {
+          "lesson_title": null,
+          "section": null,
+          "subsection": null,
+          "chunk_index": 0,
+          "source_line_start": 8,
+          "source_line_end": 8
+        },
+        "confidence_score": 0.85,
+        "support_basis": "transcript_plus_visual",
+        "evidence_requirement": "optional",
+        "teaching_mode": "theory",
+        "timestamps": [
+          {
+            "start": "00:19",
+            "end": "00:20"
+          },
+          {
+            "start": "00:36",
+            "end": "00:40"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0"
+        ],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "metadata": {
+          "chunk_index": 0,
+          "chunk_start_time_seconds": 0.44,
+          "chunk_end_time_seconds": 122.02,
+          "transcript_line_count": 49,
+          "candidate_visual_frame_keys": [
+            "000036",
+            "000040",
+            "000058",
+            "000084",
+            "000142",
+            "000158"
+          ],
+          "candidate_visual_types": [
+            "hand_drawn_pattern",
+            "text_slide",
+            "mixed_visual"
+          ],
+          "candidate_example_types": [
+            "abstract_teaching_example"
+          ],
+          "rule_type": "algorithm_hint",
+          "pattern_tags": [],
+          "source_quote": "у вас стоп должен быть скорее всего технический, вы прячете его за откат",
+          "transcript_anchors": [
+            {
+              "line_index": 8,
+              "text": "у вас стоп должен быть скорее всего технический,",
+              "timestamp_start": "00:19",
+              "timestamp_end": "00:20",
+              "match_source": "llm_source_quote"
+            }
+          ],
+          "timestamp_confidence": "span",
+          "anchor_match_source": "llm_source_quote",
+          "anchor_line_count": 1,
+          "anchor_span_width": 1,
+          "anchor_density": 1.0,
+          "visual_support_level": "supporting_example",
+          "transcript_support_level": "strong",
+          "transcript_support_score": 0.75,
+          "visual_support_score": 0.4
+        },
+        "event_type": "algorithm_hint",
+        "normalized_text": "Стоп должен быть техническим и прятаться за откат.",
+        "normalized_text_ru": "Стоп должен быть техническим и прятаться за откат.",
+        "concept": "Stop Loss",
+        "subconcept": "Technical Stop Loss"
+      },
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_6",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+        "language": "ru",
+        "canonical_concept_ids": [
+          "concept:stop_loss"
+        ],
+        "canonical_subconcept_ids": [
+          "subconcept:technical_stop_loss"
+        ],
+        "alias_terms": [
+          "Stop Loss",
+          "Technical Stop Loss"
+        ],
+        "title": "algorithm_hint / Stop Loss",
+        "text": "[algorithm_hint] [Concept] Stop Loss Технические стопы могут быть основаны на различных формациях и временных интервалах: 1/2 пятиминутки, часовик, полчасовика, проторговка, закругление, поджатие, откат, хвост ложного пробоя. [Time] 01:03–01:12 [Support Basis] transcript_plus_visual",
+        "short_text": "[algorithm_hint] [Concept] Stop Loss Технические стопы могут быть основаны на различных формациях и временных интервалах: 1/2 пятиминутки, часовик, полчасовика, проторговка, закругление, поджатие, отк",
+        "keywords": [
+          "Stop Loss",
+          "Technical Stop Loss",
+          "algorithm_hint"
+        ],
+        "provenance": {
+          "lesson_title": null,
+          "section": null,
+          "subsection": null,
+          "chunk_index": 0,
+          "source_line_start": 25,
+          "source_line_end": 27
+        },
+        "confidence_score": 0.85,
+        "support_basis": "transcript_plus_visual",
+        "evidence_requirement": "optional",
+        "teaching_mode": "theory",
+        "timestamps": [
+          {
+            "start": "01:03",
+            "end": "01:12"
+          },
+          {
+            "start": "00:36",
+            "end": "00:40"
+          },
+          {
+            "start": "00:58",
+            "end": "00:58"
+          },
+          {
+            "start": "01:24",
+            "end": "01:24"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2"
+        ],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "metadata": {
+          "chunk_index": 0,
+          "chunk_start_time_seconds": 0.44,
+          "chunk_end_time_seconds": 122.02,
+          "transcript_line_count": 49,
+          "candidate_visual_frame_keys": [
+            "000036",
+            "000040",
+            "000058",
+            "000084",
+            "000142",
+            "000158"
+          ],
+          "candidate_visual_types": [
+            "hand_drawn_pattern",
+            "text_slide",
+            "mixed_visual"
+          ],
+          "candidate_example_types": [
+            "abstract_teaching_example"
+          ],
+          "rule_type": "algorithm_hint",
+          "pattern_tags": [],
+          "source_quote": "это такие стопы, я немного повторюсь, 1 пятиминутка, 2 пятиминутки, это может быть часовик, полчасовика это может быть проторговка, закругление, поджатие, откат, и хвост ложного пробоя.",
+          "transcript_anchors": [
+            {
+              "line_index": 25,
+              "text": "пятиминутка, 2 пятиминутки, это может быть часовик, полчасовика",
+              "timestamp_start": "01:03",
+              "timestamp_end": "01:07",
+              "match_source": "llm_source_quote"
+            },
+            {
+              "line_index": 26,
+              "text": "это может быть проторговка, закругление, поджатие, откат, и",
+              "timestamp_start": "01:07",
+              "timestamp_end": "01:10",
+              "match_source": "llm_source_quote"
+            },
+            {
+              "line_index": 27,
+              "text": "хвост ложного пробоя.",
+              "timestamp_start": "01:10",
+              "timestamp_end": "01:12",
+              "match_source": "llm_source_quote"
+            }
+          ],
+          "timestamp_confidence": "span",
+          "anchor_match_source": "llm_source_quote",
+          "anchor_line_count": 3,
+          "anchor_span_width": 3,
+          "anchor_density": 1.0,
+          "visual_support_level": "supporting_example",
+          "transcript_support_level": "strong",
+          "transcript_support_score": 0.85,
+          "visual_support_score": 0.4
+        },
+        "event_type": "algorithm_hint",
+        "normalized_text": "Технические стопы могут быть основаны на различных формациях и временных интервалах: 1/2 пятиминутки, часовик, полчасовика, проторговка, закругление, поджатие, откат, хвост ложного пробоя.",
+        "normalized_text_ru": "Технические стопы могут быть основаны на различных формациях и временных интервалах: 1/2 пятиминутки, часовик, полчасовика, проторговка, закругление, поджатие, откат, хвост ложного пробоя.",
+        "concept": "Stop Loss",
+        "subconcept": "Technical Stop Loss"
+      },
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_8",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+        "language": "ru",
+        "canonical_concept_ids": [
+          "concept:stop_loss"
+        ],
+        "canonical_subconcept_ids": [
+          "subconcept:technical_stop_loss"
+        ],
+        "alias_terms": [
+          "Stop Loss",
+          "Technical Stop Loss"
+        ],
+        "title": "algorithm_hint / Stop Loss",
+        "text": "[algorithm_hint] [Concept] Stop Loss Использовать закругление или проторговку для установки большего стопа. [Time] 00:00–02:02 [Support Basis] inferred",
+        "short_text": "[algorithm_hint] [Concept] Stop Loss Использовать закругление или проторговку для установки большего стопа. [Time] 00:00–02:02 [Support Basis] inferred",
+        "keywords": [
+          "Stop Loss",
+          "Technical Stop Loss",
+          "algorithm_hint"
+        ],
+        "provenance": {
+          "lesson_title": null,
+          "section": null,
+          "subsection": null,
+          "chunk_index": 0,
+          "source_line_start": null,
+          "source_line_end": null
+        },
+        "confidence_score": 0.85,
+        "support_basis": "inferred",
+        "evidence_requirement": "optional",
+        "teaching_mode": "theory",
+        "timestamps": [
+          {
+            "start": "00:00",
+            "end": "02:02"
+          },
+          {
+            "start": "00:36",
+            "end": "00:40"
+          },
+          {
+            "start": "01:42",
+            "end": "01:42"
+          },
+          {
+            "start": "01:58",
+            "end": "01:58"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_4"
+        ],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "metadata": {
+          "chunk_index": 0,
+          "chunk_start_time_seconds": 0.44,
+          "chunk_end_time_seconds": 122.02,
+          "transcript_line_count": 49,
+          "candidate_visual_frame_keys": [
+            "000036",
+            "000040",
+            "000058",
+            "000084",
+            "000142",
+            "000158"
+          ],
+          "candidate_visual_types": [
+            "hand_drawn_pattern",
+            "text_slide",
+            "mixed_visual"
+          ],
+          "candidate_example_types": [
+            "abstract_teaching_example"
+          ],
+          "rule_type": "algorithm_hint",
+          "pattern_tags": [],
+          "source_quote": "Использовать закругление, за проторговку, взять стоп побольше",
+          "transcript_anchors": [],
+          "timestamp_confidence": "chunk",
+          "anchor_match_source": "chunk_fallback",
+          "anchor_line_count": 0,
+          "anchor_span_width": 0,
+          "anchor_density": 0.0,
+          "visual_support_level": "supporting_example",
+          "transcript_support_level": "weak",
+          "transcript_support_score": 0.25,
+          "visual_support_score": 0.4
+        },
+        "event_type": "algorithm_hint",
+        "normalized_text": "Использовать закругление или проторговку для установки большего стопа.",
+        "normalized_text_ru": "Использовать закругление или проторговку для установки большего стопа.",
+        "concept": "Stop Loss",
+        "subconcept": "Technical Stop Loss"
+      },
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_2_rule_statement_0",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+        "language": "ru",
+        "canonical_concept_ids": [
+          "concept:stop_loss"
+        ],
+        "canonical_subconcept_ids": [
+          "subconcept:razmer_stop_lossa"
+        ],
+        "alias_terms": [
+          "Стоп-лосс",
+          "Размер стоп-лосса"
+        ],
+        "title": "rule_statement / Стоп-лосс",
+        "text": "[rule_statement] [Concept] Стоп-лосс Чем меньше стоп-лосс, тем меньше трейдер будет находиться в сделке по времени и тем больше он сможет забрать в плане своего тейка. [Time] 04:19–04:30 [Support Basis] transcript_plus_visual",
+        "short_text": "[rule_statement] [Concept] Стоп-лосс Чем меньше стоп-лосс, тем меньше трейдер будет находиться в сделке по времени и тем больше он сможет забрать в плане своего тейка. [Time] 04:19–04:30 [Support Basi",
+        "keywords": [
+          "Стоп-лосс",
+          "Размер стоп-лосса",
+          "rule_statement",
+          "rule"
+        ],
+        "provenance": {
+          "lesson_title": null,
+          "section": null,
+          "subsection": null,
+          "chunk_index": 2,
+          "source_line_start": 2,
+          "source_line_end": 4
+        },
+        "confidence_score": 0.95,
+        "support_basis": "transcript_plus_visual",
+        "evidence_requirement": "optional",
+        "teaching_mode": "mixed",
+        "timestamps": [
+          {
+            "start": "04:19",
+            "end": "04:30"
+          },
+          {
+            "start": "04:32",
+            "end": "04:32"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_2_9"
+        ],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "metadata": {
+          "chunk_index": 2,
+          "chunk_start_time_seconds": 253.56,
+          "chunk_end_time_seconds": 375.3,
+          "transcript_line_count": 46,
+          "candidate_visual_frame_keys": [
+            "000274"
+          ],
+          "candidate_visual_types": [
+            "text_slide"
+          ],
+          "candidate_example_types": [
+            "abstract_teaching_example"
+          ],
+          "rule_type": "rule",
+          "pattern_tags": [],
+          "source_quote": "Чем он меньше, тем меньше вы, получается, будете находиться в сделке по времени и тем больше вы сможете забрать в плане своего take.",
+          "transcript_anchors": [
+            {
+              "line_index": 2,
+              "text": "Чем он меньше, тем меньше вы, получается, будете",
+              "timestamp_start": "04:19",
+              "timestamp_end": "04:23",
+              "match_source": "llm_line_indices"
+            },
+            {
+              "line_index": 3,
+              "text": "находиться в сделке по времени и тем больше",
+              "timestamp_start": "04:23",
+              "timestamp_end": "04:26",
+              "match_source": "llm_line_indices"
+            },
+            {
+              "line_index": 4,
+              "text": "вы сможете забрать в плане своего take.",
+              "timestamp_start": "04:26",
+              "timestamp_end": "04:30",
+              "match_source": "llm_line_indices"
+            }
+          ],
+          "timestamp_confidence": "line",
+          "anchor_match_source": "llm_line_indices",
+          "anchor_line_count": 3,
+          "anchor_span_width": 3,
+          "anchor_density": 1.0,
+          "visual_support_level": "supporting_example",
+          "transcript_support_level": "strong",
+          "transcript_support_score": 1.0,
+          "visual_support_score": 0.4
+        },
+        "event_type": "rule_statement",
+        "normalized_text": "Чем меньше стоп-лосс, тем меньше трейдер будет находиться в сделке по времени и тем больше он сможет забрать в плане своего тейка.",
+        "normalized_text_ru": "Чем меньше стоп-лосс, тем меньше трейдер будет находиться в сделке по времени и тем больше он сможет забрать в плане своего тейка.",
+        "concept": "Стоп-лосс",
+        "subconcept": "Размер стоп-лосса"
+      },
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_2_rule_statement_1",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+        "language": "ru",
+        "canonical_concept_ids": [
+          "concept:stop_loss"
+        ],
+        "canonical_subconcept_ids": [
+          "subconcept:tekhnicheskiy_stop_loss"
+        ],
+        "alias_terms": [
+          "Стоп-лосс",
+          "Технический стоп-лосс"
+        ],
+        "title": "rule_statement / Стоп-лосс",
+        "text": "[rule_statement] [Concept] Стоп-лосс При отбойной модели можно взять стоп даже меньше, чем 1 пятиминутка, спрятать его за уровень и забрать свой тейк 1 к 1. [Time] 05:06–05:16 [Support Basis] transcript_plus_visual",
+        "short_text": "[rule_statement] [Concept] Стоп-лосс При отбойной модели можно взять стоп даже меньше, чем 1 пятиминутка, спрятать его за уровень и забрать свой тейк 1 к 1. [Time] 05:06–05:16 [Support Basis] transcri",
+        "keywords": [
+          "Стоп-лосс",
+          "Технический стоп-лосс",
+          "rule_statement",
+          "rule"
+        ],
+        "provenance": {
+          "lesson_title": null,
+          "section": null,
+          "subsection": null,
+          "chunk_index": 2,
+          "source_line_start": 19,
+          "source_line_end": 22
+        },
+        "confidence_score": 0.95,
+        "support_basis": "transcript_plus_visual",
+        "evidence_requirement": "optional",
+        "teaching_mode": "mixed",
+        "timestamps": [
+          {
+            "start": "05:06",
+            "end": "05:16"
+          }
+        ],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "metadata": {
+          "chunk_index": 2,
+          "chunk_start_time_seconds": 253.56,
+          "chunk_end_time_seconds": 375.3,
+          "transcript_line_count": 46,
+          "candidate_visual_frame_keys": [
+            "000274"
+          ],
+          "candidate_visual_types": [
+            "text_slide"
+          ],
+          "candidate_example_types": [
+            "abstract_teaching_example"
+          ],
+          "rule_type": "rule",
+          "pattern_tags": [],
+          "source_quote": "Если это отбойная модель, вы можете вообще взять стоп даже меньше, чем 1 пятиминутка, спрятать его просто за уровень и забрать свой даже 10 к 1",
+          "transcript_anchors": [
+            {
+              "line_index": 19,
+              "text": "Если это отбойная модель, вы можете вообще взять",
+              "timestamp_start": "05:06",
+              "timestamp_end": "05:07",
+              "match_source": "llm_line_indices"
+            },
+            {
+              "line_index": 20,
+              "text": "стоп даже меньше, чем 1 пятиминутка, спрятать его",
+              "timestamp_start": "05:07",
+              "timestamp_end": "05:10",
+              "match_source": "llm_line_indices"
+            },
+            {
+              "line_index": 21,
+              "text": "просто за уровень и забрать свой даже 10",
+              "timestamp_start": "05:10",
+              "timestamp_end": "05:13",
+              "match_source": "llm_line_indices"
+            },
+            {
+              "line_index": 22,
+              "text": "к 1, потому что отбой показывает вам наличие",
+              "timestamp_start": "05:13",
+              "timestamp_end": "05:16",
+              "match_source": "llm_line_indices"
+            }
+          ],
+          "timestamp_confidence": "span",
+          "anchor_match_source": "llm_line_indices",
+          "anchor_line_count": 4,
+          "anchor_span_width": 4,
+          "anchor_density": 1.0,
+          "visual_support_level": "supporting_example",
+          "transcript_support_level": "strong",
+          "transcript_support_score": 0.85,
+          "visual_support_score": 0.4
+        },
+        "event_type": "rule_statement",
+        "normalized_text": "При отбойной модели можно взять стоп даже меньше, чем 1 пятиминутка, спрятать его за уровень и забрать свой тейк 1 к 1.",
+        "normalized_text_ru": "При отбойной модели можно взять стоп даже меньше, чем 1 пятиминутка, спрятать его за уровень и забрать свой тейк 1 к 1.",
+        "concept": "Стоп-лосс",
+        "subconcept": "Технический стоп-лосс"
+      },
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_2_comparison_0",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+        "language": "ru",
+        "canonical_concept_ids": [
+          "concept:stop_loss"
+        ],
+        "canonical_subconcept_ids": [
+          "subconcept:tipy_stop_lossov"
+        ],
+        "alias_terms": [
+          "Стоп-лосс",
+          "Типы стоп-лоссов"
+        ],
+        "title": "comparison / Стоп-лосс",
+        "text": "[comparison] [Concept] Стоп-лосс Расчетный стоп-лосс применяется во всех ситуациях и на всех рынках, в то время как технический стоп-лосс лучше применять при наличии определенных критериев. [Time] 04:46–05:01 [Support Basis] transcript_plus_visual",
+        "short_text": "[comparison] [Concept] Стоп-лосс Расчетный стоп-лосс применяется во всех ситуациях и на всех рынках, в то время как технический стоп-лосс лучше применять при наличии определенных критериев. [Time] 04:",
+        "keywords": [
+          "Стоп-лосс",
+          "Типы стоп-лоссов",
+          "comparison"
+        ],
+        "provenance": {
+          "lesson_title": null,
+          "section": null,
+          "subsection": null,
+          "chunk_index": 2,
+          "source_line_start": 11,
+          "source_line_end": 16
+        },
+        "confidence_score": 0.85,
+        "support_basis": "transcript_plus_visual",
+        "evidence_requirement": "none",
+        "teaching_mode": "theory",
+        "timestamps": [
+          {
+            "start": "04:46",
+            "end": "05:01"
+          },
+          {
+            "start": "04:32",
+            "end": "04:32"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_2_9"
+        ],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "metadata": {
+          "chunk_index": 2,
+          "chunk_start_time_seconds": 253.56,
+          "chunk_end_time_seconds": 375.3,
+          "transcript_line_count": 46,
+          "candidate_visual_frame_keys": [
+            "000274"
+          ],
+          "candidate_visual_types": [
+            "text_slide"
+          ],
+          "candidate_example_types": [
+            "abstract_teaching_example"
+          ],
+          "rule_type": "comparison",
+          "pattern_tags": [],
+          "source_quote": "Расчетный стоп-лосс, он применяется абсолютно во всех ситуациях, абсолютно на всех рынках. В то время как технический лучше всего применять при наличии каких-то определенных критерий.",
+          "transcript_anchors": [
+            {
+              "line_index": 11,
+              "text": "Расчетный стоп-лосс, он применяется абсолютно во всех",
+              "timestamp_start": "04:46",
+              "timestamp_end": "04:49",
+              "match_source": "llm_line_indices"
+            },
+            {
+              "line_index": 12,
+              "text": "ситуациях, абсолютно на всех рынках.",
+              "timestamp_start": "04:49",
+              "timestamp_end": "04:51",
+              "match_source": "llm_line_indices"
+            },
+            {
+              "line_index": 13,
+              "text": "Это Форекс, это Америка, это Криптай, это Мойкс,",
+              "timestamp_start": "04:51",
+              "timestamp_end": "04:54",
+              "match_source": "llm_line_indices"
+            },
+            {
+              "line_index": 14,
+              "text": "то есть и другие рынки.",
+              "timestamp_start": "04:54",
+              "timestamp_end": "04:55",
+              "match_source": "llm_line_indices"
+            },
+            {
+              "line_index": 15,
+              "text": "В то время как технический лучше всего применять",
+              "timestamp_start": "04:56",
+              "timestamp_end": "04:59",
+              "match_source": "llm_line_indices"
+            },
+            {
+              "line_index": 16,
+              "text": "при наличии каких-то определенных критерий.",
+              "timestamp_start": "04:59",
+              "timestamp_end": "05:01",
+              "match_source": "llm_line_indices"
+            }
+          ],
+          "timestamp_confidence": "span",
+          "anchor_match_source": "llm_line_indices",
+          "anchor_line_count": 6,
+          "anchor_span_width": 6,
+          "anchor_density": 1.0,
+          "visual_support_level": "supporting_example",
+          "transcript_support_level": "strong",
+          "transcript_support_score": 0.85,
+          "visual_support_score": 0.4
+        },
+        "event_type": "comparison",
+        "normalized_text": "Расчетный стоп-лосс применяется во всех ситуациях и на всех рынках, в то время как технический стоп-лосс лучше применять при наличии определенных критериев.",
+        "normalized_text_ru": "Расчетный стоп-лосс применяется во всех ситуациях и на всех рынках, в то время как технический стоп-лосс лучше применять при наличии определенных критериев.",
+        "concept": "Стоп-лосс",
+        "subconcept": "Типы стоп-лоссов"
+      },
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_2_algorithm_hint_0",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+        "language": "ru",
+        "canonical_concept_ids": [
+          "concept:stop_loss"
+        ],
+        "canonical_subconcept_ids": [
+          "subconcept:tekhnicheskiy_stop_loss"
+        ],
+        "alias_terms": [
+          "Стоп-лосс",
+          "Технический стоп-лосс"
+        ],
+        "title": "algorithm_hint / Стоп-лосс",
+        "text": "[algorithm_hint] [Concept] Стоп-лосс При отбойной модели использовать стоп меньше 1 пятиминутки, спрятав его за уровень. [Time] 05:06–05:13 [Support Basis] transcript_plus_visual",
+        "short_text": "[algorithm_hint] [Concept] Стоп-лосс При отбойной модели использовать стоп меньше 1 пятиминутки, спрятав его за уровень. [Time] 05:06–05:13 [Support Basis] transcript_plus_visual",
+        "keywords": [
+          "Стоп-лосс",
+          "Технический стоп-лосс",
+          "algorithm_hint"
+        ],
+        "provenance": {
+          "lesson_title": null,
+          "section": null,
+          "subsection": null,
+          "chunk_index": 2,
+          "source_line_start": 19,
+          "source_line_end": 21
+        },
+        "confidence_score": 0.85,
+        "support_basis": "transcript_plus_visual",
+        "evidence_requirement": "optional",
+        "teaching_mode": "theory",
+        "timestamps": [
+          {
+            "start": "05:06",
+            "end": "05:13"
+          }
+        ],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "metadata": {
+          "chunk_index": 2,
+          "chunk_start_time_seconds": 253.56,
+          "chunk_end_time_seconds": 375.3,
+          "transcript_line_count": 46,
+          "candidate_visual_frame_keys": [
+            "000274"
+          ],
+          "candidate_visual_types": [
+            "text_slide"
+          ],
+          "candidate_example_types": [
+            "abstract_teaching_example"
+          ],
+          "rule_type": "algorithm_hint",
+          "pattern_tags": [],
+          "source_quote": "Если это отбойная модель, вы можете вообще взять стоп даже меньше, чем 1 пятиминутка, спрятать его просто за уровень",
+          "transcript_anchors": [
+            {
+              "line_index": 19,
+              "text": "Если это отбойная модель, вы можете вообще взять",
+              "timestamp_start": "05:06",
+              "timestamp_end": "05:07",
+              "match_source": "llm_line_indices"
+            },
+            {
+              "line_index": 20,
+              "text": "стоп даже меньше, чем 1 пятиминутка, спрятать его",
+              "timestamp_start": "05:07",
+              "timestamp_end": "05:10",
+              "match_source": "llm_line_indices"
+            },
+            {
+              "line_index": 21,
+              "text": "просто за уровень и забрать свой даже 10",
+              "timestamp_start": "05:10",
+              "timestamp_end": "05:13",
+              "match_source": "llm_line_indices"
+            }
+          ],
+          "timestamp_confidence": "line",
+          "anchor_match_source": "llm_line_indices",
+          "anchor_line_count": 3,
+          "anchor_span_width": 3,
+          "anchor_density": 1.0,
+          "visual_support_level": "supporting_example",
+          "transcript_support_level": "strong",
+          "transcript_support_score": 1.0,
+          "visual_support_score": 0.4
+        },
+        "event_type": "algorithm_hint",
+        "normalized_text": "При отбойной модели использовать стоп меньше 1 пятиминутки, спрятав его за уровень.",
+        "normalized_text_ru": "При отбойной модели использовать стоп меньше 1 пятиминутки, спрятав его за уровень.",
+        "concept": "Стоп-лосс",
+        "subconcept": "Технический стоп-лосс"
+      },
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_2_example_1",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+        "language": "ru",
+        "canonical_concept_ids": [
+          "concept:stop_loss"
+        ],
+        "canonical_subconcept_ids": [
+          "subconcept:korotkiy_stop"
+        ],
+        "alias_terms": [
+          "Стоп-лосс",
+          "Короткий стоп"
+        ],
+        "title": "example / Стоп-лосс",
+        "text": "[example] [Concept] Стоп-лосс Пример короткого стопа: 1 пятиминутка или 2 пятиминутки. [Time] 06:08–06:10 [Support Basis] transcript_plus_visual",
+        "short_text": "[example] [Concept] Стоп-лосс Пример короткого стопа: 1 пятиминутка или 2 пятиминутки. [Time] 06:08–06:10 [Support Basis] transcript_plus_visual",
+        "keywords": [
+          "Стоп-лосс",
+          "Короткий стоп",
+          "example"
+        ],
+        "provenance": {
+          "lesson_title": null,
+          "section": null,
+          "subsection": null,
+          "chunk_index": 2,
+          "source_line_start": 43,
+          "source_line_end": 43
+        },
+        "confidence_score": 0.85,
+        "support_basis": "transcript_plus_visual",
+        "evidence_requirement": "required",
+        "teaching_mode": "example",
+        "timestamps": [
+          {
+            "start": "06:08",
+            "end": "06:10"
+          }
+        ],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "metadata": {
+          "chunk_index": 2,
+          "chunk_start_time_seconds": 253.56,
+          "chunk_end_time_seconds": 375.3,
+          "transcript_line_count": 46,
+          "candidate_visual_frame_keys": [
+            "000274"
+          ],
+          "candidate_visual_types": [
+            "text_slide"
+          ],
+          "candidate_example_types": [
+            "abstract_teaching_example"
+          ],
+          "rule_type": "example",
+          "pattern_tags": [],
+          "source_quote": "это 1 пятиминутка, 2 пятиминутки.",
+          "transcript_anchors": [
+            {
+              "line_index": 43,
+              "text": "стоп – это 1 пятиминутка, 2 пятиминутки.",
+              "timestamp_start": "06:08",
+              "timestamp_end": "06:10",
+              "match_source": "llm_line_indices"
+            }
+          ],
+          "timestamp_confidence": "line",
+          "anchor_match_source": "llm_line_indices",
+          "anchor_line_count": 1,
+          "anchor_span_width": 1,
+          "anchor_density": 1.0,
+          "visual_support_level": "supporting_example",
+          "transcript_support_level": "strong",
+          "transcript_support_score": 0.9,
+          "visual_support_score": 0.4
+        },
+        "event_type": "example",
+        "normalized_text": "Пример короткого стопа: 1 пятиминутка или 2 пятиминутки.",
+        "normalized_text_ru": "Пример короткого стопа: 1 пятиминутка или 2 пятиминутки.",
+        "concept": "Стоп-лосс",
+        "subconcept": "Короткий стоп"
+      },
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_2_example_2",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+        "language": "ru",
+        "canonical_concept_ids": [
+          "concept:stop_loss"
+        ],
+        "canonical_subconcept_ids": [
+          "subconcept:korotkiy_stop"
+        ],
+        "alias_terms": [
+          "Стоп-лосс",
+          "Короткий стоп"
+        ],
+        "title": "example / Стоп-лосс",
+        "text": "[example] [Concept] Стоп-лосс Иногда 1 пятиминутка может быть равна 10% от ATR. [Time] 06:10–06:15 [Support Basis] transcript_plus_visual",
+        "short_text": "[example] [Concept] Стоп-лосс Иногда 1 пятиминутка может быть равна 10% от ATR. [Time] 06:10–06:15 [Support Basis] transcript_plus_visual",
+        "keywords": [
+          "Стоп-лосс",
+          "Короткий стоп",
+          "example"
+        ],
+        "provenance": {
+          "lesson_title": null,
+          "section": null,
+          "subsection": null,
+          "chunk_index": 2,
+          "source_line_start": 44,
+          "source_line_end": 45
+        },
+        "confidence_score": 0.85,
+        "support_basis": "transcript_plus_visual",
+        "evidence_requirement": "required",
+        "teaching_mode": "example",
+        "timestamps": [
+          {
+            "start": "06:10",
+            "end": "06:15"
+          }
+        ],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "metadata": {
+          "chunk_index": 2,
+          "chunk_start_time_seconds": 253.56,
+          "chunk_end_time_seconds": 375.3,
+          "transcript_line_count": 46,
+          "candidate_visual_frame_keys": [
+            "000274"
+          ],
+          "candidate_visual_types": [
+            "text_slide"
+          ],
+          "candidate_example_types": [
+            "abstract_teaching_example"
+          ],
+          "rule_type": "example",
+          "pattern_tags": [],
+          "source_quote": "Бывает, конечно, так, что 1 пятиминутка равна 10 % от АТАР.",
+          "transcript_anchors": [
+            {
+              "line_index": 44,
+              "text": "Бывает, конечно, так, что 1 пятиминутка равна 10",
+              "timestamp_start": "06:10",
+              "timestamp_end": "06:13",
+              "match_source": "llm_line_indices"
+            },
+            {
+              "line_index": 45,
+              "text": "% от АТАР.",
+              "timestamp_start": "06:13",
+              "timestamp_end": "06:15",
+              "match_source": "llm_line_indices"
+            }
+          ],
+          "timestamp_confidence": "line",
+          "anchor_match_source": "llm_line_indices",
+          "anchor_line_count": 2,
+          "anchor_span_width": 2,
+          "anchor_density": 1.0,
+          "visual_support_level": "supporting_example",
+          "transcript_support_level": "strong",
+          "transcript_support_score": 0.95,
+          "visual_support_score": 0.4
+        },
+        "event_type": "example",
+        "normalized_text": "Иногда 1 пятиминутка может быть равна 10% от ATR.",
+        "normalized_text_ru": "Иногда 1 пятиминутка может быть равна 10% от ATR.",
+        "concept": "Стоп-лосс",
+        "subconcept": "Короткий стоп"
+      },
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_23_algorithm_hint_0",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+        "language": "ru",
+        "canonical_concept_ids": [
+          "concept:stop_loss"
+        ],
+        "canonical_subconcept_ids": [
+          "subconcept:razmer_stop_lossa"
+        ],
+        "alias_terms": [
+          "стоп-лосс",
+          "размер стоп-лосса"
+        ],
+        "title": "algorithm_hint / стоп-лосс",
+        "text": "[algorithm_hint] [Concept] стоп-лосс Стоп на форексе 13-15%. [Time] 54:18–54:21 [Support Basis] transcript_primary",
+        "short_text": "[algorithm_hint] [Concept] стоп-лосс Стоп на форексе 13-15%. [Time] 54:18–54:21 [Support Basis] transcript_primary",
+        "keywords": [
+          "стоп-лосс",
+          "размер стоп-лосса",
+          "algorithm_hint"
+        ],
+        "provenance": {
+          "lesson_title": null,
+          "section": null,
+          "subsection": null,
+          "chunk_index": 23,
+          "source_line_start": 21,
+          "source_line_end": 22
+        },
+        "confidence_score": 0.85,
+        "support_basis": "transcript_primary",
+        "evidence_requirement": "optional",
+        "teaching_mode": "theory",
+        "timestamps": [
+          {
+            "start": "54:18",
+            "end": "54:21"
+          }
+        ],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "metadata": {
+          "chunk_index": 23,
+          "chunk_start_time_seconds": 3195.83,
+          "chunk_end_time_seconds": 3319.52,
+          "transcript_line_count": 46,
+          "rule_type": "algorithm_hint",
+          "pattern_tags": [],
+          "source_quote": "То есть, у кого, опять же, стоп это на форексе 13-15%.",
+          "transcript_anchors": [
+            {
+              "line_index": 21,
+              "text": "То есть, у кого, опять же, стоп это",
+              "timestamp_start": "54:18",
+              "timestamp_end": "54:19",
+              "match_source": "llm_line_indices"
+            },
+            {
+              "line_index": 22,
+              "text": "на форексе 13-15%.",
+              "timestamp_start": "54:19",
+              "timestamp_end": "54:21",
+              "match_source": "llm_line_indices"
+            }
+          ],
+          "timestamp_confidence": "line",
+          "anchor_match_source": "llm_line_indices",
+          "anchor_line_count": 2,
+          "anchor_span_width": 2,
+          "anchor_density": 1.0,
+          "visual_support_level": "none",
+          "transcript_support_level": "strong",
+          "transcript_support_score": 0.9,
+          "visual_support_score": 0.0
+        },
+        "event_type": "algorithm_hint",
+        "normalized_text": "Стоп на форексе 13-15%.",
+        "normalized_text_ru": "Стоп на форексе 13-15%.",
+        "concept": "стоп-лосс",
+        "subconcept": "размер стоп-лосса"
+      },
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_29_warning_0",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+        "language": "ru",
+        "canonical_concept_ids": [
+          "concept:stop_loss"
+        ],
+        "canonical_subconcept_ids": [
+          "subconcept:razmeshchenie"
+        ],
+        "alias_terms": [
+          "Стоп-лосс",
+          "размещение"
+        ],
+        "title": "warning / Стоп-лосс",
+        "text": "[warning] [Concept] Стоп-лосс Стоп прячется либо за пробойный бар, в зависимости от того, какой его стоп, либо прячется просто стоп за уровень и торгуется инструментом на разворот. [Time] 66:27–66:35 [Support Basis] transcript_primary",
+        "short_text": "[warning] [Concept] Стоп-лосс Стоп прячется либо за пробойный бар, в зависимости от того, какой его стоп, либо прячется просто стоп за уровень и торгуется инструментом на разворот. [Time] 66:27–66:35 ",
+        "keywords": [
+          "Стоп-лосс",
+          "размещение",
+          "warning"
+        ],
+        "provenance": {
+          "lesson_title": null,
+          "section": null,
+          "subsection": null,
+          "chunk_index": 29,
+          "source_line_start": 19,
+          "source_line_end": 21
+        },
+        "confidence_score": 0.85,
+        "support_basis": "transcript_primary",
+        "evidence_requirement": "optional",
+        "teaching_mode": "theory",
+        "timestamps": [
+          {
+            "start": "66:27",
+            "end": "66:35"
+          }
+        ],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "metadata": {
+          "chunk_index": 29,
+          "chunk_start_time_seconds": 3933.93,
+          "chunk_end_time_seconds": 4059.79,
+          "transcript_line_count": 45,
+          "rule_type": "warning",
+          "pattern_tags": [],
+          "source_quote": "то есть стоп прячется либо за пробойный бар, в зависимости от того, какой его стоп, либо прячется просто стоп за уровень и торгуется инструментом на разворот.",
+          "transcript_anchors": [
+            {
+              "line_index": 19,
+              "text": "прячется либо за пробойный бар, в зависимости от",
+              "timestamp_start": "66:27",
+              "timestamp_end": "66:29",
+              "match_source": "llm_source_quote"
+            },
+            {
+              "line_index": 20,
+              "text": "того, какой его стоп, либо прячется просто стоп",
+              "timestamp_start": "66:29",
+              "timestamp_end": "66:32",
+              "match_source": "llm_source_quote"
+            },
+            {
+              "line_index": 21,
+              "text": "за уровень и торгуется инструментом на разворот.",
+              "timestamp_start": "66:32",
+              "timestamp_end": "66:35",
+              "match_source": "llm_source_quote"
+            }
+          ],
+          "timestamp_confidence": "span",
+          "anchor_match_source": "llm_source_quote",
+          "anchor_line_count": 3,
+          "anchor_span_width": 3,
+          "anchor_density": 1.0,
+          "visual_support_level": "none",
+          "transcript_support_level": "strong",
+          "transcript_support_score": 0.85,
+          "visual_support_score": 0.0
+        },
+        "event_type": "warning",
+        "normalized_text": "Стоп прячется либо за пробойный бар, в зависимости от того, какой его стоп, либо прячется просто стоп за уровень и торгуется инструментом на разворот.",
+        "normalized_text_ru": "Стоп прячется либо за пробойный бар, в зависимости от того, какой его стоп, либо прячется просто стоп за уровень и торгуется инструментом на разворот.",
+        "concept": "Стоп-лосс",
+        "subconcept": "размещение"
+      },
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_29_process_step_0",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+        "language": "ru",
+        "canonical_concept_ids": [
+          "concept:stop_loss"
+        ],
+        "canonical_subconcept_ids": [
+          "subconcept:raschet"
+        ],
+        "alias_terms": [
+          "Стоп-лосс",
+          "расчет"
+        ],
+        "title": "process_step / Стоп-лосс",
+        "text": "[process_step] [Concept] Стоп-лосс Используется 10% от ATAR или 15, 20, 1 пятиминутка – это технический какой-то стоп. [Time] 65:33–65:42 [Support Basis] transcript_primary",
+        "short_text": "[process_step] [Concept] Стоп-лосс Используется 10% от ATAR или 15, 20, 1 пятиминутка – это технический какой-то стоп. [Time] 65:33–65:42 [Support Basis] transcript_primary",
+        "keywords": [
+          "Стоп-лосс",
+          "расчет",
+          "process_step"
+        ],
+        "provenance": {
+          "lesson_title": null,
+          "section": null,
+          "subsection": null,
+          "chunk_index": 29,
+          "source_line_start": 0,
+          "source_line_end": 2
+        },
+        "confidence_score": 0.85,
+        "support_basis": "transcript_primary",
+        "evidence_requirement": "optional",
+        "teaching_mode": "theory",
+        "timestamps": [
+          {
+            "start": "65:33",
+            "end": "65:42"
+          }
+        ],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "metadata": {
+          "chunk_index": 29,
+          "chunk_start_time_seconds": 3933.93,
+          "chunk_end_time_seconds": 4059.79,
+          "transcript_line_count": 45,
+          "rule_type": "process_step",
+          "pattern_tags": [],
+          "source_quote": "Либо стандартный 10% от ATAR, либо вы используете, соответственно, 15, 20, 1 пятиминутка – это технический какой-то стоп.",
+          "transcript_anchors": [
+            {
+              "line_index": 0,
+              "text": "Либо стандартный 10% от ATAR, либо вы",
+              "timestamp_start": "65:33",
+              "timestamp_end": "65:36",
+              "match_source": "llm_source_quote"
+            },
+            {
+              "line_index": 1,
+              "text": "используете, соответственно, 15, 20, 1 пятиминутка – это",
+              "timestamp_start": "65:36",
+              "timestamp_end": "65:41",
+              "match_source": "llm_source_quote"
+            },
+            {
+              "line_index": 2,
+              "text": "технический какой-то стоп.",
+              "timestamp_start": "65:41",
+              "timestamp_end": "65:42",
+              "match_source": "llm_source_quote"
+            }
+          ],
+          "timestamp_confidence": "span",
+          "anchor_match_source": "llm_source_quote",
+          "anchor_line_count": 3,
+          "anchor_span_width": 3,
+          "anchor_density": 1.0,
+          "visual_support_level": "none",
+          "transcript_support_level": "strong",
+          "transcript_support_score": 0.85,
+          "visual_support_score": 0.0
+        },
+        "event_type": "process_step",
+        "normalized_text": "Используется 10% от ATAR или 15, 20, 1 пятиминутка – это технический какой-то стоп.",
+        "normalized_text_ru": "Используется 10% от ATAR или 15, 20, 1 пятиминутка – это технический какой-то стоп.",
+        "concept": "Стоп-лосс",
+        "subconcept": "расчет"
+      },
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_29_algorithm_hint_1",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+        "language": "ru",
+        "canonical_concept_ids": [
+          "concept:stop_loss"
+        ],
+        "canonical_subconcept_ids": [
+          "subconcept:algoritm_razmeshcheniya"
+        ],
+        "alias_terms": [
+          "Стоп-лосс",
+          "алгоритм размещения"
+        ],
+        "title": "algorithm_hint / Стоп-лосс",
+        "text": "[algorithm_hint] [Concept] Стоп-лосс Стоп-лосс прячется за пробойный бар или за уровень. [Time] 66:27–66:32 [Support Basis] transcript_primary",
+        "short_text": "[algorithm_hint] [Concept] Стоп-лосс Стоп-лосс прячется за пробойный бар или за уровень. [Time] 66:27–66:32 [Support Basis] transcript_primary",
+        "keywords": [
+          "Стоп-лосс",
+          "алгоритм размещения",
+          "algorithm_hint"
+        ],
+        "provenance": {
+          "lesson_title": null,
+          "section": null,
+          "subsection": null,
+          "chunk_index": 29,
+          "source_line_start": 19,
+          "source_line_end": 20
+        },
+        "confidence_score": 0.85,
+        "support_basis": "transcript_primary",
+        "evidence_requirement": "optional",
+        "teaching_mode": "theory",
+        "timestamps": [
+          {
+            "start": "66:27",
+            "end": "66:32"
+          }
+        ],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "metadata": {
+          "chunk_index": 29,
+          "chunk_start_time_seconds": 3933.93,
+          "chunk_end_time_seconds": 4059.79,
+          "transcript_line_count": 45,
+          "rule_type": "algorithm_hint",
+          "pattern_tags": [],
+          "source_quote": "то есть стоп прячется либо за пробойный бар, в зависимости от того, какой его стоп, либо прячется просто стоп за уровень",
+          "transcript_anchors": [
+            {
+              "line_index": 19,
+              "text": "прячется либо за пробойный бар, в зависимости от",
+              "timestamp_start": "66:27",
+              "timestamp_end": "66:29",
+              "match_source": "llm_source_quote"
+            },
+            {
+              "line_index": 20,
+              "text": "того, какой его стоп, либо прячется просто стоп",
+              "timestamp_start": "66:29",
+              "timestamp_end": "66:32",
+              "match_source": "llm_source_quote"
+            }
+          ],
+          "timestamp_confidence": "span",
+          "anchor_match_source": "llm_source_quote",
+          "anchor_line_count": 2,
+          "anchor_span_width": 2,
+          "anchor_density": 1.0,
+          "visual_support_level": "none",
+          "transcript_support_level": "strong",
+          "transcript_support_score": 0.8,
+          "visual_support_score": 0.0
+        },
+        "event_type": "algorithm_hint",
+        "normalized_text": "Стоп-лосс прячется за пробойный бар или за уровень.",
+        "normalized_text_ru": "Стоп-лосс прячется за пробойный бар или за уровень.",
+        "concept": "Стоп-лосс",
+        "subconcept": "алгоритм размещения"
+      }
+    ]
+  }
+}

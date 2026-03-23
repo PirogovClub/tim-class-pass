@@ -1,0 +1,1095 @@
+{
+  "method": "POST",
+  "path": "/rag/search",
+  "request": {
+    "query": "????? ??????? ??????? ?????????? ??????????????",
+    "top_k": 5,
+    "unit_types": [
+      "evidence_ref",
+      "rule_card"
+    ],
+    "filters": {
+      "lesson_ids": [],
+      "concept_ids": [],
+      "min_confidence_score": null
+    },
+    "return_summary": true
+  },
+  "status_code": 200,
+  "response": {
+    "query": "????? ??????? ??????? ?????????? ??????????????",
+    "query_analysis": {
+      "normalized_query": "????? ??????? ??????? ?????????? ??????????????",
+      "detected_concepts": [],
+      "detected_unit_bias": "mixed",
+      "expansion_trace": {
+        "detected_terms": [],
+        "exact_alias_matches": {},
+        "normalized_alias_matches": {},
+        "canonical_concept_ids": [],
+        "expanded_concept_ids": [],
+        "boosted_rule_ids": [],
+        "related_terms": [],
+        "expansion_trace": []
+      }
+    },
+    "top_hits": [
+      {
+        "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_55",
+        "unit_type": "rule_card",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "Истинный пробой / Накопление",
+        "text_snippet": "[Concept] Истинный пробой\n[Subconcept] Накопление\n[Rule] Накопление крайне важно для хорошего истинного пробоя.\n[Visual] New slide with title 'Энергия' and explanatory text about accumulation and cons",
+        "timestamps": [
+          {
+            "start": "11:29",
+            "end": "11:33"
+          },
+          {
+            "start": "11:24",
+            "end": "11:24"
+          },
+          {
+            "start": "11:36",
+            "end": "11:54"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_5_16",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_5_17"
+        ],
+        "source_event_ids": [
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_5_rule_statement_2"
+        ],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_55"
+        ],
+        "raw_lexical_score": 0.0,
+        "raw_vector_score": 0.4712,
+        "graph_boost": 0.0,
+        "score": 0.601,
+        "score_breakdown": {
+          "lexical_score": 0.0,
+          "vector_score": 1.0,
+          "concept_exact_match": 0.0,
+          "alias_match": 0.0,
+          "confidence_score": 0.9,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 0.6667,
+          "unit_type_relevance": 1.0,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 0.9167,
+          "lesson_diversity_bonus": 1.0
+        },
+        "why_retrieved": [
+          "strong_vector",
+          "well_grounded"
+        ]
+      },
+      {
+        "doc_id": "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_24",
+        "unit_type": "rule_card",
+        "lesson_id": "Lesson 2. Levels part 1",
+        "title": "Поведение крупных игроков / Уровни",
+        "text_snippet": "[Concept] Поведение крупных игроков\n[Subconcept] Уровни\n[Rule] Крупняк всегда будет защищать свой уровень, который он сделал на дневке, на недельке, на месяце.\n[Visual] A small chart diagram has appea",
+        "timestamps": [
+          {
+            "start": "08:09",
+            "end": "08:15"
+          },
+          {
+            "start": "07:46",
+            "end": "07:46"
+          },
+          {
+            "start": "07:50",
+            "end": "07:50"
+          },
+          {
+            "start": "07:54",
+            "end": "07:54"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_94",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_95",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_96",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_97",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_98",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_99"
+        ],
+        "source_event_ids": [
+          "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_3_rule_statement_2"
+        ],
+        "source_rule_ids": [
+          "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_24"
+        ],
+        "raw_lexical_score": 0.0,
+        "raw_vector_score": 0.4362,
+        "graph_boost": 0.0,
+        "score": 0.5566,
+        "score_breakdown": {
+          "lexical_score": 0.0,
+          "vector_score": 0.8521,
+          "concept_exact_match": 0.0,
+          "alias_match": 0.0,
+          "confidence_score": 0.9,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 0.6667,
+          "unit_type_relevance": 1.0,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 0.9167,
+          "lesson_diversity_bonus": 1.0
+        },
+        "why_retrieved": [
+          "strong_vector",
+          "well_grounded"
+        ]
+      },
+      {
+        "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_76",
+        "unit_type": "rule_card",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "Удержание позиции / Удержание по фактору зоны",
+        "text_snippet": "[Concept] Удержание позиции\n[Subconcept] Удержание по фактору зоны\n[Rule] При наличии свободной зоны за уровнем, ближнего ретеста и накопления, можно удерживать инструмент несколько дней.\n[Visual] New",
+        "timestamps": [
+          {
+            "start": "15:20",
+            "end": "15:29"
+          },
+          {
+            "start": "15:18",
+            "end": "15:20"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_7_23"
+        ],
+        "source_event_ids": [
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_1"
+        ],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_76"
+        ],
+        "raw_lexical_score": 0.0,
+        "raw_vector_score": 0.3761,
+        "graph_boost": 0.0,
+        "score": 0.4506,
+        "score_breakdown": {
+          "lexical_score": 0.0,
+          "vector_score": 0.5987,
+          "concept_exact_match": 0.0,
+          "alias_match": 0.0,
+          "confidence_score": 0.9,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 0.6667,
+          "unit_type_relevance": 1.0,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 0.9167,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "strong_vector",
+          "well_grounded"
+        ]
+      },
+      {
+        "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_77",
+        "unit_type": "rule_card",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "Ложный пробой / Ложный пробой и паранормальный бар",
+        "text_snippet": "[Concept] Ложный пробой\n[Subconcept] Ложный пробой и паранормальный бар\n[Rule] Ложные пробои чаще всего происходят относительно паранормальных баров.\n[Visual] New slide displayed with title 'Зона' and",
+        "timestamps": [
+          {
+            "start": "16:06",
+            "end": "16:13"
+          },
+          {
+            "start": "16:32",
+            "end": "16:32"
+          },
+          {
+            "start": "16:34",
+            "end": "16:36"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_7_24",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_7_25"
+        ],
+        "source_event_ids": [
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_2"
+        ],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_77"
+        ],
+        "raw_lexical_score": 0.0,
+        "raw_vector_score": 0.3663,
+        "graph_boost": 0.0,
+        "score": 0.4381,
+        "score_breakdown": {
+          "lexical_score": 0.0,
+          "vector_score": 0.557,
+          "concept_exact_match": 0.0,
+          "alias_match": 0.0,
+          "confidence_score": 0.9,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 0.6667,
+          "unit_type_relevance": 1.0,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 0.9167,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "strong_vector",
+          "well_grounded"
+        ]
+      },
+      {
+        "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_161",
+        "unit_type": "rule_card",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "Ложный пробой / Хвост ложного пробоя",
+        "text_snippet": "[Concept] Ложный пробой\n[Subconcept] Хвост ложного пробоя\n[Rule] Чем меньше хвост от ложного пробоя, тем лучше.\n[Comparisons] Сравнение поведения инструмента при большом и малом хвосте от ложного проб",
+        "timestamps": [
+          {
+            "start": "35:28",
+            "end": "35:33"
+          },
+          {
+            "start": "34:40",
+            "end": "36:45"
+          },
+          {
+            "start": "34:54",
+            "end": "34:54"
+          },
+          {
+            "start": "35:22",
+            "end": "35:24"
+          },
+          {
+            "start": "36:32",
+            "end": "36:32"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_15_54",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_15_55",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_15_57"
+        ],
+        "source_event_ids": [
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_15_rule_statement_0",
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_15_comparison_0"
+        ],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_161"
+        ],
+        "raw_lexical_score": 0.0,
+        "raw_vector_score": 0.3557,
+        "graph_boost": 0.0,
+        "score": 0.4247,
+        "score_breakdown": {
+          "lexical_score": 0.0,
+          "vector_score": 0.5122,
+          "concept_exact_match": 0.0,
+          "alias_match": 0.0,
+          "confidence_score": 0.9,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 0.6667,
+          "unit_type_relevance": 1.0,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 0.9167,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "strong_vector",
+          "well_grounded"
+        ]
+      }
+    ],
+    "grouped_results": {
+      "rule_cards": [
+        {
+          "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_55",
+          "unit_type": "rule_card",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "Истинный пробой / Накопление",
+          "text_snippet": "[Concept] Истинный пробой\n[Subconcept] Накопление\n[Rule] Накопление крайне важно для хорошего истинного пробоя.\n[Visual] New slide with title 'Энергия' and explanatory text about accumulation and cons",
+          "timestamps": [
+            {
+              "start": "11:29",
+              "end": "11:33"
+            },
+            {
+              "start": "11:24",
+              "end": "11:24"
+            },
+            {
+              "start": "11:36",
+              "end": "11:54"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_5_16",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_5_17"
+          ],
+          "source_event_ids": [
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_5_rule_statement_2"
+          ],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_55"
+          ],
+          "raw_lexical_score": 0.0,
+          "raw_vector_score": 0.4712,
+          "graph_boost": 0.0,
+          "score": 0.601,
+          "score_breakdown": {
+            "lexical_score": 0.0,
+            "vector_score": 1.0,
+            "concept_exact_match": 0.0,
+            "alias_match": 0.0,
+            "confidence_score": 0.9,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 0.6667,
+            "unit_type_relevance": 1.0,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 0.9167,
+            "lesson_diversity_bonus": 1.0
+          },
+          "why_retrieved": [
+            "strong_vector",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_55",
+            "unit_type": "rule_card",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:istinnyy_proboy"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:accumulation"
+            ],
+            "alias_terms": [
+              "Истинный пробой",
+              "Накопление"
+            ],
+            "title": "Истинный пробой / Накопление",
+            "text": "[Concept] Истинный пробой\n[Subconcept] Накопление\n[Rule] Накопление крайне важно для хорошего истинного пробоя.\n[Visual] New slide with title 'Энергия' and explanatory text about accumulation and consolidation increasing chances of true breakout. Three chart examples are displayed below the text.…\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+            "short_text": "[Concept] Истинный пробой\n[Subconcept] Накопление\n[Rule] Накопление крайне важно для хорошего истинного пробоя.\n[Visual] New slide with title 'Энергия' and explanatory text about accumulation and cons",
+            "keywords": [
+              "Истинный пробой",
+              "Накопление",
+              "Для определения истинного пробоя, отслеживать накопление."
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "confidence": "high",
+              "support_basis": "transcript_plus_visual"
+            },
+            "confidence_score": 0.9,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "optional",
+            "teaching_mode": "mixed",
+            "timestamps": [
+              {
+                "start": "11:29",
+                "end": "11:33"
+              },
+              {
+                "start": "11:24",
+                "end": "11:24"
+              },
+              {
+                "start": "11:36",
+                "end": "11:54"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_5_16",
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_5_17"
+            ],
+            "source_event_ids": [
+              "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_5_rule_statement_2"
+            ],
+            "source_rule_ids": [
+              "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_55"
+            ],
+            "metadata": {
+              "source_sections": [],
+              "source_subsections": [],
+              "source_chunk_indexes": [
+                5
+              ],
+              "conditions": [],
+              "invalidation": [],
+              "exceptions": [],
+              "comparisons": [],
+              "algorithm_notes": [
+                "Для определения истинного пробоя, отслеживать накопление."
+              ],
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 0.95,
+              "visual_support_score": 0.4,
+              "has_visual_evidence": true,
+              "transcript_anchor_count": 2,
+              "transcript_repetition_count": 1
+            },
+            "rule_text": "Накопление крайне важно для хорошего истинного пробоя.",
+            "rule_text_ru": "Накопление крайне важно для хорошего истинного пробоя.",
+            "conditions": [],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "visual_summary": "New slide with title 'Энергия' and explanatory text about accumulation and consolidation increasing chances of true breakout. Three chart examples are displayed below the text.…",
+            "concept": "Истинный пробой",
+            "subconcept": "Накопление"
+          }
+        },
+        {
+          "doc_id": "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_24",
+          "unit_type": "rule_card",
+          "lesson_id": "Lesson 2. Levels part 1",
+          "title": "Поведение крупных игроков / Уровни",
+          "text_snippet": "[Concept] Поведение крупных игроков\n[Subconcept] Уровни\n[Rule] Крупняк всегда будет защищать свой уровень, который он сделал на дневке, на недельке, на месяце.\n[Visual] A small chart diagram has appea",
+          "timestamps": [
+            {
+              "start": "08:09",
+              "end": "08:15"
+            },
+            {
+              "start": "07:46",
+              "end": "07:46"
+            },
+            {
+              "start": "07:50",
+              "end": "07:50"
+            },
+            {
+              "start": "07:54",
+              "end": "07:54"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_94",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_95",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_96",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_97",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_98",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_99"
+          ],
+          "source_event_ids": [
+            "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_3_rule_statement_2"
+          ],
+          "source_rule_ids": [
+            "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_24"
+          ],
+          "raw_lexical_score": 0.0,
+          "raw_vector_score": 0.4362,
+          "graph_boost": 0.0,
+          "score": 0.5566,
+          "score_breakdown": {
+            "lexical_score": 0.0,
+            "vector_score": 0.8521,
+            "concept_exact_match": 0.0,
+            "alias_match": 0.0,
+            "confidence_score": 0.9,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 0.6667,
+            "unit_type_relevance": 1.0,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 0.9167,
+            "lesson_diversity_bonus": 1.0
+          },
+          "why_retrieved": [
+            "strong_vector",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_24",
+            "unit_type": "rule_card",
+            "lesson_id": "Lesson 2. Levels part 1",
+            "lesson_slug": "lesson_2_levels_part_1",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:povedenie_krupnykh_igrokov"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:level"
+            ],
+            "alias_terms": [
+              "Поведение крупных игроков",
+              "Уровни"
+            ],
+            "title": "Поведение крупных игроков / Уровни",
+            "text": "[Concept] Поведение крупных игроков\n[Subconcept] Уровни\n[Rule] Крупняк всегда будет защищать свой уровень, который он сделал на дневке, на недельке, на месяце.\n[Visual] A small chart diagram has appeared on the screen. The chart displays a few candlesticks with red and green colors. Text annotations in Russian are present above the chart..…\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+            "short_text": "[Concept] Поведение крупных игроков\n[Subconcept] Уровни\n[Rule] Крупняк всегда будет защищать свой уровень, который он сделал на дневке, на недельке, на месяце.\n[Visual] A small chart diagram has appea",
+            "keywords": [
+              "Поведение крупных игроков",
+              "Уровни"
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "confidence": "high",
+              "support_basis": "transcript_plus_visual"
+            },
+            "confidence_score": 0.9,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "optional",
+            "teaching_mode": "mixed",
+            "timestamps": [
+              {
+                "start": "08:09",
+                "end": "08:15"
+              },
+              {
+                "start": "07:46",
+                "end": "07:46"
+              },
+              {
+                "start": "07:50",
+                "end": "07:50"
+              },
+              {
+                "start": "07:54",
+                "end": "07:54"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_94",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_95",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_96",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_97",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_98",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_99"
+            ],
+            "source_event_ids": [
+              "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_3_rule_statement_2"
+            ],
+            "source_rule_ids": [
+              "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_24"
+            ],
+            "metadata": {
+              "source_sections": [],
+              "source_subsections": [],
+              "source_chunk_indexes": [
+                3
+              ],
+              "conditions": [],
+              "invalidation": [],
+              "exceptions": [],
+              "comparisons": [],
+              "algorithm_notes": [],
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 0.85,
+              "visual_support_score": 0.4,
+              "has_visual_evidence": true,
+              "transcript_anchor_count": 2,
+              "transcript_repetition_count": 1
+            },
+            "rule_text": "Крупняк всегда будет защищать свой уровень, который он сделал на дневке, на недельке, на месяце.",
+            "rule_text_ru": "Крупняк всегда будет защищать свой уровень, который он сделал на дневке, на недельке, на месяце.",
+            "conditions": [],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "visual_summary": "A small chart diagram has appeared on the screen. The chart displays a few candlesticks with red and green colors. Text annotations in Russian are present above the chart..…",
+            "concept": "Поведение крупных игроков",
+            "subconcept": "Уровни"
+          }
+        },
+        {
+          "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_76",
+          "unit_type": "rule_card",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "Удержание позиции / Удержание по фактору зоны",
+          "text_snippet": "[Concept] Удержание позиции\n[Subconcept] Удержание по фактору зоны\n[Rule] При наличии свободной зоны за уровнем, ближнего ретеста и накопления, можно удерживать инструмент несколько дней.\n[Visual] New",
+          "timestamps": [
+            {
+              "start": "15:20",
+              "end": "15:29"
+            },
+            {
+              "start": "15:18",
+              "end": "15:20"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_7_23"
+          ],
+          "source_event_ids": [
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_1"
+          ],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_76"
+          ],
+          "raw_lexical_score": 0.0,
+          "raw_vector_score": 0.3761,
+          "graph_boost": 0.0,
+          "score": 0.4506,
+          "score_breakdown": {
+            "lexical_score": 0.0,
+            "vector_score": 0.5987,
+            "concept_exact_match": 0.0,
+            "alias_match": 0.0,
+            "confidence_score": 0.9,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 0.6667,
+            "unit_type_relevance": 1.0,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 0.9167,
+            "lesson_diversity_bonus": 0.0
+          },
+          "why_retrieved": [
+            "strong_vector",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_76",
+            "unit_type": "rule_card",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:uderzhanie_pozitsii"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:uderzhanie_po_faktoru_zony"
+            ],
+            "alias_terms": [
+              "Удержание позиции",
+              "Удержание по фактору зоны"
+            ],
+            "title": "Удержание позиции / Удержание по фактору зоны",
+            "text": "[Concept] Удержание позиции\n[Subconcept] Удержание по фактору зоны\n[Rule] При наличии свободной зоны за уровнем, ближнего ретеста и накопления, можно удерживать инструмент несколько дней.\n[Visual] New chart displayed New annotations added New educational event types detected. The Russian text label 'Выберите область' has disappeared. A new horizontal red line has appeared…\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+            "short_text": "[Concept] Удержание позиции\n[Subconcept] Удержание по фактору зоны\n[Rule] При наличии свободной зоны за уровнем, ближнего ретеста и накопления, можно удерживать инструмент несколько дней.\n[Visual] New",
+            "keywords": [
+              "Удержание позиции",
+              "Удержание по фактору зоны"
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "confidence": "high",
+              "support_basis": "transcript_plus_visual"
+            },
+            "confidence_score": 0.9,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "optional",
+            "teaching_mode": "mixed",
+            "timestamps": [
+              {
+                "start": "15:20",
+                "end": "15:29"
+              },
+              {
+                "start": "15:18",
+                "end": "15:20"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_7_23"
+            ],
+            "source_event_ids": [
+              "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_1"
+            ],
+            "source_rule_ids": [
+              "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_76"
+            ],
+            "metadata": {
+              "source_sections": [],
+              "source_subsections": [],
+              "source_chunk_indexes": [
+                7
+              ],
+              "conditions": [],
+              "invalidation": [],
+              "exceptions": [],
+              "comparisons": [],
+              "algorithm_notes": [],
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 1.0,
+              "visual_support_score": 0.4,
+              "has_visual_evidence": true,
+              "transcript_anchor_count": 3,
+              "transcript_repetition_count": 1
+            },
+            "rule_text": "При наличии свободной зоны за уровнем, ближнего ретеста и накопления, можно удерживать инструмент несколько дней.",
+            "rule_text_ru": "При наличии свободной зоны за уровнем, ближнего ретеста и накопления, можно удерживать инструмент несколько дней.",
+            "conditions": [],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "visual_summary": "New chart displayed New annotations added New educational event types detected. The Russian text label 'Выберите область' has disappeared. A new horizontal red line has appeared…",
+            "concept": "Удержание позиции",
+            "subconcept": "Удержание по фактору зоны"
+          }
+        },
+        {
+          "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_77",
+          "unit_type": "rule_card",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "Ложный пробой / Ложный пробой и паранормальный бар",
+          "text_snippet": "[Concept] Ложный пробой\n[Subconcept] Ложный пробой и паранормальный бар\n[Rule] Ложные пробои чаще всего происходят относительно паранормальных баров.\n[Visual] New slide displayed with title 'Зона' and",
+          "timestamps": [
+            {
+              "start": "16:06",
+              "end": "16:13"
+            },
+            {
+              "start": "16:32",
+              "end": "16:32"
+            },
+            {
+              "start": "16:34",
+              "end": "16:36"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_7_24",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_7_25"
+          ],
+          "source_event_ids": [
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_2"
+          ],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_77"
+          ],
+          "raw_lexical_score": 0.0,
+          "raw_vector_score": 0.3663,
+          "graph_boost": 0.0,
+          "score": 0.4381,
+          "score_breakdown": {
+            "lexical_score": 0.0,
+            "vector_score": 0.557,
+            "concept_exact_match": 0.0,
+            "alias_match": 0.0,
+            "confidence_score": 0.9,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 0.6667,
+            "unit_type_relevance": 1.0,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 0.9167,
+            "lesson_diversity_bonus": 0.0
+          },
+          "why_retrieved": [
+            "strong_vector",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_77",
+            "unit_type": "rule_card",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:false_breakout"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:lozhnyy_proboy_i_paranormalnyy_bar"
+            ],
+            "alias_terms": [
+              "Ложный пробой",
+              "Ложный пробой и паранормальный бар"
+            ],
+            "title": "Ложный пробой / Ложный пробой и паранормальный бар",
+            "text": "[Concept] Ложный пробой\n[Subconcept] Ложный пробой и паранормальный бар\n[Rule] Ложные пробои чаще всего происходят относительно паранормальных баров.\n[Visual] New slide displayed with title 'Зона' and definitions of 'Чистая зона' and 'Зараженная зона'. Two chart examples are visible on the right side of the slide.. concepts:…\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+            "short_text": "[Concept] Ложный пробой\n[Subconcept] Ложный пробой и паранормальный бар\n[Rule] Ложные пробои чаще всего происходят относительно паранормальных баров.\n[Visual] New slide displayed with title 'Зона' and",
+            "keywords": [
+              "Ложный пробой",
+              "Ложный пробой и паранормальный бар"
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "confidence": "high",
+              "support_basis": "transcript_plus_visual"
+            },
+            "confidence_score": 0.9,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "optional",
+            "teaching_mode": "mixed",
+            "timestamps": [
+              {
+                "start": "16:06",
+                "end": "16:13"
+              },
+              {
+                "start": "16:32",
+                "end": "16:32"
+              },
+              {
+                "start": "16:34",
+                "end": "16:36"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_7_24",
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_7_25"
+            ],
+            "source_event_ids": [
+              "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_2"
+            ],
+            "source_rule_ids": [
+              "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_77"
+            ],
+            "metadata": {
+              "source_sections": [],
+              "source_subsections": [],
+              "source_chunk_indexes": [
+                7
+              ],
+              "conditions": [],
+              "invalidation": [],
+              "exceptions": [],
+              "comparisons": [],
+              "algorithm_notes": [],
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 1.0,
+              "visual_support_score": 0.4,
+              "has_visual_evidence": true,
+              "transcript_anchor_count": 3,
+              "transcript_repetition_count": 1
+            },
+            "rule_text": "Ложные пробои чаще всего происходят относительно паранормальных баров.",
+            "rule_text_ru": "Ложные пробои чаще всего происходят относительно паранормальных баров.",
+            "conditions": [],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "visual_summary": "New slide displayed with title 'Зона' and definitions of 'Чистая зона' and 'Зараженная зона'. Two chart examples are visible on the right side of the slide.. concepts:…",
+            "concept": "Ложный пробой",
+            "subconcept": "Ложный пробой и паранормальный бар"
+          }
+        },
+        {
+          "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_161",
+          "unit_type": "rule_card",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "Ложный пробой / Хвост ложного пробоя",
+          "text_snippet": "[Concept] Ложный пробой\n[Subconcept] Хвост ложного пробоя\n[Rule] Чем меньше хвост от ложного пробоя, тем лучше.\n[Comparisons] Сравнение поведения инструмента при большом и малом хвосте от ложного проб",
+          "timestamps": [
+            {
+              "start": "35:28",
+              "end": "35:33"
+            },
+            {
+              "start": "34:40",
+              "end": "36:45"
+            },
+            {
+              "start": "34:54",
+              "end": "34:54"
+            },
+            {
+              "start": "35:22",
+              "end": "35:24"
+            },
+            {
+              "start": "36:32",
+              "end": "36:32"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_15_54",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_15_55",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_15_57"
+          ],
+          "source_event_ids": [
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_15_rule_statement_0",
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_15_comparison_0"
+          ],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_161"
+          ],
+          "raw_lexical_score": 0.0,
+          "raw_vector_score": 0.3557,
+          "graph_boost": 0.0,
+          "score": 0.4247,
+          "score_breakdown": {
+            "lexical_score": 0.0,
+            "vector_score": 0.5122,
+            "concept_exact_match": 0.0,
+            "alias_match": 0.0,
+            "confidence_score": 0.9,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 0.6667,
+            "unit_type_relevance": 1.0,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 0.9167,
+            "lesson_diversity_bonus": 0.0
+          },
+          "why_retrieved": [
+            "strong_vector",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_161",
+            "unit_type": "rule_card",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:false_breakout"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:khvost_lozhnogo_proboya"
+            ],
+            "alias_terms": [
+              "Ложный пробой",
+              "Хвост ложного пробоя"
+            ],
+            "title": "Ложный пробой / Хвост ложного пробоя",
+            "text": "[Concept] Ложный пробой\n[Subconcept] Хвост ложного пробоя\n[Rule] Чем меньше хвост от ложного пробоя, тем лучше.\n[Comparisons] Сравнение поведения инструмента при большом и малом хвосте от ложного пробоя.\n[Visual] concepts: atr_values, chart_changed_to_usdchf_currency_pair_new_chart_window_with_multiple_crypto_assets_displayed_on_the_right, entry_values\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+            "short_text": "[Concept] Ложный пробой\n[Subconcept] Хвост ложного пробоя\n[Rule] Чем меньше хвост от ложного пробоя, тем лучше.\n[Comparisons] Сравнение поведения инструмента при большом и малом хвосте от ложного проб",
+            "keywords": [
+              "Ложный пробой",
+              "Хвост ложного пробоя",
+              "Сравнение поведения инструмента при большом и малом хвосте от ложного пробоя."
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "confidence": "high",
+              "support_basis": "transcript_plus_visual"
+            },
+            "confidence_score": 0.9,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "optional",
+            "teaching_mode": "mixed",
+            "timestamps": [
+              {
+                "start": "35:28",
+                "end": "35:33"
+              },
+              {
+                "start": "34:40",
+                "end": "36:45"
+              },
+              {
+                "start": "34:54",
+                "end": "34:54"
+              },
+              {
+                "start": "35:22",
+                "end": "35:24"
+              },
+              {
+                "start": "36:32",
+                "end": "36:32"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_15_54",
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_15_55",
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_15_57"
+            ],
+            "source_event_ids": [
+              "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_15_rule_statement_0",
+              "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_15_comparison_0"
+            ],
+            "source_rule_ids": [
+              "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_161"
+            ],
+            "metadata": {
+              "source_sections": [],
+              "source_subsections": [],
+              "source_chunk_indexes": [
+                15
+              ],
+              "conditions": [],
+              "invalidation": [],
+              "exceptions": [],
+              "comparisons": [
+                "Сравнение поведения инструмента при большом и малом хвосте от ложного пробоя."
+              ],
+              "algorithm_notes": [],
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 0.95,
+              "visual_support_score": 0.4,
+              "has_visual_evidence": true,
+              "transcript_anchor_count": 17,
+              "transcript_repetition_count": 1
+            },
+            "rule_text": "Чем меньше хвост от ложного пробоя, тем лучше.",
+            "rule_text_ru": "Чем меньше хвост от ложного пробоя, тем лучше.",
+            "conditions": [],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [
+              "Сравнение поведения инструмента при большом и малом хвосте от ложного пробоя."
+            ],
+            "visual_summary": "concepts: atr_values, chart_changed_to_usdchf_currency_pair_new_chart_window_with_multiple_crypto_assets_displayed_on_the_right, entry_values",
+            "concept": "Ложный пробой",
+            "subconcept": "Хвост ложного пробоя"
+          }
+        }
+      ],
+      "knowledge_events": [],
+      "evidence_refs": [],
+      "concepts": []
+    },
+    "summary": {
+      "answer_text": "[Concept] Истинный пробой\n[Subconcept] Накопление\n[Rule] Накопление крайне важно для хорошего истинного пробоя.\n[Visual] New slide with title 'Энергия' and explanatory text about accumulation and cons\n[Concept] Поведение крупных игроков\n[Subconcept] Уровни\n[Rule] Крупняк всегда будет защищать свой уровень, который он сделал на дневке, на недельке, на месяце.\n[Visual] A small chart diagram has appea\n[Concept] Удержание позиции\n[Subconcept] Удержание по фактору зоны\n[Rule] При наличии свободной зоны за уровнем, ближнего ретеста и накопления, можно удерживать инструмент несколько дней.\n[Visual] New\n[Concept] Ложный пробой\n[Subconcept] Ложный пробой и паранормальный бар\n[Rule] Ложные пробои чаще всего происходят относительно паранормальных баров.\n[Visual] New slide displayed with title 'Зона' and\n[Concept] Ложный пробой\n[Subconcept] Хвост ложного пробоя\n[Rule] Чем меньше хвост от ложного пробоя, тем лучше.\n[Comparisons] Сравнение поведения инструмента при большом и малом хвосте от ложного проб",
+      "limitations": [],
+      "citation_doc_ids": [
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_55",
+        "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_24",
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_76",
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_77",
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_161"
+      ]
+    },
+    "facets": {
+      "by_unit_type": {
+        "rule_card": 5
+      },
+      "by_lesson": {
+        "2025-09-29-sviatoslav-chornyi": 4,
+        "Lesson 2. Levels part 1": 1
+      },
+      "by_concept": {
+        "concept:false_breakout": 2,
+        "concept:uderzhanie_pozitsii": 1,
+        "concept:istinnyy_proboy": 1,
+        "concept:povedenie_krupnykh_igrokov": 1
+      }
+    },
+    "hit_count": 5
+  }
+}

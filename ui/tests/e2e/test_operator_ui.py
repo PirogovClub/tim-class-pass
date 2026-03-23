@@ -94,6 +94,47 @@ class Operator:
         expect(self.page.get_by_test_id("run-status")).to_have_text(status_text, timeout=20000)
 
 
+def test_project_form_autofills_title_from_video_filename_without_overwriting_manual_title(page: Page, live_ui_server):
+    repo_root = live_ui_server["repo_root"]
+    video_path = repo_root / "fixtures" / "Auto Filled Lesson.mp4"
+    replacement_video_path = repo_root / "fixtures" / "Replacement Lesson.mp4"
+    video_path.parent.mkdir(parents=True, exist_ok=True)
+    video_path.write_text("fake-video", encoding="utf-8")
+    replacement_video_path.write_text("fake-video-2", encoding="utf-8")
+
+    page.goto(f"{live_ui_server['base_url']}/projects/new")
+    page.locator('input[name="source_video_upload"]').set_input_files(str(video_path))
+    expect(page.get_by_label("Project title")).to_have_value("Auto Filled Lesson")
+
+    page.get_by_label("Project title").fill("Operator Custom Title")
+    page.locator('input[name="source_video_upload"]').set_input_files(str(replacement_video_path))
+    expect(page.get_by_label("Project title")).to_have_value("Operator Custom Title")
+
+
+def test_project_run_mode_description_updates_when_selection_changes(page: Page, live_ui_server):
+    operator = Operator(page, live_ui_server["base_url"])
+    repo_root = live_ui_server["repo_root"]
+    video_path = repo_root / "fixtures" / "mode-help.mp4"
+    transcript_path = repo_root / "fixtures" / "mode-help.vtt"
+    video_path.parent.mkdir(parents=True, exist_ok=True)
+    video_path.write_text("fake-video", encoding="utf-8")
+    transcript_path.write_text("WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nHello\n", encoding="utf-8")
+
+    operator.create_project("Mode Help Lesson", video_path, transcript_path)
+
+    expect(page.locator("#run-mode-title")).to_have_text("Full local pipeline")
+    expect(page.locator("#run-mode-summary")).to_contain_text("Runs the whole single-project pipeline")
+
+    page.get_by_label("Run mode").select_option("batch_knowledge_only")
+    expect(page.locator("#run-mode-title")).to_have_text("Remote batch knowledge only")
+    expect(page.locator("#run-mode-summary")).to_contain_text("Submits only the knowledge extraction batch")
+    expect(page.locator("#run-mode-outputs")).to_contain_text("knowledge events")
+
+    page.get_by_label("Run mode").select_option("deterministic_postprocess_only")
+    expect(page.locator("#run-mode-title")).to_have_text("Deterministic post-processing only")
+    expect(page.locator("#run-mode-summary")).to_contain_text("Runs only the non-LLM post-processing")
+
+
 def test_operator_can_create_project_reconcile_batch_and_build_corpus(page: Page, live_ui_server):
     operator = Operator(page, live_ui_server["base_url"])
     repo_root = live_ui_server["repo_root"]

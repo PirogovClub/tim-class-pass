@@ -10,11 +10,11 @@
     "evidence_id_rate": 0.7481
   },
   "unit_hit_rates": {
-    "concept_node": 0.8571,
     "knowledge_event": 1.0,
-    "concept_relation": 0.8,
     "evidence_ref": 0.5,
-    "rule_card": 0.9091
+    "rule_card": 0.9091,
+    "concept_node": 0.8571,
+    "concept_relation": 0.8
   },
   "category_avg_recall": {
     "concept_comparison": 1.0,

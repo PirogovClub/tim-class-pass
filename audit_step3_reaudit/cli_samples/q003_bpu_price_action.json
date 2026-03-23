@@ -1,0 +1,1769 @@
+{
+  "query_id": "q003",
+  "query": "Что такое BPU в Price Action?",
+  "top_k": 5,
+  "response": {
+    "query": "Что такое BPU в Price Action?",
+    "query_analysis": {
+      "normalized_query": "что такое bpu в price action?",
+      "detected_concepts": [
+        "node:price_action",
+        "node:bpu"
+      ],
+      "detected_unit_bias": "mixed",
+      "expansion_trace": {
+        "detected_terms": [
+          "price action",
+          "bpu"
+        ],
+        "exact_alias_matches": {
+          "price action": "node:price_action",
+          "bpu": "node:bpu"
+        },
+        "normalized_alias_matches": {},
+        "canonical_concept_ids": [
+          "node:price_action",
+          "node:bpu"
+        ],
+        "expanded_concept_ids": [
+          "node:accumulation",
+          "node:movement_near_levels",
+          "node:re_test",
+          "node:opredelenie"
+        ],
+        "boosted_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_movement_near_levels_0",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_accumulation_1",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_re_test_7",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_bpu_unknown_265"
+        ],
+        "related_terms": [
+          "определение"
+        ],
+        "expansion_trace": [
+          {
+            "step_type": "exact_alias_match",
+            "source": "price action",
+            "target": "node:price_action",
+            "relation": null,
+            "reason": "Exact alias or concept match for 'price action'"
+          },
+          {
+            "step_type": "exact_alias_match",
+            "source": "bpu",
+            "target": "node:bpu",
+            "relation": null,
+            "reason": "Exact alias or concept match for 'bpu'"
+          },
+          {
+            "step_type": "graph_neighbor",
+            "source": "node:price_action",
+            "target": "node:accumulation",
+            "relation": "has_subconcept",
+            "reason": "1-hop has_subconcept from Price Action"
+          },
+          {
+            "step_type": "graph_neighbor",
+            "source": "node:price_action",
+            "target": "node:movement_near_levels",
+            "relation": "has_subconcept",
+            "reason": "1-hop has_subconcept from Price Action"
+          },
+          {
+            "step_type": "graph_neighbor",
+            "source": "node:price_action",
+            "target": "node:re_test",
+            "relation": "has_subconcept",
+            "reason": "1-hop has_subconcept from Price Action"
+          },
+          {
+            "step_type": "graph_neighbor",
+            "source": "node:bpu",
+            "target": "node:opredelenie",
+            "relation": "has_subconcept",
+            "reason": "1-hop has_subconcept from BPU"
+          },
+          {
+            "step_type": "cross_lesson_overlap",
+            "source": "node:opredelenie",
+            "target": "node:opredelenie",
+            "relation": null,
+            "reason": "Concept 'определение' appears across lessons"
+          }
+        ]
+      }
+    },
+    "top_hits": [
+      {
+        "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_accumulation_1",
+        "unit_type": "rule_card",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "Price Action / Accumulation",
+        "text_snippet": "[Concept] Price Action\n[Subconcept] Accumulation\n[Rule] Если цена ходит откатами, то она будет собирать свою позицию.\n[Visual] New slide displayed with title 'Разновидность SL' and two sections: 'Расч",
+        "timestamps": [
+          {
+            "start": "00:33",
+            "end": "00:38"
+          },
+          {
+            "start": "00:36",
+            "end": "00:40"
+          },
+          {
+            "start": "00:58",
+            "end": "00:58"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1"
+        ],
+        "source_event_ids": [
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_1"
+        ],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_accumulation_1"
+        ],
+        "raw_lexical_score": 10.1343,
+        "raw_vector_score": 0.5423,
+        "graph_boost": 1.0,
+        "score": 1.0097,
+        "score_breakdown": {
+          "lexical_score": 0.7756,
+          "vector_score": 1.0,
+          "concept_exact_match": 0.8,
+          "alias_match": 1.0,
+          "confidence_score": 0.9,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 0.6667,
+          "unit_type_relevance": 1.0,
+          "support_basis_relevance": 0.7,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 0.9167,
+          "lesson_diversity_bonus": 1.0
+        },
+        "why_retrieved": [
+          "boosted_by_concept_rule_map",
+          "concept_match",
+          "alias_match",
+          "strong_lexical",
+          "strong_vector",
+          "transcript_theory_match",
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_accumulation_1",
+          "unit_type": "rule_card",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:price_action"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:accumulation"
+          ],
+          "alias_terms": [
+            "Price Action",
+            "Accumulation"
+          ],
+          "title": "Price Action / Accumulation",
+          "text": "[Concept] Price Action\n[Subconcept] Accumulation\n[Rule] Если цена ходит откатами, то она будет собирать свою позицию.\n[Visual] New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+          "short_text": "[Concept] Price Action\n[Subconcept] Accumulation\n[Rule] Если цена ходит откатами, то она будет собирать свою позицию.\n[Visual] New slide displayed with title 'Разновидность SL' and two sections: 'Расч",
+          "keywords": [
+            "Price Action",
+            "Accumulation",
+            "Искать накопление перед уровнем."
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "confidence": "high",
+            "support_basis": "transcript_plus_visual"
+          },
+          "confidence_score": 0.9,
+          "support_basis": "transcript_plus_visual",
+          "evidence_requirement": "optional",
+          "teaching_mode": "mixed",
+          "timestamps": [
+            {
+              "start": "00:33",
+              "end": "00:38"
+            },
+            {
+              "start": "00:36",
+              "end": "00:40"
+            },
+            {
+              "start": "00:58",
+              "end": "00:58"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1"
+          ],
+          "source_event_ids": [
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_1"
+          ],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_accumulation_1"
+          ],
+          "metadata": {
+            "source_sections": [],
+            "source_subsections": [],
+            "source_chunk_indexes": [
+              0
+            ],
+            "conditions": [],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "algorithm_notes": [
+              "Искать накопление перед уровнем."
+            ],
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 0.8,
+            "visual_support_score": 0.4,
+            "has_visual_evidence": true,
+            "transcript_anchor_count": 2,
+            "transcript_repetition_count": 0
+          },
+          "rule_text": "Если цена ходит откатами, то она будет собирать свою позицию.",
+          "rule_text_ru": "Если цена ходит откатами, то она будет собирать свою позицию.",
+          "conditions": [],
+          "invalidation": [],
+          "exceptions": [],
+          "comparisons": [],
+          "visual_summary": "New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…",
+          "concept": "Price Action",
+          "subconcept": "Accumulation"
+        }
+      },
+      {
+        "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_movement_near_levels_0",
+        "unit_type": "rule_card",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "Price Action / Movement near levels",
+        "text_snippet": "[Concept] Price Action\n[Subconcept] Movement near levels\n[Rule] При подходе к уровню цена ходит откатами.\n[Visual] New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and '",
+        "timestamps": [
+          {
+            "start": "00:08",
+            "end": "00:12"
+          },
+          {
+            "start": "00:36",
+            "end": "00:40"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0"
+        ],
+        "source_event_ids": [
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_0"
+        ],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_movement_near_levels_0"
+        ],
+        "raw_lexical_score": 9.8011,
+        "raw_vector_score": 0.464,
+        "graph_boost": 1.0,
+        "score": 0.9287,
+        "score_breakdown": {
+          "lexical_score": 0.7501,
+          "vector_score": 0.8557,
+          "concept_exact_match": 0.8,
+          "alias_match": 1.0,
+          "confidence_score": 0.9,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 0.6667,
+          "unit_type_relevance": 1.0,
+          "support_basis_relevance": 0.7,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 0.9167,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "boosted_by_concept_rule_map",
+          "concept_match",
+          "alias_match",
+          "strong_lexical",
+          "strong_vector",
+          "transcript_theory_match",
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_movement_near_levels_0",
+          "unit_type": "rule_card",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:price_action"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:movement_near_levels"
+          ],
+          "alias_terms": [
+            "Price Action",
+            "Movement near levels"
+          ],
+          "title": "Price Action / Movement near levels",
+          "text": "[Concept] Price Action\n[Subconcept] Movement near levels\n[Rule] При подходе к уровню цена ходит откатами.\n[Visual] New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+          "short_text": "[Concept] Price Action\n[Subconcept] Movement near levels\n[Rule] При подходе к уровню цена ходит откатами.\n[Visual] New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and '",
+          "keywords": [
+            "Price Action",
+            "Movement near levels",
+            "При подходе к уровню цена движется откатами."
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "confidence": "high",
+            "support_basis": "transcript_plus_visual"
+          },
+          "confidence_score": 0.9,
+          "support_basis": "transcript_plus_visual",
+          "evidence_requirement": "optional",
+          "teaching_mode": "mixed",
+          "timestamps": [
+            {
+              "start": "00:08",
+              "end": "00:12"
+            },
+            {
+              "start": "00:36",
+              "end": "00:40"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0"
+          ],
+          "source_event_ids": [
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_0"
+          ],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_movement_near_levels_0"
+          ],
+          "metadata": {
+            "source_sections": [],
+            "source_subsections": [],
+            "source_chunk_indexes": [
+              0
+            ],
+            "conditions": [],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "algorithm_notes": [
+              "При подходе к уровню цена движется откатами."
+            ],
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 0.8,
+            "visual_support_score": 0.4,
+            "has_visual_evidence": true,
+            "transcript_anchor_count": 2,
+            "transcript_repetition_count": 0
+          },
+          "rule_text": "При подходе к уровню цена ходит откатами.",
+          "rule_text_ru": "При подходе к уровню цена ходит откатами.",
+          "conditions": [],
+          "invalidation": [],
+          "exceptions": [],
+          "comparisons": [],
+          "visual_summary": "New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…",
+          "concept": "Price Action",
+          "subconcept": "Movement near levels"
+        }
+      },
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_example_1",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "example / Price Action",
+        "text_snippet": "[example] [Concept] Price Action Пример с маленькими барами: стоп где-то здесь, можно взять побольше, использовать за закругление, за проторговку, посидеть в сделке подольше. [Time] 01:39–01:59 [Suppo",
+        "timestamps": [
+          {
+            "start": "01:39",
+            "end": "01:59"
+          },
+          {
+            "start": "01:24",
+            "end": "01:24"
+          },
+          {
+            "start": "01:42",
+            "end": "01:42"
+          },
+          {
+            "start": "01:58",
+            "end": "01:58"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_4"
+        ],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "raw_lexical_score": 12.5774,
+        "raw_vector_score": 0.4401,
+        "graph_boost": 0.0,
+        "score": 0.8747,
+        "score_breakdown": {
+          "lexical_score": 0.9625,
+          "vector_score": 0.8116,
+          "concept_exact_match": 0.0,
+          "alias_match": 1.0,
+          "confidence_score": 0.85,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 1.0,
+          "unit_type_relevance": 0.95,
+          "support_basis_relevance": 0.7,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 1.0,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "alias_match",
+          "strong_lexical",
+          "strong_vector",
+          "transcript_theory_match",
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_example_1",
+          "unit_type": "knowledge_event",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:price_action"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:bar_analysis"
+          ],
+          "alias_terms": [
+            "Price Action",
+            "Bar Analysis"
+          ],
+          "title": "example / Price Action",
+          "text": "[example] [Concept] Price Action Пример с маленькими барами: стоп где-то здесь, можно взять побольше, использовать за закругление, за проторговку, посидеть в сделке подольше. [Time] 01:39–01:59 [Support Basis] transcript_plus_visual",
+          "short_text": "[example] [Concept] Price Action Пример с маленькими барами: стоп где-то здесь, можно взять побольше, использовать за закругление, за проторговку, посидеть в сделке подольше. [Time] 01:39–01:59 [Suppo",
+          "keywords": [
+            "Price Action",
+            "Bar Analysis",
+            "example"
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "chunk_index": 0,
+            "source_line_start": 39,
+            "source_line_end": 47
+          },
+          "confidence_score": 0.85,
+          "support_basis": "transcript_plus_visual",
+          "evidence_requirement": "required",
+          "teaching_mode": "example",
+          "timestamps": [
+            {
+              "start": "01:39",
+              "end": "01:59"
+            },
+            {
+              "start": "01:24",
+              "end": "01:24"
+            },
+            {
+              "start": "01:42",
+              "end": "01:42"
+            },
+            {
+              "start": "01:58",
+              "end": "01:58"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_4"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "metadata": {
+            "chunk_index": 0,
+            "chunk_start_time_seconds": 0.44,
+            "chunk_end_time_seconds": 122.02,
+            "transcript_line_count": 49,
+            "candidate_visual_frame_keys": [
+              "000036",
+              "000040",
+              "000058",
+              "000084",
+              "000142",
+              "000158"
+            ],
+            "candidate_visual_types": [
+              "hand_drawn_pattern",
+              "text_slide",
+              "mixed_visual"
+            ],
+            "candidate_example_types": [
+              "abstract_teaching_example"
+            ],
+            "rule_type": "example",
+            "pattern_tags": [],
+            "source_quote": "даже здесь прям маленькие бары, нужно немножко показать побольше будет. Я даже вот так вот сейчас сделаю. Где-то вот такие вот бары будут. Ваш будет стоп. И там можно взять побольше, использовать за закругление, за проторговку, взять стоп побольше и посидеть в этой сделке тоже подольше.",
+            "transcript_anchors": [
+              {
+                "line_index": 39,
+                "text": "даже здесь прям маленькие бары, нужно немножко показать",
+                "timestamp_start": "01:39",
+                "timestamp_end": "01:42",
+                "match_source": "llm_source_quote"
+              },
+              {
+                "line_index": 40,
+                "text": "побольше будет.",
+                "timestamp_start": "01:42",
+                "timestamp_end": "01:42",
+                "match_source": "llm_source_quote"
+              },
+              {
+                "line_index": 41,
+                "text": "Я даже вот так вот сейчас сделаю.",
+                "timestamp_start": "01:43",
+                "timestamp_end": "01:44",
+                "match_source": "llm_source_quote"
+              },
+              {
+                "line_index": 42,
+                "text": "Где-то вот такие вот бары будут.",
+                "timestamp_start": "01:45",
+                "timestamp_end": "01:47",
+                "match_source": "llm_source_quote"
+              },
+              {
+                "line_index": 44,
+                "text": "Ваш будет стоп.",
+                "timestamp_start": "01:51",
+                "timestamp_end": "01:52",
+                "match_source": "llm_source_quote"
+              },
+              {
+                "line_index": 45,
+                "text": "И там можно взять побольше, использовать за закругление,",
+                "timestamp_start": "01:52",
+                "timestamp_end": "01:54",
+                "match_source": "llm_source_quote"
+              },
+              {
+                "line_index": 46,
+                "text": "за проторговку, взять стоп побольше и посидеть в",
+                "timestamp_start": "01:55",
+                "timestamp_end": "01:58",
+                "match_source": "llm_source_quote"
+              },
+              {
+                "line_index": 47,
+                "text": "этой сделке тоже подольше.",
+                "timestamp_start": "01:58",
+                "timestamp_end": "01:59",
+                "match_source": "llm_source_quote"
+              }
+            ],
+            "timestamp_confidence": "span",
+            "anchor_match_source": "llm_source_quote",
+            "anchor_line_count": 8,
+            "anchor_span_width": 9,
+            "anchor_density": 0.8888888888888888,
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 0.8167,
+            "visual_support_score": 0.4
+          },
+          "event_type": "example",
+          "normalized_text": "Пример с маленькими барами: стоп где-то здесь, можно взять побольше, использовать за закругление, за проторговку, посидеть в сделке подольше.",
+          "normalized_text_ru": "Пример с маленькими барами: стоп где-то здесь, можно взять побольше, использовать за закругление, за проторговку, посидеть в сделке подольше.",
+          "concept": "Price Action",
+          "subconcept": "Bar Analysis"
+        }
+      },
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_1",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "rule_statement / Price Action",
+        "text_snippet": "[rule_statement] [Concept] Price Action Если цена ходит откатами, то она будет собирать свою позицию. [Time] 00:33–00:38 [Support Basis] transcript_plus_visual",
+        "timestamps": [
+          {
+            "start": "00:33",
+            "end": "00:38"
+          },
+          {
+            "start": "00:36",
+            "end": "00:40"
+          },
+          {
+            "start": "00:58",
+            "end": "00:58"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1"
+        ],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "raw_lexical_score": 11.7941,
+        "raw_vector_score": 0.452,
+        "graph_boost": 0.0,
+        "score": 0.8683,
+        "score_breakdown": {
+          "lexical_score": 0.9026,
+          "vector_score": 0.8335,
+          "concept_exact_match": 0.0,
+          "alias_match": 1.0,
+          "confidence_score": 0.95,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 1.0,
+          "unit_type_relevance": 0.95,
+          "support_basis_relevance": 0.7,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 1.0,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "alias_match",
+          "strong_lexical",
+          "strong_vector",
+          "transcript_theory_match",
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_1",
+          "unit_type": "knowledge_event",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:price_action"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:accumulation"
+          ],
+          "alias_terms": [
+            "Price Action",
+            "Accumulation"
+          ],
+          "title": "rule_statement / Price Action",
+          "text": "[rule_statement] [Concept] Price Action Если цена ходит откатами, то она будет собирать свою позицию. [Time] 00:33–00:38 [Support Basis] transcript_plus_visual",
+          "short_text": "[rule_statement] [Concept] Price Action Если цена ходит откатами, то она будет собирать свою позицию. [Time] 00:33–00:38 [Support Basis] transcript_plus_visual",
+          "keywords": [
+            "Price Action",
+            "Accumulation",
+            "rule_statement",
+            "rule"
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "chunk_index": 0,
+            "source_line_start": 14,
+            "source_line_end": 15
+          },
+          "confidence_score": 0.95,
+          "support_basis": "transcript_plus_visual",
+          "evidence_requirement": "optional",
+          "teaching_mode": "mixed",
+          "timestamps": [
+            {
+              "start": "00:33",
+              "end": "00:38"
+            },
+            {
+              "start": "00:36",
+              "end": "00:40"
+            },
+            {
+              "start": "00:58",
+              "end": "00:58"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "metadata": {
+            "chunk_index": 0,
+            "chunk_start_time_seconds": 0.44,
+            "chunk_end_time_seconds": 122.02,
+            "transcript_line_count": 49,
+            "candidate_visual_frame_keys": [
+              "000036",
+              "000040",
+              "000058",
+              "000084",
+              "000142",
+              "000158"
+            ],
+            "candidate_visual_types": [
+              "hand_drawn_pattern",
+              "text_slide",
+              "mixed_visual"
+            ],
+            "candidate_example_types": [
+              "abstract_teaching_example"
+            ],
+            "rule_type": "rule",
+            "pattern_tags": [],
+            "source_quote": "из-за того, что он так ходит именно откатами, то есть он будет собирать свою позицию.",
+            "transcript_anchors": [
+              {
+                "line_index": 14,
+                "text": "из-за того, что он так ходит именно",
+                "timestamp_start": "00:33",
+                "timestamp_end": "00:34",
+                "match_source": "llm_source_quote"
+              },
+              {
+                "line_index": 15,
+                "text": "откатами, то есть он будет собирать свою позицию.",
+                "timestamp_start": "00:34",
+                "timestamp_end": "00:38",
+                "match_source": "llm_source_quote"
+              }
+            ],
+            "timestamp_confidence": "span",
+            "anchor_match_source": "llm_source_quote",
+            "anchor_line_count": 2,
+            "anchor_span_width": 2,
+            "anchor_density": 1.0,
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 0.8,
+            "visual_support_score": 0.4
+          },
+          "event_type": "rule_statement",
+          "normalized_text": "Если цена ходит откатами, то она будет собирать свою позицию.",
+          "normalized_text_ru": "Если цена ходит откатами, то она будет собирать свою позицию.",
+          "concept": "Price Action",
+          "subconcept": "Accumulation"
+        }
+      },
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_1",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "algorithm_hint / Price Action",
+        "text_snippet": "[algorithm_hint] [Concept] Price Action При подходе к уровню цена движется откатами. [Time] 00:11–00:12 [Support Basis] transcript_plus_visual",
+        "timestamps": [
+          {
+            "start": "00:11",
+            "end": "00:12"
+          },
+          {
+            "start": "00:36",
+            "end": "00:40"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0"
+        ],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "raw_lexical_score": 11.7941,
+        "raw_vector_score": 0.4244,
+        "graph_boost": 0.0,
+        "score": 0.8481,
+        "score_breakdown": {
+          "lexical_score": 0.9026,
+          "vector_score": 0.7827,
+          "concept_exact_match": 0.0,
+          "alias_match": 1.0,
+          "confidence_score": 0.85,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 1.0,
+          "unit_type_relevance": 0.95,
+          "support_basis_relevance": 0.7,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 1.0,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "alias_match",
+          "strong_lexical",
+          "strong_vector",
+          "transcript_theory_match",
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_1",
+          "unit_type": "knowledge_event",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:price_action"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:movement_near_levels"
+          ],
+          "alias_terms": [
+            "Price Action",
+            "Movement near levels"
+          ],
+          "title": "algorithm_hint / Price Action",
+          "text": "[algorithm_hint] [Concept] Price Action При подходе к уровню цена движется откатами. [Time] 00:11–00:12 [Support Basis] transcript_plus_visual",
+          "short_text": "[algorithm_hint] [Concept] Price Action При подходе к уровню цена движется откатами. [Time] 00:11–00:12 [Support Basis] transcript_plus_visual",
+          "keywords": [
+            "Price Action",
+            "Movement near levels",
+            "algorithm_hint"
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "chunk_index": 0,
+            "source_line_start": 5,
+            "source_line_end": 5
+          },
+          "confidence_score": 0.85,
+          "support_basis": "transcript_plus_visual",
+          "evidence_requirement": "optional",
+          "teaching_mode": "theory",
+          "timestamps": [
+            {
+              "start": "00:11",
+              "end": "00:12"
+            },
+            {
+              "start": "00:36",
+              "end": "00:40"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "metadata": {
+            "chunk_index": 0,
+            "chunk_start_time_seconds": 0.44,
+            "chunk_end_time_seconds": 122.02,
+            "transcript_line_count": 49,
+            "candidate_visual_frame_keys": [
+              "000036",
+              "000040",
+              "000058",
+              "000084",
+              "000142",
+              "000158"
+            ],
+            "candidate_visual_types": [
+              "hand_drawn_pattern",
+              "text_slide",
+              "mixed_visual"
+            ],
+            "candidate_example_types": [
+              "abstract_teaching_example"
+            ],
+            "rule_type": "algorithm_hint",
+            "pattern_tags": [],
+            "source_quote": "при подходе к уровню, то есть мы ходим вот так вот откатами",
+            "transcript_anchors": [
+              {
+                "line_index": 5,
+                "text": "уровню, то есть мы ходим вот так вот",
+                "timestamp_start": "00:11",
+                "timestamp_end": "00:12",
+                "match_source": "llm_source_quote"
+              }
+            ],
+            "timestamp_confidence": "span",
+            "anchor_match_source": "llm_source_quote",
+            "anchor_line_count": 1,
+            "anchor_span_width": 1,
+            "anchor_density": 1.0,
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 0.75,
+            "visual_support_score": 0.4
+          },
+          "event_type": "algorithm_hint",
+          "normalized_text": "При подходе к уровню цена движется откатами.",
+          "normalized_text_ru": "При подходе к уровню цена движется откатами.",
+          "concept": "Price Action",
+          "subconcept": "Movement near levels"
+        }
+      }
+    ],
+    "grouped_results": {
+      "rule_cards": [
+        {
+          "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_accumulation_1",
+          "unit_type": "rule_card",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "Price Action / Accumulation",
+          "text_snippet": "[Concept] Price Action\n[Subconcept] Accumulation\n[Rule] Если цена ходит откатами, то она будет собирать свою позицию.\n[Visual] New slide displayed with title 'Разновидность SL' and two sections: 'Расч",
+          "timestamps": [
+            {
+              "start": "00:33",
+              "end": "00:38"
+            },
+            {
+              "start": "00:36",
+              "end": "00:40"
+            },
+            {
+              "start": "00:58",
+              "end": "00:58"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1"
+          ],
+          "source_event_ids": [
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_1"
+          ],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_accumulation_1"
+          ],
+          "raw_lexical_score": 10.1343,
+          "raw_vector_score": 0.5423,
+          "graph_boost": 1.0,
+          "score": 1.0097,
+          "score_breakdown": {
+            "lexical_score": 0.7756,
+            "vector_score": 1.0,
+            "concept_exact_match": 0.8,
+            "alias_match": 1.0,
+            "confidence_score": 0.9,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 0.6667,
+            "unit_type_relevance": 1.0,
+            "support_basis_relevance": 0.7,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 0.9167,
+            "lesson_diversity_bonus": 1.0
+          },
+          "why_retrieved": [
+            "boosted_by_concept_rule_map",
+            "concept_match",
+            "alias_match",
+            "strong_lexical",
+            "strong_vector",
+            "transcript_theory_match",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_accumulation_1",
+            "unit_type": "rule_card",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:price_action"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:accumulation"
+            ],
+            "alias_terms": [
+              "Price Action",
+              "Accumulation"
+            ],
+            "title": "Price Action / Accumulation",
+            "text": "[Concept] Price Action\n[Subconcept] Accumulation\n[Rule] Если цена ходит откатами, то она будет собирать свою позицию.\n[Visual] New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+            "short_text": "[Concept] Price Action\n[Subconcept] Accumulation\n[Rule] Если цена ходит откатами, то она будет собирать свою позицию.\n[Visual] New slide displayed with title 'Разновидность SL' and two sections: 'Расч",
+            "keywords": [
+              "Price Action",
+              "Accumulation",
+              "Искать накопление перед уровнем."
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "confidence": "high",
+              "support_basis": "transcript_plus_visual"
+            },
+            "confidence_score": 0.9,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "optional",
+            "teaching_mode": "mixed",
+            "timestamps": [
+              {
+                "start": "00:33",
+                "end": "00:38"
+              },
+              {
+                "start": "00:36",
+                "end": "00:40"
+              },
+              {
+                "start": "00:58",
+                "end": "00:58"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1"
+            ],
+            "source_event_ids": [
+              "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_1"
+            ],
+            "source_rule_ids": [
+              "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_accumulation_1"
+            ],
+            "metadata": {
+              "source_sections": [],
+              "source_subsections": [],
+              "source_chunk_indexes": [
+                0
+              ],
+              "conditions": [],
+              "invalidation": [],
+              "exceptions": [],
+              "comparisons": [],
+              "algorithm_notes": [
+                "Искать накопление перед уровнем."
+              ],
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 0.8,
+              "visual_support_score": 0.4,
+              "has_visual_evidence": true,
+              "transcript_anchor_count": 2,
+              "transcript_repetition_count": 0
+            },
+            "rule_text": "Если цена ходит откатами, то она будет собирать свою позицию.",
+            "rule_text_ru": "Если цена ходит откатами, то она будет собирать свою позицию.",
+            "conditions": [],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "visual_summary": "New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…",
+            "concept": "Price Action",
+            "subconcept": "Accumulation"
+          }
+        },
+        {
+          "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_movement_near_levels_0",
+          "unit_type": "rule_card",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "Price Action / Movement near levels",
+          "text_snippet": "[Concept] Price Action\n[Subconcept] Movement near levels\n[Rule] При подходе к уровню цена ходит откатами.\n[Visual] New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and '",
+          "timestamps": [
+            {
+              "start": "00:08",
+              "end": "00:12"
+            },
+            {
+              "start": "00:36",
+              "end": "00:40"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0"
+          ],
+          "source_event_ids": [
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_0"
+          ],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_movement_near_levels_0"
+          ],
+          "raw_lexical_score": 9.8011,
+          "raw_vector_score": 0.464,
+          "graph_boost": 1.0,
+          "score": 0.9287,
+          "score_breakdown": {
+            "lexical_score": 0.7501,
+            "vector_score": 0.8557,
+            "concept_exact_match": 0.8,
+            "alias_match": 1.0,
+            "confidence_score": 0.9,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 0.6667,
+            "unit_type_relevance": 1.0,
+            "support_basis_relevance": 0.7,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 0.9167,
+            "lesson_diversity_bonus": 0.0
+          },
+          "why_retrieved": [
+            "boosted_by_concept_rule_map",
+            "concept_match",
+            "alias_match",
+            "strong_lexical",
+            "strong_vector",
+            "transcript_theory_match",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_movement_near_levels_0",
+            "unit_type": "rule_card",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:price_action"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:movement_near_levels"
+            ],
+            "alias_terms": [
+              "Price Action",
+              "Movement near levels"
+            ],
+            "title": "Price Action / Movement near levels",
+            "text": "[Concept] Price Action\n[Subconcept] Movement near levels\n[Rule] При подходе к уровню цена ходит откатами.\n[Visual] New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+            "short_text": "[Concept] Price Action\n[Subconcept] Movement near levels\n[Rule] При подходе к уровню цена ходит откатами.\n[Visual] New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and '",
+            "keywords": [
+              "Price Action",
+              "Movement near levels",
+              "При подходе к уровню цена движется откатами."
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "confidence": "high",
+              "support_basis": "transcript_plus_visual"
+            },
+            "confidence_score": 0.9,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "optional",
+            "teaching_mode": "mixed",
+            "timestamps": [
+              {
+                "start": "00:08",
+                "end": "00:12"
+              },
+              {
+                "start": "00:36",
+                "end": "00:40"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0"
+            ],
+            "source_event_ids": [
+              "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_0"
+            ],
+            "source_rule_ids": [
+              "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_movement_near_levels_0"
+            ],
+            "metadata": {
+              "source_sections": [],
+              "source_subsections": [],
+              "source_chunk_indexes": [
+                0
+              ],
+              "conditions": [],
+              "invalidation": [],
+              "exceptions": [],
+              "comparisons": [],
+              "algorithm_notes": [
+                "При подходе к уровню цена движется откатами."
+              ],
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 0.8,
+              "visual_support_score": 0.4,
+              "has_visual_evidence": true,
+              "transcript_anchor_count": 2,
+              "transcript_repetition_count": 0
+            },
+            "rule_text": "При подходе к уровню цена ходит откатами.",
+            "rule_text_ru": "При подходе к уровню цена ходит откатами.",
+            "conditions": [],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "visual_summary": "New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…",
+            "concept": "Price Action",
+            "subconcept": "Movement near levels"
+          }
+        }
+      ],
+      "knowledge_events": [
+        {
+          "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_example_1",
+          "unit_type": "knowledge_event",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "example / Price Action",
+          "text_snippet": "[example] [Concept] Price Action Пример с маленькими барами: стоп где-то здесь, можно взять побольше, использовать за закругление, за проторговку, посидеть в сделке подольше. [Time] 01:39–01:59 [Suppo",
+          "timestamps": [
+            {
+              "start": "01:39",
+              "end": "01:59"
+            },
+            {
+              "start": "01:24",
+              "end": "01:24"
+            },
+            {
+              "start": "01:42",
+              "end": "01:42"
+            },
+            {
+              "start": "01:58",
+              "end": "01:58"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_4"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "raw_lexical_score": 12.5774,
+          "raw_vector_score": 0.4401,
+          "graph_boost": 0.0,
+          "score": 0.8747,
+          "score_breakdown": {
+            "lexical_score": 0.9625,
+            "vector_score": 0.8116,
+            "concept_exact_match": 0.0,
+            "alias_match": 1.0,
+            "confidence_score": 0.85,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 1.0,
+            "unit_type_relevance": 0.95,
+            "support_basis_relevance": 0.7,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 1.0,
+            "lesson_diversity_bonus": 0.0
+          },
+          "why_retrieved": [
+            "alias_match",
+            "strong_lexical",
+            "strong_vector",
+            "transcript_theory_match",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_example_1",
+            "unit_type": "knowledge_event",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:price_action"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:bar_analysis"
+            ],
+            "alias_terms": [
+              "Price Action",
+              "Bar Analysis"
+            ],
+            "title": "example / Price Action",
+            "text": "[example] [Concept] Price Action Пример с маленькими барами: стоп где-то здесь, можно взять побольше, использовать за закругление, за проторговку, посидеть в сделке подольше. [Time] 01:39–01:59 [Support Basis] transcript_plus_visual",
+            "short_text": "[example] [Concept] Price Action Пример с маленькими барами: стоп где-то здесь, можно взять побольше, использовать за закругление, за проторговку, посидеть в сделке подольше. [Time] 01:39–01:59 [Suppo",
+            "keywords": [
+              "Price Action",
+              "Bar Analysis",
+              "example"
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "chunk_index": 0,
+              "source_line_start": 39,
+              "source_line_end": 47
+            },
+            "confidence_score": 0.85,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "required",
+            "teaching_mode": "example",
+            "timestamps": [
+              {
+                "start": "01:39",
+                "end": "01:59"
+              },
+              {
+                "start": "01:24",
+                "end": "01:24"
+              },
+              {
+                "start": "01:42",
+                "end": "01:42"
+              },
+              {
+                "start": "01:58",
+                "end": "01:58"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2",
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3",
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_4"
+            ],
+            "source_event_ids": [],
+            "source_rule_ids": [],
+            "metadata": {
+              "chunk_index": 0,
+              "chunk_start_time_seconds": 0.44,
+              "chunk_end_time_seconds": 122.02,
+              "transcript_line_count": 49,
+              "candidate_visual_frame_keys": [
+                "000036",
+                "000040",
+                "000058",
+                "000084",
+                "000142",
+                "000158"
+              ],
+              "candidate_visual_types": [
+                "hand_drawn_pattern",
+                "text_slide",
+                "mixed_visual"
+              ],
+              "candidate_example_types": [
+                "abstract_teaching_example"
+              ],
+              "rule_type": "example",
+              "pattern_tags": [],
+              "source_quote": "даже здесь прям маленькие бары, нужно немножко показать побольше будет. Я даже вот так вот сейчас сделаю. Где-то вот такие вот бары будут. Ваш будет стоп. И там можно взять побольше, использовать за закругление, за проторговку, взять стоп побольше и посидеть в этой сделке тоже подольше.",
+              "transcript_anchors": [
+                {
+                  "line_index": 39,
+                  "text": "даже здесь прям маленькие бары, нужно немножко показать",
+                  "timestamp_start": "01:39",
+                  "timestamp_end": "01:42",
+                  "match_source": "llm_source_quote"
+                },
+                {
+                  "line_index": 40,
+                  "text": "побольше будет.",
+                  "timestamp_start": "01:42",
+                  "timestamp_end": "01:42",
+                  "match_source": "llm_source_quote"
+                },
+                {
+                  "line_index": 41,
+                  "text": "Я даже вот так вот сейчас сделаю.",
+                  "timestamp_start": "01:43",
+                  "timestamp_end": "01:44",
+                  "match_source": "llm_source_quote"
+                },
+                {
+                  "line_index": 42,
+                  "text": "Где-то вот такие вот бары будут.",
+                  "timestamp_start": "01:45",
+                  "timestamp_end": "01:47",
+                  "match_source": "llm_source_quote"
+                },
+                {
+                  "line_index": 44,
+                  "text": "Ваш будет стоп.",
+                  "timestamp_start": "01:51",
+                  "timestamp_end": "01:52",
+                  "match_source": "llm_source_quote"
+                },
+                {
+                  "line_index": 45,
+                  "text": "И там можно взять побольше, использовать за закругление,",
+                  "timestamp_start": "01:52",
+                  "timestamp_end": "01:54",
+                  "match_source": "llm_source_quote"
+                },
+                {
+                  "line_index": 46,
+                  "text": "за проторговку, взять стоп побольше и посидеть в",
+                  "timestamp_start": "01:55",
+                  "timestamp_end": "01:58",
+                  "match_source": "llm_source_quote"
+                },
+                {
+                  "line_index": 47,
+                  "text": "этой сделке тоже подольше.",
+                  "timestamp_start": "01:58",
+                  "timestamp_end": "01:59",
+                  "match_source": "llm_source_quote"
+                }
+              ],
+              "timestamp_confidence": "span",
+              "anchor_match_source": "llm_source_quote",
+              "anchor_line_count": 8,
+              "anchor_span_width": 9,
+              "anchor_density": 0.8888888888888888,
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 0.8167,
+              "visual_support_score": 0.4
+            },
+            "event_type": "example",
+            "normalized_text": "Пример с маленькими барами: стоп где-то здесь, можно взять побольше, использовать за закругление, за проторговку, посидеть в сделке подольше.",
+            "normalized_text_ru": "Пример с маленькими барами: стоп где-то здесь, можно взять побольше, использовать за закругление, за проторговку, посидеть в сделке подольше.",
+            "concept": "Price Action",
+            "subconcept": "Bar Analysis"
+          }
+        },
+        {
+          "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_1",
+          "unit_type": "knowledge_event",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "rule_statement / Price Action",
+          "text_snippet": "[rule_statement] [Concept] Price Action Если цена ходит откатами, то она будет собирать свою позицию. [Time] 00:33–00:38 [Support Basis] transcript_plus_visual",
+          "timestamps": [
+            {
+              "start": "00:33",
+              "end": "00:38"
+            },
+            {
+              "start": "00:36",
+              "end": "00:40"
+            },
+            {
+              "start": "00:58",
+              "end": "00:58"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "raw_lexical_score": 11.7941,
+          "raw_vector_score": 0.452,
+          "graph_boost": 0.0,
+          "score": 0.8683,
+          "score_breakdown": {
+            "lexical_score": 0.9026,
+            "vector_score": 0.8335,
+            "concept_exact_match": 0.0,
+            "alias_match": 1.0,
+            "confidence_score": 0.95,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 1.0,
+            "unit_type_relevance": 0.95,
+            "support_basis_relevance": 0.7,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 1.0,
+            "lesson_diversity_bonus": 0.0
+          },
+          "why_retrieved": [
+            "alias_match",
+            "strong_lexical",
+            "strong_vector",
+            "transcript_theory_match",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_1",
+            "unit_type": "knowledge_event",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:price_action"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:accumulation"
+            ],
+            "alias_terms": [
+              "Price Action",
+              "Accumulation"
+            ],
+            "title": "rule_statement / Price Action",
+            "text": "[rule_statement] [Concept] Price Action Если цена ходит откатами, то она будет собирать свою позицию. [Time] 00:33–00:38 [Support Basis] transcript_plus_visual",
+            "short_text": "[rule_statement] [Concept] Price Action Если цена ходит откатами, то она будет собирать свою позицию. [Time] 00:33–00:38 [Support Basis] transcript_plus_visual",
+            "keywords": [
+              "Price Action",
+              "Accumulation",
+              "rule_statement",
+              "rule"
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "chunk_index": 0,
+              "source_line_start": 14,
+              "source_line_end": 15
+            },
+            "confidence_score": 0.95,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "optional",
+            "teaching_mode": "mixed",
+            "timestamps": [
+              {
+                "start": "00:33",
+                "end": "00:38"
+              },
+              {
+                "start": "00:36",
+                "end": "00:40"
+              },
+              {
+                "start": "00:58",
+                "end": "00:58"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1"
+            ],
+            "source_event_ids": [],
+            "source_rule_ids": [],
+            "metadata": {
+              "chunk_index": 0,
+              "chunk_start_time_seconds": 0.44,
+              "chunk_end_time_seconds": 122.02,
+              "transcript_line_count": 49,
+              "candidate_visual_frame_keys": [
+                "000036",
+                "000040",
+                "000058",
+                "000084",
+                "000142",
+                "000158"
+              ],
+              "candidate_visual_types": [
+                "hand_drawn_pattern",
+                "text_slide",
+                "mixed_visual"
+              ],
+              "candidate_example_types": [
+                "abstract_teaching_example"
+              ],
+              "rule_type": "rule",
+              "pattern_tags": [],
+              "source_quote": "из-за того, что он так ходит именно откатами, то есть он будет собирать свою позицию.",
+              "transcript_anchors": [
+                {
+                  "line_index": 14,
+                  "text": "из-за того, что он так ходит именно",
+                  "timestamp_start": "00:33",
+                  "timestamp_end": "00:34",
+                  "match_source": "llm_source_quote"
+                },
+                {
+                  "line_index": 15,
+                  "text": "откатами, то есть он будет собирать свою позицию.",
+                  "timestamp_start": "00:34",
+                  "timestamp_end": "00:38",
+                  "match_source": "llm_source_quote"
+                }
+              ],
+              "timestamp_confidence": "span",
+              "anchor_match_source": "llm_source_quote",
+              "anchor_line_count": 2,
+              "anchor_span_width": 2,
+              "anchor_density": 1.0,
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 0.8,
+              "visual_support_score": 0.4
+            },
+            "event_type": "rule_statement",
+            "normalized_text": "Если цена ходит откатами, то она будет собирать свою позицию.",
+            "normalized_text_ru": "Если цена ходит откатами, то она будет собирать свою позицию.",
+            "concept": "Price Action",
+            "subconcept": "Accumulation"
+          }
+        },
+        {
+          "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_1",
+          "unit_type": "knowledge_event",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "algorithm_hint / Price Action",
+          "text_snippet": "[algorithm_hint] [Concept] Price Action При подходе к уровню цена движется откатами. [Time] 00:11–00:12 [Support Basis] transcript_plus_visual",
+          "timestamps": [
+            {
+              "start": "00:11",
+              "end": "00:12"
+            },
+            {
+              "start": "00:36",
+              "end": "00:40"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "raw_lexical_score": 11.7941,
+          "raw_vector_score": 0.4244,
+          "graph_boost": 0.0,
+          "score": 0.8481,
+          "score_breakdown": {
+            "lexical_score": 0.9026,
+            "vector_score": 0.7827,
+            "concept_exact_match": 0.0,
+            "alias_match": 1.0,
+            "confidence_score": 0.85,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 1.0,
+            "unit_type_relevance": 0.95,
+            "support_basis_relevance": 0.7,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 1.0,
+            "lesson_diversity_bonus": 0.0
+          },
+          "why_retrieved": [
+            "alias_match",
+            "strong_lexical",
+            "strong_vector",
+            "transcript_theory_match",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_1",
+            "unit_type": "knowledge_event",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:price_action"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:movement_near_levels"
+            ],
+            "alias_terms": [
+              "Price Action",
+              "Movement near levels"
+            ],
+            "title": "algorithm_hint / Price Action",
+            "text": "[algorithm_hint] [Concept] Price Action При подходе к уровню цена движется откатами. [Time] 00:11–00:12 [Support Basis] transcript_plus_visual",
+            "short_text": "[algorithm_hint] [Concept] Price Action При подходе к уровню цена движется откатами. [Time] 00:11–00:12 [Support Basis] transcript_plus_visual",
+            "keywords": [
+              "Price Action",
+              "Movement near levels",
+              "algorithm_hint"
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "chunk_index": 0,
+              "source_line_start": 5,
+              "source_line_end": 5
+            },
+            "confidence_score": 0.85,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "optional",
+            "teaching_mode": "theory",
+            "timestamps": [
+              {
+                "start": "00:11",
+                "end": "00:12"
+              },
+              {
+                "start": "00:36",
+                "end": "00:40"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0"
+            ],
+            "source_event_ids": [],
+            "source_rule_ids": [],
+            "metadata": {
+              "chunk_index": 0,
+              "chunk_start_time_seconds": 0.44,
+              "chunk_end_time_seconds": 122.02,
+              "transcript_line_count": 49,
+              "candidate_visual_frame_keys": [
+                "000036",
+                "000040",
+                "000058",
+                "000084",
+                "000142",
+                "000158"
+              ],
+              "candidate_visual_types": [
+                "hand_drawn_pattern",
+                "text_slide",
+                "mixed_visual"
+              ],
+              "candidate_example_types": [
+                "abstract_teaching_example"
+              ],
+              "rule_type": "algorithm_hint",
+              "pattern_tags": [],
+              "source_quote": "при подходе к уровню, то есть мы ходим вот так вот откатами",
+              "transcript_anchors": [
+                {
+                  "line_index": 5,
+                  "text": "уровню, то есть мы ходим вот так вот",
+                  "timestamp_start": "00:11",
+                  "timestamp_end": "00:12",
+                  "match_source": "llm_source_quote"
+                }
+              ],
+              "timestamp_confidence": "span",
+              "anchor_match_source": "llm_source_quote",
+              "anchor_line_count": 1,
+              "anchor_span_width": 1,
+              "anchor_density": 1.0,
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 0.75,
+              "visual_support_score": 0.4
+            },
+            "event_type": "algorithm_hint",
+            "normalized_text": "При подходе к уровню цена движется откатами.",
+            "normalized_text_ru": "При подходе к уровню цена движется откатами.",
+            "concept": "Price Action",
+            "subconcept": "Movement near levels"
+          }
+        }
+      ],
+      "evidence_refs": [],
+      "concepts": []
+    },
+    "summary": {
+      "answer_text": "[Concept] Price Action\n[Subconcept] Accumulation\n[Rule] Если цена ходит откатами, то она будет собирать свою позицию.\n[Visual] New slide displayed with title 'Разновидность SL' and two sections: 'Расч\n[Concept] Price Action\n[Subconcept] Movement near levels\n[Rule] При подходе к уровню цена ходит откатами.\n[Visual] New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and '",
+      "limitations": [],
+      "citation_doc_ids": [
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_accumulation_1",
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_movement_near_levels_0",
+        "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_example_1",
+        "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_1",
+        "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_1"
+      ]
+    },
+    "facets": {
+      "by_unit_type": {
+        "knowledge_event": 3,
+        "rule_card": 2
+      },
+      "by_lesson": {
+        "2025-09-29-sviatoslav-chornyi": 5
+      },
+      "by_concept": {
+        "concept:price_action": 5
+      }
+    },
+    "hit_count": 5
+  }
+}

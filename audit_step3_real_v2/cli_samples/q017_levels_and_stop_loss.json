@@ -1,0 +1,1671 @@
+{
+  "query_id": "q017",
+  "query": "Что общего между уровнями и стоп-лоссом?",
+  "top_k": 5,
+  "response": {
+    "query": "Что общего между уровнями и стоп-лоссом?",
+    "query_analysis": {
+      "normalized_query": "что общего между уровнями и стоп-лоссом?",
+      "detected_concepts": [],
+      "detected_unit_bias": "mixed",
+      "expansion_trace": {
+        "detected_terms": [],
+        "exact_alias_matches": {},
+        "normalized_alias_matches": {},
+        "canonical_concept_ids": [],
+        "expanded_concept_ids": [],
+        "boosted_rule_ids": [],
+        "related_terms": [],
+        "expansion_trace": []
+      }
+    },
+    "top_hits": [
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_2_comparison_0",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "comparison / Стоп-лосс",
+        "text_snippet": "[comparison] [Concept] Стоп-лосс Расчетный стоп-лосс применяется во всех ситуациях и на всех рынках, в то время как технический стоп-лосс лучше применять при наличии определенных критериев. [Time] 04:",
+        "timestamps": [
+          {
+            "start": "04:46",
+            "end": "05:01"
+          },
+          {
+            "start": "04:32",
+            "end": "04:32"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_2_9"
+        ],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "raw_lexical_score": 5.5254,
+        "raw_vector_score": 0.5629,
+        "graph_boost": 0.0,
+        "score": 0.7748,
+        "score_breakdown": {
+          "lexical_score": 0.6418,
+          "vector_score": 0.8861,
+          "concept_exact_match": 0.0,
+          "alias_match": 0.0,
+          "confidence_score": 0.85,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 1.0,
+          "unit_type_relevance": 0.95,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 1.0,
+          "lesson_diversity_bonus": 1.0
+        },
+        "why_retrieved": [
+          "strong_lexical",
+          "strong_vector",
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_2_comparison_0",
+          "unit_type": "knowledge_event",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:stop_loss"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:tipy_stop_lossov"
+          ],
+          "alias_terms": [
+            "Стоп-лосс",
+            "Типы стоп-лоссов"
+          ],
+          "title": "comparison / Стоп-лосс",
+          "text": "[comparison] [Concept] Стоп-лосс Расчетный стоп-лосс применяется во всех ситуациях и на всех рынках, в то время как технический стоп-лосс лучше применять при наличии определенных критериев. [Time] 04:46–05:01 [Support Basis] transcript_plus_visual",
+          "short_text": "[comparison] [Concept] Стоп-лосс Расчетный стоп-лосс применяется во всех ситуациях и на всех рынках, в то время как технический стоп-лосс лучше применять при наличии определенных критериев. [Time] 04:",
+          "keywords": [
+            "Стоп-лосс",
+            "Типы стоп-лоссов",
+            "comparison"
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "chunk_index": 2,
+            "source_line_start": 11,
+            "source_line_end": 16
+          },
+          "confidence_score": 0.85,
+          "support_basis": "transcript_plus_visual",
+          "evidence_requirement": "none",
+          "teaching_mode": "theory",
+          "timestamps": [
+            {
+              "start": "04:46",
+              "end": "05:01"
+            },
+            {
+              "start": "04:32",
+              "end": "04:32"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_2_9"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "metadata": {
+            "chunk_index": 2,
+            "chunk_start_time_seconds": 253.56,
+            "chunk_end_time_seconds": 375.3,
+            "transcript_line_count": 46,
+            "candidate_visual_frame_keys": [
+              "000274"
+            ],
+            "candidate_visual_types": [
+              "text_slide"
+            ],
+            "candidate_example_types": [
+              "abstract_teaching_example"
+            ],
+            "rule_type": "comparison",
+            "pattern_tags": [],
+            "source_quote": "Расчетный стоп-лосс, он применяется абсолютно во всех ситуациях, абсолютно на всех рынках. В то время как технический лучше всего применять при наличии каких-то определенных критерий.",
+            "transcript_anchors": [
+              {
+                "line_index": 11,
+                "text": "Расчетный стоп-лосс, он применяется абсолютно во всех",
+                "timestamp_start": "04:46",
+                "timestamp_end": "04:49",
+                "match_source": "llm_line_indices"
+              },
+              {
+                "line_index": 12,
+                "text": "ситуациях, абсолютно на всех рынках.",
+                "timestamp_start": "04:49",
+                "timestamp_end": "04:51",
+                "match_source": "llm_line_indices"
+              },
+              {
+                "line_index": 13,
+                "text": "Это Форекс, это Америка, это Криптай, это Мойкс,",
+                "timestamp_start": "04:51",
+                "timestamp_end": "04:54",
+                "match_source": "llm_line_indices"
+              },
+              {
+                "line_index": 14,
+                "text": "то есть и другие рынки.",
+                "timestamp_start": "04:54",
+                "timestamp_end": "04:55",
+                "match_source": "llm_line_indices"
+              },
+              {
+                "line_index": 15,
+                "text": "В то время как технический лучше всего применять",
+                "timestamp_start": "04:56",
+                "timestamp_end": "04:59",
+                "match_source": "llm_line_indices"
+              },
+              {
+                "line_index": 16,
+                "text": "при наличии каких-то определенных критерий.",
+                "timestamp_start": "04:59",
+                "timestamp_end": "05:01",
+                "match_source": "llm_line_indices"
+              }
+            ],
+            "timestamp_confidence": "span",
+            "anchor_match_source": "llm_line_indices",
+            "anchor_line_count": 6,
+            "anchor_span_width": 6,
+            "anchor_density": 1.0,
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 0.85,
+            "visual_support_score": 0.4
+          },
+          "event_type": "comparison",
+          "normalized_text": "Расчетный стоп-лосс применяется во всех ситуациях и на всех рынках, в то время как технический стоп-лосс лучше применять при наличии определенных критериев.",
+          "normalized_text_ru": "Расчетный стоп-лосс применяется во всех ситуациях и на всех рынках, в то время как технический стоп-лосс лучше применять при наличии определенных критериев.",
+          "concept": "Стоп-лосс",
+          "subconcept": "Типы стоп-лоссов"
+        }
+      },
+      {
+        "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_286",
+        "unit_type": "rule_card",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "управление риском / размер стопа",
+        "text_snippet": "[Concept] управление риском\n[Subconcept] размер стопа\n[Rule] Главное, чтобы у вас вот этот основной такой разрыв между локальным уровнем и дневкой был на размер вашего стопа, чтобы если бы вы заходили",
+        "timestamps": [
+          {
+            "start": "68:30",
+            "end": "68:42"
+          },
+          {
+            "start": "68:39",
+            "end": "68:42"
+          },
+          {
+            "start": "68:52",
+            "end": "68:54"
+          },
+          {
+            "start": "71:49",
+            "end": "71:57"
+          },
+          {
+            "start": "69:20",
+            "end": "69:20"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_30_60"
+        ],
+        "source_event_ids": [
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_30_rule_statement_2",
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_30_condition_2",
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_30_condition_3",
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_32_condition_0"
+        ],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_286"
+        ],
+        "raw_lexical_score": 8.6099,
+        "raw_vector_score": 0.0,
+        "graph_boost": 0.0,
+        "score": 0.576,
+        "score_breakdown": {
+          "lexical_score": 1.0,
+          "vector_score": 0.0,
+          "concept_exact_match": 0.0,
+          "alias_match": 0.0,
+          "confidence_score": 1.0,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 0.6667,
+          "unit_type_relevance": 1.0,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 0.9167,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "strong_lexical",
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_286",
+          "unit_type": "rule_card",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:risk_management"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:razmer_stopa"
+          ],
+          "alias_terms": [
+            "управление риском",
+            "размер стопа"
+          ],
+          "title": "управление риском / размер стопа",
+          "text": "[Concept] управление риском\n[Subconcept] размер стопа\n[Rule] Главное, чтобы у вас вот этот основной такой разрыв между локальным уровнем и дневкой был на размер вашего стопа, чтобы если бы вы заходили здесь, то ваш стоп помещался за Дневный уровень.\n[Conditions] Чтобы ваш стоп помещался за Дневный уровень.; Если бы у вас был очень короткий стоп, то есть у вас бы вынесло.; Размер стопа должен помещаться за дневной уровень.\n[Visual] Search bar opened with text input 'ru' and no results found.. concepts: atr_values, entry_values, level\n[Support Basis] transcript_primary\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+          "short_text": "[Concept] управление риском\n[Subconcept] размер стопа\n[Rule] Главное, чтобы у вас вот этот основной такой разрыв между локальным уровнем и дневкой был на размер вашего стопа, чтобы если бы вы заходили",
+          "keywords": [
+            "управление риском",
+            "размер стопа",
+            "Чтобы ваш стоп помещался за Дневный уровень.",
+            "Если бы у вас был очень короткий стоп, то есть у вас бы вынесло.",
+            "Размер стопа должен помещаться за дневной уровень.",
+            "Определить основной разрыв между локальным уровнем и дневным уровнем, который должен быть равен размеру стопа."
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "confidence": "high",
+            "support_basis": "transcript_primary"
+          },
+          "confidence_score": 1.0,
+          "support_basis": "transcript_primary",
+          "evidence_requirement": "optional",
+          "teaching_mode": "mixed",
+          "timestamps": [
+            {
+              "start": "68:30",
+              "end": "68:42"
+            },
+            {
+              "start": "68:39",
+              "end": "68:42"
+            },
+            {
+              "start": "68:52",
+              "end": "68:54"
+            },
+            {
+              "start": "71:49",
+              "end": "71:57"
+            },
+            {
+              "start": "69:20",
+              "end": "69:20"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_30_60"
+          ],
+          "source_event_ids": [
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_30_rule_statement_2",
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_30_condition_2",
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_30_condition_3",
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_32_condition_0"
+          ],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_286"
+          ],
+          "metadata": {
+            "proximity_fallback": true,
+            "proximity_gap_seconds": 0.0,
+            "source_sections": [],
+            "source_subsections": [],
+            "source_chunk_indexes": [
+              30,
+              32
+            ],
+            "conditions": [
+              "Чтобы ваш стоп помещался за Дневный уровень.",
+              "Если бы у вас был очень короткий стоп, то есть у вас бы вынесло.",
+              "Размер стопа должен помещаться за дневной уровень."
+            ],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "algorithm_notes": [
+              "Определить основной разрыв между локальным уровнем и дневным уровнем, который должен быть равен размеру стопа."
+            ],
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 0.95,
+            "visual_support_score": 0.2,
+            "has_visual_evidence": true,
+            "transcript_anchor_count": 9,
+            "transcript_repetition_count": 3
+          },
+          "rule_text": "Главное, чтобы у вас вот этот основной такой разрыв между локальным уровнем и дневкой был на размер вашего стопа, чтобы если бы вы заходили здесь, то ваш стоп помещался за Дневный уровень.",
+          "rule_text_ru": "Главное, чтобы у вас вот этот основной такой разрыв между локальным уровнем и дневкой был на размер вашего стопа, чтобы если бы вы заходили здесь, то ваш стоп помещался за Дневный уровень.",
+          "conditions": [
+            "Чтобы ваш стоп помещался за Дневный уровень.",
+            "Если бы у вас был очень короткий стоп, то есть у вас бы вынесло.",
+            "Размер стопа должен помещаться за дневной уровень."
+          ],
+          "invalidation": [],
+          "exceptions": [],
+          "comparisons": [],
+          "visual_summary": "Search bar opened with text input 'ru' and no results found.. concepts: atr_values, entry_values, level",
+          "concept": "управление риском",
+          "subconcept": "размер стопа"
+        }
+      },
+      {
+        "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_259",
+        "unit_type": "rule_card",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "Торговля по уровням / Закрытие позиции у уровня",
+        "text_snippet": "[Concept] Торговля по уровням\n[Subconcept] Закрытие позиции у уровня\n[Rule] Необходимо избегать закрытия позиции вблизи уровня, так как это создает предпосылки для продолжения движения.\n[Visual] conce",
+        "timestamps": [
+          {
+            "start": "63:43",
+            "end": "63:50"
+          },
+          {
+            "start": "64:16",
+            "end": "64:18"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_28_59"
+        ],
+        "source_event_ids": [
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_28_rule_statement_1"
+        ],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_259"
+        ],
+        "raw_lexical_score": 0.0,
+        "raw_vector_score": 0.6272,
+        "graph_boost": 0.0,
+        "score": 0.5672,
+        "score_breakdown": {
+          "lexical_score": 0.0,
+          "vector_score": 0.9872,
+          "concept_exact_match": 0.0,
+          "alias_match": 0.0,
+          "confidence_score": 0.9,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 0.6667,
+          "unit_type_relevance": 1.0,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 0.9167,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "strong_vector",
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_259",
+          "unit_type": "rule_card",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:torgovlya_po_urovnyam"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:zakrytie_pozitsii_u_urovnya"
+          ],
+          "alias_terms": [
+            "Торговля по уровням",
+            "Закрытие позиции у уровня"
+          ],
+          "title": "Торговля по уровням / Закрытие позиции у уровня",
+          "text": "[Concept] Торговля по уровням\n[Subconcept] Закрытие позиции у уровня\n[Rule] Необходимо избегать закрытия позиции вблизи уровня, так как это создает предпосылки для продолжения движения.\n[Visual] concepts: atr_values, entry_values, level\n[Support Basis] transcript_primary\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+          "short_text": "[Concept] Торговля по уровням\n[Subconcept] Закрытие позиции у уровня\n[Rule] Необходимо избегать закрытия позиции вблизи уровня, так как это создает предпосылки для продолжения движения.\n[Visual] conce",
+          "keywords": [
+            "Торговля по уровням",
+            "Закрытие позиции у уровня"
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "confidence": "high",
+            "support_basis": "transcript_primary"
+          },
+          "confidence_score": 0.9,
+          "support_basis": "transcript_primary",
+          "evidence_requirement": "optional",
+          "teaching_mode": "mixed",
+          "timestamps": [
+            {
+              "start": "63:43",
+              "end": "63:50"
+            },
+            {
+              "start": "64:16",
+              "end": "64:18"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_28_59"
+          ],
+          "source_event_ids": [
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_28_rule_statement_1"
+          ],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_259"
+          ],
+          "metadata": {
+            "proximity_fallback": true,
+            "proximity_gap_seconds": 26.0,
+            "source_sections": [],
+            "source_subsections": [],
+            "source_chunk_indexes": [
+              28
+            ],
+            "conditions": [],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "algorithm_notes": [],
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 0.85,
+            "visual_support_score": 0.2,
+            "has_visual_evidence": true,
+            "transcript_anchor_count": 3,
+            "transcript_repetition_count": 0
+          },
+          "rule_text": "Необходимо избегать закрытия позиции вблизи уровня, так как это создает предпосылки для продолжения движения.",
+          "rule_text_ru": "Необходимо избегать закрытия позиции вблизи уровня, так как это создает предпосылки для продолжения движения.",
+          "conditions": [],
+          "invalidation": [],
+          "exceptions": [],
+          "comparisons": [],
+          "visual_summary": "concepts: atr_values, entry_values, level",
+          "concept": "Торговля по уровням",
+          "subconcept": "Закрытие позиции у уровня"
+        }
+      },
+      {
+        "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_301",
+        "unit_type": "rule_card",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "Адаптация уровней / Поиск более сильных уровней",
+        "text_snippet": "[Concept] Адаптация уровней\n[Subconcept] Поиск более сильных уровней\n[Rule] Если все эти хвосты бьют плюс-минус в один уровень, скорее всего где-то левее есть уровень сильнее.\n[Visual] The screen show",
+        "timestamps": [
+          {
+            "start": "72:28",
+            "end": "72:35"
+          },
+          {
+            "start": "73:46",
+            "end": "73:46"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_32_61"
+        ],
+        "source_event_ids": [
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_32_rule_statement_1"
+        ],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_301"
+        ],
+        "raw_lexical_score": 0.0,
+        "raw_vector_score": 0.5877,
+        "graph_boost": 0.0,
+        "score": 0.5485,
+        "score_breakdown": {
+          "lexical_score": 0.0,
+          "vector_score": 0.9251,
+          "concept_exact_match": 0.0,
+          "alias_match": 0.0,
+          "confidence_score": 0.9,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 0.6667,
+          "unit_type_relevance": 1.0,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 0.9167,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "strong_vector",
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_301",
+          "unit_type": "rule_card",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:adaptatsiya_urovney"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:poisk_bolee_silnykh_urovney"
+          ],
+          "alias_terms": [
+            "Адаптация уровней",
+            "Поиск более сильных уровней"
+          ],
+          "title": "Адаптация уровней / Поиск более сильных уровней",
+          "text": "[Concept] Адаптация уровней\n[Subconcept] Поиск более сильных уровней\n[Rule] Если все эти хвосты бьют плюс-минус в один уровень, скорее всего где-то левее есть уровень сильнее.\n[Visual] The screen shows a trading platform with two chart windows and a watchlist. The top chart displays USDCHF, and the bottom chart also displays USDCHF. A watchlist of various…\n[Support Basis] transcript_primary\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+          "short_text": "[Concept] Адаптация уровней\n[Subconcept] Поиск более сильных уровней\n[Rule] Если все эти хвосты бьют плюс-минус в один уровень, скорее всего где-то левее есть уровень сильнее.\n[Visual] The screen show",
+          "keywords": [
+            "Адаптация уровней",
+            "Поиск более сильных уровней",
+            "Если уровень часто прошивается (много касаний хвостами), искать более сильный уровень левее."
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "confidence": "high",
+            "support_basis": "transcript_primary"
+          },
+          "confidence_score": 0.9,
+          "support_basis": "transcript_primary",
+          "evidence_requirement": "optional",
+          "teaching_mode": "mixed",
+          "timestamps": [
+            {
+              "start": "72:28",
+              "end": "72:35"
+            },
+            {
+              "start": "73:46",
+              "end": "73:46"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_32_61"
+          ],
+          "source_event_ids": [
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_32_rule_statement_1"
+          ],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_301"
+          ],
+          "metadata": {
+            "proximity_fallback": true,
+            "proximity_gap_seconds": 0.0,
+            "source_sections": [],
+            "source_subsections": [],
+            "source_chunk_indexes": [
+              32
+            ],
+            "conditions": [],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "algorithm_notes": [
+              "Если уровень часто прошивается (много касаний хвостами), искать более сильный уровень левее."
+            ],
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 1.0,
+            "visual_support_score": 0.2,
+            "has_visual_evidence": true,
+            "transcript_anchor_count": 3,
+            "transcript_repetition_count": 1
+          },
+          "rule_text": "Если все эти хвосты бьют плюс-минус в один уровень, скорее всего где-то левее есть уровень сильнее.",
+          "rule_text_ru": "Если все эти хвосты бьют плюс-минус в один уровень, скорее всего где-то левее есть уровень сильнее.",
+          "conditions": [],
+          "invalidation": [],
+          "exceptions": [],
+          "comparisons": [],
+          "visual_summary": "The screen shows a trading platform with two chart windows and a watchlist. The top chart displays USDCHF, and the bottom chart also displays USDCHF. A watchlist of various…",
+          "concept": "Адаптация уровней",
+          "subconcept": "Поиск более сильных уровней"
+        }
+      },
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_12_example_0",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "example / Уровень",
+        "text_snippet": "[example] [Concept] Уровень Уровень, с которого начался двухдневный рост, который затем за 2 дня закончился, является хорошим уровнем. [Time] 26:13–26:22 [Support Basis] transcript_plus_visual",
+        "timestamps": [
+          {
+            "start": "26:13",
+            "end": "26:22"
+          },
+          {
+            "start": "26:10",
+            "end": "26:10"
+          },
+          {
+            "start": "26:28",
+            "end": "26:28"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_12_39",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_12_40"
+        ],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "raw_lexical_score": 0.0,
+        "raw_vector_score": 0.5534,
+        "graph_boost": 0.0,
+        "score": 0.5478,
+        "score_breakdown": {
+          "lexical_score": 0.0,
+          "vector_score": 0.871,
+          "concept_exact_match": 0.0,
+          "alias_match": 0.0,
+          "confidence_score": 0.85,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 1.0,
+          "unit_type_relevance": 0.95,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 1.0,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "strong_vector",
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_12_example_0",
+          "unit_type": "knowledge_event",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:level"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:strong_level"
+          ],
+          "alias_terms": [
+            "Уровень",
+            "Сильный уровень"
+          ],
+          "title": "example / Уровень",
+          "text": "[example] [Concept] Уровень Уровень, с которого начался двухдневный рост, который затем за 2 дня закончился, является хорошим уровнем. [Time] 26:13–26:22 [Support Basis] transcript_plus_visual",
+          "short_text": "[example] [Concept] Уровень Уровень, с которого начался двухдневный рост, который затем за 2 дня закончился, является хорошим уровнем. [Time] 26:13–26:22 [Support Basis] transcript_plus_visual",
+          "keywords": [
+            "Уровень",
+            "Сильный уровень",
+            "example"
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "chunk_index": 12,
+            "source_line_start": 6,
+            "source_line_end": 9
+          },
+          "confidence_score": 0.85,
+          "support_basis": "transcript_plus_visual",
+          "evidence_requirement": "required",
+          "teaching_mode": "example",
+          "timestamps": [
+            {
+              "start": "26:13",
+              "end": "26:22"
+            },
+            {
+              "start": "26:10",
+              "end": "26:10"
+            },
+            {
+              "start": "26:28",
+              "end": "26:28"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_12_39",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_12_40"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "metadata": {
+            "chunk_index": 12,
+            "chunk_start_time_seconds": 1557.46,
+            "chunk_end_time_seconds": 1829.66,
+            "transcript_line_count": 97,
+            "candidate_visual_frame_keys": [
+              "002610",
+              "001588",
+              "002656",
+              "002696",
+              "002770",
+              "002840",
+              "002876",
+              "002922",
+              "002890",
+              "002966",
+              "002968",
+              "002974",
+              "002978"
+            ],
+            "candidate_visual_types": [
+              "text_slide",
+              "static_chart_screenshot",
+              "live_chart"
+            ],
+            "candidate_example_types": [
+              "abstract_teaching_example",
+              "real_market"
+            ],
+            "rule_type": "example",
+            "pattern_tags": [],
+            "source_quote": "По сути, это тот уровень, с которого начался вот этот двухдневный такой рост, что, в принципе, точно так же буквально за 2 дня он у нас и закончился.",
+            "transcript_anchors": [
+              {
+                "line_index": 6,
+                "text": "По сути, это тот уровень, с которого начался",
+                "timestamp_start": "26:13",
+                "timestamp_end": "26:16",
+                "match_source": "llm_source_quote"
+              },
+              {
+                "line_index": 7,
+                "text": "вот этот двухдневный такой рост, что, в принципе,",
+                "timestamp_start": "26:16",
+                "timestamp_end": "26:19",
+                "match_source": "llm_source_quote"
+              },
+              {
+                "line_index": 8,
+                "text": "точно так же буквально за 2 дня он",
+                "timestamp_start": "26:19",
+                "timestamp_end": "26:21",
+                "match_source": "llm_source_quote"
+              },
+              {
+                "line_index": 9,
+                "text": "у нас и закончился.",
+                "timestamp_start": "26:21",
+                "timestamp_end": "26:22",
+                "match_source": "llm_source_quote"
+              }
+            ],
+            "timestamp_confidence": "span",
+            "anchor_match_source": "llm_source_quote",
+            "anchor_line_count": 4,
+            "anchor_span_width": 4,
+            "anchor_density": 1.0,
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 0.85,
+            "visual_support_score": 0.4
+          },
+          "event_type": "example",
+          "normalized_text": "Уровень, с которого начался двухдневный рост, который затем за 2 дня закончился, является хорошим уровнем.",
+          "normalized_text_ru": "Уровень, с которого начался двухдневный рост, который затем за 2 дня закончился, является хорошим уровнем.",
+          "concept": "Уровень",
+          "subconcept": "Сильный уровень"
+        }
+      }
+    ],
+    "grouped_results": {
+      "rule_cards": [
+        {
+          "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_286",
+          "unit_type": "rule_card",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "управление риском / размер стопа",
+          "text_snippet": "[Concept] управление риском\n[Subconcept] размер стопа\n[Rule] Главное, чтобы у вас вот этот основной такой разрыв между локальным уровнем и дневкой был на размер вашего стопа, чтобы если бы вы заходили",
+          "timestamps": [
+            {
+              "start": "68:30",
+              "end": "68:42"
+            },
+            {
+              "start": "68:39",
+              "end": "68:42"
+            },
+            {
+              "start": "68:52",
+              "end": "68:54"
+            },
+            {
+              "start": "71:49",
+              "end": "71:57"
+            },
+            {
+              "start": "69:20",
+              "end": "69:20"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_30_60"
+          ],
+          "source_event_ids": [
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_30_rule_statement_2",
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_30_condition_2",
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_30_condition_3",
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_32_condition_0"
+          ],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_286"
+          ],
+          "raw_lexical_score": 8.6099,
+          "raw_vector_score": 0.0,
+          "graph_boost": 0.0,
+          "score": 0.576,
+          "score_breakdown": {
+            "lexical_score": 1.0,
+            "vector_score": 0.0,
+            "concept_exact_match": 0.0,
+            "alias_match": 0.0,
+            "confidence_score": 1.0,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 0.6667,
+            "unit_type_relevance": 1.0,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 0.9167,
+            "lesson_diversity_bonus": 0.0
+          },
+          "why_retrieved": [
+            "strong_lexical",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_286",
+            "unit_type": "rule_card",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:risk_management"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:razmer_stopa"
+            ],
+            "alias_terms": [
+              "управление риском",
+              "размер стопа"
+            ],
+            "title": "управление риском / размер стопа",
+            "text": "[Concept] управление риском\n[Subconcept] размер стопа\n[Rule] Главное, чтобы у вас вот этот основной такой разрыв между локальным уровнем и дневкой был на размер вашего стопа, чтобы если бы вы заходили здесь, то ваш стоп помещался за Дневный уровень.\n[Conditions] Чтобы ваш стоп помещался за Дневный уровень.; Если бы у вас был очень короткий стоп, то есть у вас бы вынесло.; Размер стопа должен помещаться за дневной уровень.\n[Visual] Search bar opened with text input 'ru' and no results found.. concepts: atr_values, entry_values, level\n[Support Basis] transcript_primary\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+            "short_text": "[Concept] управление риском\n[Subconcept] размер стопа\n[Rule] Главное, чтобы у вас вот этот основной такой разрыв между локальным уровнем и дневкой был на размер вашего стопа, чтобы если бы вы заходили",
+            "keywords": [
+              "управление риском",
+              "размер стопа",
+              "Чтобы ваш стоп помещался за Дневный уровень.",
+              "Если бы у вас был очень короткий стоп, то есть у вас бы вынесло.",
+              "Размер стопа должен помещаться за дневной уровень.",
+              "Определить основной разрыв между локальным уровнем и дневным уровнем, который должен быть равен размеру стопа."
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "confidence": "high",
+              "support_basis": "transcript_primary"
+            },
+            "confidence_score": 1.0,
+            "support_basis": "transcript_primary",
+            "evidence_requirement": "optional",
+            "teaching_mode": "mixed",
+            "timestamps": [
+              {
+                "start": "68:30",
+                "end": "68:42"
+              },
+              {
+                "start": "68:39",
+                "end": "68:42"
+              },
+              {
+                "start": "68:52",
+                "end": "68:54"
+              },
+              {
+                "start": "71:49",
+                "end": "71:57"
+              },
+              {
+                "start": "69:20",
+                "end": "69:20"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_30_60"
+            ],
+            "source_event_ids": [
+              "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_30_rule_statement_2",
+              "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_30_condition_2",
+              "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_30_condition_3",
+              "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_32_condition_0"
+            ],
+            "source_rule_ids": [
+              "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_286"
+            ],
+            "metadata": {
+              "proximity_fallback": true,
+              "proximity_gap_seconds": 0.0,
+              "source_sections": [],
+              "source_subsections": [],
+              "source_chunk_indexes": [
+                30,
+                32
+              ],
+              "conditions": [
+                "Чтобы ваш стоп помещался за Дневный уровень.",
+                "Если бы у вас был очень короткий стоп, то есть у вас бы вынесло.",
+                "Размер стопа должен помещаться за дневной уровень."
+              ],
+              "invalidation": [],
+              "exceptions": [],
+              "comparisons": [],
+              "algorithm_notes": [
+                "Определить основной разрыв между локальным уровнем и дневным уровнем, который должен быть равен размеру стопа."
+              ],
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 0.95,
+              "visual_support_score": 0.2,
+              "has_visual_evidence": true,
+              "transcript_anchor_count": 9,
+              "transcript_repetition_count": 3
+            },
+            "rule_text": "Главное, чтобы у вас вот этот основной такой разрыв между локальным уровнем и дневкой был на размер вашего стопа, чтобы если бы вы заходили здесь, то ваш стоп помещался за Дневный уровень.",
+            "rule_text_ru": "Главное, чтобы у вас вот этот основной такой разрыв между локальным уровнем и дневкой был на размер вашего стопа, чтобы если бы вы заходили здесь, то ваш стоп помещался за Дневный уровень.",
+            "conditions": [
+              "Чтобы ваш стоп помещался за Дневный уровень.",
+              "Если бы у вас был очень короткий стоп, то есть у вас бы вынесло.",
+              "Размер стопа должен помещаться за дневной уровень."
+            ],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "visual_summary": "Search bar opened with text input 'ru' and no results found.. concepts: atr_values, entry_values, level",
+            "concept": "управление риском",
+            "subconcept": "размер стопа"
+          }
+        },
+        {
+          "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_259",
+          "unit_type": "rule_card",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "Торговля по уровням / Закрытие позиции у уровня",
+          "text_snippet": "[Concept] Торговля по уровням\n[Subconcept] Закрытие позиции у уровня\n[Rule] Необходимо избегать закрытия позиции вблизи уровня, так как это создает предпосылки для продолжения движения.\n[Visual] conce",
+          "timestamps": [
+            {
+              "start": "63:43",
+              "end": "63:50"
+            },
+            {
+              "start": "64:16",
+              "end": "64:18"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_28_59"
+          ],
+          "source_event_ids": [
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_28_rule_statement_1"
+          ],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_259"
+          ],
+          "raw_lexical_score": 0.0,
+          "raw_vector_score": 0.6272,
+          "graph_boost": 0.0,
+          "score": 0.5672,
+          "score_breakdown": {
+            "lexical_score": 0.0,
+            "vector_score": 0.9872,
+            "concept_exact_match": 0.0,
+            "alias_match": 0.0,
+            "confidence_score": 0.9,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 0.6667,
+            "unit_type_relevance": 1.0,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 0.9167,
+            "lesson_diversity_bonus": 0.0
+          },
+          "why_retrieved": [
+            "strong_vector",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_259",
+            "unit_type": "rule_card",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:torgovlya_po_urovnyam"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:zakrytie_pozitsii_u_urovnya"
+            ],
+            "alias_terms": [
+              "Торговля по уровням",
+              "Закрытие позиции у уровня"
+            ],
+            "title": "Торговля по уровням / Закрытие позиции у уровня",
+            "text": "[Concept] Торговля по уровням\n[Subconcept] Закрытие позиции у уровня\n[Rule] Необходимо избегать закрытия позиции вблизи уровня, так как это создает предпосылки для продолжения движения.\n[Visual] concepts: atr_values, entry_values, level\n[Support Basis] transcript_primary\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+            "short_text": "[Concept] Торговля по уровням\n[Subconcept] Закрытие позиции у уровня\n[Rule] Необходимо избегать закрытия позиции вблизи уровня, так как это создает предпосылки для продолжения движения.\n[Visual] conce",
+            "keywords": [
+              "Торговля по уровням",
+              "Закрытие позиции у уровня"
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "confidence": "high",
+              "support_basis": "transcript_primary"
+            },
+            "confidence_score": 0.9,
+            "support_basis": "transcript_primary",
+            "evidence_requirement": "optional",
+            "teaching_mode": "mixed",
+            "timestamps": [
+              {
+                "start": "63:43",
+                "end": "63:50"
+              },
+              {
+                "start": "64:16",
+                "end": "64:18"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_28_59"
+            ],
+            "source_event_ids": [
+              "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_28_rule_statement_1"
+            ],
+            "source_rule_ids": [
+              "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_259"
+            ],
+            "metadata": {
+              "proximity_fallback": true,
+              "proximity_gap_seconds": 26.0,
+              "source_sections": [],
+              "source_subsections": [],
+              "source_chunk_indexes": [
+                28
+              ],
+              "conditions": [],
+              "invalidation": [],
+              "exceptions": [],
+              "comparisons": [],
+              "algorithm_notes": [],
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 0.85,
+              "visual_support_score": 0.2,
+              "has_visual_evidence": true,
+              "transcript_anchor_count": 3,
+              "transcript_repetition_count": 0
+            },
+            "rule_text": "Необходимо избегать закрытия позиции вблизи уровня, так как это создает предпосылки для продолжения движения.",
+            "rule_text_ru": "Необходимо избегать закрытия позиции вблизи уровня, так как это создает предпосылки для продолжения движения.",
+            "conditions": [],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "visual_summary": "concepts: atr_values, entry_values, level",
+            "concept": "Торговля по уровням",
+            "subconcept": "Закрытие позиции у уровня"
+          }
+        },
+        {
+          "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_301",
+          "unit_type": "rule_card",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "Адаптация уровней / Поиск более сильных уровней",
+          "text_snippet": "[Concept] Адаптация уровней\n[Subconcept] Поиск более сильных уровней\n[Rule] Если все эти хвосты бьют плюс-минус в один уровень, скорее всего где-то левее есть уровень сильнее.\n[Visual] The screen show",
+          "timestamps": [
+            {
+              "start": "72:28",
+              "end": "72:35"
+            },
+            {
+              "start": "73:46",
+              "end": "73:46"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_32_61"
+          ],
+          "source_event_ids": [
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_32_rule_statement_1"
+          ],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_301"
+          ],
+          "raw_lexical_score": 0.0,
+          "raw_vector_score": 0.5877,
+          "graph_boost": 0.0,
+          "score": 0.5485,
+          "score_breakdown": {
+            "lexical_score": 0.0,
+            "vector_score": 0.9251,
+            "concept_exact_match": 0.0,
+            "alias_match": 0.0,
+            "confidence_score": 0.9,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 0.6667,
+            "unit_type_relevance": 1.0,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 0.9167,
+            "lesson_diversity_bonus": 0.0
+          },
+          "why_retrieved": [
+            "strong_vector",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_301",
+            "unit_type": "rule_card",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:adaptatsiya_urovney"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:poisk_bolee_silnykh_urovney"
+            ],
+            "alias_terms": [
+              "Адаптация уровней",
+              "Поиск более сильных уровней"
+            ],
+            "title": "Адаптация уровней / Поиск более сильных уровней",
+            "text": "[Concept] Адаптация уровней\n[Subconcept] Поиск более сильных уровней\n[Rule] Если все эти хвосты бьют плюс-минус в один уровень, скорее всего где-то левее есть уровень сильнее.\n[Visual] The screen shows a trading platform with two chart windows and a watchlist. The top chart displays USDCHF, and the bottom chart also displays USDCHF. A watchlist of various…\n[Support Basis] transcript_primary\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+            "short_text": "[Concept] Адаптация уровней\n[Subconcept] Поиск более сильных уровней\n[Rule] Если все эти хвосты бьют плюс-минус в один уровень, скорее всего где-то левее есть уровень сильнее.\n[Visual] The screen show",
+            "keywords": [
+              "Адаптация уровней",
+              "Поиск более сильных уровней",
+              "Если уровень часто прошивается (много касаний хвостами), искать более сильный уровень левее."
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "confidence": "high",
+              "support_basis": "transcript_primary"
+            },
+            "confidence_score": 0.9,
+            "support_basis": "transcript_primary",
+            "evidence_requirement": "optional",
+            "teaching_mode": "mixed",
+            "timestamps": [
+              {
+                "start": "72:28",
+                "end": "72:35"
+              },
+              {
+                "start": "73:46",
+                "end": "73:46"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_32_61"
+            ],
+            "source_event_ids": [
+              "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_32_rule_statement_1"
+            ],
+            "source_rule_ids": [
+              "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_301"
+            ],
+            "metadata": {
+              "proximity_fallback": true,
+              "proximity_gap_seconds": 0.0,
+              "source_sections": [],
+              "source_subsections": [],
+              "source_chunk_indexes": [
+                32
+              ],
+              "conditions": [],
+              "invalidation": [],
+              "exceptions": [],
+              "comparisons": [],
+              "algorithm_notes": [
+                "Если уровень часто прошивается (много касаний хвостами), искать более сильный уровень левее."
+              ],
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 1.0,
+              "visual_support_score": 0.2,
+              "has_visual_evidence": true,
+              "transcript_anchor_count": 3,
+              "transcript_repetition_count": 1
+            },
+            "rule_text": "Если все эти хвосты бьют плюс-минус в один уровень, скорее всего где-то левее есть уровень сильнее.",
+            "rule_text_ru": "Если все эти хвосты бьют плюс-минус в один уровень, скорее всего где-то левее есть уровень сильнее.",
+            "conditions": [],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "visual_summary": "The screen shows a trading platform with two chart windows and a watchlist. The top chart displays USDCHF, and the bottom chart also displays USDCHF. A watchlist of various…",
+            "concept": "Адаптация уровней",
+            "subconcept": "Поиск более сильных уровней"
+          }
+        }
+      ],
+      "knowledge_events": [
+        {
+          "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_2_comparison_0",
+          "unit_type": "knowledge_event",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "comparison / Стоп-лосс",
+          "text_snippet": "[comparison] [Concept] Стоп-лосс Расчетный стоп-лосс применяется во всех ситуациях и на всех рынках, в то время как технический стоп-лосс лучше применять при наличии определенных критериев. [Time] 04:",
+          "timestamps": [
+            {
+              "start": "04:46",
+              "end": "05:01"
+            },
+            {
+              "start": "04:32",
+              "end": "04:32"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_2_9"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "raw_lexical_score": 5.5254,
+          "raw_vector_score": 0.5629,
+          "graph_boost": 0.0,
+          "score": 0.7748,
+          "score_breakdown": {
+            "lexical_score": 0.6418,
+            "vector_score": 0.8861,
+            "concept_exact_match": 0.0,
+            "alias_match": 0.0,
+            "confidence_score": 0.85,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 1.0,
+            "unit_type_relevance": 0.95,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 1.0,
+            "lesson_diversity_bonus": 1.0
+          },
+          "why_retrieved": [
+            "strong_lexical",
+            "strong_vector",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_2_comparison_0",
+            "unit_type": "knowledge_event",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:stop_loss"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:tipy_stop_lossov"
+            ],
+            "alias_terms": [
+              "Стоп-лосс",
+              "Типы стоп-лоссов"
+            ],
+            "title": "comparison / Стоп-лосс",
+            "text": "[comparison] [Concept] Стоп-лосс Расчетный стоп-лосс применяется во всех ситуациях и на всех рынках, в то время как технический стоп-лосс лучше применять при наличии определенных критериев. [Time] 04:46–05:01 [Support Basis] transcript_plus_visual",
+            "short_text": "[comparison] [Concept] Стоп-лосс Расчетный стоп-лосс применяется во всех ситуациях и на всех рынках, в то время как технический стоп-лосс лучше применять при наличии определенных критериев. [Time] 04:",
+            "keywords": [
+              "Стоп-лосс",
+              "Типы стоп-лоссов",
+              "comparison"
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "chunk_index": 2,
+              "source_line_start": 11,
+              "source_line_end": 16
+            },
+            "confidence_score": 0.85,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "none",
+            "teaching_mode": "theory",
+            "timestamps": [
+              {
+                "start": "04:46",
+                "end": "05:01"
+              },
+              {
+                "start": "04:32",
+                "end": "04:32"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_2_9"
+            ],
+            "source_event_ids": [],
+            "source_rule_ids": [],
+            "metadata": {
+              "chunk_index": 2,
+              "chunk_start_time_seconds": 253.56,
+              "chunk_end_time_seconds": 375.3,
+              "transcript_line_count": 46,
+              "candidate_visual_frame_keys": [
+                "000274"
+              ],
+              "candidate_visual_types": [
+                "text_slide"
+              ],
+              "candidate_example_types": [
+                "abstract_teaching_example"
+              ],
+              "rule_type": "comparison",
+              "pattern_tags": [],
+              "source_quote": "Расчетный стоп-лосс, он применяется абсолютно во всех ситуациях, абсолютно на всех рынках. В то время как технический лучше всего применять при наличии каких-то определенных критерий.",
+              "transcript_anchors": [
+                {
+                  "line_index": 11,
+                  "text": "Расчетный стоп-лосс, он применяется абсолютно во всех",
+                  "timestamp_start": "04:46",
+                  "timestamp_end": "04:49",
+                  "match_source": "llm_line_indices"
+                },
+                {
+                  "line_index": 12,
+                  "text": "ситуациях, абсолютно на всех рынках.",
+                  "timestamp_start": "04:49",
+                  "timestamp_end": "04:51",
+                  "match_source": "llm_line_indices"
+                },
+                {
+                  "line_index": 13,
+                  "text": "Это Форекс, это Америка, это Криптай, это Мойкс,",
+                  "timestamp_start": "04:51",
+                  "timestamp_end": "04:54",
+                  "match_source": "llm_line_indices"
+                },
+                {
+                  "line_index": 14,
+                  "text": "то есть и другие рынки.",
+                  "timestamp_start": "04:54",
+                  "timestamp_end": "04:55",
+                  "match_source": "llm_line_indices"
+                },
+                {
+                  "line_index": 15,
+                  "text": "В то время как технический лучше всего применять",
+                  "timestamp_start": "04:56",
+                  "timestamp_end": "04:59",
+                  "match_source": "llm_line_indices"
+                },
+                {
+                  "line_index": 16,
+                  "text": "при наличии каких-то определенных критерий.",
+                  "timestamp_start": "04:59",
+                  "timestamp_end": "05:01",
+                  "match_source": "llm_line_indices"
+                }
+              ],
+              "timestamp_confidence": "span",
+              "anchor_match_source": "llm_line_indices",
+              "anchor_line_count": 6,
+              "anchor_span_width": 6,
+              "anchor_density": 1.0,
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 0.85,
+              "visual_support_score": 0.4
+            },
+            "event_type": "comparison",
+            "normalized_text": "Расчетный стоп-лосс применяется во всех ситуациях и на всех рынках, в то время как технический стоп-лосс лучше применять при наличии определенных критериев.",
+            "normalized_text_ru": "Расчетный стоп-лосс применяется во всех ситуациях и на всех рынках, в то время как технический стоп-лосс лучше применять при наличии определенных критериев.",
+            "concept": "Стоп-лосс",
+            "subconcept": "Типы стоп-лоссов"
+          }
+        },
+        {
+          "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_12_example_0",
+          "unit_type": "knowledge_event",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "example / Уровень",
+          "text_snippet": "[example] [Concept] Уровень Уровень, с которого начался двухдневный рост, который затем за 2 дня закончился, является хорошим уровнем. [Time] 26:13–26:22 [Support Basis] transcript_plus_visual",
+          "timestamps": [
+            {
+              "start": "26:13",
+              "end": "26:22"
+            },
+            {
+              "start": "26:10",
+              "end": "26:10"
+            },
+            {
+              "start": "26:28",
+              "end": "26:28"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_12_39",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_12_40"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "raw_lexical_score": 0.0,
+          "raw_vector_score": 0.5534,
+          "graph_boost": 0.0,
+          "score": 0.5478,
+          "score_breakdown": {
+            "lexical_score": 0.0,
+            "vector_score": 0.871,
+            "concept_exact_match": 0.0,
+            "alias_match": 0.0,
+            "confidence_score": 0.85,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 1.0,
+            "unit_type_relevance": 0.95,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 1.0,
+            "lesson_diversity_bonus": 0.0
+          },
+          "why_retrieved": [
+            "strong_vector",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_12_example_0",
+            "unit_type": "knowledge_event",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:level"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:strong_level"
+            ],
+            "alias_terms": [
+              "Уровень",
+              "Сильный уровень"
+            ],
+            "title": "example / Уровень",
+            "text": "[example] [Concept] Уровень Уровень, с которого начался двухдневный рост, который затем за 2 дня закончился, является хорошим уровнем. [Time] 26:13–26:22 [Support Basis] transcript_plus_visual",
+            "short_text": "[example] [Concept] Уровень Уровень, с которого начался двухдневный рост, который затем за 2 дня закончился, является хорошим уровнем. [Time] 26:13–26:22 [Support Basis] transcript_plus_visual",
+            "keywords": [
+              "Уровень",
+              "Сильный уровень",
+              "example"
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "chunk_index": 12,
+              "source_line_start": 6,
+              "source_line_end": 9
+            },
+            "confidence_score": 0.85,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "required",
+            "teaching_mode": "example",
+            "timestamps": [
+              {
+                "start": "26:13",
+                "end": "26:22"
+              },
+              {
+                "start": "26:10",
+                "end": "26:10"
+              },
+              {
+                "start": "26:28",
+                "end": "26:28"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_12_39",
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_12_40"
+            ],
+            "source_event_ids": [],
+            "source_rule_ids": [],
+            "metadata": {
+              "chunk_index": 12,
+              "chunk_start_time_seconds": 1557.46,
+              "chunk_end_time_seconds": 1829.66,
+              "transcript_line_count": 97,
+              "candidate_visual_frame_keys": [
+                "002610",
+                "001588",
+                "002656",
+                "002696",
+                "002770",
+                "002840",
+                "002876",
+                "002922",
+                "002890",
+                "002966",
+                "002968",
+                "002974",
+                "002978"
+              ],
+              "candidate_visual_types": [
+                "text_slide",
+                "static_chart_screenshot",
+                "live_chart"
+              ],
+              "candidate_example_types": [
+                "abstract_teaching_example",
+                "real_market"
+              ],
+              "rule_type": "example",
+              "pattern_tags": [],
+              "source_quote": "По сути, это тот уровень, с которого начался вот этот двухдневный такой рост, что, в принципе, точно так же буквально за 2 дня он у нас и закончился.",
+              "transcript_anchors": [
+                {
+                  "line_index": 6,
+                  "text": "По сути, это тот уровень, с которого начался",
+                  "timestamp_start": "26:13",
+                  "timestamp_end": "26:16",
+                  "match_source": "llm_source_quote"
+                },
+                {
+                  "line_index": 7,
+                  "text": "вот этот двухдневный такой рост, что, в принципе,",
+                  "timestamp_start": "26:16",
+                  "timestamp_end": "26:19",
+                  "match_source": "llm_source_quote"
+                },
+                {
+                  "line_index": 8,
+                  "text": "точно так же буквально за 2 дня он",
+                  "timestamp_start": "26:19",
+                  "timestamp_end": "26:21",
+                  "match_source": "llm_source_quote"
+                },
+                {
+                  "line_index": 9,
+                  "text": "у нас и закончился.",
+                  "timestamp_start": "26:21",
+                  "timestamp_end": "26:22",
+                  "match_source": "llm_source_quote"
+                }
+              ],
+              "timestamp_confidence": "span",
+              "anchor_match_source": "llm_source_quote",
+              "anchor_line_count": 4,
+              "anchor_span_width": 4,
+              "anchor_density": 1.0,
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 0.85,
+              "visual_support_score": 0.4
+            },
+            "event_type": "example",
+            "normalized_text": "Уровень, с которого начался двухдневный рост, который затем за 2 дня закончился, является хорошим уровнем.",
+            "normalized_text_ru": "Уровень, с которого начался двухдневный рост, который затем за 2 дня закончился, является хорошим уровнем.",
+            "concept": "Уровень",
+            "subconcept": "Сильный уровень"
+          }
+        }
+      ],
+      "evidence_refs": [],
+      "concepts": []
+    },
+    "summary": {
+      "answer_text": "[Concept] управление риском\n[Subconcept] размер стопа\n[Rule] Главное, чтобы у вас вот этот основной такой разрыв между локальным уровнем и дневкой был на размер вашего стопа, чтобы если бы вы заходили\n[Concept] Торговля по уровням\n[Subconcept] Закрытие позиции у уровня\n[Rule] Необходимо избегать закрытия позиции вблизи уровня, так как это создает предпосылки для продолжения движения.\n[Visual] conce\n[Concept] Адаптация уровней\n[Subconcept] Поиск более сильных уровней\n[Rule] Если все эти хвосты бьют плюс-минус в один уровень, скорее всего где-то левее есть уровень сильнее.\n[Visual] The screen show",
+      "limitations": [],
+      "citation_doc_ids": [
+        "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_2_comparison_0",
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_286",
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_259",
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_301",
+        "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_12_example_0"
+      ]
+    },
+    "facets": {
+      "by_unit_type": {
+        "rule_card": 3,
+        "knowledge_event": 2
+      },
+      "by_lesson": {
+        "2025-09-29-sviatoslav-chornyi": 5
+      },
+      "by_concept": {
+        "concept:risk_management": 1,
+        "concept:level": 1,
+        "concept:adaptatsiya_urovney": 1,
+        "concept:torgovlya_po_urovnyam": 1,
+        "concept:stop_loss": 1
+      }
+    },
+    "hit_count": 5
+  }
+}

@@ -1,0 +1,1491 @@
+{
+  "query": "??? ?????????? ??????? ??? ????-??????",
+  "top_k": 5,
+  "response": {
+    "query": "??? ?????????? ??????? ??? ????-??????",
+    "query_analysis": {
+      "normalized_query": "??? ?????????? ??????? ??? ????-??????",
+      "detected_concepts": [],
+      "detected_unit_bias": "mixed",
+      "expansion_trace": {
+        "detected_terms": [],
+        "exact_alias_matches": {},
+        "normalized_alias_matches": {},
+        "canonical_concept_ids": [],
+        "expanded_concept_ids": [],
+        "boosted_rule_ids": [],
+        "related_terms": [],
+        "expansion_trace": []
+      }
+    },
+    "top_hits": [
+      {
+        "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_55",
+        "unit_type": "rule_card",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "Истинный пробой / Накопление",
+        "text_snippet": "[Concept] Истинный пробой\n[Subconcept] Накопление\n[Rule] Накопление крайне важно для хорошего истинного пробоя.\n[Visual] New slide with title 'Энергия' and explanatory text about accumulation and cons",
+        "timestamps": [
+          {
+            "start": "11:29",
+            "end": "11:33"
+          },
+          {
+            "start": "11:24",
+            "end": "11:24"
+          },
+          {
+            "start": "11:36",
+            "end": "11:54"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_5_16",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_5_17"
+        ],
+        "source_event_ids": [
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_5_rule_statement_2"
+        ],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_55"
+        ],
+        "raw_lexical_score": 0.0,
+        "raw_vector_score": 0.4465,
+        "graph_boost": 0.0,
+        "score": 0.5924,
+        "score_breakdown": {
+          "lexical_score": 0.0,
+          "vector_score": 0.9712,
+          "concept_exact_match": 0.0,
+          "alias_match": 0.0,
+          "confidence_score": 0.9,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 0.6667,
+          "unit_type_relevance": 1.0,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 0.9167,
+          "lesson_diversity_bonus": 1.0
+        },
+        "why_retrieved": [
+          "strong_vector",
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_55",
+          "unit_type": "rule_card",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:istinnyy_proboy"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:accumulation"
+          ],
+          "alias_terms": [
+            "Истинный пробой",
+            "Накопление"
+          ],
+          "title": "Истинный пробой / Накопление",
+          "text": "[Concept] Истинный пробой\n[Subconcept] Накопление\n[Rule] Накопление крайне важно для хорошего истинного пробоя.\n[Visual] New slide with title 'Энергия' and explanatory text about accumulation and consolidation increasing chances of true breakout. Three chart examples are displayed below the text.…\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+          "short_text": "[Concept] Истинный пробой\n[Subconcept] Накопление\n[Rule] Накопление крайне важно для хорошего истинного пробоя.\n[Visual] New slide with title 'Энергия' and explanatory text about accumulation and cons",
+          "keywords": [
+            "Истинный пробой",
+            "Накопление",
+            "Для определения истинного пробоя, отслеживать накопление."
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "confidence": "high",
+            "support_basis": "transcript_plus_visual"
+          },
+          "confidence_score": 0.9,
+          "support_basis": "transcript_plus_visual",
+          "evidence_requirement": "optional",
+          "teaching_mode": "mixed",
+          "timestamps": [
+            {
+              "start": "11:29",
+              "end": "11:33"
+            },
+            {
+              "start": "11:24",
+              "end": "11:24"
+            },
+            {
+              "start": "11:36",
+              "end": "11:54"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_5_16",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_5_17"
+          ],
+          "source_event_ids": [
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_5_rule_statement_2"
+          ],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_55"
+          ],
+          "metadata": {
+            "source_sections": [],
+            "source_subsections": [],
+            "source_chunk_indexes": [
+              5
+            ],
+            "conditions": [],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "algorithm_notes": [
+              "Для определения истинного пробоя, отслеживать накопление."
+            ],
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 0.95,
+            "visual_support_score": 0.4,
+            "has_visual_evidence": true,
+            "transcript_anchor_count": 2,
+            "transcript_repetition_count": 1
+          },
+          "rule_text": "Накопление крайне важно для хорошего истинного пробоя.",
+          "rule_text_ru": "Накопление крайне важно для хорошего истинного пробоя.",
+          "conditions": [],
+          "invalidation": [],
+          "exceptions": [],
+          "comparisons": [],
+          "visual_summary": "New slide with title 'Энергия' and explanatory text about accumulation and consolidation increasing chances of true breakout. Three chart examples are displayed below the text.…",
+          "concept": "Истинный пробой",
+          "subconcept": "Накопление"
+        }
+      },
+      {
+        "doc_id": "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_24",
+        "unit_type": "rule_card",
+        "lesson_id": "Lesson 2. Levels part 1",
+        "title": "Поведение крупных игроков / Уровни",
+        "text_snippet": "[Concept] Поведение крупных игроков\n[Subconcept] Уровни\n[Rule] Крупняк всегда будет защищать свой уровень, который он сделал на дневке, на недельке, на месяце.\n[Visual] A small chart diagram has appea",
+        "timestamps": [
+          {
+            "start": "08:09",
+            "end": "08:15"
+          },
+          {
+            "start": "07:46",
+            "end": "07:46"
+          },
+          {
+            "start": "07:50",
+            "end": "07:50"
+          },
+          {
+            "start": "07:54",
+            "end": "07:54"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_94",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_95",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_96",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_97",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_98",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_99"
+        ],
+        "source_event_ids": [
+          "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_3_rule_statement_2"
+        ],
+        "source_rule_ids": [
+          "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_24"
+        ],
+        "raw_lexical_score": 0.0,
+        "raw_vector_score": 0.4208,
+        "graph_boost": 0.0,
+        "score": 0.5306,
+        "score_breakdown": {
+          "lexical_score": 0.0,
+          "vector_score": 0.7653,
+          "concept_exact_match": 0.0,
+          "alias_match": 0.0,
+          "confidence_score": 0.9,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 0.6667,
+          "unit_type_relevance": 1.0,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 0.9167,
+          "lesson_diversity_bonus": 1.0
+        },
+        "why_retrieved": [
+          "strong_vector",
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_24",
+          "unit_type": "rule_card",
+          "lesson_id": "Lesson 2. Levels part 1",
+          "lesson_slug": "lesson_2_levels_part_1",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:povedenie_krupnykh_igrokov"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:level"
+          ],
+          "alias_terms": [
+            "Поведение крупных игроков",
+            "Уровни"
+          ],
+          "title": "Поведение крупных игроков / Уровни",
+          "text": "[Concept] Поведение крупных игроков\n[Subconcept] Уровни\n[Rule] Крупняк всегда будет защищать свой уровень, который он сделал на дневке, на недельке, на месяце.\n[Visual] A small chart diagram has appeared on the screen. The chart displays a few candlesticks with red and green colors. Text annotations in Russian are present above the chart..…\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+          "short_text": "[Concept] Поведение крупных игроков\n[Subconcept] Уровни\n[Rule] Крупняк всегда будет защищать свой уровень, который он сделал на дневке, на недельке, на месяце.\n[Visual] A small chart diagram has appea",
+          "keywords": [
+            "Поведение крупных игроков",
+            "Уровни"
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "confidence": "high",
+            "support_basis": "transcript_plus_visual"
+          },
+          "confidence_score": 0.9,
+          "support_basis": "transcript_plus_visual",
+          "evidence_requirement": "optional",
+          "teaching_mode": "mixed",
+          "timestamps": [
+            {
+              "start": "08:09",
+              "end": "08:15"
+            },
+            {
+              "start": "07:46",
+              "end": "07:46"
+            },
+            {
+              "start": "07:50",
+              "end": "07:50"
+            },
+            {
+              "start": "07:54",
+              "end": "07:54"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_94",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_95",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_96",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_97",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_98",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_99"
+          ],
+          "source_event_ids": [
+            "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_3_rule_statement_2"
+          ],
+          "source_rule_ids": [
+            "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_24"
+          ],
+          "metadata": {
+            "source_sections": [],
+            "source_subsections": [],
+            "source_chunk_indexes": [
+              3
+            ],
+            "conditions": [],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "algorithm_notes": [],
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 0.85,
+            "visual_support_score": 0.4,
+            "has_visual_evidence": true,
+            "transcript_anchor_count": 2,
+            "transcript_repetition_count": 1
+          },
+          "rule_text": "Крупняк всегда будет защищать свой уровень, который он сделал на дневке, на недельке, на месяце.",
+          "rule_text_ru": "Крупняк всегда будет защищать свой уровень, который он сделал на дневке, на недельке, на месяце.",
+          "conditions": [],
+          "invalidation": [],
+          "exceptions": [],
+          "comparisons": [],
+          "visual_summary": "A small chart diagram has appeared on the screen. The chart displays a few candlesticks with red and green colors. Text annotations in Russian are present above the chart..…",
+          "concept": "Поведение крупных игроков",
+          "subconcept": "Уровни"
+        }
+      },
+      {
+        "doc_id": "rel:node:povedenie_krupnykh_igrokov:has_subconcept:node:urovni",
+        "unit_type": "concept_relation",
+        "lesson_id": "corpus",
+        "title": "Поведение крупных игроков → Уровни",
+        "text_snippet": "Поведение крупных игроков –[has_subconcept]→ Уровни",
+        "timestamps": [],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [
+          "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_24"
+        ],
+        "raw_lexical_score": 0.0,
+        "raw_vector_score": 0.4501,
+        "graph_boost": 0.0,
+        "score": 0.402,
+        "score_breakdown": {
+          "lexical_score": 0.0,
+          "vector_score": 1.0,
+          "concept_exact_match": 0.0,
+          "alias_match": 0.0,
+          "confidence_score": 0.0,
+          "evidence_available": 0.0,
+          "timestamp_available": 0.0,
+          "provenance_richness": 0.6667,
+          "unit_type_relevance": 0.8,
+          "support_basis_relevance": 0.0,
+          "teaching_mode_relevance": 0.0,
+          "groundedness": 0.1667,
+          "lesson_diversity_bonus": 1.0
+        },
+        "why_retrieved": [
+          "strong_vector"
+        ],
+        "resolved_doc": {
+          "doc_id": "rel:node:povedenie_krupnykh_igrokov:has_subconcept:node:urovni",
+          "unit_type": "concept_relation",
+          "lesson_id": "corpus",
+          "lesson_slug": null,
+          "language": "ru",
+          "canonical_concept_ids": [
+            "node:povedenie_krupnykh_igrokov",
+            "node:urovni"
+          ],
+          "canonical_subconcept_ids": [],
+          "alias_terms": [
+            "Поведение крупных игроков",
+            "Уровни"
+          ],
+          "title": "Поведение крупных игроков → Уровни",
+          "text": "Поведение крупных игроков –[has_subconcept]→ Уровни",
+          "short_text": "Поведение крупных игроков –[has_subconcept]→ Уровни",
+          "keywords": [
+            "Поведение крупных игроков",
+            "Уровни",
+            "has_subconcept"
+          ],
+          "provenance": {
+            "source_lessons": [
+              "lesson_2_levels_part_1"
+            ],
+            "relation_type": "has_subconcept"
+          },
+          "confidence_score": null,
+          "support_basis": null,
+          "evidence_requirement": null,
+          "teaching_mode": null,
+          "timestamps": [],
+          "evidence_ids": [],
+          "source_event_ids": [],
+          "source_rule_ids": [
+            "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_24"
+          ],
+          "metadata": {
+            "source_id": "node:povedenie_krupnykh_igrokov",
+            "target_id": "node:urovni",
+            "source_lessons": [
+              "lesson_2_levels_part_1"
+            ]
+          },
+          "source_concept": "Поведение крупных игроков",
+          "target_concept": "Уровни",
+          "relation_type": "has_subconcept",
+          "weight": 1
+        }
+      },
+      {
+        "doc_id": "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_4_rule_statement_4",
+        "unit_type": "knowledge_event",
+        "lesson_id": "Lesson 2. Levels part 1",
+        "title": "rule_statement / Уровни",
+        "text_snippet": "[rule_statement] [Concept] Уровни Чем сильнее ваш уровень, тем короче будет ваш стоп. [Time] 09:21–09:25 [Support Basis] transcript_plus_visual",
+        "timestamps": [
+          {
+            "start": "09:21",
+            "end": "09:25"
+          },
+          {
+            "start": "08:54",
+            "end": "09:02"
+          },
+          {
+            "start": "09:02",
+            "end": "09:02"
+          },
+          {
+            "start": "09:06",
+            "end": "09:10"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_101",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_102",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_103",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_104",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_105",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_106",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_107"
+        ],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "raw_lexical_score": 0.0,
+        "raw_vector_score": 0.3533,
+        "graph_boost": 0.0,
+        "score": 0.3591,
+        "score_breakdown": {
+          "lexical_score": 0.0,
+          "vector_score": 0.2254,
+          "concept_exact_match": 0.0,
+          "alias_match": 0.0,
+          "confidence_score": 0.95,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 1.0,
+          "unit_type_relevance": 0.95,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 1.0,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_4_rule_statement_4",
+          "unit_type": "knowledge_event",
+          "lesson_id": "Lesson 2. Levels part 1",
+          "lesson_slug": "lesson_2_levels_part_1",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:level"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:risk_management"
+          ],
+          "alias_terms": [
+            "Уровни",
+            "Управление риском"
+          ],
+          "title": "rule_statement / Уровни",
+          "text": "[rule_statement] [Concept] Уровни Чем сильнее ваш уровень, тем короче будет ваш стоп. [Time] 09:21–09:25 [Support Basis] transcript_plus_visual",
+          "short_text": "[rule_statement] [Concept] Уровни Чем сильнее ваш уровень, тем короче будет ваш стоп. [Time] 09:21–09:25 [Support Basis] transcript_plus_visual",
+          "keywords": [
+            "Уровни",
+            "Управление риском",
+            "rule_statement",
+            "rule"
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "chunk_index": 4,
+            "source_line_start": 23,
+            "source_line_end": 24
+          },
+          "confidence_score": 0.95,
+          "support_basis": "transcript_plus_visual",
+          "evidence_requirement": "optional",
+          "teaching_mode": "mixed",
+          "timestamps": [
+            {
+              "start": "09:21",
+              "end": "09:25"
+            },
+            {
+              "start": "08:54",
+              "end": "09:02"
+            },
+            {
+              "start": "09:02",
+              "end": "09:02"
+            },
+            {
+              "start": "09:06",
+              "end": "09:10"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_101",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_102",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_103",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_104",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_105",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_106",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_107"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "metadata": {
+            "chunk_index": 4,
+            "chunk_start_time_seconds": 504.87,
+            "chunk_end_time_seconds": 627.14,
+            "transcript_line_count": 45,
+            "candidate_visual_frame_keys": [
+              "000842",
+              "000846",
+              "000850",
+              "000854",
+              "000858",
+              "000900",
+              "000862",
+              "000902",
+              "000866",
+              "000870",
+              "000874",
+              "000876",
+              "000880",
+              "000884",
+              "000886",
+              "000890",
+              "000894",
+              "000898"
+            ],
+            "candidate_visual_types": [
+              "text_slide",
+              "abstract_bar_diagram",
+              "unknown",
+              "whiteboard_explanation"
+            ],
+            "candidate_example_types": [
+              "abstract_teaching_example",
+              "unknown",
+              "abstract teaching example",
+              "abstract"
+            ],
+            "rule_type": "rule",
+            "pattern_tags": [],
+            "source_quote": "Чем сильнее ваш уровень, тем короче будет ваш стоп.",
+            "transcript_anchors": [
+              {
+                "line_index": 23,
+                "text": "Чем сильнее ваш уровень, тем короче будет ваш",
+                "timestamp_start": "09:21",
+                "timestamp_end": "09:25",
+                "match_source": "llm_source_quote"
+              },
+              {
+                "line_index": 24,
+                "text": "стоп.",
+                "timestamp_start": "09:25",
+                "timestamp_end": "09:25",
+                "match_source": "llm_source_quote"
+              }
+            ],
+            "timestamp_confidence": "span",
+            "anchor_match_source": "llm_source_quote",
+            "anchor_line_count": 2,
+            "anchor_span_width": 2,
+            "anchor_density": 1.0,
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 0.8,
+            "visual_support_score": 0.4
+          },
+          "event_type": "rule_statement",
+          "normalized_text": "Чем сильнее ваш уровень, тем короче будет ваш стоп.",
+          "normalized_text_ru": "Чем сильнее ваш уровень, тем короче будет ваш стоп.",
+          "concept": "Уровни",
+          "subconcept": "Управление риском"
+        }
+      },
+      {
+        "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_76",
+        "unit_type": "rule_card",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "Удержание позиции / Удержание по фактору зоны",
+        "text_snippet": "[Concept] Удержание позиции\n[Subconcept] Удержание по фактору зоны\n[Rule] При наличии свободной зоны за уровнем, ближнего ретеста и накопления, можно удерживать инструмент несколько дней.\n[Visual] New",
+        "timestamps": [
+          {
+            "start": "15:20",
+            "end": "15:29"
+          },
+          {
+            "start": "15:18",
+            "end": "15:20"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_7_23"
+        ],
+        "source_event_ids": [
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_1"
+        ],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_76"
+        ],
+        "raw_lexical_score": 0.0,
+        "raw_vector_score": 0.3612,
+        "graph_boost": 0.0,
+        "score": 0.3576,
+        "score_breakdown": {
+          "lexical_score": 0.0,
+          "vector_score": 0.2885,
+          "concept_exact_match": 0.0,
+          "alias_match": 0.0,
+          "confidence_score": 0.9,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 0.6667,
+          "unit_type_relevance": 1.0,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 0.9167,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_76",
+          "unit_type": "rule_card",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:uderzhanie_pozitsii"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:uderzhanie_po_faktoru_zony"
+          ],
+          "alias_terms": [
+            "Удержание позиции",
+            "Удержание по фактору зоны"
+          ],
+          "title": "Удержание позиции / Удержание по фактору зоны",
+          "text": "[Concept] Удержание позиции\n[Subconcept] Удержание по фактору зоны\n[Rule] При наличии свободной зоны за уровнем, ближнего ретеста и накопления, можно удерживать инструмент несколько дней.\n[Visual] New chart displayed New annotations added New educational event types detected. The Russian text label 'Выберите область' has disappeared. A new horizontal red line has appeared…\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+          "short_text": "[Concept] Удержание позиции\n[Subconcept] Удержание по фактору зоны\n[Rule] При наличии свободной зоны за уровнем, ближнего ретеста и накопления, можно удерживать инструмент несколько дней.\n[Visual] New",
+          "keywords": [
+            "Удержание позиции",
+            "Удержание по фактору зоны"
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "confidence": "high",
+            "support_basis": "transcript_plus_visual"
+          },
+          "confidence_score": 0.9,
+          "support_basis": "transcript_plus_visual",
+          "evidence_requirement": "optional",
+          "teaching_mode": "mixed",
+          "timestamps": [
+            {
+              "start": "15:20",
+              "end": "15:29"
+            },
+            {
+              "start": "15:18",
+              "end": "15:20"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_7_23"
+          ],
+          "source_event_ids": [
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_1"
+          ],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_76"
+          ],
+          "metadata": {
+            "source_sections": [],
+            "source_subsections": [],
+            "source_chunk_indexes": [
+              7
+            ],
+            "conditions": [],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "algorithm_notes": [],
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 1.0,
+            "visual_support_score": 0.4,
+            "has_visual_evidence": true,
+            "transcript_anchor_count": 3,
+            "transcript_repetition_count": 1
+          },
+          "rule_text": "При наличии свободной зоны за уровнем, ближнего ретеста и накопления, можно удерживать инструмент несколько дней.",
+          "rule_text_ru": "При наличии свободной зоны за уровнем, ближнего ретеста и накопления, можно удерживать инструмент несколько дней.",
+          "conditions": [],
+          "invalidation": [],
+          "exceptions": [],
+          "comparisons": [],
+          "visual_summary": "New chart displayed New annotations added New educational event types detected. The Russian text label 'Выберите область' has disappeared. A new horizontal red line has appeared…",
+          "concept": "Удержание позиции",
+          "subconcept": "Удержание по фактору зоны"
+        }
+      }
+    ],
+    "grouped_results": {
+      "rule_cards": [
+        {
+          "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_55",
+          "unit_type": "rule_card",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "Истинный пробой / Накопление",
+          "text_snippet": "[Concept] Истинный пробой\n[Subconcept] Накопление\n[Rule] Накопление крайне важно для хорошего истинного пробоя.\n[Visual] New slide with title 'Энергия' and explanatory text about accumulation and cons",
+          "timestamps": [
+            {
+              "start": "11:29",
+              "end": "11:33"
+            },
+            {
+              "start": "11:24",
+              "end": "11:24"
+            },
+            {
+              "start": "11:36",
+              "end": "11:54"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_5_16",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_5_17"
+          ],
+          "source_event_ids": [
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_5_rule_statement_2"
+          ],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_55"
+          ],
+          "raw_lexical_score": 0.0,
+          "raw_vector_score": 0.4465,
+          "graph_boost": 0.0,
+          "score": 0.5924,
+          "score_breakdown": {
+            "lexical_score": 0.0,
+            "vector_score": 0.9712,
+            "concept_exact_match": 0.0,
+            "alias_match": 0.0,
+            "confidence_score": 0.9,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 0.6667,
+            "unit_type_relevance": 1.0,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 0.9167,
+            "lesson_diversity_bonus": 1.0
+          },
+          "why_retrieved": [
+            "strong_vector",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_55",
+            "unit_type": "rule_card",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:istinnyy_proboy"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:accumulation"
+            ],
+            "alias_terms": [
+              "Истинный пробой",
+              "Накопление"
+            ],
+            "title": "Истинный пробой / Накопление",
+            "text": "[Concept] Истинный пробой\n[Subconcept] Накопление\n[Rule] Накопление крайне важно для хорошего истинного пробоя.\n[Visual] New slide with title 'Энергия' and explanatory text about accumulation and consolidation increasing chances of true breakout. Three chart examples are displayed below the text.…\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+            "short_text": "[Concept] Истинный пробой\n[Subconcept] Накопление\n[Rule] Накопление крайне важно для хорошего истинного пробоя.\n[Visual] New slide with title 'Энергия' and explanatory text about accumulation and cons",
+            "keywords": [
+              "Истинный пробой",
+              "Накопление",
+              "Для определения истинного пробоя, отслеживать накопление."
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "confidence": "high",
+              "support_basis": "transcript_plus_visual"
+            },
+            "confidence_score": 0.9,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "optional",
+            "teaching_mode": "mixed",
+            "timestamps": [
+              {
+                "start": "11:29",
+                "end": "11:33"
+              },
+              {
+                "start": "11:24",
+                "end": "11:24"
+              },
+              {
+                "start": "11:36",
+                "end": "11:54"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_5_16",
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_5_17"
+            ],
+            "source_event_ids": [
+              "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_5_rule_statement_2"
+            ],
+            "source_rule_ids": [
+              "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_55"
+            ],
+            "metadata": {
+              "source_sections": [],
+              "source_subsections": [],
+              "source_chunk_indexes": [
+                5
+              ],
+              "conditions": [],
+              "invalidation": [],
+              "exceptions": [],
+              "comparisons": [],
+              "algorithm_notes": [
+                "Для определения истинного пробоя, отслеживать накопление."
+              ],
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 0.95,
+              "visual_support_score": 0.4,
+              "has_visual_evidence": true,
+              "transcript_anchor_count": 2,
+              "transcript_repetition_count": 1
+            },
+            "rule_text": "Накопление крайне важно для хорошего истинного пробоя.",
+            "rule_text_ru": "Накопление крайне важно для хорошего истинного пробоя.",
+            "conditions": [],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "visual_summary": "New slide with title 'Энергия' and explanatory text about accumulation and consolidation increasing chances of true breakout. Three chart examples are displayed below the text.…",
+            "concept": "Истинный пробой",
+            "subconcept": "Накопление"
+          }
+        },
+        {
+          "doc_id": "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_24",
+          "unit_type": "rule_card",
+          "lesson_id": "Lesson 2. Levels part 1",
+          "title": "Поведение крупных игроков / Уровни",
+          "text_snippet": "[Concept] Поведение крупных игроков\n[Subconcept] Уровни\n[Rule] Крупняк всегда будет защищать свой уровень, который он сделал на дневке, на недельке, на месяце.\n[Visual] A small chart diagram has appea",
+          "timestamps": [
+            {
+              "start": "08:09",
+              "end": "08:15"
+            },
+            {
+              "start": "07:46",
+              "end": "07:46"
+            },
+            {
+              "start": "07:50",
+              "end": "07:50"
+            },
+            {
+              "start": "07:54",
+              "end": "07:54"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_94",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_95",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_96",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_97",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_98",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_99"
+          ],
+          "source_event_ids": [
+            "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_3_rule_statement_2"
+          ],
+          "source_rule_ids": [
+            "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_24"
+          ],
+          "raw_lexical_score": 0.0,
+          "raw_vector_score": 0.4208,
+          "graph_boost": 0.0,
+          "score": 0.5306,
+          "score_breakdown": {
+            "lexical_score": 0.0,
+            "vector_score": 0.7653,
+            "concept_exact_match": 0.0,
+            "alias_match": 0.0,
+            "confidence_score": 0.9,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 0.6667,
+            "unit_type_relevance": 1.0,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 0.9167,
+            "lesson_diversity_bonus": 1.0
+          },
+          "why_retrieved": [
+            "strong_vector",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_24",
+            "unit_type": "rule_card",
+            "lesson_id": "Lesson 2. Levels part 1",
+            "lesson_slug": "lesson_2_levels_part_1",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:povedenie_krupnykh_igrokov"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:level"
+            ],
+            "alias_terms": [
+              "Поведение крупных игроков",
+              "Уровни"
+            ],
+            "title": "Поведение крупных игроков / Уровни",
+            "text": "[Concept] Поведение крупных игроков\n[Subconcept] Уровни\n[Rule] Крупняк всегда будет защищать свой уровень, который он сделал на дневке, на недельке, на месяце.\n[Visual] A small chart diagram has appeared on the screen. The chart displays a few candlesticks with red and green colors. Text annotations in Russian are present above the chart..…\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+            "short_text": "[Concept] Поведение крупных игроков\n[Subconcept] Уровни\n[Rule] Крупняк всегда будет защищать свой уровень, который он сделал на дневке, на недельке, на месяце.\n[Visual] A small chart diagram has appea",
+            "keywords": [
+              "Поведение крупных игроков",
+              "Уровни"
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "confidence": "high",
+              "support_basis": "transcript_plus_visual"
+            },
+            "confidence_score": 0.9,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "optional",
+            "teaching_mode": "mixed",
+            "timestamps": [
+              {
+                "start": "08:09",
+                "end": "08:15"
+              },
+              {
+                "start": "07:46",
+                "end": "07:46"
+              },
+              {
+                "start": "07:50",
+                "end": "07:50"
+              },
+              {
+                "start": "07:54",
+                "end": "07:54"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_94",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_95",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_96",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_97",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_98",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_3_99"
+            ],
+            "source_event_ids": [
+              "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_3_rule_statement_2"
+            ],
+            "source_rule_ids": [
+              "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_24"
+            ],
+            "metadata": {
+              "source_sections": [],
+              "source_subsections": [],
+              "source_chunk_indexes": [
+                3
+              ],
+              "conditions": [],
+              "invalidation": [],
+              "exceptions": [],
+              "comparisons": [],
+              "algorithm_notes": [],
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 0.85,
+              "visual_support_score": 0.4,
+              "has_visual_evidence": true,
+              "transcript_anchor_count": 2,
+              "transcript_repetition_count": 1
+            },
+            "rule_text": "Крупняк всегда будет защищать свой уровень, который он сделал на дневке, на недельке, на месяце.",
+            "rule_text_ru": "Крупняк всегда будет защищать свой уровень, который он сделал на дневке, на недельке, на месяце.",
+            "conditions": [],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "visual_summary": "A small chart diagram has appeared on the screen. The chart displays a few candlesticks with red and green colors. Text annotations in Russian are present above the chart..…",
+            "concept": "Поведение крупных игроков",
+            "subconcept": "Уровни"
+          }
+        },
+        {
+          "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_76",
+          "unit_type": "rule_card",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "Удержание позиции / Удержание по фактору зоны",
+          "text_snippet": "[Concept] Удержание позиции\n[Subconcept] Удержание по фактору зоны\n[Rule] При наличии свободной зоны за уровнем, ближнего ретеста и накопления, можно удерживать инструмент несколько дней.\n[Visual] New",
+          "timestamps": [
+            {
+              "start": "15:20",
+              "end": "15:29"
+            },
+            {
+              "start": "15:18",
+              "end": "15:20"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_7_23"
+          ],
+          "source_event_ids": [
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_1"
+          ],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_76"
+          ],
+          "raw_lexical_score": 0.0,
+          "raw_vector_score": 0.3612,
+          "graph_boost": 0.0,
+          "score": 0.3576,
+          "score_breakdown": {
+            "lexical_score": 0.0,
+            "vector_score": 0.2885,
+            "concept_exact_match": 0.0,
+            "alias_match": 0.0,
+            "confidence_score": 0.9,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 0.6667,
+            "unit_type_relevance": 1.0,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 0.9167,
+            "lesson_diversity_bonus": 0.0
+          },
+          "why_retrieved": [
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_76",
+            "unit_type": "rule_card",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:uderzhanie_pozitsii"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:uderzhanie_po_faktoru_zony"
+            ],
+            "alias_terms": [
+              "Удержание позиции",
+              "Удержание по фактору зоны"
+            ],
+            "title": "Удержание позиции / Удержание по фактору зоны",
+            "text": "[Concept] Удержание позиции\n[Subconcept] Удержание по фактору зоны\n[Rule] При наличии свободной зоны за уровнем, ближнего ретеста и накопления, можно удерживать инструмент несколько дней.\n[Visual] New chart displayed New annotations added New educational event types detected. The Russian text label 'Выберите область' has disappeared. A new horizontal red line has appeared…\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+            "short_text": "[Concept] Удержание позиции\n[Subconcept] Удержание по фактору зоны\n[Rule] При наличии свободной зоны за уровнем, ближнего ретеста и накопления, можно удерживать инструмент несколько дней.\n[Visual] New",
+            "keywords": [
+              "Удержание позиции",
+              "Удержание по фактору зоны"
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "confidence": "high",
+              "support_basis": "transcript_plus_visual"
+            },
+            "confidence_score": 0.9,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "optional",
+            "teaching_mode": "mixed",
+            "timestamps": [
+              {
+                "start": "15:20",
+                "end": "15:29"
+              },
+              {
+                "start": "15:18",
+                "end": "15:20"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_7_23"
+            ],
+            "source_event_ids": [
+              "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_7_rule_statement_1"
+            ],
+            "source_rule_ids": [
+              "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_76"
+            ],
+            "metadata": {
+              "source_sections": [],
+              "source_subsections": [],
+              "source_chunk_indexes": [
+                7
+              ],
+              "conditions": [],
+              "invalidation": [],
+              "exceptions": [],
+              "comparisons": [],
+              "algorithm_notes": [],
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 1.0,
+              "visual_support_score": 0.4,
+              "has_visual_evidence": true,
+              "transcript_anchor_count": 3,
+              "transcript_repetition_count": 1
+            },
+            "rule_text": "При наличии свободной зоны за уровнем, ближнего ретеста и накопления, можно удерживать инструмент несколько дней.",
+            "rule_text_ru": "При наличии свободной зоны за уровнем, ближнего ретеста и накопления, можно удерживать инструмент несколько дней.",
+            "conditions": [],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "visual_summary": "New chart displayed New annotations added New educational event types detected. The Russian text label 'Выберите область' has disappeared. A new horizontal red line has appeared…",
+            "concept": "Удержание позиции",
+            "subconcept": "Удержание по фактору зоны"
+          }
+        }
+      ],
+      "knowledge_events": [
+        {
+          "doc_id": "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_4_rule_statement_4",
+          "unit_type": "knowledge_event",
+          "lesson_id": "Lesson 2. Levels part 1",
+          "title": "rule_statement / Уровни",
+          "text_snippet": "[rule_statement] [Concept] Уровни Чем сильнее ваш уровень, тем короче будет ваш стоп. [Time] 09:21–09:25 [Support Basis] transcript_plus_visual",
+          "timestamps": [
+            {
+              "start": "09:21",
+              "end": "09:25"
+            },
+            {
+              "start": "08:54",
+              "end": "09:02"
+            },
+            {
+              "start": "09:02",
+              "end": "09:02"
+            },
+            {
+              "start": "09:06",
+              "end": "09:10"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_101",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_102",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_103",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_104",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_105",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_106",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_107"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "raw_lexical_score": 0.0,
+          "raw_vector_score": 0.3533,
+          "graph_boost": 0.0,
+          "score": 0.3591,
+          "score_breakdown": {
+            "lexical_score": 0.0,
+            "vector_score": 0.2254,
+            "concept_exact_match": 0.0,
+            "alias_match": 0.0,
+            "confidence_score": 0.95,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 1.0,
+            "unit_type_relevance": 0.95,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 1.0,
+            "lesson_diversity_bonus": 0.0
+          },
+          "why_retrieved": [
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_4_rule_statement_4",
+            "unit_type": "knowledge_event",
+            "lesson_id": "Lesson 2. Levels part 1",
+            "lesson_slug": "lesson_2_levels_part_1",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:level"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:risk_management"
+            ],
+            "alias_terms": [
+              "Уровни",
+              "Управление риском"
+            ],
+            "title": "rule_statement / Уровни",
+            "text": "[rule_statement] [Concept] Уровни Чем сильнее ваш уровень, тем короче будет ваш стоп. [Time] 09:21–09:25 [Support Basis] transcript_plus_visual",
+            "short_text": "[rule_statement] [Concept] Уровни Чем сильнее ваш уровень, тем короче будет ваш стоп. [Time] 09:21–09:25 [Support Basis] transcript_plus_visual",
+            "keywords": [
+              "Уровни",
+              "Управление риском",
+              "rule_statement",
+              "rule"
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "chunk_index": 4,
+              "source_line_start": 23,
+              "source_line_end": 24
+            },
+            "confidence_score": 0.95,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "optional",
+            "teaching_mode": "mixed",
+            "timestamps": [
+              {
+                "start": "09:21",
+                "end": "09:25"
+              },
+              {
+                "start": "08:54",
+                "end": "09:02"
+              },
+              {
+                "start": "09:02",
+                "end": "09:02"
+              },
+              {
+                "start": "09:06",
+                "end": "09:10"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_101",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_102",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_103",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_104",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_105",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_106",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_107"
+            ],
+            "source_event_ids": [],
+            "source_rule_ids": [],
+            "metadata": {
+              "chunk_index": 4,
+              "chunk_start_time_seconds": 504.87,
+              "chunk_end_time_seconds": 627.14,
+              "transcript_line_count": 45,
+              "candidate_visual_frame_keys": [
+                "000842",
+                "000846",
+                "000850",
+                "000854",
+                "000858",
+                "000900",
+                "000862",
+                "000902",
+                "000866",
+                "000870",
+                "000874",
+                "000876",
+                "000880",
+                "000884",
+                "000886",
+                "000890",
+                "000894",
+                "000898"
+              ],
+              "candidate_visual_types": [
+                "text_slide",
+                "abstract_bar_diagram",
+                "unknown",
+                "whiteboard_explanation"
+              ],
+              "candidate_example_types": [
+                "abstract_teaching_example",
+                "unknown",
+                "abstract teaching example",
+                "abstract"
+              ],
+              "rule_type": "rule",
+              "pattern_tags": [],
+              "source_quote": "Чем сильнее ваш уровень, тем короче будет ваш стоп.",
+              "transcript_anchors": [
+                {
+                  "line_index": 23,
+                  "text": "Чем сильнее ваш уровень, тем короче будет ваш",
+                  "timestamp_start": "09:21",
+                  "timestamp_end": "09:25",
+                  "match_source": "llm_source_quote"
+                },
+                {
+                  "line_index": 24,
+                  "text": "стоп.",
+                  "timestamp_start": "09:25",
+                  "timestamp_end": "09:25",
+                  "match_source": "llm_source_quote"
+                }
+              ],
+              "timestamp_confidence": "span",
+              "anchor_match_source": "llm_source_quote",
+              "anchor_line_count": 2,
+              "anchor_span_width": 2,
+              "anchor_density": 1.0,
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 0.8,
+              "visual_support_score": 0.4
+            },
+            "event_type": "rule_statement",
+            "normalized_text": "Чем сильнее ваш уровень, тем короче будет ваш стоп.",
+            "normalized_text_ru": "Чем сильнее ваш уровень, тем короче будет ваш стоп.",
+            "concept": "Уровни",
+            "subconcept": "Управление риском"
+          }
+        }
+      ],
+      "evidence_refs": [],
+      "concepts": [
+        {
+          "doc_id": "rel:node:povedenie_krupnykh_igrokov:has_subconcept:node:urovni",
+          "unit_type": "concept_relation",
+          "lesson_id": "corpus",
+          "title": "Поведение крупных игроков → Уровни",
+          "text_snippet": "Поведение крупных игроков –[has_subconcept]→ Уровни",
+          "timestamps": [],
+          "evidence_ids": [],
+          "source_event_ids": [],
+          "source_rule_ids": [
+            "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_24"
+          ],
+          "raw_lexical_score": 0.0,
+          "raw_vector_score": 0.4501,
+          "graph_boost": 0.0,
+          "score": 0.402,
+          "score_breakdown": {
+            "lexical_score": 0.0,
+            "vector_score": 1.0,
+            "concept_exact_match": 0.0,
+            "alias_match": 0.0,
+            "confidence_score": 0.0,
+            "evidence_available": 0.0,
+            "timestamp_available": 0.0,
+            "provenance_richness": 0.6667,
+            "unit_type_relevance": 0.8,
+            "support_basis_relevance": 0.0,
+            "teaching_mode_relevance": 0.0,
+            "groundedness": 0.1667,
+            "lesson_diversity_bonus": 1.0
+          },
+          "why_retrieved": [
+            "strong_vector"
+          ],
+          "resolved_doc": {
+            "doc_id": "rel:node:povedenie_krupnykh_igrokov:has_subconcept:node:urovni",
+            "unit_type": "concept_relation",
+            "lesson_id": "corpus",
+            "lesson_slug": null,
+            "language": "ru",
+            "canonical_concept_ids": [
+              "node:povedenie_krupnykh_igrokov",
+              "node:urovni"
+            ],
+            "canonical_subconcept_ids": [],
+            "alias_terms": [
+              "Поведение крупных игроков",
+              "Уровни"
+            ],
+            "title": "Поведение крупных игроков → Уровни",
+            "text": "Поведение крупных игроков –[has_subconcept]→ Уровни",
+            "short_text": "Поведение крупных игроков –[has_subconcept]→ Уровни",
+            "keywords": [
+              "Поведение крупных игроков",
+              "Уровни",
+              "has_subconcept"
+            ],
+            "provenance": {
+              "source_lessons": [
+                "lesson_2_levels_part_1"
+              ],
+              "relation_type": "has_subconcept"
+            },
+            "confidence_score": null,
+            "support_basis": null,
+            "evidence_requirement": null,
+            "teaching_mode": null,
+            "timestamps": [],
+            "evidence_ids": [],
+            "source_event_ids": [],
+            "source_rule_ids": [
+              "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_24"
+            ],
+            "metadata": {
+              "source_id": "node:povedenie_krupnykh_igrokov",
+              "target_id": "node:urovni",
+              "source_lessons": [
+                "lesson_2_levels_part_1"
+              ]
+            },
+            "source_concept": "Поведение крупных игроков",
+            "target_concept": "Уровни",
+            "relation_type": "has_subconcept",
+            "weight": 1
+          }
+        }
+      ]
+    },
+    "summary": {
+      "answer_text": "[Concept] Истинный пробой\n[Subconcept] Накопление\n[Rule] Накопление крайне важно для хорошего истинного пробоя.\n[Visual] New slide with title 'Энергия' and explanatory text about accumulation and cons\n[Concept] Поведение крупных игроков\n[Subconcept] Уровни\n[Rule] Крупняк всегда будет защищать свой уровень, который он сделал на дневке, на недельке, на месяце.\n[Visual] A small chart diagram has appea\n[Concept] Удержание позиции\n[Subconcept] Удержание по фактору зоны\n[Rule] При наличии свободной зоны за уровнем, ближнего ретеста и накопления, можно удерживать инструмент несколько дней.\n[Visual] New",
+      "limitations": [],
+      "citation_doc_ids": [
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_55",
+        "rule:lesson_2_levels_part_1:rule_lesson_2_levels_part_1_unknown_unknown_24",
+        "rel:node:povedenie_krupnykh_igrokov:has_subconcept:node:urovni",
+        "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_4_rule_statement_4",
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_76"
+      ]
+    },
+    "facets": {
+      "by_unit_type": {
+        "knowledge_event": 1,
+        "concept_relation": 1,
+        "rule_card": 3
+      },
+      "by_lesson": {
+        "Lesson 2. Levels part 1": 2,
+        "corpus": 1,
+        "2025-09-29-sviatoslav-chornyi": 2
+      },
+      "by_concept": {
+        "concept:level": 1,
+        "node:povedenie_krupnykh_igrokov": 1,
+        "node:urovni": 1,
+        "concept:uderzhanie_pozitsii": 1,
+        "concept:istinnyy_proboy": 1,
+        "concept:povedenie_krupnykh_igrokov": 1
+      }
+    },
+    "hit_count": 5
+  }
+}

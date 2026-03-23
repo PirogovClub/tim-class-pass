@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% block title %}{{ row.project.title }}{% endblock %}
 {% block content %}
+{% set mode_details = run_mode_details if run_mode_details is defined else {} %}
+{% set flow_stages = flow.stages if flow is defined else [] %}
+{% set selected_mode = selected_run_mode if selected_run_mode is defined and selected_run_mode else (run_modes[0] if run_modes else None) %}
+{% set selected_detail = mode_details.get(selected_mode) if selected_mode else None %}
+{% set selected_steps = selected_detail.steps if selected_detail else [] %}
 <section class="panel">
     <div class="panel-header">
         <div>
@@ -46,18 +51,96 @@
 </section>
 
 <section class="panel">
-    <h3>Start work</h3>
-    <form class="filters" method="post" action="{{ request.url_for('create_run', project_id=row.project.project_id) }}">
-        <label>
-            Run mode
-            <select name="run_mode">
-                {% for run_mode in run_modes %}
-                <option value="{{ run_mode }}">{{ run_mode }}</option>
+    <div class="panel-header">
+        <div>
+            <h3>{{ flow.headline if flow is defined else "Pipeline map" }}</h3>
+            <p class="muted">Typical order: Inputs -> Vision -> Knowledge -> Exports -> Corpus.</p>
+        </div>
+        <div class="flow-summary-card">
+            <p><strong>Current project status:</strong> {{ row.effective_status }}</p>
+            <p><strong>Next action:</strong> {{ row.next_action }}</p>
+            <p><strong>Active stage:</strong> {{ flow.current_stage_label if flow is defined and flow.current_stage_label else "-" }}</p>
+        </div>
+    </div>
+    <div class="form-note flow-callout">
+        <strong>What to do next:</strong>
+        {{ flow.summary if flow is defined else "Inspect the project artifacts and choose the next run mode." }}
+    </div>
+    {% if flow is defined and flow.recommended_run_modes %}
+    <p class="muted flow-recommendations">
+        <strong>Suggested run modes now:</strong>
+        {% for run_mode in flow.recommended_run_modes %}
+        <span class="flow-mode-pill">{{ mode_details[run_mode].title if mode_details.get(run_mode) else run_mode }}</span>
+        {% endfor %}
+    </p>
+    {% endif %}
+    <div class="flow-diagram">
+        {% for stage in flow_stages %}
+        <article class="flow-stage-card flow-stage-{{ stage.status }}">
+            <div class="flow-stage-header">
+                <h4>{{ stage.title }}</h4>
+                <span class="flow-stage-badge">{{ stage.status_label }}</span>
+            </div>
+            <p class="flow-stage-summary">{{ stage.summary }}</p>
+            <ul class="flow-check-list">
+                {% for check in stage.checks %}
+                <li class="{{ 'is-done' if check.done else 'is-missing' }}">
+                    <span class="flow-check-icon">{{ "yes" if check.done else "no" }}</span>
+                    <span>{{ check.label }}</span>
+                    {% if check.path_hint %}
+                    <code>{{ check.path_hint }}</code>
+                    {% endif %}
+                </li>
                 {% endfor %}
-            </select>
-        </label>
-        <button class="button" type="submit">Launch background run</button>
-    </form>
+            </ul>
+            {% if stage.suggested_run_modes %}
+            <p class="muted">
+                <strong>Runs for this stage:</strong>
+                {% for run_mode in stage.suggested_run_modes %}
+                <span class="flow-mode-pill">{{ mode_details[run_mode].title if mode_details.get(run_mode) else run_mode }}</span>
+                {% endfor %}
+            </p>
+            {% endif %}
+        </article>
+        {% if not loop.last %}
+        <div class="flow-arrow" aria-hidden="true">→</div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</section>
+
+<section class="panel">
+    <h3>Start work</h3>
+    <div class="detail-grid run-launch-grid">
+        <form class="filters" method="post" action="{{ request.url_for('create_run', project_id=row.project.project_id) }}">
+            <label>
+                Run mode
+                <select id="run-mode-select" name="run_mode">
+                    {% for run_mode in run_modes %}
+                    <option value="{{ run_mode }}" {% if run_mode == selected_mode %}selected{% endif %}>
+                        {{ mode_details[run_mode].title if mode_details.get(run_mode) else run_mode }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </label>
+            <div class="form-note">
+                The selector defaults to the suggested next run for the current folder state when a recommendation is available.
+            </div>
+            <button class="button" type="submit">Launch background run</button>
+        </form>
+        <aside class="panel subtle run-mode-panel" aria-live="polite">
+            <p class="run-mode-kicker">What this run will do</p>
+            <h4 id="run-mode-title">{{ selected_detail.title if selected_detail else "Run details unavailable" }}</h4>
+            <p id="run-mode-summary">{{ selected_detail.summary if selected_detail else "This page loaded without run-mode metadata. Restart the UI server and reload the page to restore operator guidance." }}</p>
+            <p class="muted"><strong>When to use:</strong> <span id="run-mode-when">{{ selected_detail.when_to_use if selected_detail else "-" }}</span></p>
+            <p class="muted"><strong>Expected outputs:</strong> <span id="run-mode-outputs">{{ selected_detail.outputs if selected_detail else "-" }}</span></p>
+            <ul id="run-mode-steps" class="detail-list">
+                {% for step in selected_steps %}
+                <li>{{ step }}</li>
+                {% endfor %}
+            </ul>
+        </aside>
+    </div>
 </section>
 
 <section class="panel">
@@ -89,5 +172,42 @@
     <p data-testid="no-runs">No runs recorded yet.</p>
     {% endif %}
 </section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(() => {
+    const select = document.getElementById("run-mode-select");
+    const details = {{ (run_mode_details if run_mode_details is defined else {})|tojson }};
+    const titleNode = document.getElementById("run-mode-title");
+    const summaryNode = document.getElementById("run-mode-summary");
+    const whenNode = document.getElementById("run-mode-when");
+    const outputsNode = document.getElementById("run-mode-outputs");
+    const stepsNode = document.getElementById("run-mode-steps");
+    if (!select || !titleNode || !summaryNode || !whenNode || !outputsNode || !stepsNode) {
+        return;
+    }
+
+    const renderMode = (mode) => {
+        const detail = details[mode];
+        if (!detail) {
+            return;
+        }
+        titleNode.textContent = detail.title;
+        summaryNode.textContent = detail.summary;
+        whenNode.textContent = detail.when_to_use;
+        outputsNode.textContent = detail.outputs;
+        stepsNode.innerHTML = "";
+        for (const step of detail.steps) {
+            const item = document.createElement("li");
+            item.textContent = step;
+            stepsNode.appendChild(item);
+        }
+    };
+
+    select.addEventListener("change", () => renderMode(select.value));
+    renderMode(select.value);
+})();
+</script>
 {% endblock %}
 

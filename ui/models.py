@@ -113,6 +113,33 @@ class CorpusQueueRow:
 
 
 @dataclass(frozen=True)
+class ProjectFlowCheck:
+    label: str
+    done: bool
+    path_hint: str | None = None
+
+
+@dataclass(frozen=True)
+class ProjectFlowStage:
+    key: str
+    title: str
+    status: str
+    status_label: str
+    summary: str
+    checks: list[ProjectFlowCheck]
+    suggested_run_modes: list[str]
+
+
+@dataclass(frozen=True)
+class ProjectFlowGuide:
+    headline: str
+    summary: str
+    current_stage_label: str | None
+    recommended_run_modes: list[str]
+    stages: list[ProjectFlowStage]
+
+
+@dataclass(frozen=True)
 class DashboardRow:
     project: ProjectRecord
     artifacts: ArtifactSnapshot

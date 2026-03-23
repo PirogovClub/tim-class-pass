@@ -43,6 +43,14 @@ class RunReporter:
 
     def event(self, event_type: str, message: str, *, stage: str | None = None) -> None:
         self.store.append_run_event(run_id=self.run_id, event_type=event_type, stage=stage, message=message)
+        self.log(message, stage=stage, kind=event_type)
+
+    def log(self, message: str, *, stage: str | None = None, kind: str = "debug") -> None:
+        run = self.store.get_run(self.run_id)
+        if run is None:
+            return
+        stage_label = stage or "-"
+        _write_log(run, f"[{kind}] stage={stage_label} {message}")
 
     def _update(self, **fields) -> None:
         fields.setdefault("last_heartbeat_at", utc_now_iso())
@@ -173,16 +181,80 @@ def _write_log(run, message: str) -> None:
     log_path = Path(str(run["log_path"])) if run.get("log_path") else None
     if log_path is None:
         return
-    log_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(log_path, "a", encoding="utf-8") as handle:
-        handle.write(message.rstrip() + "\n")
+    timestamp = utc_now_iso()
+    lines = str(message).splitlines() or [""]
+    for line in lines:
+        encoded = f"{timestamp} {line.rstrip()}\n".encode("utf-8", errors="backslashreplace")
+        buffer = getattr(sys.stdout, "buffer", None)
+        if buffer is not None:
+            buffer.write(encoded)
+        else:
+            sys.stdout.write(encoded.decode("utf-8", errors="replace"))
+    if getattr(sys.stdout, "buffer", None) is not None:
+        sys.stdout.buffer.flush()
+    else:
+        sys.stdout.flush()
+
+
+def _project_state_snapshot(owner_project) -> dict[str, object]:
+    project_root = owner_project.project_root
+    lesson_name = owner_project.lesson_name
+    paths = PipelinePaths(video_root=project_root)
+    return {
+        "project_root": str(project_root),
+        "title": owner_project.title,
+        "lesson_name": lesson_name,
+        "transcript_path": None if owner_project.transcript_path is None else str(owner_project.transcript_path),
+        "source_video_path": None if owner_project.source_video_path is None else str(owner_project.source_video_path),
+        "dense_index_exists": (project_root / "dense_index.json").exists(),
+        "queue_manifest_exists": (project_root / "llm_queue" / "manifest.json").exists(),
+        "dense_analysis_exists": (project_root / "dense_analysis.json").exists(),
+        "knowledge_events_exists": paths.knowledge_events_path(lesson_name).exists(),
+        "rule_cards_exists": paths.rule_cards_path(lesson_name).exists(),
+        "evidence_index_exists": paths.evidence_index_path(lesson_name).exists(),
+        "concept_graph_exists": paths.concept_graph_path(lesson_name).exists(),
+        "review_markdown_exists": paths.review_markdown_path(lesson_name).exists(),
+        "rag_ready_exists": paths.rag_ready_export_path(lesson_name).exists() or paths.rag_ready_markdown_path(lesson_name).exists(),
+    }
+
+
+def _missing_files_error(*, context: str, missing_paths: list[Path], recommendation: str) -> ValueError:
+    joined = "; ".join(str(path) for path in missing_paths)
+    return ValueError(f"Missing required files for {context}: {joined}. {recommendation}")
+
+
+def _log_prerequisite_snapshot(reporter: RunReporter, stage: str, *, heading: str, values: dict[str, object]) -> None:
+    reporter.log(
+        f"{heading}: {json.dumps(values, ensure_ascii=False, sort_keys=True)}",
+        stage=stage,
+        kind="preflight",
+    )
 
 
 def _run_postprocess(owner_project, reporter: RunReporter) -> None:
+    dense_analysis_path = owner_project.project_root / "dense_analysis.json"
+    _log_prerequisite_snapshot(
+        reporter,
+        "postprocess",
+        heading="postprocess prerequisites",
+        values={
+            "transcript_path": None if owner_project.transcript_path is None else str(owner_project.transcript_path),
+            "dense_analysis_path": str(dense_analysis_path),
+            "dense_analysis_exists": dense_analysis_path.exists(),
+        },
+    )
+    if owner_project.transcript_path is None:
+        raise ValueError(f"Missing transcript for post-process stage in {owner_project.project_root}.")
+    if not dense_analysis_path.exists():
+        raise _missing_files_error(
+            context="deterministic post-process stage",
+            missing_paths=[dense_analysis_path],
+            recommendation="Generate dense_analysis.json first by finishing the vision stage.",
+        )
     reporter.running("postprocess", "Running deterministic post-processing.")
     outputs = run_component2_pipeline(
         vtt_path=owner_project.transcript_path,
-        visuals_json_path=owner_project.project_root / "dense_analysis.json",
+        visuals_json_path=dense_analysis_path,
         output_root=owner_project.project_root,
         video_id=owner_project.project_root.name,
         enable_knowledge_events=False,
@@ -203,12 +275,38 @@ def _run_postprocess(owner_project, reporter: RunReporter) -> None:
 def _run_sync_full(owner_project, reporter: RunReporter, settings: UISettings) -> None:
     project_root, transcript_path = _project_paths(owner_project)
     dense_analysis_path = project_root / "dense_analysis.json"
+    reporter.log(
+        f"sync_full starting with project state: {json.dumps(_project_state_snapshot(owner_project), ensure_ascii=False, sort_keys=True)}",
+        stage="vision_sync",
+        kind="context",
+    )
     if not dense_analysis_path.exists():
         queue_manifest = project_root / "llm_queue" / "manifest.json"
         dense_index = project_root / "dense_index.json"
-        if not queue_manifest.exists() or not dense_index.exists():
-            raise ValueError(
-                "Sync vision prerequisites are missing. Expected dense_index.json and llm_queue/manifest.json."
+        _log_prerequisite_snapshot(
+            reporter,
+            "vision_sync",
+            heading="sync vision prerequisites",
+            values={
+                "dense_analysis_exists": dense_analysis_path.exists(),
+                "dense_index_path": str(dense_index),
+                "dense_index_exists": dense_index.exists(),
+                "queue_manifest_path": str(queue_manifest),
+                "queue_manifest_exists": queue_manifest.exists(),
+                "transcript_path": str(transcript_path),
+            },
+        )
+        missing_paths = [path for path in [dense_index, queue_manifest] if not path.exists()]
+        if missing_paths:
+            reporter.log(
+                "Sync vision cannot start because required queue-building outputs are missing.",
+                stage="vision_sync",
+                kind="preflight",
+            )
+            raise _missing_files_error(
+                context="sync vision stage",
+                missing_paths=missing_paths,
+                recommendation="Build the queue first with the existing Step 1.6 flow.",
             )
         reporter.running("vision_sync", "Running dense analysis.")
         if _fake_mode(settings):
@@ -248,6 +346,22 @@ def _submit_batch_stage(owner_project, reporter: RunReporter, run: dict, *, stag
     video_id, lesson_row = _ensure_project_registered_in_pipeline(pipeline_store, owner_project)
     paths = PipelinePaths(video_root=owner_project.project_root)
     if stage_name == STAGE_VISION:
+        queue_manifest = owner_project.project_root / "llm_queue" / "manifest.json"
+        _log_prerequisite_snapshot(
+            reporter,
+            "vision_submit",
+            heading="batch vision prerequisites",
+            values={
+                "queue_manifest_path": str(queue_manifest),
+                "queue_manifest_exists": queue_manifest.exists(),
+            },
+        )
+        if not queue_manifest.exists():
+            raise _missing_files_error(
+                context="batch vision submit stage",
+                missing_paths=[queue_manifest],
+                recommendation="Build the queue first with the existing Step 1.6 flow.",
+            )
         queue_keys, frames_dir = _load_queue_manifest(owner_project.project_root)
         reporter.running("vision_submit", "Preparing vision batch spool.")
         emit_batch_spool_for_analysis(
@@ -263,10 +377,25 @@ def _submit_batch_stage(owner_project, reporter: RunReporter, run: dict, *, stag
             state_store=pipeline_store,
         )
     elif stage_name == STAGE_KNOWLEDGE_EXTRACT:
+        dense_analysis_path = owner_project.project_root / "dense_analysis.json"
+        _log_prerequisite_snapshot(
+            reporter,
+            "knowledge_submit",
+            heading="knowledge batch prerequisites",
+            values={
+                "transcript_path": None if owner_project.transcript_path is None else str(owner_project.transcript_path),
+                "dense_analysis_path": str(dense_analysis_path),
+                "dense_analysis_exists": dense_analysis_path.exists(),
+            },
+        )
         if owner_project.transcript_path is None:
-            raise ValueError("Project is missing transcript.")
-        if not (owner_project.project_root / "dense_analysis.json").exists():
-            raise ValueError("Knowledge batch requires dense_analysis.json.")
+            raise ValueError(f"Project is missing transcript for knowledge batch stage in {owner_project.project_root}.")
+        if not dense_analysis_path.exists():
+            raise _missing_files_error(
+                context="knowledge batch stage",
+                missing_paths=[dense_analysis_path],
+                recommendation="Finish the vision stage first so dense_analysis.json exists.",
+            )
         reporter.running("knowledge_submit", "Preparing knowledge extraction batch spool.")
         raw_chunks = _ensure_lesson_chunks(lesson_row, paths, {})
         from pipeline.component2.knowledge_builder import adapt_chunks
@@ -375,6 +504,30 @@ def run_worker(*, project_root: Path, ui_db_path: Path, run_id: str, action: str
         raise click.ClickException(f"Unknown run_id: {run_id}")
     _write_log(run_row, f"[worker] start action={action} run_id={run_id}")
     run, owner_project, _events, targets = get_run_detail(store, run_id)
+    _write_log(
+        run_row,
+        "[worker] run metadata "
+        + json.dumps(
+            {
+                "run_id": run.run_id,
+                "run_kind": run.run_kind,
+                "run_mode": run.run_mode,
+                "action": action,
+                "pipeline_db_path": None if run.pipeline_db_path is None else str(run.pipeline_db_path),
+                "log_path": None if run.log_path is None else str(run.log_path),
+                "fake_mode": _fake_mode(settings),
+                "target_count": len(targets),
+            },
+            ensure_ascii=False,
+            sort_keys=True,
+        ),
+    )
+    if owner_project is not None:
+        _write_log(
+            run_row,
+            "[worker] owner project snapshot "
+            + json.dumps(_project_state_snapshot(owner_project), ensure_ascii=False, sort_keys=True),
+        )
 
     try:
         reporter.check_cancelled()

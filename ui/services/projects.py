@@ -95,6 +95,24 @@ def inspect_artifacts(
     )
 
 
+def inspect_run_prerequisites(project: ProjectRecord) -> dict[str, bool]:
+    artifacts = inspect_artifacts(
+        project.project_root,
+        project.lesson_name,
+        project.transcript_path,
+        project.source_video_path,
+    )
+    return {
+        "has_transcript": artifacts.transcript_exists,
+        "has_video": artifacts.video_exists,
+        "has_dense_analysis": artifacts.dense_analysis_exists,
+        "has_queue_manifest": (project.project_root / "llm_queue" / "manifest.json").exists(),
+        "has_dense_index": (project.project_root / "dense_index.json").exists(),
+        "corpus_ready": artifacts.corpus_ready,
+        "exports_ready": artifacts.exports_ready,
+    }
+
+
 def derive_effective_status(artifacts: ArtifactSnapshot, latest_run) -> str:
     if latest_run is not None:
         if latest_run.status == "WAITING_REMOTE":

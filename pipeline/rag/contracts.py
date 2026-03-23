@@ -82,6 +82,8 @@ class GraphExpansionResult(BaseModel):
     boosted_rule_ids: list[str] = Field(default_factory=list)
     related_terms: list[str] = Field(default_factory=list)
     expansion_trace: list[GraphExpansionTraceStep] = Field(default_factory=list)
+    # Extra terms for lexical alias boost / query enrichment (Step 3.1)
+    lexical_expansion_terms: list[str] = Field(default_factory=list)
 
 
 class SearchFilters(BaseModel):
@@ -116,10 +118,23 @@ class SearchHit(BaseModel):
     why_retrieved: list[str] = Field(default_factory=list)
 
 
+class QueryIntentSignalsModel(BaseModel):
+    """Deterministic intent sidecar for Step 3.1 (mirrors query_intents.QueryIntentSignals)."""
+
+    prefers_transcript_only: bool = False
+    prefers_visual_evidence: bool = False
+    mentions_timeframe: bool = False
+    mentions_cross_lesson: bool = False
+    prefers_examples: bool = False
+    prefers_theory: bool = False
+
+
 class SearchQueryAnalysis(BaseModel):
     normalized_query: str
     detected_concepts: list[str] = Field(default_factory=list)
     detected_unit_bias: str = "mixed"
+    detected_intents: list[str] = Field(default_factory=list)
+    intent_signals: QueryIntentSignalsModel = Field(default_factory=QueryIntentSignalsModel)
     expansion_trace: GraphExpansionResult = Field(default_factory=GraphExpansionResult)
 
 

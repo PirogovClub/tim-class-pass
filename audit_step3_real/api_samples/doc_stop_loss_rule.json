@@ -1,0 +1,104 @@
+{
+  "method": "GET",
+  "path": "/rag/doc/rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_5",
+  "status_code": 200,
+  "response": {
+    "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_5",
+    "unit_type": "rule_card",
+    "lesson_id": "2025-09-29-sviatoslav-chornyi",
+    "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+    "language": "ru",
+    "canonical_concept_ids": [
+      "concept:stop_loss"
+    ],
+    "canonical_subconcept_ids": [
+      "subconcept:technical_stop_loss"
+    ],
+    "alias_terms": [
+      "Stop Loss",
+      "Technical Stop Loss"
+    ],
+    "title": "Stop Loss / Technical Stop Loss",
+    "text": "[Concept] Stop Loss\n[Subconcept] Technical Stop Loss\n[Rule] Технические стопы могут быть основаны на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, откате и хвосте ложного пробоя.\n[Visual] New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+    "short_text": "[Concept] Stop Loss\n[Subconcept] Technical Stop Loss\n[Rule] Технические стопы могут быть основаны на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, от",
+    "keywords": [
+      "Stop Loss",
+      "Technical Stop Loss",
+      "Стоп должен быть техническим и прятаться за откат.",
+      "Технические стопы могут быть основаны на различных формациях и временных интервалах: 1/2 пятиминутки, часовик, полчасовика, проторговка, закругление, поджатие, откат, хвост ложного пробоя.",
+      "Использовать закругление или проторговку для установки большего стопа."
+    ],
+    "provenance": {
+      "lesson_title": null,
+      "section": null,
+      "subsection": null,
+      "confidence": "high",
+      "support_basis": "transcript_plus_visual"
+    },
+    "confidence_score": 0.9,
+    "support_basis": "transcript_plus_visual",
+    "evidence_requirement": "optional",
+    "teaching_mode": "mixed",
+    "timestamps": [
+      {
+        "start": "01:03",
+        "end": "01:12"
+      },
+      {
+        "start": "00:36",
+        "end": "00:40"
+      },
+      {
+        "start": "00:58",
+        "end": "00:58"
+      },
+      {
+        "start": "01:24",
+        "end": "01:24"
+      }
+    ],
+    "evidence_ids": [
+      "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+      "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1",
+      "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2"
+    ],
+    "source_event_ids": [
+      "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_4"
+    ],
+    "source_rule_ids": [
+      "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_5"
+    ],
+    "metadata": {
+      "source_sections": [],
+      "source_subsections": [],
+      "source_chunk_indexes": [
+        0
+      ],
+      "conditions": [],
+      "invalidation": [],
+      "exceptions": [],
+      "comparisons": [],
+      "algorithm_notes": [
+        "Стоп должен быть техническим и прятаться за откат.",
+        "Технические стопы могут быть основаны на различных формациях и временных интервалах: 1/2 пятиминутки, часовик, полчасовика, проторговка, закругление, поджатие, откат, хвост ложного пробоя.",
+        "Использовать закругление или проторговку для установки большего стопа."
+      ],
+      "visual_support_level": "supporting_example",
+      "transcript_support_level": "strong",
+      "transcript_support_score": 0.85,
+      "visual_support_score": 0.4,
+      "has_visual_evidence": true,
+      "transcript_anchor_count": 3,
+      "transcript_repetition_count": 0
+    },
+    "rule_text": "Технические стопы могут быть основаны на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, откате и хвосте ложного пробоя.",
+    "rule_text_ru": "Технические стопы могут быть основаны на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, откате и хвосте ложного пробоя.",
+    "conditions": [],
+    "invalidation": [],
+    "exceptions": [],
+    "comparisons": [],
+    "visual_summary": "New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…",
+    "concept": "Stop Loss",
+    "subconcept": "Technical Stop Loss"
+  }
+}

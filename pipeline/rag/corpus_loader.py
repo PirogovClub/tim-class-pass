@@ -47,6 +47,11 @@ def _write_jsonl(path: Path, docs: list[dict[str, Any]]) -> None:
             handle.write(json.dumps(doc, ensure_ascii=False) + "\n")
 
 
+def write_build_metadata(path: Path, build_result: RAGBuildResult) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(build_result.model_dump_json(indent=2), encoding="utf-8")
+
+
 def _append_unique_str(items: list[str], value: str) -> None:
     if value and value not in items:
         items.append(value)
@@ -183,8 +188,6 @@ def build_and_persist(cfg: RAGConfig) -> dict[str, Any]:
         total_retrieval_docs=store.doc_count,
         build_timestamp=datetime.now(timezone.utc),
     )
-    (cfg.rag_root / "rag_build_metadata.json").write_text(
-        build_result.model_dump_json(indent=2), encoding="utf-8"
-    )
+    write_build_metadata(cfg.rag_root / "rag_build_metadata.json", build_result)
 
     return build_result.model_dump(mode="json")

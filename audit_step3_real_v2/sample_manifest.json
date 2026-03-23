@@ -1,0 +1,27 @@
+{
+  "audit_root": "audit_step3_real_v2",
+  "zip_path": "audit_step3_real_v2.zip",
+  "cli_query_ids": [
+    "q001",
+    "q003",
+    "q012",
+    "q017",
+    "q020",
+    "q022",
+    "q024",
+    "q027"
+  ],
+  "api_query_ids": [
+    "q024",
+    "q012",
+    "q009",
+    "q023",
+    "q027"
+  ],
+  "doc_sample_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_6",
+  "concept_sample_id": "concept:stop_loss",
+  "included_docs": [
+    "step3_hybrid_rag_notes.md",
+    "rag_query_examples.md"
+  ]
+}

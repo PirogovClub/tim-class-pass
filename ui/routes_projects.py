@@ -5,7 +5,7 @@ from fastapi.responses import RedirectResponse
 
 from ui.run_launcher import launch_run_worker
 from ui.services import get_project_detail, import_project
-from ui.services.runs import SUPPORTED_RUN_MODES, create_project_run
+from ui.services.runs import RUN_MODE_DETAILS, SUPPORTED_RUN_MODES, create_project_run
 from ui.web import get_settings, get_store, render
 
 
@@ -51,7 +51,7 @@ async def create_project(request: Request):
 @router.get("/projects/{project_id}", name="project_detail")
 async def project_detail(request: Request, project_id: str, error: str = ""):
     try:
-        project_row, runs = get_project_detail(get_store(request), project_id)
+        project_row, runs, flow = get_project_detail(get_store(request), project_id)
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=f"Unknown project: {exc.args[0]}") from exc
     return render(
@@ -59,7 +59,10 @@ async def project_detail(request: Request, project_id: str, error: str = ""):
         "project_detail.html",
         row=project_row,
         runs=runs,
+        flow=flow,
         run_modes=SUPPORTED_RUN_MODES,
+        run_mode_details=RUN_MODE_DETAILS,
+        selected_run_mode=flow.recommended_run_modes[0] if flow.recommended_run_modes else SUPPORTED_RUN_MODES[0],
         error=error,
     )
 
@@ -73,7 +76,7 @@ async def create_run(request: Request, project_id: str):
         launch_run_worker(get_store(request), get_settings(request), run_id=run.run_id, action="start")
     except (KeyError, ValueError) as exc:
         try:
-            row, runs = get_project_detail(get_store(request), project_id)
+            row, runs, flow = get_project_detail(get_store(request), project_id)
         except KeyError as inner_exc:
             raise HTTPException(status_code=404, detail=f"Unknown project: {inner_exc.args[0]}") from inner_exc
         return render(
@@ -81,7 +84,10 @@ async def create_run(request: Request, project_id: str):
             "project_detail.html",
             row=row,
             runs=runs,
+            flow=flow,
             run_modes=SUPPORTED_RUN_MODES,
+            run_mode_details=RUN_MODE_DETAILS,
+            selected_run_mode=flow.recommended_run_modes[0] if flow.recommended_run_modes else SUPPORTED_RUN_MODES[0],
             error=str(exc),
         )
     return RedirectResponse(url=request.url_for("run_detail", run_id=run.run_id), status_code=status.HTTP_303_SEE_OTHER)

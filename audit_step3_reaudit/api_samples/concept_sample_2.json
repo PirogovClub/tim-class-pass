@@ -1,0 +1,109 @@
+{
+  "method": "GET",
+  "path": "/rag/concept/node:re_test",
+  "status_code": 200,
+  "response": {
+    "concept_id": "node:re_test",
+    "doc_count": 2,
+    "docs": [
+      {
+        "doc_id": "node:re_test",
+        "unit_type": "concept_node",
+        "lesson_id": "corpus",
+        "lesson_slug": null,
+        "language": "ru",
+        "canonical_concept_ids": [
+          "node:re_test"
+        ],
+        "canonical_subconcept_ids": [],
+        "alias_terms": [
+          "Re-test"
+        ],
+        "title": "Re-test",
+        "text": "[Concept] Re-test\n[Type] subconcept\n[Lessons] 2025_09_29_sviatoslav_chornyi\n[Frequency] rules=0, events=0, lessons=1",
+        "short_text": "[Concept] Re-test\n[Type] subconcept\n[Lessons] 2025_09_29_sviatoslav_chornyi\n[Frequency] rules=0, events=0, lessons=1",
+        "keywords": [
+          "Re-test",
+          "subconcept"
+        ],
+        "provenance": {
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ],
+          "type": "subconcept"
+        },
+        "confidence_score": null,
+        "support_basis": null,
+        "evidence_requirement": null,
+        "teaching_mode": null,
+        "timestamps": [],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_re_test_7"
+        ],
+        "metadata": {
+          "canonical_label": null,
+          "parent_id": "node:price_action"
+        },
+        "concept_name": "Re-test",
+        "concept_type": "subconcept",
+        "aliases": [],
+        "source_lessons": [
+          "2025_09_29_sviatoslav_chornyi"
+        ]
+      },
+      {
+        "doc_id": "rel:node:price_action:has_subconcept:node:re_test",
+        "unit_type": "concept_relation",
+        "lesson_id": "corpus",
+        "lesson_slug": null,
+        "language": "ru",
+        "canonical_concept_ids": [
+          "node:price_action",
+          "node:re_test"
+        ],
+        "canonical_subconcept_ids": [],
+        "alias_terms": [
+          "Price Action",
+          "Re-test"
+        ],
+        "title": "Price Action → Re-test",
+        "text": "Price Action –[has_subconcept]→ Re-test",
+        "short_text": "Price Action –[has_subconcept]→ Re-test",
+        "keywords": [
+          "Price Action",
+          "Re-test",
+          "has_subconcept"
+        ],
+        "provenance": {
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ],
+          "relation_type": "has_subconcept"
+        },
+        "confidence_score": null,
+        "support_basis": null,
+        "evidence_requirement": null,
+        "teaching_mode": null,
+        "timestamps": [],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_re_test_7"
+        ],
+        "metadata": {
+          "source_id": "node:price_action",
+          "target_id": "node:re_test",
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ]
+        },
+        "source_concept": "Price Action",
+        "target_concept": "Re-test",
+        "relation_type": "has_subconcept",
+        "weight": 1
+      }
+    ]
+  }
+}

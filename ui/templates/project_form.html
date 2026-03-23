@@ -14,7 +14,7 @@
     <form class="stack-form" method="post" action="{{ request.url_for('create_project') }}" enctype="multipart/form-data">
         <label>
             Project title
-            <input type="text" name="title" value="{{ title|default('', true) }}" placeholder="Lesson 2. Levels part 1">
+            <input id="project-title-input" type="text" name="title" value="{{ title|default('', true) }}" placeholder="Lesson 2. Levels part 1">
         </label>
         <label>
             Project root
@@ -23,7 +23,7 @@
         <div class="detail-grid">
             <label>
                 Source video upload
-                <input type="file" name="source_video_upload" accept=".mp4,.mov,.mkv,.webm">
+                <input id="source-video-upload-input" type="file" name="source_video_upload" accept=".mp4,.mov,.mkv,.webm">
             </label>
             <label>
                 Transcript upload
@@ -44,5 +44,48 @@
         <button class="button" type="submit">Save project</button>
     </form>
 </section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(() => {
+    const titleInput = document.getElementById("project-title-input");
+    const videoInput = document.getElementById("source-video-upload-input");
+    if (!titleInput || !videoInput) {
+        return;
+    }
+
+    let lastAutoTitle = titleInput.value.trim();
+    let titleWasManuallyEdited = lastAutoTitle.length > 0;
+
+    const basenameWithoutExtension = (filename) => {
+        const cleaned = filename.trim().replace(/^.*[\\/]/, "");
+        return cleaned.replace(/\.[^.]+$/, "").trim();
+    };
+
+    titleInput.addEventListener("input", () => {
+        const currentValue = titleInput.value.trim();
+        titleWasManuallyEdited = currentValue.length > 0 && currentValue !== lastAutoTitle;
+    });
+
+    videoInput.addEventListener("change", () => {
+        const selectedFile = videoInput.files && videoInput.files[0];
+        if (!selectedFile) {
+            return;
+        }
+
+        const derivedTitle = basenameWithoutExtension(selectedFile.name);
+        if (!derivedTitle) {
+            return;
+        }
+
+        if (!titleWasManuallyEdited || titleInput.value.trim() === "" || titleInput.value.trim() === lastAutoTitle) {
+            titleInput.value = derivedTitle;
+            lastAutoTitle = derivedTitle;
+            titleWasManuallyEdited = false;
+        }
+    });
+})();
+</script>
 {% endblock %}
 

@@ -1,0 +1,1712 @@
+{
+  "query_id": "q027",
+  "query": "Re-test уровня после пробоя",
+  "top_k": 5,
+  "response": {
+    "query": "Re-test уровня после пробоя",
+    "query_analysis": {
+      "normalized_query": "re-test уровня после пробоя",
+      "detected_concepts": [
+        "node:re_test"
+      ],
+      "detected_unit_bias": "mixed",
+      "expansion_trace": {
+        "detected_terms": [
+          "re-test"
+        ],
+        "exact_alias_matches": {
+          "re-test": "node:re_test"
+        },
+        "normalized_alias_matches": {},
+        "canonical_concept_ids": [
+          "node:re_test"
+        ],
+        "expanded_concept_ids": [
+          "node:price_action"
+        ],
+        "boosted_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_movement_near_levels_0",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_accumulation_1",
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_re_test_7"
+        ],
+        "related_terms": [],
+        "expansion_trace": [
+          {
+            "step_type": "exact_alias_match",
+            "source": "re-test",
+            "target": "node:re_test",
+            "relation": null,
+            "reason": "Exact alias or concept match for 're-test'"
+          },
+          {
+            "step_type": "graph_neighbor",
+            "source": "node:re_test",
+            "target": "node:price_action",
+            "relation": "has_subconcept",
+            "reason": "1-hop has_subconcept from Re-test"
+          }
+        ]
+      }
+    },
+    "top_hits": [
+      {
+        "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_re_test_7",
+        "unit_type": "rule_card",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "Price Action / Re-test",
+        "text_snippet": "[Concept] Price Action\n[Subconcept] Re-test\n[Rule] При ретесте с закруглением и готовности идти на пробой, можно взять одну пятиминутку.\n[Visual] New slide displayed with title 'Разновидность SL' and ",
+        "timestamps": [
+          {
+            "start": "01:29",
+            "end": "01:36"
+          },
+          {
+            "start": "01:24",
+            "end": "01:36"
+          },
+          {
+            "start": "01:24",
+            "end": "01:24"
+          },
+          {
+            "start": "01:42",
+            "end": "01:42"
+          },
+          {
+            "start": "01:58",
+            "end": "01:58"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_4"
+        ],
+        "source_event_ids": [
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_6",
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_example_0"
+        ],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_re_test_7"
+        ],
+        "raw_lexical_score": 16.7476,
+        "raw_vector_score": 0.6316,
+        "graph_boost": 1.0,
+        "score": 0.9704,
+        "score_breakdown": {
+          "lexical_score": 0.7789,
+          "vector_score": 0.8856,
+          "concept_exact_match": 0.8,
+          "alias_match": 1.0,
+          "confidence_score": 0.9,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 0.6667,
+          "unit_type_relevance": 1.0,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 0.9167,
+          "lesson_diversity_bonus": 1.0
+        },
+        "why_retrieved": [
+          "boosted_by_concept_rule_map",
+          "concept_match",
+          "alias_match",
+          "strong_lexical",
+          "strong_vector",
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_re_test_7",
+          "unit_type": "rule_card",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:price_action"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:re_test"
+          ],
+          "alias_terms": [
+            "Price Action",
+            "Re-test"
+          ],
+          "title": "Price Action / Re-test",
+          "text": "[Concept] Price Action\n[Subconcept] Re-test\n[Rule] При ретесте с закруглением и готовности идти на пробой, можно взять одну пятиминутку.\n[Visual] New slide displayed with title 'Разновидность SL' and two lists: 'Расчетные:' and 'Технические:'.. concepts: abstract_teaching_example, atr_values, entry_values\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+          "short_text": "[Concept] Price Action\n[Subconcept] Re-test\n[Rule] При ретесте с закруглением и готовности идти на пробой, можно взять одну пятиминутку.\n[Visual] New slide displayed with title 'Разновидность SL' and ",
+          "keywords": [
+            "Price Action",
+            "Re-test",
+            "При ретесте с закруглением и готовностью к пробою, стоп может быть равен одной пятиминутке."
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "confidence": "high",
+            "support_basis": "transcript_plus_visual"
+          },
+          "confidence_score": 0.9,
+          "support_basis": "transcript_plus_visual",
+          "evidence_requirement": "optional",
+          "teaching_mode": "mixed",
+          "timestamps": [
+            {
+              "start": "01:29",
+              "end": "01:36"
+            },
+            {
+              "start": "01:24",
+              "end": "01:36"
+            },
+            {
+              "start": "01:24",
+              "end": "01:24"
+            },
+            {
+              "start": "01:42",
+              "end": "01:42"
+            },
+            {
+              "start": "01:58",
+              "end": "01:58"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_4"
+          ],
+          "source_event_ids": [
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_6",
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_example_0"
+          ],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_re_test_7"
+          ],
+          "metadata": {
+            "source_sections": [],
+            "source_subsections": [],
+            "source_chunk_indexes": [
+              0
+            ],
+            "conditions": [],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "algorithm_notes": [
+              "При ретесте с закруглением и готовностью к пробою, стоп может быть равен одной пятиминутке."
+            ],
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 0.85,
+            "visual_support_score": 0.4,
+            "has_visual_evidence": true,
+            "transcript_anchor_count": 8,
+            "transcript_repetition_count": 0
+          },
+          "rule_text": "При ретесте с закруглением и готовности идти на пробой, можно взять одну пятиминутку.",
+          "rule_text_ru": "При ретесте с закруглением и готовности идти на пробой, можно взять одну пятиминутку.",
+          "conditions": [],
+          "invalidation": [],
+          "exceptions": [],
+          "comparisons": [],
+          "visual_summary": "New slide displayed with title 'Разновидность SL' and two lists: 'Расчетные:' and 'Технические:'.. concepts: abstract_teaching_example, atr_values, entry_values",
+          "concept": "Price Action",
+          "subconcept": "Re-test"
+        }
+      },
+      {
+        "doc_id": "node:re_test",
+        "unit_type": "concept_node",
+        "lesson_id": "corpus",
+        "title": "Re-test",
+        "text_snippet": "[Concept] Re-test\n[Type] subconcept\n[Lessons] 2025_09_29_sviatoslav_chornyi\n[Frequency] rules=0, events=0, lessons=1",
+        "timestamps": [],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_re_test_7"
+        ],
+        "raw_lexical_score": 21.3857,
+        "raw_vector_score": 0.6918,
+        "graph_boost": 0.075,
+        "score": 0.8934,
+        "score_breakdown": {
+          "lexical_score": 0.9947,
+          "vector_score": 0.97,
+          "concept_exact_match": 1.0,
+          "alias_match": 1.0,
+          "confidence_score": 0.0,
+          "evidence_available": 0.0,
+          "timestamp_available": 0.0,
+          "provenance_richness": 0.6667,
+          "unit_type_relevance": 0.85,
+          "support_basis_relevance": 0.0,
+          "teaching_mode_relevance": 0.0,
+          "groundedness": 0.1667,
+          "lesson_diversity_bonus": 1.0
+        },
+        "why_retrieved": [
+          "concept_match",
+          "alias_match",
+          "strong_lexical",
+          "strong_vector"
+        ],
+        "resolved_doc": {
+          "doc_id": "node:re_test",
+          "unit_type": "concept_node",
+          "lesson_id": "corpus",
+          "lesson_slug": null,
+          "language": "ru",
+          "canonical_concept_ids": [
+            "node:re_test"
+          ],
+          "canonical_subconcept_ids": [],
+          "alias_terms": [
+            "Re-test"
+          ],
+          "title": "Re-test",
+          "text": "[Concept] Re-test\n[Type] subconcept\n[Lessons] 2025_09_29_sviatoslav_chornyi\n[Frequency] rules=0, events=0, lessons=1",
+          "short_text": "[Concept] Re-test\n[Type] subconcept\n[Lessons] 2025_09_29_sviatoslav_chornyi\n[Frequency] rules=0, events=0, lessons=1",
+          "keywords": [
+            "Re-test",
+            "subconcept"
+          ],
+          "provenance": {
+            "source_lessons": [
+              "2025_09_29_sviatoslav_chornyi"
+            ],
+            "type": "subconcept"
+          },
+          "confidence_score": null,
+          "support_basis": null,
+          "evidence_requirement": null,
+          "teaching_mode": null,
+          "timestamps": [],
+          "evidence_ids": [],
+          "source_event_ids": [],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_re_test_7"
+          ],
+          "metadata": {
+            "canonical_label": null,
+            "parent_id": "node:price_action"
+          },
+          "concept_name": "Re-test",
+          "concept_type": "subconcept",
+          "aliases": [],
+          "source_lessons": [
+            "2025_09_29_sviatoslav_chornyi"
+          ]
+        }
+      },
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_6",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "rule_statement / Price Action",
+        "text_snippet": "[rule_statement] [Concept] Price Action При ретесте с закруглением и готовности идти на пробой, можно взять одну пятиминутку. [Time] 01:29–01:36 [Support Basis] transcript_plus_visual",
+        "timestamps": [
+          {
+            "start": "01:29",
+            "end": "01:36"
+          },
+          {
+            "start": "01:24",
+            "end": "01:24"
+          },
+          {
+            "start": "01:42",
+            "end": "01:42"
+          },
+          {
+            "start": "01:58",
+            "end": "01:58"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_4"
+        ],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "raw_lexical_score": 15.5262,
+        "raw_vector_score": 0.5423,
+        "graph_boost": 0.0,
+        "score": 0.7863,
+        "score_breakdown": {
+          "lexical_score": 0.7221,
+          "vector_score": 0.7605,
+          "concept_exact_match": 0.0,
+          "alias_match": 1.0,
+          "confidence_score": 0.95,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 1.0,
+          "unit_type_relevance": 0.95,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 1.0,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "alias_match",
+          "strong_lexical",
+          "strong_vector",
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_6",
+          "unit_type": "knowledge_event",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:price_action"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:re_test"
+          ],
+          "alias_terms": [
+            "Price Action",
+            "Re-test"
+          ],
+          "title": "rule_statement / Price Action",
+          "text": "[rule_statement] [Concept] Price Action При ретесте с закруглением и готовности идти на пробой, можно взять одну пятиминутку. [Time] 01:29–01:36 [Support Basis] transcript_plus_visual",
+          "short_text": "[rule_statement] [Concept] Price Action При ретесте с закруглением и готовности идти на пробой, можно взять одну пятиминутку. [Time] 01:29–01:36 [Support Basis] transcript_plus_visual",
+          "keywords": [
+            "Price Action",
+            "Re-test",
+            "rule_statement",
+            "rule"
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "chunk_index": 0,
+            "source_line_start": 35,
+            "source_line_end": 37
+          },
+          "confidence_score": 0.95,
+          "support_basis": "transcript_plus_visual",
+          "evidence_requirement": "optional",
+          "teaching_mode": "mixed",
+          "timestamps": [
+            {
+              "start": "01:29",
+              "end": "01:36"
+            },
+            {
+              "start": "01:24",
+              "end": "01:24"
+            },
+            {
+              "start": "01:42",
+              "end": "01:42"
+            },
+            {
+              "start": "01:58",
+              "end": "01:58"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_4"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "metadata": {
+            "chunk_index": 0,
+            "chunk_start_time_seconds": 0.44,
+            "chunk_end_time_seconds": 122.02,
+            "transcript_line_count": 49,
+            "candidate_visual_frame_keys": [
+              "000036",
+              "000040",
+              "000058",
+              "000084",
+              "000142",
+              "000158"
+            ],
+            "candidate_visual_types": [
+              "hand_drawn_pattern",
+              "text_slide",
+              "mixed_visual"
+            ],
+            "candidate_example_types": [
+              "abstract_teaching_example"
+            ],
+            "rule_type": "rule",
+            "pattern_tags": [],
+            "source_quote": "Мы делаем какое-то закругление и показываем, что готовы идти на пробой. Кто-то здесь возьмет одну пятиминутку.",
+            "transcript_anchors": [
+              {
+                "line_index": 35,
+                "text": "Мы делаем какое-то закругление и показываем, что",
+                "timestamp_start": "01:29",
+                "timestamp_end": "01:32",
+                "match_source": "llm_source_quote"
+              },
+              {
+                "line_index": 36,
+                "text": "готовы идти на пробой.",
+                "timestamp_start": "01:32",
+                "timestamp_end": "01:34",
+                "match_source": "llm_source_quote"
+              },
+              {
+                "line_index": 37,
+                "text": "Кто-то здесь возьмет одну пятиминутку.",
+                "timestamp_start": "01:34",
+                "timestamp_end": "01:36",
+                "match_source": "llm_source_quote"
+              }
+            ],
+            "timestamp_confidence": "span",
+            "anchor_match_source": "llm_source_quote",
+            "anchor_line_count": 3,
+            "anchor_span_width": 3,
+            "anchor_density": 1.0,
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 0.85,
+            "visual_support_score": 0.4
+          },
+          "event_type": "rule_statement",
+          "normalized_text": "При ретесте с закруглением и готовности идти на пробой, можно взять одну пятиминутку.",
+          "normalized_text_ru": "При ретесте с закруглением и готовности идти на пробой, можно взять одну пятиминутку.",
+          "concept": "Price Action",
+          "subconcept": "Re-test"
+        }
+      },
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_7",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "algorithm_hint / Price Action",
+        "text_snippet": "[algorithm_hint] [Concept] Price Action При ретесте с закруглением и готовностью к пробою, стоп может быть равен одной пятиминутке. [Time] 01:29–01:36 [Support Basis] transcript_plus_visual",
+        "timestamps": [
+          {
+            "start": "01:29",
+            "end": "01:36"
+          },
+          {
+            "start": "01:24",
+            "end": "01:24"
+          },
+          {
+            "start": "01:42",
+            "end": "01:42"
+          },
+          {
+            "start": "01:58",
+            "end": "01:58"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_4"
+        ],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "raw_lexical_score": 15.5262,
+        "raw_vector_score": 0.4965,
+        "graph_boost": 0.0,
+        "score": 0.762,
+        "score_breakdown": {
+          "lexical_score": 0.7221,
+          "vector_score": 0.6962,
+          "concept_exact_match": 0.0,
+          "alias_match": 1.0,
+          "confidence_score": 0.85,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 1.0,
+          "unit_type_relevance": 0.95,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 1.0,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "alias_match",
+          "strong_lexical",
+          "strong_vector",
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_7",
+          "unit_type": "knowledge_event",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:price_action"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:re_test"
+          ],
+          "alias_terms": [
+            "Price Action",
+            "Re-test"
+          ],
+          "title": "algorithm_hint / Price Action",
+          "text": "[algorithm_hint] [Concept] Price Action При ретесте с закруглением и готовностью к пробою, стоп может быть равен одной пятиминутке. [Time] 01:29–01:36 [Support Basis] transcript_plus_visual",
+          "short_text": "[algorithm_hint] [Concept] Price Action При ретесте с закруглением и готовностью к пробою, стоп может быть равен одной пятиминутке. [Time] 01:29–01:36 [Support Basis] transcript_plus_visual",
+          "keywords": [
+            "Price Action",
+            "Re-test",
+            "algorithm_hint"
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "chunk_index": 0,
+            "source_line_start": 35,
+            "source_line_end": 37
+          },
+          "confidence_score": 0.85,
+          "support_basis": "transcript_plus_visual",
+          "evidence_requirement": "optional",
+          "teaching_mode": "theory",
+          "timestamps": [
+            {
+              "start": "01:29",
+              "end": "01:36"
+            },
+            {
+              "start": "01:24",
+              "end": "01:24"
+            },
+            {
+              "start": "01:42",
+              "end": "01:42"
+            },
+            {
+              "start": "01:58",
+              "end": "01:58"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_4"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "metadata": {
+            "chunk_index": 0,
+            "chunk_start_time_seconds": 0.44,
+            "chunk_end_time_seconds": 122.02,
+            "transcript_line_count": 49,
+            "candidate_visual_frame_keys": [
+              "000036",
+              "000040",
+              "000058",
+              "000084",
+              "000142",
+              "000158"
+            ],
+            "candidate_visual_types": [
+              "hand_drawn_pattern",
+              "text_slide",
+              "mixed_visual"
+            ],
+            "candidate_example_types": [
+              "abstract_teaching_example"
+            ],
+            "rule_type": "algorithm_hint",
+            "pattern_tags": [],
+            "source_quote": "Мы делаем какое-то закругление и показываем, что готовы идти на пробой. Кто-то здесь возьмет одну пятиминутку.",
+            "transcript_anchors": [
+              {
+                "line_index": 35,
+                "text": "Мы делаем какое-то закругление и показываем, что",
+                "timestamp_start": "01:29",
+                "timestamp_end": "01:32",
+                "match_source": "llm_source_quote"
+              },
+              {
+                "line_index": 36,
+                "text": "готовы идти на пробой.",
+                "timestamp_start": "01:32",
+                "timestamp_end": "01:34",
+                "match_source": "llm_source_quote"
+              },
+              {
+                "line_index": 37,
+                "text": "Кто-то здесь возьмет одну пятиминутку.",
+                "timestamp_start": "01:34",
+                "timestamp_end": "01:36",
+                "match_source": "llm_source_quote"
+              }
+            ],
+            "timestamp_confidence": "span",
+            "anchor_match_source": "llm_source_quote",
+            "anchor_line_count": 3,
+            "anchor_span_width": 3,
+            "anchor_density": 1.0,
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 0.85,
+            "visual_support_score": 0.4
+          },
+          "event_type": "algorithm_hint",
+          "normalized_text": "При ретесте с закруглением и готовностью к пробою, стоп может быть равен одной пятиминутке.",
+          "normalized_text_ru": "При ретесте с закруглением и готовностью к пробою, стоп может быть равен одной пятиминутке.",
+          "concept": "Price Action",
+          "subconcept": "Re-test"
+        }
+      },
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_process_step_5",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "process_step / Price Action",
+        "text_snippet": "[process_step] [Concept] Price Action При ретесте на пятиминутке с закруглением, показывающим готовность идти на пробой, взять одну пятиминутку для стопа. [Time] 01:24–01:36 [Support Basis] transcript",
+        "timestamps": [
+          {
+            "start": "01:24",
+            "end": "01:36"
+          },
+          {
+            "start": "01:24",
+            "end": "01:24"
+          },
+          {
+            "start": "01:42",
+            "end": "01:42"
+          },
+          {
+            "start": "01:58",
+            "end": "01:58"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_4"
+        ],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "raw_lexical_score": 15.2908,
+        "raw_vector_score": 0.4967,
+        "graph_boost": 0.0,
+        "score": 0.7588,
+        "score_breakdown": {
+          "lexical_score": 0.7112,
+          "vector_score": 0.6965,
+          "concept_exact_match": 0.0,
+          "alias_match": 1.0,
+          "confidence_score": 0.85,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 1.0,
+          "unit_type_relevance": 0.95,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 1.0,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "alias_match",
+          "strong_lexical",
+          "strong_vector",
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_process_step_5",
+          "unit_type": "knowledge_event",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:price_action"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:re_test"
+          ],
+          "alias_terms": [
+            "Price Action",
+            "Re-test"
+          ],
+          "title": "process_step / Price Action",
+          "text": "[process_step] [Concept] Price Action При ретесте на пятиминутке с закруглением, показывающим готовность идти на пробой, взять одну пятиминутку для стопа. [Time] 01:24–01:36 [Support Basis] transcript_plus_visual",
+          "short_text": "[process_step] [Concept] Price Action При ретесте на пятиминутке с закруглением, показывающим готовность идти на пробой, взять одну пятиминутку для стопа. [Time] 01:24–01:36 [Support Basis] transcript",
+          "keywords": [
+            "Price Action",
+            "Re-test",
+            "process_step"
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "chunk_index": 0,
+            "source_line_start": 33,
+            "source_line_end": 37
+          },
+          "confidence_score": 0.85,
+          "support_basis": "transcript_plus_visual",
+          "evidence_requirement": "required",
+          "teaching_mode": "example",
+          "timestamps": [
+            {
+              "start": "01:24",
+              "end": "01:36"
+            },
+            {
+              "start": "01:24",
+              "end": "01:24"
+            },
+            {
+              "start": "01:42",
+              "end": "01:42"
+            },
+            {
+              "start": "01:58",
+              "end": "01:58"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_4"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "metadata": {
+            "chunk_index": 0,
+            "chunk_start_time_seconds": 0.44,
+            "chunk_end_time_seconds": 122.02,
+            "transcript_line_count": 49,
+            "candidate_visual_frame_keys": [
+              "000036",
+              "000040",
+              "000058",
+              "000084",
+              "000142",
+              "000158"
+            ],
+            "candidate_visual_types": [
+              "hand_drawn_pattern",
+              "text_slide",
+              "mixed_visual"
+            ],
+            "candidate_example_types": [
+              "abstract_teaching_example"
+            ],
+            "rule_type": "process_step",
+            "pattern_tags": [],
+            "source_quote": "Это будет пример с пятиминутки, что у нас здесь был ретест на пятиминутки. Мы делаем какое-то закругление и показываем, что готовы идти на пробой. Кто-то здесь возьмет одну пятиминутку.",
+            "transcript_anchors": [
+              {
+                "line_index": 33,
+                "text": "Это будет пример с пятиминутки, что у нас",
+                "timestamp_start": "01:24",
+                "timestamp_end": "01:27",
+                "match_source": "llm_source_quote"
+              },
+              {
+                "line_index": 34,
+                "text": "здесь был ретест на пятиминутки.",
+                "timestamp_start": "01:27",
+                "timestamp_end": "01:28",
+                "match_source": "llm_source_quote"
+              },
+              {
+                "line_index": 35,
+                "text": "Мы делаем какое-то закругление и показываем, что",
+                "timestamp_start": "01:29",
+                "timestamp_end": "01:32",
+                "match_source": "llm_source_quote"
+              },
+              {
+                "line_index": 36,
+                "text": "готовы идти на пробой.",
+                "timestamp_start": "01:32",
+                "timestamp_end": "01:34",
+                "match_source": "llm_source_quote"
+              },
+              {
+                "line_index": 37,
+                "text": "Кто-то здесь возьмет одну пятиминутку.",
+                "timestamp_start": "01:34",
+                "timestamp_end": "01:36",
+                "match_source": "llm_source_quote"
+              }
+            ],
+            "timestamp_confidence": "span",
+            "anchor_match_source": "llm_source_quote",
+            "anchor_line_count": 5,
+            "anchor_span_width": 5,
+            "anchor_density": 1.0,
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 0.85,
+            "visual_support_score": 0.4
+          },
+          "event_type": "process_step",
+          "normalized_text": "При ретесте на пятиминутке с закруглением, показывающим готовность идти на пробой, взять одну пятиминутку для стопа.",
+          "normalized_text_ru": "При ретесте на пятиминутке с закруглением, показывающим готовность идти на пробой, взять одну пятиминутку для стопа.",
+          "concept": "Price Action",
+          "subconcept": "Re-test"
+        }
+      }
+    ],
+    "grouped_results": {
+      "rule_cards": [
+        {
+          "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_re_test_7",
+          "unit_type": "rule_card",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "Price Action / Re-test",
+          "text_snippet": "[Concept] Price Action\n[Subconcept] Re-test\n[Rule] При ретесте с закруглением и готовности идти на пробой, можно взять одну пятиминутку.\n[Visual] New slide displayed with title 'Разновидность SL' and ",
+          "timestamps": [
+            {
+              "start": "01:29",
+              "end": "01:36"
+            },
+            {
+              "start": "01:24",
+              "end": "01:36"
+            },
+            {
+              "start": "01:24",
+              "end": "01:24"
+            },
+            {
+              "start": "01:42",
+              "end": "01:42"
+            },
+            {
+              "start": "01:58",
+              "end": "01:58"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_4"
+          ],
+          "source_event_ids": [
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_6",
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_example_0"
+          ],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_re_test_7"
+          ],
+          "raw_lexical_score": 16.7476,
+          "raw_vector_score": 0.6316,
+          "graph_boost": 1.0,
+          "score": 0.9704,
+          "score_breakdown": {
+            "lexical_score": 0.7789,
+            "vector_score": 0.8856,
+            "concept_exact_match": 0.8,
+            "alias_match": 1.0,
+            "confidence_score": 0.9,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 0.6667,
+            "unit_type_relevance": 1.0,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 0.9167,
+            "lesson_diversity_bonus": 1.0
+          },
+          "why_retrieved": [
+            "boosted_by_concept_rule_map",
+            "concept_match",
+            "alias_match",
+            "strong_lexical",
+            "strong_vector",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_re_test_7",
+            "unit_type": "rule_card",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:price_action"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:re_test"
+            ],
+            "alias_terms": [
+              "Price Action",
+              "Re-test"
+            ],
+            "title": "Price Action / Re-test",
+            "text": "[Concept] Price Action\n[Subconcept] Re-test\n[Rule] При ретесте с закруглением и готовности идти на пробой, можно взять одну пятиминутку.\n[Visual] New slide displayed with title 'Разновидность SL' and two lists: 'Расчетные:' and 'Технические:'.. concepts: abstract_teaching_example, atr_values, entry_values\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+            "short_text": "[Concept] Price Action\n[Subconcept] Re-test\n[Rule] При ретесте с закруглением и готовности идти на пробой, можно взять одну пятиминутку.\n[Visual] New slide displayed with title 'Разновидность SL' and ",
+            "keywords": [
+              "Price Action",
+              "Re-test",
+              "При ретесте с закруглением и готовностью к пробою, стоп может быть равен одной пятиминутке."
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "confidence": "high",
+              "support_basis": "transcript_plus_visual"
+            },
+            "confidence_score": 0.9,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "optional",
+            "teaching_mode": "mixed",
+            "timestamps": [
+              {
+                "start": "01:29",
+                "end": "01:36"
+              },
+              {
+                "start": "01:24",
+                "end": "01:36"
+              },
+              {
+                "start": "01:24",
+                "end": "01:24"
+              },
+              {
+                "start": "01:42",
+                "end": "01:42"
+              },
+              {
+                "start": "01:58",
+                "end": "01:58"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2",
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3",
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_4"
+            ],
+            "source_event_ids": [
+              "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_6",
+              "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_example_0"
+            ],
+            "source_rule_ids": [
+              "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_re_test_7"
+            ],
+            "metadata": {
+              "source_sections": [],
+              "source_subsections": [],
+              "source_chunk_indexes": [
+                0
+              ],
+              "conditions": [],
+              "invalidation": [],
+              "exceptions": [],
+              "comparisons": [],
+              "algorithm_notes": [
+                "При ретесте с закруглением и готовностью к пробою, стоп может быть равен одной пятиминутке."
+              ],
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 0.85,
+              "visual_support_score": 0.4,
+              "has_visual_evidence": true,
+              "transcript_anchor_count": 8,
+              "transcript_repetition_count": 0
+            },
+            "rule_text": "При ретесте с закруглением и готовности идти на пробой, можно взять одну пятиминутку.",
+            "rule_text_ru": "При ретесте с закруглением и готовности идти на пробой, можно взять одну пятиминутку.",
+            "conditions": [],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "visual_summary": "New slide displayed with title 'Разновидность SL' and two lists: 'Расчетные:' and 'Технические:'.. concepts: abstract_teaching_example, atr_values, entry_values",
+            "concept": "Price Action",
+            "subconcept": "Re-test"
+          }
+        }
+      ],
+      "knowledge_events": [
+        {
+          "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_6",
+          "unit_type": "knowledge_event",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "rule_statement / Price Action",
+          "text_snippet": "[rule_statement] [Concept] Price Action При ретесте с закруглением и готовности идти на пробой, можно взять одну пятиминутку. [Time] 01:29–01:36 [Support Basis] transcript_plus_visual",
+          "timestamps": [
+            {
+              "start": "01:29",
+              "end": "01:36"
+            },
+            {
+              "start": "01:24",
+              "end": "01:24"
+            },
+            {
+              "start": "01:42",
+              "end": "01:42"
+            },
+            {
+              "start": "01:58",
+              "end": "01:58"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_4"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "raw_lexical_score": 15.5262,
+          "raw_vector_score": 0.5423,
+          "graph_boost": 0.0,
+          "score": 0.7863,
+          "score_breakdown": {
+            "lexical_score": 0.7221,
+            "vector_score": 0.7605,
+            "concept_exact_match": 0.0,
+            "alias_match": 1.0,
+            "confidence_score": 0.95,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 1.0,
+            "unit_type_relevance": 0.95,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 1.0,
+            "lesson_diversity_bonus": 0.0
+          },
+          "why_retrieved": [
+            "alias_match",
+            "strong_lexical",
+            "strong_vector",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_6",
+            "unit_type": "knowledge_event",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:price_action"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:re_test"
+            ],
+            "alias_terms": [
+              "Price Action",
+              "Re-test"
+            ],
+            "title": "rule_statement / Price Action",
+            "text": "[rule_statement] [Concept] Price Action При ретесте с закруглением и готовности идти на пробой, можно взять одну пятиминутку. [Time] 01:29–01:36 [Support Basis] transcript_plus_visual",
+            "short_text": "[rule_statement] [Concept] Price Action При ретесте с закруглением и готовности идти на пробой, можно взять одну пятиминутку. [Time] 01:29–01:36 [Support Basis] transcript_plus_visual",
+            "keywords": [
+              "Price Action",
+              "Re-test",
+              "rule_statement",
+              "rule"
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "chunk_index": 0,
+              "source_line_start": 35,
+              "source_line_end": 37
+            },
+            "confidence_score": 0.95,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "optional",
+            "teaching_mode": "mixed",
+            "timestamps": [
+              {
+                "start": "01:29",
+                "end": "01:36"
+              },
+              {
+                "start": "01:24",
+                "end": "01:24"
+              },
+              {
+                "start": "01:42",
+                "end": "01:42"
+              },
+              {
+                "start": "01:58",
+                "end": "01:58"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2",
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3",
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_4"
+            ],
+            "source_event_ids": [],
+            "source_rule_ids": [],
+            "metadata": {
+              "chunk_index": 0,
+              "chunk_start_time_seconds": 0.44,
+              "chunk_end_time_seconds": 122.02,
+              "transcript_line_count": 49,
+              "candidate_visual_frame_keys": [
+                "000036",
+                "000040",
+                "000058",
+                "000084",
+                "000142",
+                "000158"
+              ],
+              "candidate_visual_types": [
+                "hand_drawn_pattern",
+                "text_slide",
+                "mixed_visual"
+              ],
+              "candidate_example_types": [
+                "abstract_teaching_example"
+              ],
+              "rule_type": "rule",
+              "pattern_tags": [],
+              "source_quote": "Мы делаем какое-то закругление и показываем, что готовы идти на пробой. Кто-то здесь возьмет одну пятиминутку.",
+              "transcript_anchors": [
+                {
+                  "line_index": 35,
+                  "text": "Мы делаем какое-то закругление и показываем, что",
+                  "timestamp_start": "01:29",
+                  "timestamp_end": "01:32",
+                  "match_source": "llm_source_quote"
+                },
+                {
+                  "line_index": 36,
+                  "text": "готовы идти на пробой.",
+                  "timestamp_start": "01:32",
+                  "timestamp_end": "01:34",
+                  "match_source": "llm_source_quote"
+                },
+                {
+                  "line_index": 37,
+                  "text": "Кто-то здесь возьмет одну пятиминутку.",
+                  "timestamp_start": "01:34",
+                  "timestamp_end": "01:36",
+                  "match_source": "llm_source_quote"
+                }
+              ],
+              "timestamp_confidence": "span",
+              "anchor_match_source": "llm_source_quote",
+              "anchor_line_count": 3,
+              "anchor_span_width": 3,
+              "anchor_density": 1.0,
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 0.85,
+              "visual_support_score": 0.4
+            },
+            "event_type": "rule_statement",
+            "normalized_text": "При ретесте с закруглением и готовности идти на пробой, можно взять одну пятиминутку.",
+            "normalized_text_ru": "При ретесте с закруглением и готовности идти на пробой, можно взять одну пятиминутку.",
+            "concept": "Price Action",
+            "subconcept": "Re-test"
+          }
+        },
+        {
+          "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_7",
+          "unit_type": "knowledge_event",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "algorithm_hint / Price Action",
+          "text_snippet": "[algorithm_hint] [Concept] Price Action При ретесте с закруглением и готовностью к пробою, стоп может быть равен одной пятиминутке. [Time] 01:29–01:36 [Support Basis] transcript_plus_visual",
+          "timestamps": [
+            {
+              "start": "01:29",
+              "end": "01:36"
+            },
+            {
+              "start": "01:24",
+              "end": "01:24"
+            },
+            {
+              "start": "01:42",
+              "end": "01:42"
+            },
+            {
+              "start": "01:58",
+              "end": "01:58"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_4"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "raw_lexical_score": 15.5262,
+          "raw_vector_score": 0.4965,
+          "graph_boost": 0.0,
+          "score": 0.762,
+          "score_breakdown": {
+            "lexical_score": 0.7221,
+            "vector_score": 0.6962,
+            "concept_exact_match": 0.0,
+            "alias_match": 1.0,
+            "confidence_score": 0.85,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 1.0,
+            "unit_type_relevance": 0.95,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 1.0,
+            "lesson_diversity_bonus": 0.0
+          },
+          "why_retrieved": [
+            "alias_match",
+            "strong_lexical",
+            "strong_vector",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_7",
+            "unit_type": "knowledge_event",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:price_action"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:re_test"
+            ],
+            "alias_terms": [
+              "Price Action",
+              "Re-test"
+            ],
+            "title": "algorithm_hint / Price Action",
+            "text": "[algorithm_hint] [Concept] Price Action При ретесте с закруглением и готовностью к пробою, стоп может быть равен одной пятиминутке. [Time] 01:29–01:36 [Support Basis] transcript_plus_visual",
+            "short_text": "[algorithm_hint] [Concept] Price Action При ретесте с закруглением и готовностью к пробою, стоп может быть равен одной пятиминутке. [Time] 01:29–01:36 [Support Basis] transcript_plus_visual",
+            "keywords": [
+              "Price Action",
+              "Re-test",
+              "algorithm_hint"
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "chunk_index": 0,
+              "source_line_start": 35,
+              "source_line_end": 37
+            },
+            "confidence_score": 0.85,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "optional",
+            "teaching_mode": "theory",
+            "timestamps": [
+              {
+                "start": "01:29",
+                "end": "01:36"
+              },
+              {
+                "start": "01:24",
+                "end": "01:24"
+              },
+              {
+                "start": "01:42",
+                "end": "01:42"
+              },
+              {
+                "start": "01:58",
+                "end": "01:58"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2",
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3",
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_4"
+            ],
+            "source_event_ids": [],
+            "source_rule_ids": [],
+            "metadata": {
+              "chunk_index": 0,
+              "chunk_start_time_seconds": 0.44,
+              "chunk_end_time_seconds": 122.02,
+              "transcript_line_count": 49,
+              "candidate_visual_frame_keys": [
+                "000036",
+                "000040",
+                "000058",
+                "000084",
+                "000142",
+                "000158"
+              ],
+              "candidate_visual_types": [
+                "hand_drawn_pattern",
+                "text_slide",
+                "mixed_visual"
+              ],
+              "candidate_example_types": [
+                "abstract_teaching_example"
+              ],
+              "rule_type": "algorithm_hint",
+              "pattern_tags": [],
+              "source_quote": "Мы делаем какое-то закругление и показываем, что готовы идти на пробой. Кто-то здесь возьмет одну пятиминутку.",
+              "transcript_anchors": [
+                {
+                  "line_index": 35,
+                  "text": "Мы делаем какое-то закругление и показываем, что",
+                  "timestamp_start": "01:29",
+                  "timestamp_end": "01:32",
+                  "match_source": "llm_source_quote"
+                },
+                {
+                  "line_index": 36,
+                  "text": "готовы идти на пробой.",
+                  "timestamp_start": "01:32",
+                  "timestamp_end": "01:34",
+                  "match_source": "llm_source_quote"
+                },
+                {
+                  "line_index": 37,
+                  "text": "Кто-то здесь возьмет одну пятиминутку.",
+                  "timestamp_start": "01:34",
+                  "timestamp_end": "01:36",
+                  "match_source": "llm_source_quote"
+                }
+              ],
+              "timestamp_confidence": "span",
+              "anchor_match_source": "llm_source_quote",
+              "anchor_line_count": 3,
+              "anchor_span_width": 3,
+              "anchor_density": 1.0,
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 0.85,
+              "visual_support_score": 0.4
+            },
+            "event_type": "algorithm_hint",
+            "normalized_text": "При ретесте с закруглением и готовностью к пробою, стоп может быть равен одной пятиминутке.",
+            "normalized_text_ru": "При ретесте с закруглением и готовностью к пробою, стоп может быть равен одной пятиминутке.",
+            "concept": "Price Action",
+            "subconcept": "Re-test"
+          }
+        },
+        {
+          "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_process_step_5",
+          "unit_type": "knowledge_event",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "process_step / Price Action",
+          "text_snippet": "[process_step] [Concept] Price Action При ретесте на пятиминутке с закруглением, показывающим готовность идти на пробой, взять одну пятиминутку для стопа. [Time] 01:24–01:36 [Support Basis] transcript",
+          "timestamps": [
+            {
+              "start": "01:24",
+              "end": "01:36"
+            },
+            {
+              "start": "01:24",
+              "end": "01:24"
+            },
+            {
+              "start": "01:42",
+              "end": "01:42"
+            },
+            {
+              "start": "01:58",
+              "end": "01:58"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_4"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "raw_lexical_score": 15.2908,
+          "raw_vector_score": 0.4967,
+          "graph_boost": 0.0,
+          "score": 0.7588,
+          "score_breakdown": {
+            "lexical_score": 0.7112,
+            "vector_score": 0.6965,
+            "concept_exact_match": 0.0,
+            "alias_match": 1.0,
+            "confidence_score": 0.85,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 1.0,
+            "unit_type_relevance": 0.95,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 1.0,
+            "lesson_diversity_bonus": 0.0
+          },
+          "why_retrieved": [
+            "alias_match",
+            "strong_lexical",
+            "strong_vector",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_process_step_5",
+            "unit_type": "knowledge_event",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:price_action"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:re_test"
+            ],
+            "alias_terms": [
+              "Price Action",
+              "Re-test"
+            ],
+            "title": "process_step / Price Action",
+            "text": "[process_step] [Concept] Price Action При ретесте на пятиминутке с закруглением, показывающим готовность идти на пробой, взять одну пятиминутку для стопа. [Time] 01:24–01:36 [Support Basis] transcript_plus_visual",
+            "short_text": "[process_step] [Concept] Price Action При ретесте на пятиминутке с закруглением, показывающим готовность идти на пробой, взять одну пятиминутку для стопа. [Time] 01:24–01:36 [Support Basis] transcript",
+            "keywords": [
+              "Price Action",
+              "Re-test",
+              "process_step"
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "chunk_index": 0,
+              "source_line_start": 33,
+              "source_line_end": 37
+            },
+            "confidence_score": 0.85,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "required",
+            "teaching_mode": "example",
+            "timestamps": [
+              {
+                "start": "01:24",
+                "end": "01:36"
+              },
+              {
+                "start": "01:24",
+                "end": "01:24"
+              },
+              {
+                "start": "01:42",
+                "end": "01:42"
+              },
+              {
+                "start": "01:58",
+                "end": "01:58"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2",
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3",
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_4"
+            ],
+            "source_event_ids": [],
+            "source_rule_ids": [],
+            "metadata": {
+              "chunk_index": 0,
+              "chunk_start_time_seconds": 0.44,
+              "chunk_end_time_seconds": 122.02,
+              "transcript_line_count": 49,
+              "candidate_visual_frame_keys": [
+                "000036",
+                "000040",
+                "000058",
+                "000084",
+                "000142",
+                "000158"
+              ],
+              "candidate_visual_types": [
+                "hand_drawn_pattern",
+                "text_slide",
+                "mixed_visual"
+              ],
+              "candidate_example_types": [
+                "abstract_teaching_example"
+              ],
+              "rule_type": "process_step",
+              "pattern_tags": [],
+              "source_quote": "Это будет пример с пятиминутки, что у нас здесь был ретест на пятиминутки. Мы делаем какое-то закругление и показываем, что готовы идти на пробой. Кто-то здесь возьмет одну пятиминутку.",
+              "transcript_anchors": [
+                {
+                  "line_index": 33,
+                  "text": "Это будет пример с пятиминутки, что у нас",
+                  "timestamp_start": "01:24",
+                  "timestamp_end": "01:27",
+                  "match_source": "llm_source_quote"
+                },
+                {
+                  "line_index": 34,
+                  "text": "здесь был ретест на пятиминутки.",
+                  "timestamp_start": "01:27",
+                  "timestamp_end": "01:28",
+                  "match_source": "llm_source_quote"
+                },
+                {
+                  "line_index": 35,
+                  "text": "Мы делаем какое-то закругление и показываем, что",
+                  "timestamp_start": "01:29",
+                  "timestamp_end": "01:32",
+                  "match_source": "llm_source_quote"
+                },
+                {
+                  "line_index": 36,
+                  "text": "готовы идти на пробой.",
+                  "timestamp_start": "01:32",
+                  "timestamp_end": "01:34",
+                  "match_source": "llm_source_quote"
+                },
+                {
+                  "line_index": 37,
+                  "text": "Кто-то здесь возьмет одну пятиминутку.",
+                  "timestamp_start": "01:34",
+                  "timestamp_end": "01:36",
+                  "match_source": "llm_source_quote"
+                }
+              ],
+              "timestamp_confidence": "span",
+              "anchor_match_source": "llm_source_quote",
+              "anchor_line_count": 5,
+              "anchor_span_width": 5,
+              "anchor_density": 1.0,
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 0.85,
+              "visual_support_score": 0.4
+            },
+            "event_type": "process_step",
+            "normalized_text": "При ретесте на пятиминутке с закруглением, показывающим готовность идти на пробой, взять одну пятиминутку для стопа.",
+            "normalized_text_ru": "При ретесте на пятиминутке с закруглением, показывающим готовность идти на пробой, взять одну пятиминутку для стопа.",
+            "concept": "Price Action",
+            "subconcept": "Re-test"
+          }
+        }
+      ],
+      "evidence_refs": [],
+      "concepts": [
+        {
+          "doc_id": "node:re_test",
+          "unit_type": "concept_node",
+          "lesson_id": "corpus",
+          "title": "Re-test",
+          "text_snippet": "[Concept] Re-test\n[Type] subconcept\n[Lessons] 2025_09_29_sviatoslav_chornyi\n[Frequency] rules=0, events=0, lessons=1",
+          "timestamps": [],
+          "evidence_ids": [],
+          "source_event_ids": [],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_re_test_7"
+          ],
+          "raw_lexical_score": 21.3857,
+          "raw_vector_score": 0.6918,
+          "graph_boost": 0.075,
+          "score": 0.8934,
+          "score_breakdown": {
+            "lexical_score": 0.9947,
+            "vector_score": 0.97,
+            "concept_exact_match": 1.0,
+            "alias_match": 1.0,
+            "confidence_score": 0.0,
+            "evidence_available": 0.0,
+            "timestamp_available": 0.0,
+            "provenance_richness": 0.6667,
+            "unit_type_relevance": 0.85,
+            "support_basis_relevance": 0.0,
+            "teaching_mode_relevance": 0.0,
+            "groundedness": 0.1667,
+            "lesson_diversity_bonus": 1.0
+          },
+          "why_retrieved": [
+            "concept_match",
+            "alias_match",
+            "strong_lexical",
+            "strong_vector"
+          ],
+          "resolved_doc": {
+            "doc_id": "node:re_test",
+            "unit_type": "concept_node",
+            "lesson_id": "corpus",
+            "lesson_slug": null,
+            "language": "ru",
+            "canonical_concept_ids": [
+              "node:re_test"
+            ],
+            "canonical_subconcept_ids": [],
+            "alias_terms": [
+              "Re-test"
+            ],
+            "title": "Re-test",
+            "text": "[Concept] Re-test\n[Type] subconcept\n[Lessons] 2025_09_29_sviatoslav_chornyi\n[Frequency] rules=0, events=0, lessons=1",
+            "short_text": "[Concept] Re-test\n[Type] subconcept\n[Lessons] 2025_09_29_sviatoslav_chornyi\n[Frequency] rules=0, events=0, lessons=1",
+            "keywords": [
+              "Re-test",
+              "subconcept"
+            ],
+            "provenance": {
+              "source_lessons": [
+                "2025_09_29_sviatoslav_chornyi"
+              ],
+              "type": "subconcept"
+            },
+            "confidence_score": null,
+            "support_basis": null,
+            "evidence_requirement": null,
+            "teaching_mode": null,
+            "timestamps": [],
+            "evidence_ids": [],
+            "source_event_ids": [],
+            "source_rule_ids": [
+              "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_re_test_7"
+            ],
+            "metadata": {
+              "canonical_label": null,
+              "parent_id": "node:price_action"
+            },
+            "concept_name": "Re-test",
+            "concept_type": "subconcept",
+            "aliases": [],
+            "source_lessons": [
+              "2025_09_29_sviatoslav_chornyi"
+            ]
+          }
+        }
+      ]
+    },
+    "summary": {
+      "answer_text": "[Concept] Price Action\n[Subconcept] Re-test\n[Rule] При ретесте с закруглением и готовности идти на пробой, можно взять одну пятиминутку.\n[Visual] New slide displayed with title 'Разновидность SL' and ",
+      "limitations": [],
+      "citation_doc_ids": [
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_price_action_re_test_7",
+        "node:re_test",
+        "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_6",
+        "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_7",
+        "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_process_step_5"
+      ]
+    },
+    "facets": {
+      "by_unit_type": {
+        "rule_card": 1,
+        "knowledge_event": 3,
+        "concept_node": 1
+      },
+      "by_lesson": {
+        "2025-09-29-sviatoslav-chornyi": 4,
+        "corpus": 1
+      },
+      "by_concept": {
+        "concept:price_action": 4,
+        "node:re_test": 1
+      }
+    },
+    "hit_count": 5
+  }
+}

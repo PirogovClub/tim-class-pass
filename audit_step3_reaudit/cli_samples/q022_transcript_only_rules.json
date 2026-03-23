@@ -1,0 +1,2064 @@
+{
+  "query_id": "q022",
+  "query": "Какие правила подтверждаются только по transcript?",
+  "top_k": 5,
+  "response": {
+    "query": "Какие правила подтверждаются только по transcript?",
+    "query_analysis": {
+      "normalized_query": "какие правила подтверждаются только по transcript?",
+      "detected_concepts": [],
+      "detected_unit_bias": "rule",
+      "expansion_trace": {
+        "detected_terms": [],
+        "exact_alias_matches": {},
+        "normalized_alias_matches": {},
+        "canonical_concept_ids": [],
+        "expanded_concept_ids": [],
+        "boosted_rule_ids": [],
+        "related_terms": [],
+        "expansion_trace": []
+      }
+    },
+    "top_hits": [
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_9_rule_statement_2",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "rule_statement / Уровень проторговки",
+        "text_snippet": "[rule_statement] [Concept] Уровень проторговки Пробить уровень проторговки с первого раза крайне сложно. [Time] 21:08–21:13 [Support Basis] transcript_plus_visual",
+        "timestamps": [
+          {
+            "start": "21:08",
+            "end": "21:13"
+          },
+          {
+            "start": "21:32",
+            "end": "21:40"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_9_32"
+        ],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "raw_lexical_score": 0.0,
+        "raw_vector_score": 0.5861,
+        "graph_boost": 0.0,
+        "score": 0.5976,
+        "score_breakdown": {
+          "lexical_score": 0.0,
+          "vector_score": 0.9137,
+          "concept_exact_match": 0.0,
+          "alias_match": 0.0,
+          "confidence_score": 0.95,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 1.0,
+          "unit_type_relevance": 1.0,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 1.0,
+          "lesson_diversity_bonus": 1.0
+        },
+        "why_retrieved": [
+          "strong_vector",
+          "unit_bias_match",
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_9_rule_statement_2",
+          "unit_type": "knowledge_event",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:uroven_protorgovki"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:probitie"
+          ],
+          "alias_terms": [
+            "Уровень проторговки",
+            "Пробитие"
+          ],
+          "title": "rule_statement / Уровень проторговки",
+          "text": "[rule_statement] [Concept] Уровень проторговки Пробить уровень проторговки с первого раза крайне сложно. [Time] 21:08–21:13 [Support Basis] transcript_plus_visual",
+          "short_text": "[rule_statement] [Concept] Уровень проторговки Пробить уровень проторговки с первого раза крайне сложно. [Time] 21:08–21:13 [Support Basis] transcript_plus_visual",
+          "keywords": [
+            "Уровень проторговки",
+            "Пробитие",
+            "rule_statement",
+            "rule"
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "chunk_index": 9,
+            "source_line_start": 31,
+            "source_line_end": 33
+          },
+          "confidence_score": 0.95,
+          "support_basis": "transcript_plus_visual",
+          "evidence_requirement": "optional",
+          "teaching_mode": "mixed",
+          "timestamps": [
+            {
+              "start": "21:08",
+              "end": "21:13"
+            },
+            {
+              "start": "21:32",
+              "end": "21:40"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_9_32"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "metadata": {
+            "chunk_index": 9,
+            "chunk_start_time_seconds": 1179.2,
+            "chunk_end_time_seconds": 1300.94,
+            "transcript_line_count": 45,
+            "candidate_visual_frame_keys": [
+              "001948",
+              "001958",
+              "002092",
+              "002134",
+              "002140"
+            ],
+            "candidate_visual_types": [
+              "mixed_visual"
+            ],
+            "candidate_example_types": [
+              "abstract_teaching_example"
+            ],
+            "rule_type": "rule",
+            "pattern_tags": [],
+            "source_quote": "пробить его с первого раза у нас не получится. То есть это будет сделать крайне сложно.",
+            "transcript_anchors": [
+              {
+                "line_index": 31,
+                "text": "пробить его с первого раза у нас не",
+                "timestamp_start": "21:08",
+                "timestamp_end": "21:10",
+                "match_source": "llm_line_indices"
+              },
+              {
+                "line_index": 32,
+                "text": "получится.",
+                "timestamp_start": "21:10",
+                "timestamp_end": "21:11",
+                "match_source": "llm_line_indices"
+              },
+              {
+                "line_index": 33,
+                "text": "То есть это будет сделать крайне сложно.",
+                "timestamp_start": "21:11",
+                "timestamp_end": "21:13",
+                "match_source": "llm_line_indices"
+              }
+            ],
+            "timestamp_confidence": "line",
+            "anchor_match_source": "llm_line_indices",
+            "anchor_line_count": 3,
+            "anchor_span_width": 3,
+            "anchor_density": 1.0,
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 1.0,
+            "visual_support_score": 0.4
+          },
+          "event_type": "rule_statement",
+          "normalized_text": "Пробить уровень проторговки с первого раза крайне сложно.",
+          "normalized_text_ru": "Пробить уровень проторговки с первого раза крайне сложно.",
+          "concept": "Уровень проторговки",
+          "subconcept": "Пробитие"
+        }
+      },
+      {
+        "doc_id": "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_4_rule_statement_0",
+        "unit_type": "knowledge_event",
+        "lesson_id": "Lesson 2. Levels part 1",
+        "title": "rule_statement / Уровни",
+        "text_snippet": "[rule_statement] [Concept] Уровни Крупняк, если набрал большую позицию, будет обязательно защищать свои сильные уровни. [Time] 08:27–08:32 [Support Basis] transcript_plus_visual",
+        "timestamps": [
+          {
+            "start": "08:27",
+            "end": "08:32"
+          },
+          {
+            "start": "08:42",
+            "end": "08:50"
+          },
+          {
+            "start": "08:54",
+            "end": "09:02"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_100",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_101"
+        ],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "raw_lexical_score": 0.0,
+        "raw_vector_score": 0.583,
+        "graph_boost": 0.0,
+        "score": 0.5962,
+        "score_breakdown": {
+          "lexical_score": 0.0,
+          "vector_score": 0.9089,
+          "concept_exact_match": 0.0,
+          "alias_match": 0.0,
+          "confidence_score": 0.95,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 1.0,
+          "unit_type_relevance": 1.0,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 1.0,
+          "lesson_diversity_bonus": 1.0
+        },
+        "why_retrieved": [
+          "strong_vector",
+          "unit_bias_match",
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_4_rule_statement_0",
+          "unit_type": "knowledge_event",
+          "lesson_id": "Lesson 2. Levels part 1",
+          "lesson_slug": "lesson_2_levels_part_1",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:level"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:level_defense"
+          ],
+          "alias_terms": [
+            "Уровни",
+            "Защита уровней"
+          ],
+          "title": "rule_statement / Уровни",
+          "text": "[rule_statement] [Concept] Уровни Крупняк, если набрал большую позицию, будет обязательно защищать свои сильные уровни. [Time] 08:27–08:32 [Support Basis] transcript_plus_visual",
+          "short_text": "[rule_statement] [Concept] Уровни Крупняк, если набрал большую позицию, будет обязательно защищать свои сильные уровни. [Time] 08:27–08:32 [Support Basis] transcript_plus_visual",
+          "keywords": [
+            "Уровни",
+            "Защита уровней",
+            "rule_statement",
+            "rule"
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "chunk_index": 4,
+            "source_line_start": 1,
+            "source_line_end": 2
+          },
+          "confidence_score": 0.95,
+          "support_basis": "transcript_plus_visual",
+          "evidence_requirement": "optional",
+          "teaching_mode": "mixed",
+          "timestamps": [
+            {
+              "start": "08:27",
+              "end": "08:32"
+            },
+            {
+              "start": "08:42",
+              "end": "08:50"
+            },
+            {
+              "start": "08:54",
+              "end": "09:02"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_100",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_101"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "metadata": {
+            "chunk_index": 4,
+            "chunk_start_time_seconds": 504.87,
+            "chunk_end_time_seconds": 627.14,
+            "transcript_line_count": 45,
+            "candidate_visual_frame_keys": [
+              "000842",
+              "000846",
+              "000850",
+              "000854",
+              "000858",
+              "000900",
+              "000862",
+              "000902",
+              "000866",
+              "000870",
+              "000874",
+              "000876",
+              "000880",
+              "000884",
+              "000886",
+              "000890",
+              "000894",
+              "000898"
+            ],
+            "candidate_visual_types": [
+              "text_slide",
+              "abstract_bar_diagram",
+              "unknown",
+              "whiteboard_explanation"
+            ],
+            "candidate_example_types": [
+              "abstract_teaching_example",
+              "unknown",
+              "abstract teaching example",
+              "abstract"
+            ],
+            "rule_type": "rule",
+            "pattern_tags": [],
+            "source_quote": "крупняк, если набрал большую позицию, он будет обязательно защищать свои сильные уровни.",
+            "transcript_anchors": [
+              {
+                "line_index": 1,
+                "text": "если набрал большую позицию, он будет обязательно защищать",
+                "timestamp_start": "08:27",
+                "timestamp_end": "08:30",
+                "match_source": "llm_source_quote"
+              },
+              {
+                "line_index": 2,
+                "text": "свои сильные уровни.",
+                "timestamp_start": "08:30",
+                "timestamp_end": "08:32",
+                "match_source": "llm_source_quote"
+              }
+            ],
+            "timestamp_confidence": "span",
+            "anchor_match_source": "llm_source_quote",
+            "anchor_line_count": 2,
+            "anchor_span_width": 2,
+            "anchor_density": 1.0,
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 0.8,
+            "visual_support_score": 0.4
+          },
+          "event_type": "rule_statement",
+          "normalized_text": "Крупняк, если набрал большую позицию, будет обязательно защищать свои сильные уровни.",
+          "normalized_text_ru": "Крупняк, если набрал большую позицию, будет обязательно защищать свои сильные уровни.",
+          "concept": "Уровни",
+          "subconcept": "Защита уровней"
+        }
+      },
+      {
+        "doc_id": "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_2_rule_statement_6",
+        "unit_type": "knowledge_event",
+        "lesson_id": "Lesson 2. Levels part 1",
+        "title": "rule_statement / Уровни",
+        "text_snippet": "[rule_statement] [Concept] Уровни Если относительно какого-то бара или уровня был ложный пробой, значит предыдущий бар был уровнем. [Time] 05:55–06:02 [Support Basis] transcript_plus_visual",
+        "timestamps": [
+          {
+            "start": "05:55",
+            "end": "06:02"
+          },
+          {
+            "start": "05:44",
+            "end": "06:00"
+          },
+          {
+            "start": "06:00",
+            "end": "06:00"
+          },
+          {
+            "start": "06:02",
+            "end": "06:02"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_66",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_67",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_68",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_69",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_70",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_71",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_72",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_73",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_74",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_75",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_76",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_77",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_78",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_79",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_80",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_81",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_82",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_83"
+        ],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "raw_lexical_score": 0.0,
+        "raw_vector_score": 0.5829,
+        "graph_boost": 0.0,
+        "score": 0.5661,
+        "score_breakdown": {
+          "lexical_score": 0.0,
+          "vector_score": 0.9088,
+          "concept_exact_match": 0.0,
+          "alias_match": 0.0,
+          "confidence_score": 0.95,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 1.0,
+          "unit_type_relevance": 1.0,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 1.0,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "strong_vector",
+          "unit_bias_match",
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_2_rule_statement_6",
+          "unit_type": "knowledge_event",
+          "lesson_id": "Lesson 2. Levels part 1",
+          "lesson_slug": "lesson_2_levels_part_1",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:level"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:uroven_lozhnogo_proboya"
+          ],
+          "alias_terms": [
+            "Уровни",
+            "Уровень ложного пробоя"
+          ],
+          "title": "rule_statement / Уровни",
+          "text": "[rule_statement] [Concept] Уровни Если относительно какого-то бара или уровня был ложный пробой, значит предыдущий бар был уровнем. [Time] 05:55–06:02 [Support Basis] transcript_plus_visual",
+          "short_text": "[rule_statement] [Concept] Уровни Если относительно какого-то бара или уровня был ложный пробой, значит предыдущий бар был уровнем. [Time] 05:55–06:02 [Support Basis] transcript_plus_visual",
+          "keywords": [
+            "Уровни",
+            "Уровень ложного пробоя",
+            "rule_statement",
+            "rule"
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "chunk_index": 2,
+            "source_line_start": 35,
+            "source_line_end": 36
+          },
+          "confidence_score": 0.95,
+          "support_basis": "transcript_plus_visual",
+          "evidence_requirement": "optional",
+          "teaching_mode": "mixed",
+          "timestamps": [
+            {
+              "start": "05:55",
+              "end": "06:02"
+            },
+            {
+              "start": "05:44",
+              "end": "06:00"
+            },
+            {
+              "start": "06:00",
+              "end": "06:00"
+            },
+            {
+              "start": "06:02",
+              "end": "06:02"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_66",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_67",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_68",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_69",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_70",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_71",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_72",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_73",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_74",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_75",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_76",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_77",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_78",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_79",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_80",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_81",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_82",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_83"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "metadata": {
+            "chunk_index": 2,
+            "chunk_start_time_seconds": 256.45,
+            "chunk_end_time_seconds": 379.17,
+            "transcript_line_count": 44,
+            "candidate_visual_frame_keys": [
+              "000378",
+              "000420",
+              "000382",
+              "000422",
+              "000384",
+              "000424",
+              "000386",
+              "000426",
+              "000388",
+              "000390",
+              "000430",
+              "000432",
+              "000394",
+              "000434",
+              "000436",
+              "000398",
+              "000440",
+              "000444",
+              "000448",
+              "000450",
+              "000454",
+              "000458",
+              "000460",
+              "000464",
+              "000504",
+              "000468",
+              "000470",
+              "000474",
+              "000478",
+              "000480",
+              "000520",
+              "000484",
+              "000524",
+              "000526",
+              "000528",
+              "000530",
+              "000532",
+              "000536",
+              "000538",
+              "000540",
+              "000544",
+              "000546",
+              "000548",
+              "000550",
+              "000552",
+              "000554",
+              "000556",
+              "000558",
+              "000560",
+              "000600",
+              "000562",
+              "000602",
+              "000564",
+              "000604",
+              "000566",
+              "000606",
+              "000568",
+              "000608",
+              "000570",
+              "000610",
+              "000572",
+              "000612",
+              "000574",
+              "000576",
+              "000616"
+            ],
+            "candidate_visual_types": [
+              "text_slide",
+              "abstract_bar_diagram",
+              "unknown",
+              "hand_drawn_pattern",
+              "whiteboard_explanation",
+              "mixed_visual"
+            ],
+            "candidate_example_types": [
+              "abstract_teaching_example",
+              "abstract teaching example",
+              "abstract_teaching",
+              "unknown"
+            ],
+            "rule_type": "rule",
+            "pattern_tags": [],
+            "source_quote": "Если мы увидели, что относительно какого-то бара или какого-то уровня у нас был ложный пробой, значит предыдущий бар был уровнем.",
+            "transcript_anchors": [
+              {
+                "line_index": 35,
+                "text": "-то бара или какого-то уровня у нас",
+                "timestamp_start": "05:55",
+                "timestamp_end": "05:57",
+                "match_source": "llm_source_quote"
+              },
+              {
+                "line_index": 36,
+                "text": "был ложный пробой, значит предыдущий бар был уровнем.",
+                "timestamp_start": "05:57",
+                "timestamp_end": "06:02",
+                "match_source": "llm_source_quote"
+              }
+            ],
+            "timestamp_confidence": "span",
+            "anchor_match_source": "llm_source_quote",
+            "anchor_line_count": 2,
+            "anchor_span_width": 2,
+            "anchor_density": 1.0,
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 0.8,
+            "visual_support_score": 0.4
+          },
+          "event_type": "rule_statement",
+          "normalized_text": "Если относительно какого-то бара или уровня был ложный пробой, значит предыдущий бар был уровнем.",
+          "normalized_text_ru": "Если относительно какого-то бара или уровня был ложный пробой, значит предыдущий бар был уровнем.",
+          "concept": "Уровни",
+          "subconcept": "Уровень ложного пробоя"
+        }
+      },
+      {
+        "doc_id": "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_1_rule_statement_2",
+        "unit_type": "knowledge_event",
+        "lesson_id": "Lesson 2. Levels part 1",
+        "title": "rule_statement / Подтверждение уровня",
+        "text_snippet": "[rule_statement] [Concept] Подтверждение уровня Закрепление ниже уровня показывает, что инструмент скорее всего пойдет ниже. [Time] 03:13–03:29 [Support Basis] transcript_plus_visual",
+        "timestamps": [
+          {
+            "start": "03:13",
+            "end": "03:29"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_31",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_32",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_33",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_34",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_35",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_36",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_37",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_38",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_39",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_40",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_41",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_42",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_43",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_44",
+          "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_45"
+        ],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "raw_lexical_score": 0.0,
+        "raw_vector_score": 0.5787,
+        "graph_boost": 0.0,
+        "score": 0.5642,
+        "score_breakdown": {
+          "lexical_score": 0.0,
+          "vector_score": 0.9023,
+          "concept_exact_match": 0.0,
+          "alias_match": 0.0,
+          "confidence_score": 0.95,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 1.0,
+          "unit_type_relevance": 1.0,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 1.0,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "strong_vector",
+          "unit_bias_match",
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_1_rule_statement_2",
+          "unit_type": "knowledge_event",
+          "lesson_id": "Lesson 2. Levels part 1",
+          "lesson_slug": "lesson_2_levels_part_1",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:level_confirmation"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:acceptance"
+          ],
+          "alias_terms": [
+            "Подтверждение уровня",
+            "Закрепление"
+          ],
+          "title": "rule_statement / Подтверждение уровня",
+          "text": "[rule_statement] [Concept] Подтверждение уровня Закрепление ниже уровня показывает, что инструмент скорее всего пойдет ниже. [Time] 03:13–03:29 [Support Basis] transcript_plus_visual",
+          "short_text": "[rule_statement] [Concept] Подтверждение уровня Закрепление ниже уровня показывает, что инструмент скорее всего пойдет ниже. [Time] 03:13–03:29 [Support Basis] transcript_plus_visual",
+          "keywords": [
+            "Подтверждение уровня",
+            "Закрепление",
+            "rule_statement",
+            "rule"
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "chunk_index": 1,
+            "source_line_start": 18,
+            "source_line_end": 21
+          },
+          "confidence_score": 0.95,
+          "support_basis": "transcript_plus_visual",
+          "evidence_requirement": "optional",
+          "teaching_mode": "mixed",
+          "timestamps": [
+            {
+              "start": "03:13",
+              "end": "03:29"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_31",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_32",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_33",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_34",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_35",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_36",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_37",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_38",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_39",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_40",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_41",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_42",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_43",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_44",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_45"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "metadata": {
+            "chunk_index": 1,
+            "chunk_start_time_seconds": 125.25,
+            "chunk_end_time_seconds": 255.709,
+            "transcript_line_count": 35,
+            "candidate_visual_frame_keys": [
+              "000166",
+              "000206",
+              "000208",
+              "000210",
+              "000212",
+              "000174",
+              "000214",
+              "000176",
+              "000216",
+              "000218",
+              "000180",
+              "000220",
+              "000184",
+              "000224",
+              "000188",
+              "000228",
+              "000192",
+              "000232",
+              "000196",
+              "000236",
+              "000198",
+              "000238",
+              "000240",
+              "000242",
+              "000246",
+              "000250",
+              "000292",
+              "000296",
+              "000300",
+              "000264",
+              "000304",
+              "000266",
+              "000306",
+              "000308",
+              "000270",
+              "000310",
+              "000312",
+              "000274",
+              "000314",
+              "000278",
+              "000318",
+              "000282",
+              "000322",
+              "000284",
+              "000326",
+              "000288",
+              "000330",
+              "000332",
+              "000334",
+              "000336",
+              "000338",
+              "000340",
+              "000342",
+              "000344",
+              "000346",
+              "000348",
+              "000350",
+              "000352",
+              "000354",
+              "000356",
+              "000358",
+              "000360",
+              "000400",
+              "000362",
+              "000402",
+              "000404",
+              "000406",
+              "000408",
+              "000370",
+              "000410",
+              "000372",
+              "000374",
+              "000414"
+            ],
+            "candidate_visual_types": [
+              "abstract_bar_diagram",
+              "unknown",
+              "text_slide",
+              "candlestick_sketch",
+              "whiteboard_explanation",
+              "static_chart_screenshot"
+            ],
+            "candidate_example_types": [
+              "abstract_teaching_example",
+              "abstract teaching example",
+              "unknown",
+              "conceptual"
+            ],
+            "rule_type": "rule",
+            "pattern_tags": [],
+            "source_quote": "В данной ситуации инструмент, видите, закрепился ниже уровня, что показывает, что инструмент скорее всего пойдет ниже, закрепился.",
+            "transcript_anchors": [
+              {
+                "line_index": 18,
+                "text": "В данной ситуации инструмент, видите, закрепился ниже уровня,",
+                "timestamp_start": "03:13",
+                "timestamp_end": "03:20",
+                "match_source": "llm_line_indices"
+              },
+              {
+                "line_index": 19,
+                "text": "что показывает, что инструмент скорее всего пойдет ниже,",
+                "timestamp_start": "03:20",
+                "timestamp_end": "03:23",
+                "match_source": "llm_line_indices"
+              },
+              {
+                "line_index": 20,
+                "text": "закрепился.",
+                "timestamp_start": "03:23",
+                "timestamp_end": "03:24",
+                "match_source": "llm_line_indices"
+              },
+              {
+                "line_index": 21,
+                "text": "То есть закрылся, ниже уровня, значит обновил.",
+                "timestamp_start": "03:25",
+                "timestamp_end": "03:29",
+                "match_source": "llm_line_indices"
+              }
+            ],
+            "timestamp_confidence": "span",
+            "anchor_match_source": "llm_line_indices",
+            "anchor_line_count": 4,
+            "anchor_span_width": 4,
+            "anchor_density": 1.0,
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 0.85,
+            "visual_support_score": 0.4
+          },
+          "event_type": "rule_statement",
+          "normalized_text": "Закрепление ниже уровня показывает, что инструмент скорее всего пойдет ниже.",
+          "normalized_text_ru": "Закрепление ниже уровня показывает, что инструмент скорее всего пойдет ниже.",
+          "concept": "Подтверждение уровня",
+          "subconcept": "Закрепление"
+        }
+      },
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_14_condition_4",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "condition / Уровень",
+        "text_snippet": "[condition] [Concept] Уровень Уровень имеет кратное подтверждение. [Time] 34:24–34:31 [Support Basis] transcript_primary",
+        "timestamps": [
+          {
+            "start": "34:24",
+            "end": "34:31"
+          }
+        ],
+        "evidence_ids": [],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "raw_lexical_score": 0.0,
+        "raw_vector_score": 0.6414,
+        "graph_boost": 0.0,
+        "score": 0.5285,
+        "score_breakdown": {
+          "lexical_score": 0.0,
+          "vector_score": 1.0,
+          "concept_exact_match": 0.0,
+          "alias_match": 0.0,
+          "confidence_score": 0.85,
+          "evidence_available": 0.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 1.0,
+          "unit_type_relevance": 1.0,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "groundedness": 0.75,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "strong_vector",
+          "unit_bias_match",
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_14_condition_4",
+          "unit_type": "knowledge_event",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:level"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:confirmation"
+          ],
+          "alias_terms": [
+            "Уровень",
+            "Подтверждение"
+          ],
+          "title": "condition / Уровень",
+          "text": "[condition] [Concept] Уровень Уровень имеет кратное подтверждение. [Time] 34:24–34:31 [Support Basis] transcript_primary",
+          "short_text": "[condition] [Concept] Уровень Уровень имеет кратное подтверждение. [Time] 34:24–34:31 [Support Basis] transcript_primary",
+          "keywords": [
+            "Уровень",
+            "Подтверждение",
+            "condition"
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "chunk_index": 14,
+            "source_line_start": 45,
+            "source_line_end": 46
+          },
+          "confidence_score": 0.85,
+          "support_basis": "transcript_primary",
+          "evidence_requirement": "optional",
+          "teaching_mode": "theory",
+          "timestamps": [
+            {
+              "start": "34:24",
+              "end": "34:31"
+            }
+          ],
+          "evidence_ids": [],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "metadata": {
+            "chunk_index": 14,
+            "chunk_start_time_seconds": 1955.72,
+            "chunk_end_time_seconds": 2079.659,
+            "transcript_line_count": 51,
+            "candidate_visual_frame_keys": [
+              "003240",
+              "003290"
+            ],
+            "candidate_visual_types": [
+              "live_chart"
+            ],
+            "candidate_example_types": [
+              "real_market"
+            ],
+            "rule_type": "condition",
+            "pattern_tags": [],
+            "source_quote": "Плюс уровень достаточно сильный, то есть имеет кратное подтверждение",
+            "transcript_anchors": [
+              {
+                "line_index": 45,
+                "text": "Плюс уровень достаточно сильный, то есть имеет кратное",
+                "timestamp_start": "34:24",
+                "timestamp_end": "34:27",
+                "match_source": "llm_line_indices"
+              },
+              {
+                "line_index": 46,
+                "text": "подтверждение, подтверждение также небольшим ложным пробоем, ну да,",
+                "timestamp_start": "34:27",
+                "timestamp_end": "34:31",
+                "match_source": "llm_line_indices"
+              }
+            ],
+            "timestamp_confidence": "line",
+            "anchor_match_source": "llm_line_indices",
+            "anchor_line_count": 2,
+            "anchor_span_width": 2,
+            "anchor_density": 1.0,
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 0.95,
+            "visual_support_score": 0.2
+          },
+          "event_type": "condition",
+          "normalized_text": "Уровень имеет кратное подтверждение.",
+          "normalized_text_ru": "Уровень имеет кратное подтверждение.",
+          "concept": "Уровень",
+          "subconcept": "Подтверждение"
+        }
+      }
+    ],
+    "grouped_results": {
+      "rule_cards": [],
+      "knowledge_events": [
+        {
+          "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_9_rule_statement_2",
+          "unit_type": "knowledge_event",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "rule_statement / Уровень проторговки",
+          "text_snippet": "[rule_statement] [Concept] Уровень проторговки Пробить уровень проторговки с первого раза крайне сложно. [Time] 21:08–21:13 [Support Basis] transcript_plus_visual",
+          "timestamps": [
+            {
+              "start": "21:08",
+              "end": "21:13"
+            },
+            {
+              "start": "21:32",
+              "end": "21:40"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_9_32"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "raw_lexical_score": 0.0,
+          "raw_vector_score": 0.5861,
+          "graph_boost": 0.0,
+          "score": 0.5976,
+          "score_breakdown": {
+            "lexical_score": 0.0,
+            "vector_score": 0.9137,
+            "concept_exact_match": 0.0,
+            "alias_match": 0.0,
+            "confidence_score": 0.95,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 1.0,
+            "unit_type_relevance": 1.0,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 1.0,
+            "lesson_diversity_bonus": 1.0
+          },
+          "why_retrieved": [
+            "strong_vector",
+            "unit_bias_match",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_9_rule_statement_2",
+            "unit_type": "knowledge_event",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:uroven_protorgovki"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:probitie"
+            ],
+            "alias_terms": [
+              "Уровень проторговки",
+              "Пробитие"
+            ],
+            "title": "rule_statement / Уровень проторговки",
+            "text": "[rule_statement] [Concept] Уровень проторговки Пробить уровень проторговки с первого раза крайне сложно. [Time] 21:08–21:13 [Support Basis] transcript_plus_visual",
+            "short_text": "[rule_statement] [Concept] Уровень проторговки Пробить уровень проторговки с первого раза крайне сложно. [Time] 21:08–21:13 [Support Basis] transcript_plus_visual",
+            "keywords": [
+              "Уровень проторговки",
+              "Пробитие",
+              "rule_statement",
+              "rule"
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "chunk_index": 9,
+              "source_line_start": 31,
+              "source_line_end": 33
+            },
+            "confidence_score": 0.95,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "optional",
+            "teaching_mode": "mixed",
+            "timestamps": [
+              {
+                "start": "21:08",
+                "end": "21:13"
+              },
+              {
+                "start": "21:32",
+                "end": "21:40"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_9_32"
+            ],
+            "source_event_ids": [],
+            "source_rule_ids": [],
+            "metadata": {
+              "chunk_index": 9,
+              "chunk_start_time_seconds": 1179.2,
+              "chunk_end_time_seconds": 1300.94,
+              "transcript_line_count": 45,
+              "candidate_visual_frame_keys": [
+                "001948",
+                "001958",
+                "002092",
+                "002134",
+                "002140"
+              ],
+              "candidate_visual_types": [
+                "mixed_visual"
+              ],
+              "candidate_example_types": [
+                "abstract_teaching_example"
+              ],
+              "rule_type": "rule",
+              "pattern_tags": [],
+              "source_quote": "пробить его с первого раза у нас не получится. То есть это будет сделать крайне сложно.",
+              "transcript_anchors": [
+                {
+                  "line_index": 31,
+                  "text": "пробить его с первого раза у нас не",
+                  "timestamp_start": "21:08",
+                  "timestamp_end": "21:10",
+                  "match_source": "llm_line_indices"
+                },
+                {
+                  "line_index": 32,
+                  "text": "получится.",
+                  "timestamp_start": "21:10",
+                  "timestamp_end": "21:11",
+                  "match_source": "llm_line_indices"
+                },
+                {
+                  "line_index": 33,
+                  "text": "То есть это будет сделать крайне сложно.",
+                  "timestamp_start": "21:11",
+                  "timestamp_end": "21:13",
+                  "match_source": "llm_line_indices"
+                }
+              ],
+              "timestamp_confidence": "line",
+              "anchor_match_source": "llm_line_indices",
+              "anchor_line_count": 3,
+              "anchor_span_width": 3,
+              "anchor_density": 1.0,
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 1.0,
+              "visual_support_score": 0.4
+            },
+            "event_type": "rule_statement",
+            "normalized_text": "Пробить уровень проторговки с первого раза крайне сложно.",
+            "normalized_text_ru": "Пробить уровень проторговки с первого раза крайне сложно.",
+            "concept": "Уровень проторговки",
+            "subconcept": "Пробитие"
+          }
+        },
+        {
+          "doc_id": "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_4_rule_statement_0",
+          "unit_type": "knowledge_event",
+          "lesson_id": "Lesson 2. Levels part 1",
+          "title": "rule_statement / Уровни",
+          "text_snippet": "[rule_statement] [Concept] Уровни Крупняк, если набрал большую позицию, будет обязательно защищать свои сильные уровни. [Time] 08:27–08:32 [Support Basis] transcript_plus_visual",
+          "timestamps": [
+            {
+              "start": "08:27",
+              "end": "08:32"
+            },
+            {
+              "start": "08:42",
+              "end": "08:50"
+            },
+            {
+              "start": "08:54",
+              "end": "09:02"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_100",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_101"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "raw_lexical_score": 0.0,
+          "raw_vector_score": 0.583,
+          "graph_boost": 0.0,
+          "score": 0.5962,
+          "score_breakdown": {
+            "lexical_score": 0.0,
+            "vector_score": 0.9089,
+            "concept_exact_match": 0.0,
+            "alias_match": 0.0,
+            "confidence_score": 0.95,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 1.0,
+            "unit_type_relevance": 1.0,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 1.0,
+            "lesson_diversity_bonus": 1.0
+          },
+          "why_retrieved": [
+            "strong_vector",
+            "unit_bias_match",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_4_rule_statement_0",
+            "unit_type": "knowledge_event",
+            "lesson_id": "Lesson 2. Levels part 1",
+            "lesson_slug": "lesson_2_levels_part_1",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:level"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:level_defense"
+            ],
+            "alias_terms": [
+              "Уровни",
+              "Защита уровней"
+            ],
+            "title": "rule_statement / Уровни",
+            "text": "[rule_statement] [Concept] Уровни Крупняк, если набрал большую позицию, будет обязательно защищать свои сильные уровни. [Time] 08:27–08:32 [Support Basis] transcript_plus_visual",
+            "short_text": "[rule_statement] [Concept] Уровни Крупняк, если набрал большую позицию, будет обязательно защищать свои сильные уровни. [Time] 08:27–08:32 [Support Basis] transcript_plus_visual",
+            "keywords": [
+              "Уровни",
+              "Защита уровней",
+              "rule_statement",
+              "rule"
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "chunk_index": 4,
+              "source_line_start": 1,
+              "source_line_end": 2
+            },
+            "confidence_score": 0.95,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "optional",
+            "teaching_mode": "mixed",
+            "timestamps": [
+              {
+                "start": "08:27",
+                "end": "08:32"
+              },
+              {
+                "start": "08:42",
+                "end": "08:50"
+              },
+              {
+                "start": "08:54",
+                "end": "09:02"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_100",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_4_101"
+            ],
+            "source_event_ids": [],
+            "source_rule_ids": [],
+            "metadata": {
+              "chunk_index": 4,
+              "chunk_start_time_seconds": 504.87,
+              "chunk_end_time_seconds": 627.14,
+              "transcript_line_count": 45,
+              "candidate_visual_frame_keys": [
+                "000842",
+                "000846",
+                "000850",
+                "000854",
+                "000858",
+                "000900",
+                "000862",
+                "000902",
+                "000866",
+                "000870",
+                "000874",
+                "000876",
+                "000880",
+                "000884",
+                "000886",
+                "000890",
+                "000894",
+                "000898"
+              ],
+              "candidate_visual_types": [
+                "text_slide",
+                "abstract_bar_diagram",
+                "unknown",
+                "whiteboard_explanation"
+              ],
+              "candidate_example_types": [
+                "abstract_teaching_example",
+                "unknown",
+                "abstract teaching example",
+                "abstract"
+              ],
+              "rule_type": "rule",
+              "pattern_tags": [],
+              "source_quote": "крупняк, если набрал большую позицию, он будет обязательно защищать свои сильные уровни.",
+              "transcript_anchors": [
+                {
+                  "line_index": 1,
+                  "text": "если набрал большую позицию, он будет обязательно защищать",
+                  "timestamp_start": "08:27",
+                  "timestamp_end": "08:30",
+                  "match_source": "llm_source_quote"
+                },
+                {
+                  "line_index": 2,
+                  "text": "свои сильные уровни.",
+                  "timestamp_start": "08:30",
+                  "timestamp_end": "08:32",
+                  "match_source": "llm_source_quote"
+                }
+              ],
+              "timestamp_confidence": "span",
+              "anchor_match_source": "llm_source_quote",
+              "anchor_line_count": 2,
+              "anchor_span_width": 2,
+              "anchor_density": 1.0,
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 0.8,
+              "visual_support_score": 0.4
+            },
+            "event_type": "rule_statement",
+            "normalized_text": "Крупняк, если набрал большую позицию, будет обязательно защищать свои сильные уровни.",
+            "normalized_text_ru": "Крупняк, если набрал большую позицию, будет обязательно защищать свои сильные уровни.",
+            "concept": "Уровни",
+            "subconcept": "Защита уровней"
+          }
+        },
+        {
+          "doc_id": "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_2_rule_statement_6",
+          "unit_type": "knowledge_event",
+          "lesson_id": "Lesson 2. Levels part 1",
+          "title": "rule_statement / Уровни",
+          "text_snippet": "[rule_statement] [Concept] Уровни Если относительно какого-то бара или уровня был ложный пробой, значит предыдущий бар был уровнем. [Time] 05:55–06:02 [Support Basis] transcript_plus_visual",
+          "timestamps": [
+            {
+              "start": "05:55",
+              "end": "06:02"
+            },
+            {
+              "start": "05:44",
+              "end": "06:00"
+            },
+            {
+              "start": "06:00",
+              "end": "06:00"
+            },
+            {
+              "start": "06:02",
+              "end": "06:02"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_66",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_67",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_68",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_69",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_70",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_71",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_72",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_73",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_74",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_75",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_76",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_77",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_78",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_79",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_80",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_81",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_82",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_83"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "raw_lexical_score": 0.0,
+          "raw_vector_score": 0.5829,
+          "graph_boost": 0.0,
+          "score": 0.5661,
+          "score_breakdown": {
+            "lexical_score": 0.0,
+            "vector_score": 0.9088,
+            "concept_exact_match": 0.0,
+            "alias_match": 0.0,
+            "confidence_score": 0.95,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 1.0,
+            "unit_type_relevance": 1.0,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 1.0,
+            "lesson_diversity_bonus": 0.0
+          },
+          "why_retrieved": [
+            "strong_vector",
+            "unit_bias_match",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_2_rule_statement_6",
+            "unit_type": "knowledge_event",
+            "lesson_id": "Lesson 2. Levels part 1",
+            "lesson_slug": "lesson_2_levels_part_1",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:level"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:uroven_lozhnogo_proboya"
+            ],
+            "alias_terms": [
+              "Уровни",
+              "Уровень ложного пробоя"
+            ],
+            "title": "rule_statement / Уровни",
+            "text": "[rule_statement] [Concept] Уровни Если относительно какого-то бара или уровня был ложный пробой, значит предыдущий бар был уровнем. [Time] 05:55–06:02 [Support Basis] transcript_plus_visual",
+            "short_text": "[rule_statement] [Concept] Уровни Если относительно какого-то бара или уровня был ложный пробой, значит предыдущий бар был уровнем. [Time] 05:55–06:02 [Support Basis] transcript_plus_visual",
+            "keywords": [
+              "Уровни",
+              "Уровень ложного пробоя",
+              "rule_statement",
+              "rule"
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "chunk_index": 2,
+              "source_line_start": 35,
+              "source_line_end": 36
+            },
+            "confidence_score": 0.95,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "optional",
+            "teaching_mode": "mixed",
+            "timestamps": [
+              {
+                "start": "05:55",
+                "end": "06:02"
+              },
+              {
+                "start": "05:44",
+                "end": "06:00"
+              },
+              {
+                "start": "06:00",
+                "end": "06:00"
+              },
+              {
+                "start": "06:02",
+                "end": "06:02"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_66",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_67",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_68",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_69",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_70",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_71",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_72",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_73",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_74",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_75",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_76",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_77",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_78",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_79",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_80",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_81",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_82",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_83"
+            ],
+            "source_event_ids": [],
+            "source_rule_ids": [],
+            "metadata": {
+              "chunk_index": 2,
+              "chunk_start_time_seconds": 256.45,
+              "chunk_end_time_seconds": 379.17,
+              "transcript_line_count": 44,
+              "candidate_visual_frame_keys": [
+                "000378",
+                "000420",
+                "000382",
+                "000422",
+                "000384",
+                "000424",
+                "000386",
+                "000426",
+                "000388",
+                "000390",
+                "000430",
+                "000432",
+                "000394",
+                "000434",
+                "000436",
+                "000398",
+                "000440",
+                "000444",
+                "000448",
+                "000450",
+                "000454",
+                "000458",
+                "000460",
+                "000464",
+                "000504",
+                "000468",
+                "000470",
+                "000474",
+                "000478",
+                "000480",
+                "000520",
+                "000484",
+                "000524",
+                "000526",
+                "000528",
+                "000530",
+                "000532",
+                "000536",
+                "000538",
+                "000540",
+                "000544",
+                "000546",
+                "000548",
+                "000550",
+                "000552",
+                "000554",
+                "000556",
+                "000558",
+                "000560",
+                "000600",
+                "000562",
+                "000602",
+                "000564",
+                "000604",
+                "000566",
+                "000606",
+                "000568",
+                "000608",
+                "000570",
+                "000610",
+                "000572",
+                "000612",
+                "000574",
+                "000576",
+                "000616"
+              ],
+              "candidate_visual_types": [
+                "text_slide",
+                "abstract_bar_diagram",
+                "unknown",
+                "hand_drawn_pattern",
+                "whiteboard_explanation",
+                "mixed_visual"
+              ],
+              "candidate_example_types": [
+                "abstract_teaching_example",
+                "abstract teaching example",
+                "abstract_teaching",
+                "unknown"
+              ],
+              "rule_type": "rule",
+              "pattern_tags": [],
+              "source_quote": "Если мы увидели, что относительно какого-то бара или какого-то уровня у нас был ложный пробой, значит предыдущий бар был уровнем.",
+              "transcript_anchors": [
+                {
+                  "line_index": 35,
+                  "text": "-то бара или какого-то уровня у нас",
+                  "timestamp_start": "05:55",
+                  "timestamp_end": "05:57",
+                  "match_source": "llm_source_quote"
+                },
+                {
+                  "line_index": 36,
+                  "text": "был ложный пробой, значит предыдущий бар был уровнем.",
+                  "timestamp_start": "05:57",
+                  "timestamp_end": "06:02",
+                  "match_source": "llm_source_quote"
+                }
+              ],
+              "timestamp_confidence": "span",
+              "anchor_match_source": "llm_source_quote",
+              "anchor_line_count": 2,
+              "anchor_span_width": 2,
+              "anchor_density": 1.0,
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 0.8,
+              "visual_support_score": 0.4
+            },
+            "event_type": "rule_statement",
+            "normalized_text": "Если относительно какого-то бара или уровня был ложный пробой, значит предыдущий бар был уровнем.",
+            "normalized_text_ru": "Если относительно какого-то бара или уровня был ложный пробой, значит предыдущий бар был уровнем.",
+            "concept": "Уровни",
+            "subconcept": "Уровень ложного пробоя"
+          }
+        },
+        {
+          "doc_id": "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_1_rule_statement_2",
+          "unit_type": "knowledge_event",
+          "lesson_id": "Lesson 2. Levels part 1",
+          "title": "rule_statement / Подтверждение уровня",
+          "text_snippet": "[rule_statement] [Concept] Подтверждение уровня Закрепление ниже уровня показывает, что инструмент скорее всего пойдет ниже. [Time] 03:13–03:29 [Support Basis] transcript_plus_visual",
+          "timestamps": [
+            {
+              "start": "03:13",
+              "end": "03:29"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_31",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_32",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_33",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_34",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_35",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_36",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_37",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_38",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_39",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_40",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_41",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_42",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_43",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_44",
+            "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_45"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "raw_lexical_score": 0.0,
+          "raw_vector_score": 0.5787,
+          "graph_boost": 0.0,
+          "score": 0.5642,
+          "score_breakdown": {
+            "lexical_score": 0.0,
+            "vector_score": 0.9023,
+            "concept_exact_match": 0.0,
+            "alias_match": 0.0,
+            "confidence_score": 0.95,
+            "evidence_available": 1.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 1.0,
+            "unit_type_relevance": 1.0,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 1.0,
+            "lesson_diversity_bonus": 0.0
+          },
+          "why_retrieved": [
+            "strong_vector",
+            "unit_bias_match",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_1_rule_statement_2",
+            "unit_type": "knowledge_event",
+            "lesson_id": "Lesson 2. Levels part 1",
+            "lesson_slug": "lesson_2_levels_part_1",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:level_confirmation"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:acceptance"
+            ],
+            "alias_terms": [
+              "Подтверждение уровня",
+              "Закрепление"
+            ],
+            "title": "rule_statement / Подтверждение уровня",
+            "text": "[rule_statement] [Concept] Подтверждение уровня Закрепление ниже уровня показывает, что инструмент скорее всего пойдет ниже. [Time] 03:13–03:29 [Support Basis] transcript_plus_visual",
+            "short_text": "[rule_statement] [Concept] Подтверждение уровня Закрепление ниже уровня показывает, что инструмент скорее всего пойдет ниже. [Time] 03:13–03:29 [Support Basis] transcript_plus_visual",
+            "keywords": [
+              "Подтверждение уровня",
+              "Закрепление",
+              "rule_statement",
+              "rule"
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "chunk_index": 1,
+              "source_line_start": 18,
+              "source_line_end": 21
+            },
+            "confidence_score": 0.95,
+            "support_basis": "transcript_plus_visual",
+            "evidence_requirement": "optional",
+            "teaching_mode": "mixed",
+            "timestamps": [
+              {
+                "start": "03:13",
+                "end": "03:29"
+              }
+            ],
+            "evidence_ids": [
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_31",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_32",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_33",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_34",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_35",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_36",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_37",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_38",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_39",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_40",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_41",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_42",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_43",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_44",
+              "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_1_45"
+            ],
+            "source_event_ids": [],
+            "source_rule_ids": [],
+            "metadata": {
+              "chunk_index": 1,
+              "chunk_start_time_seconds": 125.25,
+              "chunk_end_time_seconds": 255.709,
+              "transcript_line_count": 35,
+              "candidate_visual_frame_keys": [
+                "000166",
+                "000206",
+                "000208",
+                "000210",
+                "000212",
+                "000174",
+                "000214",
+                "000176",
+                "000216",
+                "000218",
+                "000180",
+                "000220",
+                "000184",
+                "000224",
+                "000188",
+                "000228",
+                "000192",
+                "000232",
+                "000196",
+                "000236",
+                "000198",
+                "000238",
+                "000240",
+                "000242",
+                "000246",
+                "000250",
+                "000292",
+                "000296",
+                "000300",
+                "000264",
+                "000304",
+                "000266",
+                "000306",
+                "000308",
+                "000270",
+                "000310",
+                "000312",
+                "000274",
+                "000314",
+                "000278",
+                "000318",
+                "000282",
+                "000322",
+                "000284",
+                "000326",
+                "000288",
+                "000330",
+                "000332",
+                "000334",
+                "000336",
+                "000338",
+                "000340",
+                "000342",
+                "000344",
+                "000346",
+                "000348",
+                "000350",
+                "000352",
+                "000354",
+                "000356",
+                "000358",
+                "000360",
+                "000400",
+                "000362",
+                "000402",
+                "000404",
+                "000406",
+                "000408",
+                "000370",
+                "000410",
+                "000372",
+                "000374",
+                "000414"
+              ],
+              "candidate_visual_types": [
+                "abstract_bar_diagram",
+                "unknown",
+                "text_slide",
+                "candlestick_sketch",
+                "whiteboard_explanation",
+                "static_chart_screenshot"
+              ],
+              "candidate_example_types": [
+                "abstract_teaching_example",
+                "abstract teaching example",
+                "unknown",
+                "conceptual"
+              ],
+              "rule_type": "rule",
+              "pattern_tags": [],
+              "source_quote": "В данной ситуации инструмент, видите, закрепился ниже уровня, что показывает, что инструмент скорее всего пойдет ниже, закрепился.",
+              "transcript_anchors": [
+                {
+                  "line_index": 18,
+                  "text": "В данной ситуации инструмент, видите, закрепился ниже уровня,",
+                  "timestamp_start": "03:13",
+                  "timestamp_end": "03:20",
+                  "match_source": "llm_line_indices"
+                },
+                {
+                  "line_index": 19,
+                  "text": "что показывает, что инструмент скорее всего пойдет ниже,",
+                  "timestamp_start": "03:20",
+                  "timestamp_end": "03:23",
+                  "match_source": "llm_line_indices"
+                },
+                {
+                  "line_index": 20,
+                  "text": "закрепился.",
+                  "timestamp_start": "03:23",
+                  "timestamp_end": "03:24",
+                  "match_source": "llm_line_indices"
+                },
+                {
+                  "line_index": 21,
+                  "text": "То есть закрылся, ниже уровня, значит обновил.",
+                  "timestamp_start": "03:25",
+                  "timestamp_end": "03:29",
+                  "match_source": "llm_line_indices"
+                }
+              ],
+              "timestamp_confidence": "span",
+              "anchor_match_source": "llm_line_indices",
+              "anchor_line_count": 4,
+              "anchor_span_width": 4,
+              "anchor_density": 1.0,
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 0.85,
+              "visual_support_score": 0.4
+            },
+            "event_type": "rule_statement",
+            "normalized_text": "Закрепление ниже уровня показывает, что инструмент скорее всего пойдет ниже.",
+            "normalized_text_ru": "Закрепление ниже уровня показывает, что инструмент скорее всего пойдет ниже.",
+            "concept": "Подтверждение уровня",
+            "subconcept": "Закрепление"
+          }
+        },
+        {
+          "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_14_condition_4",
+          "unit_type": "knowledge_event",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "title": "condition / Уровень",
+          "text_snippet": "[condition] [Concept] Уровень Уровень имеет кратное подтверждение. [Time] 34:24–34:31 [Support Basis] transcript_primary",
+          "timestamps": [
+            {
+              "start": "34:24",
+              "end": "34:31"
+            }
+          ],
+          "evidence_ids": [],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "raw_lexical_score": 0.0,
+          "raw_vector_score": 0.6414,
+          "graph_boost": 0.0,
+          "score": 0.5285,
+          "score_breakdown": {
+            "lexical_score": 0.0,
+            "vector_score": 1.0,
+            "concept_exact_match": 0.0,
+            "alias_match": 0.0,
+            "confidence_score": 0.85,
+            "evidence_available": 0.0,
+            "timestamp_available": 1.0,
+            "provenance_richness": 1.0,
+            "unit_type_relevance": 1.0,
+            "support_basis_relevance": 0.4,
+            "teaching_mode_relevance": 0.4,
+            "groundedness": 0.75,
+            "lesson_diversity_bonus": 0.0
+          },
+          "why_retrieved": [
+            "strong_vector",
+            "unit_bias_match",
+            "well_grounded"
+          ],
+          "resolved_doc": {
+            "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_14_condition_4",
+            "unit_type": "knowledge_event",
+            "lesson_id": "2025-09-29-sviatoslav-chornyi",
+            "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+            "language": "ru",
+            "canonical_concept_ids": [
+              "concept:level"
+            ],
+            "canonical_subconcept_ids": [
+              "subconcept:confirmation"
+            ],
+            "alias_terms": [
+              "Уровень",
+              "Подтверждение"
+            ],
+            "title": "condition / Уровень",
+            "text": "[condition] [Concept] Уровень Уровень имеет кратное подтверждение. [Time] 34:24–34:31 [Support Basis] transcript_primary",
+            "short_text": "[condition] [Concept] Уровень Уровень имеет кратное подтверждение. [Time] 34:24–34:31 [Support Basis] transcript_primary",
+            "keywords": [
+              "Уровень",
+              "Подтверждение",
+              "condition"
+            ],
+            "provenance": {
+              "lesson_title": null,
+              "section": null,
+              "subsection": null,
+              "chunk_index": 14,
+              "source_line_start": 45,
+              "source_line_end": 46
+            },
+            "confidence_score": 0.85,
+            "support_basis": "transcript_primary",
+            "evidence_requirement": "optional",
+            "teaching_mode": "theory",
+            "timestamps": [
+              {
+                "start": "34:24",
+                "end": "34:31"
+              }
+            ],
+            "evidence_ids": [],
+            "source_event_ids": [],
+            "source_rule_ids": [],
+            "metadata": {
+              "chunk_index": 14,
+              "chunk_start_time_seconds": 1955.72,
+              "chunk_end_time_seconds": 2079.659,
+              "transcript_line_count": 51,
+              "candidate_visual_frame_keys": [
+                "003240",
+                "003290"
+              ],
+              "candidate_visual_types": [
+                "live_chart"
+              ],
+              "candidate_example_types": [
+                "real_market"
+              ],
+              "rule_type": "condition",
+              "pattern_tags": [],
+              "source_quote": "Плюс уровень достаточно сильный, то есть имеет кратное подтверждение",
+              "transcript_anchors": [
+                {
+                  "line_index": 45,
+                  "text": "Плюс уровень достаточно сильный, то есть имеет кратное",
+                  "timestamp_start": "34:24",
+                  "timestamp_end": "34:27",
+                  "match_source": "llm_line_indices"
+                },
+                {
+                  "line_index": 46,
+                  "text": "подтверждение, подтверждение также небольшим ложным пробоем, ну да,",
+                  "timestamp_start": "34:27",
+                  "timestamp_end": "34:31",
+                  "match_source": "llm_line_indices"
+                }
+              ],
+              "timestamp_confidence": "line",
+              "anchor_match_source": "llm_line_indices",
+              "anchor_line_count": 2,
+              "anchor_span_width": 2,
+              "anchor_density": 1.0,
+              "visual_support_level": "supporting_example",
+              "transcript_support_level": "strong",
+              "transcript_support_score": 0.95,
+              "visual_support_score": 0.2
+            },
+            "event_type": "condition",
+            "normalized_text": "Уровень имеет кратное подтверждение.",
+            "normalized_text_ru": "Уровень имеет кратное подтверждение.",
+            "concept": "Уровень",
+            "subconcept": "Подтверждение"
+          }
+        }
+      ],
+      "evidence_refs": [],
+      "concepts": []
+    },
+    "summary": {
+      "answer_text": "[rule_statement] [Concept] Уровень проторговки Пробить уровень проторговки с первого раза крайне сложно. [Time] 21:08–21:13 [Support Basis] transcript_plus_visual\n[rule_statement] [Concept] Уровни Крупняк, если набрал большую позицию, будет обязательно защищать свои сильные уровни. [Time] 08:27–08:32 [Support Basis] transcript_plus_visual\n[rule_statement] [Concept] Уровни Если относительно какого-то бара или уровня был ложный пробой, значит предыдущий бар был уровнем. [Time] 05:55–06:02 [Support Basis] transcript_plus_visual\n[rule_statement] [Concept] Подтверждение уровня Закрепление ниже уровня показывает, что инструмент скорее всего пойдет ниже. [Time] 03:13–03:29 [Support Basis] transcript_plus_visual\n[condition] [Concept] Уровень Уровень имеет кратное подтверждение. [Time] 34:24–34:31 [Support Basis] transcript_primary",
+      "limitations": [],
+      "citation_doc_ids": [
+        "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_9_rule_statement_2",
+        "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_4_rule_statement_0",
+        "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_2_rule_statement_6",
+        "event:lesson_2_levels_part_1:ke_lesson_2_levels_part_1_1_rule_statement_2",
+        "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_14_condition_4"
+      ]
+    },
+    "facets": {
+      "by_unit_type": {
+        "knowledge_event": 5
+      },
+      "by_lesson": {
+        "Lesson 2. Levels part 1": 3,
+        "2025-09-29-sviatoslav-chornyi": 2
+      },
+      "by_concept": {
+        "concept:level": 3,
+        "concept:uroven_protorgovki": 1,
+        "concept:level_confirmation": 1
+      }
+    },
+    "hit_count": 5
+  }
+}
