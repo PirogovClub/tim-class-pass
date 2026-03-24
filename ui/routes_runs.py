@@ -9,6 +9,7 @@ from helpers.clients.gemini_client import get_client as get_gemini_client
 from ui.reconcile import launch_waiting_remote_runs
 from ui.run_launcher import is_process_alive, terminate_process
 from ui.services import get_run_detail
+from ui.services.stages import get_stage_focus_label, get_stage_label
 from ui.web import get_settings, get_store, render
 
 
@@ -33,6 +34,8 @@ def _render_run_partial(request: Request, run_id: str):
         events=events,
         targets=targets,
         log_tail=log_tail,
+        stage_label=get_stage_label(run.current_stage),
+        stage_focus_label=get_stage_focus_label(run.current_stage),
     )
 
 
@@ -50,6 +53,8 @@ async def run_detail(request: Request, run_id: str):
         events=events,
         targets=targets,
         log_tail=_tail_log(run.log_path),
+        stage_label=get_stage_label(run.current_stage),
+        stage_focus_label=get_stage_focus_label(run.current_stage),
     )
 
 

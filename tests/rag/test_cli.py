@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import json
 
-from pipeline.rag.cli import export_audit_bundle, run_build
+import click
+
+from pipeline.rag.cli import export_audit_bundle, run_build, run_eval
 
 
 def test_run_build_writes_manifest_paths(rag_config, patch_fake_sentence_transformer):
@@ -22,6 +24,7 @@ def test_export_audit_bundle_preserves_utf8_queries(
 ):
     pytest_output_path = tmp_path / "pytest_output.txt"
     pytest_output_path.write_text("67 passed\n", encoding="utf-8")
+    run_eval(rag_config, queries=None)
 
     audit_root = tmp_path / "audit_export"
     zip_path = tmp_path / "audit_export.zip"
@@ -46,4 +49,30 @@ def test_export_audit_bundle_preserves_utf8_queries(
     assert result["zip_path"].endswith("audit_export.zip")
     assert len(manifest["doc_sample_ids"]) == 2
     assert len(manifest["concept_sample_ids"]) == 2
-    assert manifest["included_docs"] == ["step3_hybrid_rag_notes.md", "rag_query_examples.md"]
+    assert manifest["included_docs"] == [
+        "step3_hybrid_rag_notes.md",
+        "rag_query_examples.md",
+        "step3_1_audit_report.md",
+    ]
+
+
+def test_export_audit_bundle_rejects_stale_eval_metrics(
+    rag_config,
+    built_rag_root,
+    patch_fake_sentence_transformer,
+):
+    stale_eval_dir = rag_config.eval_dir
+    stale_eval_dir.mkdir(parents=True, exist_ok=True)
+    (stale_eval_dir / "eval_queries.json").write_text("[]", encoding="utf-8")
+    (stale_eval_dir / "eval_results.json").write_text("[]", encoding="utf-8")
+    (stale_eval_dir / "eval_report.json").write_text(
+        json.dumps({"query_count": 0, "metrics": {"recall_at_5": 1.0}}, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+    try:
+        export_audit_bundle(rag_config, audit_root=rag_config.rag_root / "audit_should_fail")
+    except click.ClickException as exc:
+        assert "missing required Step 3.1 metrics" in str(exc)
+    else:
+        raise AssertionError("Expected export_audit_bundle to reject stale eval artifacts")

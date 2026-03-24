@@ -8,7 +8,7 @@ from typing import Any, Iterator
 from pipeline.orchestrator.models import utc_now_iso
 
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 4
 
 
 def _row_to_dict(row: sqlite3.Row | None) -> dict[str, Any] | None:
@@ -61,6 +61,8 @@ class UIStateStore:
                 title TEXT NOT NULL,
                 lesson_name TEXT NOT NULL,
                 project_root TEXT NOT NULL,
+                source_mode TEXT NOT NULL DEFAULT 'upload',
+                source_url TEXT,
                 source_video_path TEXT,
                 transcript_path TEXT,
                 status TEXT NOT NULL,
@@ -77,6 +79,7 @@ class UIStateStore:
                 project_id TEXT NOT NULL,
                 run_kind TEXT NOT NULL DEFAULT 'PROJECT',
                 run_mode TEXT NOT NULL,
+                force_overwrite INTEGER NOT NULL DEFAULT 0,
                 status TEXT NOT NULL,
                 current_stage TEXT,
                 progress_message TEXT,
@@ -133,9 +136,19 @@ class UIStateStore:
         )
 
     def _migrate_schema(self, conn: sqlite3.Connection) -> None:
+        project_columns = _table_columns(conn, "projects")
+        project_additions = {
+            "source_mode": "TEXT NOT NULL DEFAULT 'upload'",
+            "source_url": "TEXT",
+        }
+        for name, ddl in project_additions.items():
+            if name not in project_columns:
+                conn.execute(f"ALTER TABLE projects ADD COLUMN {name} {ddl}")
+
         run_columns = _table_columns(conn, "runs")
         additions = {
             "run_kind": "TEXT NOT NULL DEFAULT 'PROJECT'",
+            "force_overwrite": "INTEGER NOT NULL DEFAULT 0",
             "current_stage": "TEXT",
             "progress_message": "TEXT",
             "pipeline_db_path": "TEXT",
@@ -200,6 +213,8 @@ class UIStateStore:
         title: str,
         lesson_name: str,
         project_root: str | Path,
+        source_mode: str,
+        source_url: str | None,
         source_video_path: str | Path | None,
         transcript_path: str | Path | None,
         status: str,
@@ -210,14 +225,16 @@ class UIStateStore:
                 """
                 INSERT INTO projects(
                     project_id, slug, title, lesson_name, project_root,
-                    source_video_path, transcript_path, status, created_at, updated_at
+                    source_mode, source_url, source_video_path, transcript_path, status, created_at, updated_at
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT(project_id) DO UPDATE SET
                     slug = excluded.slug,
                     title = excluded.title,
                     lesson_name = excluded.lesson_name,
                     project_root = excluded.project_root,
+                    source_mode = excluded.source_mode,
+                    source_url = excluded.source_url,
                     source_video_path = excluded.source_video_path,
                     transcript_path = excluded.transcript_path,
                     status = excluded.status,
@@ -229,6 +246,8 @@ class UIStateStore:
                     title,
                     lesson_name,
                     str(project_root),
+                    source_mode,
+                    source_url,
                     None if source_video_path is None else str(source_video_path),
                     None if transcript_path is None else str(transcript_path),
                     status,
@@ -265,6 +284,7 @@ class UIStateStore:
         run_id: str,
         project_id: str,
         run_mode: str,
+        force_overwrite: bool = False,
         status: str,
         run_kind: str = "PROJECT",
         current_stage: str | None = None,
@@ -288,18 +308,19 @@ class UIStateStore:
             conn.execute(
                 """
                 INSERT INTO runs(
-                    run_id, project_id, run_kind, run_mode, status, current_stage, progress_message,
+                    run_id, project_id, run_kind, run_mode, force_overwrite, status, current_stage, progress_message,
                     log_path, pipeline_db_path, remote_job_name, pid, command, last_heartbeat_at,
                     last_remote_poll_at, started_at, finished_at, exit_code, error_message,
                     cancel_requested_at, project_root_snapshot, created_at, updated_at
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     run_id,
                     project_id,
                     run_kind,
                     run_mode,
+                    1 if force_overwrite else 0,
                     status,
                     current_stage,
                     progress_message,
@@ -337,6 +358,7 @@ class UIStateStore:
             "status",
             "run_kind",
             "run_mode",
+            "force_overwrite",
             "current_stage",
             "progress_message",
             "log_path",

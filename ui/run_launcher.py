@@ -13,12 +13,44 @@ from ui.storage import UIStateStore
 ACTIVE_RUN_STATUSES = {"QUEUED", "RUNNING", "WAITING_REMOTE", "CANCEL_REQUESTED"}
 
 
+def is_remote_reconcile_recoverable(run: dict | None) -> bool:
+    if not run:
+        return False
+    status = str(run.get("status") or "")
+    current_stage = str(run.get("current_stage") or "")
+    remote_job_name = str(run.get("remote_job_name") or "").strip()
+    return status in {"RUNNING", "WAITING_REMOTE"} and current_stage.endswith("_remote") and bool(remote_job_name)
+
+
+def _is_process_alive_windows(pid: int) -> bool:
+    try:
+        result = subprocess.run(
+            ["tasklist", "/FI", f"PID eq {pid}", "/NH"],
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+        )
+    except Exception:
+        return False
+    output = (result.stdout or "") + "\n" + (result.stderr or "")
+    normalized = output.strip().lower()
+    if not normalized:
+        return False
+    if "no tasks are running" in normalized:
+        return False
+    return str(pid) in output
+
+
 def is_process_alive(pid: int | None) -> bool:
     if pid is None or pid <= 0:
         return False
+    if os.name == "nt":
+        return _is_process_alive_windows(pid)
     try:
         os.kill(pid, 0)
-    except OSError:
+    except (OSError, SystemError):
         return False
     return True
 
@@ -73,12 +105,14 @@ def launch_run_worker(
     source_root = Path(__file__).resolve().parents[1]
     existing_pythonpath = env.get("PYTHONPATH", "")
     env["PYTHONPATH"] = str(source_root) if not existing_pythonpath else f"{source_root}{os.pathsep}{existing_pythonpath}"
+    env["PYTHONIOENCODING"] = "utf-8"
+    env["PYTHONUTF8"] = "1"
     if settings.test_mode:
         env["UI_TEST_MODE"] = "1"
     with open(log_path, "a", encoding="utf-8") as log_handle:
         process = subprocess.Popen(
             command,
-            cwd=str(source_root),
+            cwd=str(settings.project_root),
             stdout=log_handle,
             stderr=subprocess.STDOUT,
             env=env,
@@ -109,6 +143,24 @@ def repair_stale_runs(store: UIStateStore) -> None:
         if status == "WAITING_REMOTE":
             if pid is not None and not is_process_alive(pid):
                 store.update_run(run["run_id"], pid=None)
+            continue
+        if is_remote_reconcile_recoverable(run):
+            if is_process_alive(pid):
+                continue
+            store.update_run(
+                run["run_id"],
+                status="WAITING_REMOTE",
+                pid=None,
+                finished_at=None,
+                exit_code=None,
+                error_message=None,
+            )
+            store.append_run_event(
+                run_id=str(run["run_id"]),
+                event_type="remote_reconcile_recovered",
+                stage=run.get("current_stage"),
+                message="Recovered stale remote reconcile run during startup.",
+            )
             continue
         if not is_process_alive(pid):
             store.update_run(

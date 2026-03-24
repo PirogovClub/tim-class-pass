@@ -21,6 +21,10 @@ RUN_KIND_CORPUS = "CORPUS"
 class ArtifactSnapshot:
     transcript_exists: bool
     video_exists: bool
+    dense_index_exists: bool
+    structural_index_exists: bool
+    queue_manifest_exists: bool
+    prompt_files_exist: bool
     filtered_visuals_exists: bool
     dense_analysis_exists: bool
     knowledge_events_exists: bool
@@ -52,6 +56,8 @@ class ProjectRecord:
     title: str
     lesson_name: str
     project_root: Path
+    source_mode: str
+    source_url: str | None
     source_video_path: Path | None
     transcript_path: Path | None
     status: str
@@ -65,6 +71,7 @@ class RunRecord:
     project_id: str
     run_kind: str
     run_mode: str
+    force_overwrite: bool
     status: str
     current_stage: str | None
     progress_message: str | None

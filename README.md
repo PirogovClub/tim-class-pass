@@ -329,6 +329,8 @@ The main pipeline entry point is **`tim-class-pass`** (Click). Run `uv run tim-c
 | `--stop-after N` | off | Stop after Step `1`, `2`, or `3` |
 | `--max-batches N` | off | Step 2 only: stop after N batches |
 
+**Video audio extraction:** `uv run extract-video-audio <DIR> [--output-dir PATH] [--recursive] [--overwrite] [--max-workers N] [--quiet]` — extracts AAC `.m4a` tracks from videos in `DIR` (default output: `DIR/audio/`). With **more than one** video, runs up to `min(file_count, cpu_cores/2)` FFmpeg jobs in parallel (same cap idea as the main pipeline’s `--workers`); override with `--max-workers` or set `--max-workers 1` for serial. By default prints overall count, parallel worker hint, per-file `[i/n]` lines, and **live encode lines** from FFmpeg (`time` / `speed`, throttled). When **ffprobe** can read the file duration, each line also shows an **ETA** (remaining media time ÷ speed). Use `--quiet` for summary (and errors) only.
+
 Markdown pipeline CLI:
 
 ```bash

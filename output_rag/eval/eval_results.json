@@ -15,13 +15,35 @@
       "10": 1.0
     },
     "mrr": 1.0,
-    "concept_detected": false,
-    "evidence_presence_rate": 0.9,
+    "concept_detected": true,
+    "evidence_presence_rate": 1.0,
     "timestamp_presence_rate": 1.0,
-    "evidence_id_rate": 0.9,
+    "evidence_id_rate": 1.0,
     "hit_count": 10,
     "top_hit_unit_type": "rule_card",
-    "top_hit_score": 0.8588
+    "top_hit_score": 0.7693,
+    "detected_intents": [],
+    "intent_signals": {
+      "detected_intents": [],
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": false,
+      "mentions_timeframe": false,
+      "mentions_cross_lesson": false,
+      "mentions_stoploss": true,
+      "prefers_actionable_rules": false,
+      "prefers_explicit_rules": false,
+      "prefers_examples": false,
+      "prefers_theory": false
+    },
+    "top_hit_support_basis": "transcript_plus_visual",
+    "top3_unit_types": [
+      "rule_card",
+      "rule_card",
+      "rule_card"
+    ],
+    "evidence_ref_in_top3": false,
+    "concept_unit_in_top3": false,
+    "transcript_primary_top1": false
   },
   {
     "query_id": "q002",
@@ -40,12 +62,38 @@
     },
     "mrr": 1.0,
     "concept_detected": false,
-    "evidence_presence_rate": 0.9,
+    "evidence_presence_rate": 0.8,
     "timestamp_presence_rate": 0.9,
-    "evidence_id_rate": 0.9,
+    "evidence_id_rate": 0.8,
     "hit_count": 10,
     "top_hit_unit_type": "rule_card",
-    "top_hit_score": 0.8759
+    "top_hit_score": 0.832,
+    "detected_intents": [
+      "direct_rule_lookup"
+    ],
+    "intent_signals": {
+      "detected_intents": [
+        "direct_rule_lookup"
+      ],
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": false,
+      "mentions_timeframe": false,
+      "mentions_cross_lesson": false,
+      "mentions_stoploss": false,
+      "prefers_actionable_rules": false,
+      "prefers_explicit_rules": true,
+      "prefers_examples": false,
+      "prefers_theory": false
+    },
+    "top_hit_support_basis": "transcript_primary",
+    "top3_unit_types": [
+      "rule_card",
+      "rule_card",
+      "knowledge_event"
+    ],
+    "evidence_ref_in_top3": false,
+    "concept_unit_in_top3": false,
+    "transcript_primary_top1": true
   },
   {
     "query_id": "q003",
@@ -65,12 +113,34 @@
     },
     "mrr": 1.0,
     "concept_detected": true,
-    "evidence_presence_rate": 0.9,
-    "timestamp_presence_rate": 0.9,
-    "evidence_id_rate": 0.9,
+    "evidence_presence_rate": 1.0,
+    "timestamp_presence_rate": 1.0,
+    "evidence_id_rate": 1.0,
     "hit_count": 10,
     "top_hit_unit_type": "rule_card",
-    "top_hit_score": 1.0097
+    "top_hit_score": 0.9738,
+    "detected_intents": [],
+    "intent_signals": {
+      "detected_intents": [],
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": false,
+      "mentions_timeframe": false,
+      "mentions_cross_lesson": false,
+      "mentions_stoploss": false,
+      "prefers_actionable_rules": false,
+      "prefers_explicit_rules": false,
+      "prefers_examples": false,
+      "prefers_theory": true
+    },
+    "top_hit_support_basis": "transcript_plus_visual",
+    "top3_unit_types": [
+      "rule_card",
+      "rule_card",
+      "knowledge_event"
+    ],
+    "evidence_ref_in_top3": false,
+    "concept_unit_in_top3": false,
+    "transcript_primary_top1": false
   },
   {
     "query_id": "q004",
@@ -95,7 +165,29 @@
     "evidence_id_rate": 1.0,
     "hit_count": 10,
     "top_hit_unit_type": "knowledge_event",
-    "top_hit_score": 0.7872
+    "top_hit_score": 0.8016,
+    "detected_intents": [],
+    "intent_signals": {
+      "detected_intents": [],
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": false,
+      "mentions_timeframe": false,
+      "mentions_cross_lesson": false,
+      "mentions_stoploss": false,
+      "prefers_actionable_rules": false,
+      "prefers_explicit_rules": false,
+      "prefers_examples": false,
+      "prefers_theory": false
+    },
+    "top_hit_support_basis": "transcript_plus_visual",
+    "top3_unit_types": [
+      "knowledge_event",
+      "rule_card",
+      "rule_card"
+    ],
+    "evidence_ref_in_top3": false,
+    "concept_unit_in_top3": false,
+    "transcript_primary_top1": false
   },
   {
     "query_id": "q005",
@@ -112,14 +204,40 @@
       "5": 1.0,
       "10": 1.0
     },
-    "mrr": 0.3333333333333333,
-    "concept_detected": false,
-    "evidence_presence_rate": 0.8,
-    "timestamp_presence_rate": 0.8,
-    "evidence_id_rate": 0.8,
+    "mrr": 0.5,
+    "concept_detected": true,
+    "evidence_presence_rate": 1.0,
+    "timestamp_presence_rate": 1.0,
+    "evidence_id_rate": 1.0,
     "hit_count": 10,
     "top_hit_unit_type": "knowledge_event",
-    "top_hit_score": 0.8954
+    "top_hit_score": 0.8695,
+    "detected_intents": [
+      "direct_rule_lookup"
+    ],
+    "intent_signals": {
+      "detected_intents": [
+        "direct_rule_lookup"
+      ],
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": false,
+      "mentions_timeframe": false,
+      "mentions_cross_lesson": false,
+      "mentions_stoploss": false,
+      "prefers_actionable_rules": false,
+      "prefers_explicit_rules": true,
+      "prefers_examples": false,
+      "prefers_theory": false
+    },
+    "top_hit_support_basis": "transcript_plus_visual",
+    "top3_unit_types": [
+      "knowledge_event",
+      "rule_card",
+      "rule_card"
+    ],
+    "evidence_ref_in_top3": false,
+    "concept_unit_in_top3": false,
+    "transcript_primary_top1": false
   },
   {
     "query_id": "q006",
@@ -138,13 +256,39 @@
       "10": 1.0
     },
     "mrr": 1.0,
-    "concept_detected": false,
-    "evidence_presence_rate": 0.7,
-    "timestamp_presence_rate": 0.8,
-    "evidence_id_rate": 0.7,
+    "concept_detected": true,
+    "evidence_presence_rate": 1.0,
+    "timestamp_presence_rate": 1.0,
+    "evidence_id_rate": 1.0,
     "hit_count": 10,
-    "top_hit_unit_type": "knowledge_event",
-    "top_hit_score": 0.7906
+    "top_hit_unit_type": "rule_card",
+    "top_hit_score": 0.7345,
+    "detected_intents": [
+      "invalidation_lookup"
+    ],
+    "intent_signals": {
+      "detected_intents": [
+        "invalidation_lookup"
+      ],
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": false,
+      "mentions_timeframe": false,
+      "mentions_cross_lesson": false,
+      "mentions_stoploss": true,
+      "prefers_actionable_rules": false,
+      "prefers_explicit_rules": false,
+      "prefers_examples": false,
+      "prefers_theory": false
+    },
+    "top_hit_support_basis": "transcript_plus_visual",
+    "top3_unit_types": [
+      "rule_card",
+      "rule_card",
+      "rule_card"
+    ],
+    "evidence_ref_in_top3": false,
+    "concept_unit_in_top3": false,
+    "transcript_primary_top1": false
   },
   {
     "query_id": "q007",
@@ -158,17 +302,43 @@
     ],
     "relevant_doc_ids": [],
     "recall_at_k": {
-      "5": 0.0,
-      "10": 0.0
+      "5": 1.0,
+      "10": 1.0
     },
-    "mrr": 0.0,
+    "mrr": 1.0,
     "concept_detected": false,
-    "evidence_presence_rate": 0.8,
+    "evidence_presence_rate": 1.0,
     "timestamp_presence_rate": 1.0,
-    "evidence_id_rate": 0.8,
+    "evidence_id_rate": 1.0,
     "hit_count": 10,
-    "top_hit_unit_type": "knowledge_event",
-    "top_hit_score": 0.7987
+    "top_hit_unit_type": "rule_card",
+    "top_hit_score": 0.7845,
+    "detected_intents": [
+      "invalidation_lookup"
+    ],
+    "intent_signals": {
+      "detected_intents": [
+        "invalidation_lookup"
+      ],
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": false,
+      "mentions_timeframe": false,
+      "mentions_cross_lesson": false,
+      "mentions_stoploss": false,
+      "prefers_actionable_rules": false,
+      "prefers_explicit_rules": false,
+      "prefers_examples": false,
+      "prefers_theory": false
+    },
+    "top_hit_support_basis": "transcript_plus_visual",
+    "top3_unit_types": [
+      "rule_card",
+      "rule_card",
+      "knowledge_event"
+    ],
+    "evidence_ref_in_top3": false,
+    "concept_unit_in_top3": false,
+    "transcript_primary_top1": false
   },
   {
     "query_id": "q008",
@@ -193,7 +363,33 @@
     "evidence_id_rate": 0.9,
     "hit_count": 10,
     "top_hit_unit_type": "knowledge_event",
-    "top_hit_score": 0.8278
+    "top_hit_score": 0.8203,
+    "detected_intents": [
+      "invalidation_lookup"
+    ],
+    "intent_signals": {
+      "detected_intents": [
+        "invalidation_lookup"
+      ],
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": false,
+      "mentions_timeframe": false,
+      "mentions_cross_lesson": false,
+      "mentions_stoploss": false,
+      "prefers_actionable_rules": false,
+      "prefers_explicit_rules": false,
+      "prefers_examples": false,
+      "prefers_theory": false
+    },
+    "top_hit_support_basis": "transcript_plus_visual",
+    "top3_unit_types": [
+      "knowledge_event",
+      "knowledge_event",
+      "knowledge_event"
+    ],
+    "evidence_ref_in_top3": false,
+    "concept_unit_in_top3": false,
+    "transcript_primary_top1": false
   },
   {
     "query_id": "q009",
@@ -213,13 +409,39 @@
       "10": 1.0
     },
     "mrr": 1.0,
-    "concept_detected": false,
-    "evidence_presence_rate": 1.0,
-    "timestamp_presence_rate": 1.0,
-    "evidence_id_rate": 1.0,
+    "concept_detected": true,
+    "evidence_presence_rate": 0.0,
+    "timestamp_presence_rate": 0.0,
+    "evidence_id_rate": 0.0,
     "hit_count": 10,
-    "top_hit_unit_type": "rule_card",
-    "top_hit_score": 0.7193
+    "top_hit_unit_type": "concept_relation",
+    "top_hit_score": 1.0491,
+    "detected_intents": [
+      "concept_comparison"
+    ],
+    "intent_signals": {
+      "detected_intents": [
+        "concept_comparison"
+      ],
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": false,
+      "mentions_timeframe": false,
+      "mentions_cross_lesson": false,
+      "mentions_stoploss": true,
+      "prefers_actionable_rules": false,
+      "prefers_explicit_rules": false,
+      "prefers_examples": false,
+      "prefers_theory": true
+    },
+    "top_hit_support_basis": null,
+    "top3_unit_types": [
+      "concept_relation",
+      "concept_relation",
+      "concept_relation"
+    ],
+    "evidence_ref_in_top3": false,
+    "concept_unit_in_top3": true,
+    "transcript_primary_top1": false
   },
   {
     "query_id": "q010",
@@ -239,12 +461,38 @@
     },
     "mrr": 1.0,
     "concept_detected": true,
-    "evidence_presence_rate": 0.2,
-    "timestamp_presence_rate": 0.6,
-    "evidence_id_rate": 0.2,
+    "evidence_presence_rate": 0.0,
+    "timestamp_presence_rate": 0.0,
+    "evidence_id_rate": 0.0,
     "hit_count": 10,
-    "top_hit_unit_type": "rule_card",
-    "top_hit_score": 0.9685
+    "top_hit_unit_type": "concept_relation",
+    "top_hit_score": 1.1439,
+    "detected_intents": [
+      "concept_comparison"
+    ],
+    "intent_signals": {
+      "detected_intents": [
+        "concept_comparison"
+      ],
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": false,
+      "mentions_timeframe": false,
+      "mentions_cross_lesson": false,
+      "mentions_stoploss": false,
+      "prefers_actionable_rules": false,
+      "prefers_explicit_rules": false,
+      "prefers_examples": false,
+      "prefers_theory": true
+    },
+    "top_hit_support_basis": null,
+    "top3_unit_types": [
+      "concept_relation",
+      "concept_relation",
+      "concept_relation"
+    ],
+    "evidence_ref_in_top3": false,
+    "concept_unit_in_top3": true,
+    "transcript_primary_top1": false
   },
   {
     "query_id": "q011",
@@ -265,12 +513,38 @@
     },
     "mrr": 1.0,
     "concept_detected": false,
-    "evidence_presence_rate": 0.8,
-    "timestamp_presence_rate": 0.9,
-    "evidence_id_rate": 0.8,
+    "evidence_presence_rate": 0.0,
+    "timestamp_presence_rate": 0.0,
+    "evidence_id_rate": 0.0,
     "hit_count": 10,
-    "top_hit_unit_type": "rule_card",
-    "top_hit_score": 0.7659
+    "top_hit_unit_type": "concept_relation",
+    "top_hit_score": 0.9808,
+    "detected_intents": [
+      "concept_comparison"
+    ],
+    "intent_signals": {
+      "detected_intents": [
+        "concept_comparison"
+      ],
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": false,
+      "mentions_timeframe": false,
+      "mentions_cross_lesson": false,
+      "mentions_stoploss": true,
+      "prefers_actionable_rules": false,
+      "prefers_explicit_rules": false,
+      "prefers_examples": false,
+      "prefers_theory": true
+    },
+    "top_hit_support_basis": null,
+    "top3_unit_types": [
+      "concept_relation",
+      "concept_relation",
+      "concept_relation"
+    ],
+    "evidence_ref_in_top3": false,
+    "concept_unit_in_top3": true,
+    "transcript_primary_top1": false
   },
   {
     "query_id": "q012",
@@ -284,17 +558,43 @@
     ],
     "relevant_doc_ids": [],
     "recall_at_k": {
-      "5": 0.0,
-      "10": 0.0
+      "5": 1.0,
+      "10": 1.0
     },
-    "mrr": 0.0,
+    "mrr": 1.0,
     "concept_detected": false,
-    "evidence_presence_rate": 1.0,
+    "evidence_presence_rate": 0.9,
     "timestamp_presence_rate": 1.0,
-    "evidence_id_rate": 1.0,
+    "evidence_id_rate": 0.9,
     "hit_count": 10,
-    "top_hit_unit_type": "knowledge_event",
-    "top_hit_score": 0.7948
+    "top_hit_unit_type": "evidence_ref",
+    "top_hit_score": 1.0665,
+    "detected_intents": [
+      "example_lookup"
+    ],
+    "intent_signals": {
+      "detected_intents": [
+        "example_lookup"
+      ],
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": true,
+      "mentions_timeframe": false,
+      "mentions_cross_lesson": false,
+      "mentions_stoploss": false,
+      "prefers_actionable_rules": false,
+      "prefers_explicit_rules": false,
+      "prefers_examples": true,
+      "prefers_theory": false
+    },
+    "top_hit_support_basis": "transcript_plus_visual",
+    "top3_unit_types": [
+      "evidence_ref",
+      "evidence_ref",
+      "evidence_ref"
+    ],
+    "evidence_ref_in_top3": true,
+    "concept_unit_in_top3": false,
+    "transcript_primary_top1": false
   },
   {
     "query_id": "q013",
@@ -308,17 +608,43 @@
     ],
     "relevant_doc_ids": [],
     "recall_at_k": {
-      "5": 0.0,
-      "10": 0.0
+      "5": 1.0,
+      "10": 1.0
     },
-    "mrr": 0.0,
-    "concept_detected": false,
-    "evidence_presence_rate": 0.9,
-    "timestamp_presence_rate": 0.9,
-    "evidence_id_rate": 0.9,
+    "mrr": 1.0,
+    "concept_detected": true,
+    "evidence_presence_rate": 1.0,
+    "timestamp_presence_rate": 1.0,
+    "evidence_id_rate": 1.0,
     "hit_count": 10,
-    "top_hit_unit_type": "rule_card",
-    "top_hit_score": 0.8429
+    "top_hit_unit_type": "evidence_ref",
+    "top_hit_score": 1.0665,
+    "detected_intents": [
+      "example_lookup"
+    ],
+    "intent_signals": {
+      "detected_intents": [
+        "example_lookup"
+      ],
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": true,
+      "mentions_timeframe": false,
+      "mentions_cross_lesson": false,
+      "mentions_stoploss": false,
+      "prefers_actionable_rules": false,
+      "prefers_explicit_rules": false,
+      "prefers_examples": true,
+      "prefers_theory": false
+    },
+    "top_hit_support_basis": "transcript_plus_visual",
+    "top3_unit_types": [
+      "evidence_ref",
+      "evidence_ref",
+      "evidence_ref"
+    ],
+    "evidence_ref_in_top3": true,
+    "concept_unit_in_top3": false,
+    "transcript_primary_top1": false
   },
   {
     "query_id": "q014",
@@ -333,17 +659,43 @@
     ],
     "relevant_doc_ids": [],
     "recall_at_k": {
-      "5": 0.0,
+      "5": 1.0,
       "10": 1.0
     },
-    "mrr": 0.14285714285714285,
-    "concept_detected": false,
+    "mrr": 1.0,
+    "concept_detected": true,
     "evidence_presence_rate": 1.0,
     "timestamp_presence_rate": 1.0,
     "evidence_id_rate": 1.0,
     "hit_count": 10,
-    "top_hit_unit_type": "knowledge_event",
-    "top_hit_score": 0.6277
+    "top_hit_unit_type": "evidence_ref",
+    "top_hit_score": 1.7036,
+    "detected_intents": [
+      "example_lookup"
+    ],
+    "intent_signals": {
+      "detected_intents": [
+        "example_lookup"
+      ],
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": false,
+      "mentions_timeframe": false,
+      "mentions_cross_lesson": false,
+      "mentions_stoploss": true,
+      "prefers_actionable_rules": false,
+      "prefers_explicit_rules": false,
+      "prefers_examples": true,
+      "prefers_theory": false
+    },
+    "top_hit_support_basis": "transcript_plus_visual",
+    "top3_unit_types": [
+      "evidence_ref",
+      "evidence_ref",
+      "evidence_ref"
+    ],
+    "evidence_ref_in_top3": true,
+    "concept_unit_in_top3": false,
+    "transcript_primary_top1": false
   },
   {
     "query_id": "q015",
@@ -361,14 +713,42 @@
       "5": 1.0,
       "10": 1.0
     },
-    "mrr": 1.0,
+    "mrr": 0.5,
     "concept_detected": false,
-    "evidence_presence_rate": 0.8,
-    "timestamp_presence_rate": 0.8,
-    "evidence_id_rate": 0.8,
+    "evidence_presence_rate": 0.0,
+    "timestamp_presence_rate": 0.0,
+    "evidence_id_rate": 0.0,
     "hit_count": 10,
-    "top_hit_unit_type": "knowledge_event",
-    "top_hit_score": 0.746
+    "top_hit_unit_type": "concept_relation",
+    "top_hit_score": 1.1398,
+    "detected_intents": [
+      "cross_lesson_conflict_lookup",
+      "lesson_coverage"
+    ],
+    "intent_signals": {
+      "detected_intents": [
+        "cross_lesson_conflict_lookup",
+        "lesson_coverage"
+      ],
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": false,
+      "mentions_timeframe": false,
+      "mentions_cross_lesson": true,
+      "mentions_stoploss": false,
+      "prefers_actionable_rules": false,
+      "prefers_explicit_rules": false,
+      "prefers_examples": false,
+      "prefers_theory": false
+    },
+    "top_hit_support_basis": null,
+    "top3_unit_types": [
+      "concept_relation",
+      "concept_node",
+      "concept_relation"
+    ],
+    "evidence_ref_in_top3": false,
+    "concept_unit_in_top3": true,
+    "transcript_primary_top1": false
   },
   {
     "query_id": "q016",
@@ -388,12 +768,38 @@
     },
     "mrr": 1.0,
     "concept_detected": true,
-    "evidence_presence_rate": 0.9,
-    "timestamp_presence_rate": 0.9,
-    "evidence_id_rate": 0.9,
+    "evidence_presence_rate": 1.0,
+    "timestamp_presence_rate": 1.0,
+    "evidence_id_rate": 1.0,
     "hit_count": 10,
     "top_hit_unit_type": "rule_card",
-    "top_hit_score": 0.9991
+    "top_hit_score": 0.9779,
+    "detected_intents": [
+      "lesson_coverage"
+    ],
+    "intent_signals": {
+      "detected_intents": [
+        "lesson_coverage"
+      ],
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": false,
+      "mentions_timeframe": false,
+      "mentions_cross_lesson": false,
+      "mentions_stoploss": false,
+      "prefers_actionable_rules": false,
+      "prefers_explicit_rules": false,
+      "prefers_examples": false,
+      "prefers_theory": false
+    },
+    "top_hit_support_basis": "transcript_plus_visual",
+    "top3_unit_types": [
+      "rule_card",
+      "rule_card",
+      "rule_card"
+    ],
+    "evidence_ref_in_top3": false,
+    "concept_unit_in_top3": false,
+    "transcript_primary_top1": false
   },
   {
     "query_id": "q017",
@@ -409,17 +815,43 @@
     ],
     "relevant_doc_ids": [],
     "recall_at_k": {
-      "5": 0.0,
-      "10": 0.0
+      "5": 1.0,
+      "10": 1.0
     },
-    "mrr": 0.0,
-    "concept_detected": false,
-    "evidence_presence_rate": 1.0,
-    "timestamp_presence_rate": 1.0,
-    "evidence_id_rate": 1.0,
+    "mrr": 1.0,
+    "concept_detected": true,
+    "evidence_presence_rate": 0.4,
+    "timestamp_presence_rate": 0.4,
+    "evidence_id_rate": 0.4,
     "hit_count": 10,
-    "top_hit_unit_type": "knowledge_event",
-    "top_hit_score": 0.7748
+    "top_hit_unit_type": "concept_relation",
+    "top_hit_score": 1.1376,
+    "detected_intents": [
+      "cross_lesson_conflict_lookup"
+    ],
+    "intent_signals": {
+      "detected_intents": [
+        "cross_lesson_conflict_lookup"
+      ],
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": false,
+      "mentions_timeframe": false,
+      "mentions_cross_lesson": true,
+      "mentions_stoploss": true,
+      "prefers_actionable_rules": false,
+      "prefers_explicit_rules": false,
+      "prefers_examples": false,
+      "prefers_theory": false
+    },
+    "top_hit_support_basis": null,
+    "top3_unit_types": [
+      "concept_relation",
+      "concept_node",
+      "concept_relation"
+    ],
+    "evidence_ref_in_top3": false,
+    "concept_unit_in_top3": true,
+    "transcript_primary_top1": false
   },
   {
     "query_id": "q018",
@@ -438,13 +870,41 @@
       "10": 1.0
     },
     "mrr": 0.5,
-    "concept_detected": false,
-    "evidence_presence_rate": 0.7,
-    "timestamp_presence_rate": 0.7,
-    "evidence_id_rate": 0.7,
+    "concept_detected": true,
+    "evidence_presence_rate": 0.2,
+    "timestamp_presence_rate": 0.2,
+    "evidence_id_rate": 0.2,
     "hit_count": 10,
-    "top_hit_unit_type": "knowledge_event",
-    "top_hit_score": 0.9003
+    "top_hit_unit_type": "concept_relation",
+    "top_hit_score": 1.5803,
+    "detected_intents": [
+      "timeframe_lookup",
+      "cross_lesson_conflict_lookup"
+    ],
+    "intent_signals": {
+      "detected_intents": [
+        "timeframe_lookup",
+        "cross_lesson_conflict_lookup"
+      ],
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": false,
+      "mentions_timeframe": true,
+      "mentions_cross_lesson": true,
+      "mentions_stoploss": false,
+      "prefers_actionable_rules": true,
+      "prefers_explicit_rules": true,
+      "prefers_examples": false,
+      "prefers_theory": false
+    },
+    "top_hit_support_basis": null,
+    "top3_unit_types": [
+      "concept_relation",
+      "concept_node",
+      "concept_node"
+    ],
+    "evidence_ref_in_top3": false,
+    "concept_unit_in_top3": true,
+    "transcript_primary_top1": false
   },
   {
     "query_id": "q019",
@@ -462,14 +922,40 @@
       "5": 1.0,
       "10": 1.0
     },
-    "mrr": 0.5,
+    "mrr": 1.0,
     "concept_detected": true,
-    "evidence_presence_rate": 0.3,
-    "timestamp_presence_rate": 0.7,
-    "evidence_id_rate": 0.3,
+    "evidence_presence_rate": 0.0,
+    "timestamp_presence_rate": 0.0,
+    "evidence_id_rate": 0.0,
     "hit_count": 10,
-    "top_hit_unit_type": "rule_card",
-    "top_hit_score": 0.7365
+    "top_hit_unit_type": "concept_relation",
+    "top_hit_score": 1.1658,
+    "detected_intents": [
+      "cross_lesson_conflict_lookup"
+    ],
+    "intent_signals": {
+      "detected_intents": [
+        "cross_lesson_conflict_lookup"
+      ],
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": false,
+      "mentions_timeframe": false,
+      "mentions_cross_lesson": true,
+      "mentions_stoploss": false,
+      "prefers_actionable_rules": false,
+      "prefers_explicit_rules": false,
+      "prefers_examples": false,
+      "prefers_theory": false
+    },
+    "top_hit_support_basis": null,
+    "top3_unit_types": [
+      "concept_relation",
+      "concept_relation",
+      "concept_node"
+    ],
+    "evidence_ref_in_top3": false,
+    "concept_unit_in_top3": true,
+    "transcript_primary_top1": false
   },
   {
     "query_id": "q020",
@@ -489,12 +975,38 @@
     },
     "mrr": 1.0,
     "concept_detected": true,
-    "evidence_presence_rate": 0.6,
-    "timestamp_presence_rate": 0.8,
-    "evidence_id_rate": 0.6,
+    "evidence_presence_rate": 0.9,
+    "timestamp_presence_rate": 1.0,
+    "evidence_id_rate": 0.9,
     "hit_count": 10,
     "top_hit_unit_type": "knowledge_event",
-    "top_hit_score": 0.8833
+    "top_hit_score": 1.4568,
+    "detected_intents": [
+      "timeframe_lookup"
+    ],
+    "intent_signals": {
+      "detected_intents": [
+        "timeframe_lookup"
+      ],
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": false,
+      "mentions_timeframe": true,
+      "mentions_cross_lesson": false,
+      "mentions_stoploss": false,
+      "prefers_actionable_rules": true,
+      "prefers_explicit_rules": false,
+      "prefers_examples": false,
+      "prefers_theory": false
+    },
+    "top_hit_support_basis": "transcript_primary",
+    "top3_unit_types": [
+      "knowledge_event",
+      "rule_card",
+      "knowledge_event"
+    ],
+    "evidence_ref_in_top3": false,
+    "concept_unit_in_top3": false,
+    "transcript_primary_top1": true
   },
   {
     "query_id": "q021",
@@ -508,17 +1020,43 @@
     ],
     "relevant_doc_ids": [],
     "recall_at_k": {
-      "5": 0.0,
-      "10": 0.0
+      "5": 1.0,
+      "10": 1.0
     },
-    "mrr": 0.0,
-    "concept_detected": false,
-    "evidence_presence_rate": 0.2,
-    "timestamp_presence_rate": 0.9,
-    "evidence_id_rate": 0.2,
+    "mrr": 1.0,
+    "concept_detected": true,
+    "evidence_presence_rate": 0.9,
+    "timestamp_presence_rate": 1.0,
+    "evidence_id_rate": 0.9,
     "hit_count": 10,
-    "top_hit_unit_type": "knowledge_event",
-    "top_hit_score": 0.6185
+    "top_hit_unit_type": "rule_card",
+    "top_hit_score": 1.3322,
+    "detected_intents": [
+      "timeframe_lookup"
+    ],
+    "intent_signals": {
+      "detected_intents": [
+        "timeframe_lookup"
+      ],
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": false,
+      "mentions_timeframe": true,
+      "mentions_cross_lesson": false,
+      "mentions_stoploss": false,
+      "prefers_actionable_rules": true,
+      "prefers_explicit_rules": true,
+      "prefers_examples": false,
+      "prefers_theory": false
+    },
+    "top_hit_support_basis": "transcript_plus_visual",
+    "top3_unit_types": [
+      "rule_card",
+      "rule_card",
+      "knowledge_event"
+    ],
+    "evidence_ref_in_top3": false,
+    "concept_unit_in_top3": false,
+    "transcript_primary_top1": false
   },
   {
     "query_id": "q022",
@@ -536,12 +1074,38 @@
     },
     "mrr": 1.0,
     "concept_detected": true,
-    "evidence_presence_rate": 0.4,
+    "evidence_presence_rate": 0.8,
     "timestamp_presence_rate": 1.0,
-    "evidence_id_rate": 0.4,
+    "evidence_id_rate": 0.8,
     "hit_count": 10,
     "top_hit_unit_type": "knowledge_event",
-    "top_hit_score": 0.5976
+    "top_hit_score": 1.0973,
+    "detected_intents": [
+      "support_policy"
+    ],
+    "intent_signals": {
+      "detected_intents": [
+        "support_policy"
+      ],
+      "prefers_transcript_only": true,
+      "prefers_visual_evidence": false,
+      "mentions_timeframe": false,
+      "mentions_cross_lesson": false,
+      "mentions_stoploss": false,
+      "prefers_actionable_rules": false,
+      "prefers_explicit_rules": true,
+      "prefers_examples": false,
+      "prefers_theory": false
+    },
+    "top_hit_support_basis": "transcript_primary",
+    "top3_unit_types": [
+      "knowledge_event",
+      "rule_card",
+      "knowledge_event"
+    ],
+    "evidence_ref_in_top3": false,
+    "concept_unit_in_top3": false,
+    "transcript_primary_top1": true
   },
   {
     "query_id": "q023",
@@ -557,14 +1121,42 @@
       "5": 1.0,
       "10": 1.0
     },
-    "mrr": 0.5,
+    "mrr": 1.0,
     "concept_detected": true,
-    "evidence_presence_rate": 0.9,
+    "evidence_presence_rate": 1.0,
     "timestamp_presence_rate": 1.0,
-    "evidence_id_rate": 0.9,
+    "evidence_id_rate": 1.0,
     "hit_count": 10,
-    "top_hit_unit_type": "knowledge_event",
-    "top_hit_score": 0.8587
+    "top_hit_unit_type": "evidence_ref",
+    "top_hit_score": 1.2527,
+    "detected_intents": [
+      "support_policy",
+      "example_lookup"
+    ],
+    "intent_signals": {
+      "detected_intents": [
+        "support_policy",
+        "example_lookup"
+      ],
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": true,
+      "mentions_timeframe": false,
+      "mentions_cross_lesson": false,
+      "mentions_stoploss": false,
+      "prefers_actionable_rules": false,
+      "prefers_explicit_rules": false,
+      "prefers_examples": true,
+      "prefers_theory": false
+    },
+    "top_hit_support_basis": "transcript_plus_visual",
+    "top3_unit_types": [
+      "evidence_ref",
+      "evidence_ref",
+      "evidence_ref"
+    ],
+    "evidence_ref_in_top3": true,
+    "concept_unit_in_top3": false,
+    "transcript_primary_top1": false
   },
   {
     "query_id": "q024",
@@ -583,12 +1175,38 @@
     },
     "mrr": 1.0,
     "concept_detected": true,
-    "evidence_presence_rate": 0.8,
-    "timestamp_presence_rate": 0.8,
-    "evidence_id_rate": 0.8,
+    "evidence_presence_rate": 1.0,
+    "timestamp_presence_rate": 1.0,
+    "evidence_id_rate": 1.0,
     "hit_count": 10,
     "top_hit_unit_type": "rule_card",
-    "top_hit_score": 0.9683
+    "top_hit_score": 0.9766,
+    "detected_intents": [
+      "direct_rule_lookup"
+    ],
+    "intent_signals": {
+      "detected_intents": [
+        "direct_rule_lookup"
+      ],
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": false,
+      "mentions_timeframe": false,
+      "mentions_cross_lesson": false,
+      "mentions_stoploss": true,
+      "prefers_actionable_rules": false,
+      "prefers_explicit_rules": false,
+      "prefers_examples": false,
+      "prefers_theory": false
+    },
+    "top_hit_support_basis": "transcript_plus_visual",
+    "top3_unit_types": [
+      "rule_card",
+      "rule_card",
+      "rule_card"
+    ],
+    "evidence_ref_in_top3": false,
+    "concept_unit_in_top3": false,
+    "transcript_primary_top1": false
   },
   {
     "query_id": "q025",
@@ -607,12 +1225,38 @@
     },
     "mrr": 1.0,
     "concept_detected": true,
-    "evidence_presence_rate": 0.7,
-    "timestamp_presence_rate": 0.7,
-    "evidence_id_rate": 0.7,
+    "evidence_presence_rate": 0.9,
+    "timestamp_presence_rate": 0.9,
+    "evidence_id_rate": 0.9,
     "hit_count": 10,
     "top_hit_unit_type": "rule_card",
-    "top_hit_score": 0.9235
+    "top_hit_score": 0.9585,
+    "detected_intents": [
+      "direct_rule_lookup"
+    ],
+    "intent_signals": {
+      "detected_intents": [
+        "direct_rule_lookup"
+      ],
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": false,
+      "mentions_timeframe": false,
+      "mentions_cross_lesson": false,
+      "mentions_stoploss": false,
+      "prefers_actionable_rules": false,
+      "prefers_explicit_rules": false,
+      "prefers_examples": false,
+      "prefers_theory": false
+    },
+    "top_hit_support_basis": "transcript_plus_visual",
+    "top3_unit_types": [
+      "rule_card",
+      "knowledge_event",
+      "knowledge_event"
+    ],
+    "evidence_ref_in_top3": false,
+    "concept_unit_in_top3": false,
+    "transcript_primary_top1": false
   },
   {
     "query_id": "q026",
@@ -633,11 +1277,33 @@
     "mrr": 1.0,
     "concept_detected": false,
     "evidence_presence_rate": 0.5,
-    "timestamp_presence_rate": 0.7,
+    "timestamp_presence_rate": 0.8,
     "evidence_id_rate": 0.5,
     "hit_count": 10,
     "top_hit_unit_type": "rule_card",
-    "top_hit_score": 0.9179
+    "top_hit_score": 0.9172,
+    "detected_intents": [],
+    "intent_signals": {
+      "detected_intents": [],
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": false,
+      "mentions_timeframe": false,
+      "mentions_cross_lesson": false,
+      "mentions_stoploss": false,
+      "prefers_actionable_rules": false,
+      "prefers_explicit_rules": false,
+      "prefers_examples": false,
+      "prefers_theory": false
+    },
+    "top_hit_support_basis": "transcript_plus_visual",
+    "top3_unit_types": [
+      "rule_card",
+      "knowledge_event",
+      "rule_card"
+    ],
+    "evidence_ref_in_top3": false,
+    "concept_unit_in_top3": false,
+    "transcript_primary_top1": false
   },
   {
     "query_id": "q027",
@@ -657,11 +1323,33 @@
     },
     "mrr": 1.0,
     "concept_detected": true,
-    "evidence_presence_rate": 0.6,
-    "timestamp_presence_rate": 0.8,
-    "evidence_id_rate": 0.6,
+    "evidence_presence_rate": 0.9,
+    "timestamp_presence_rate": 1.0,
+    "evidence_id_rate": 0.9,
     "hit_count": 10,
     "top_hit_unit_type": "rule_card",
-    "top_hit_score": 0.9704
+    "top_hit_score": 0.968,
+    "detected_intents": [],
+    "intent_signals": {
+      "detected_intents": [],
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": false,
+      "mentions_timeframe": false,
+      "mentions_cross_lesson": false,
+      "mentions_stoploss": false,
+      "prefers_actionable_rules": false,
+      "prefers_explicit_rules": false,
+      "prefers_examples": false,
+      "prefers_theory": false
+    },
+    "top_hit_support_basis": "transcript_plus_visual",
+    "top3_unit_types": [
+      "rule_card",
+      "knowledge_event",
+      "knowledge_event"
+    ],
+    "evidence_ref_in_top3": false,
+    "concept_unit_in_top3": false,
+    "transcript_primary_top1": false
   }
 ]

@@ -64,6 +64,15 @@ def _compact_keywords(*groups: Any) -> list[str]:
     return output
 
 
+def _humanize_identifier(value: str | None) -> str:
+    raw = (value or "").strip()
+    if not raw:
+        return ""
+    if ":" in raw:
+        raw = raw.split(":")[-1]
+    return raw.replace("_", " ").strip()
+
+
 def _timestamp_entries(raw: dict[str, Any]) -> list[dict[str, Any]]:
     start = raw.get("timestamp_start")
     end = raw.get("timestamp_end")
@@ -73,6 +82,30 @@ def _timestamp_entries(raw: dict[str, Any]) -> list[dict[str, Any]]:
         "start": start,
         "end": end,
     }]
+
+
+def _evidence_strength_confidence(raw_strength: str | None) -> float | None:
+    strength = (raw_strength or "").strip().lower()
+    if not strength:
+        return None
+    if strength in {"strong"}:
+        return 0.95
+    if strength in {"moderate", "medium"}:
+        return 0.8
+    if strength in {"weak", "low"}:
+        return 0.6
+    return 0.7
+
+
+def _teaching_mode_from_example_role(role: str | None) -> str | None:
+    lowered = (role or "").strip().lower()
+    if not lowered:
+        return None
+    if lowered in {"positive_example", "negative_example", "counterexample", "example", "illustration"}:
+        return "example"
+    if lowered in {"mixed", "supporting_example"}:
+        return "mixed"
+    return "example"
 
 
 def _base_kwargs(raw: dict[str, Any]) -> dict[str, Any]:
@@ -303,17 +336,24 @@ class EvidenceRefDoc(RetrievalDocBase):
     @staticmethod
     def from_corpus(raw: dict[str, Any]) -> EvidenceRefDoc:
         role = raw.get("example_role") or ""
+        evidence_id = raw.get("global_id", raw.get("evidence_id", ""))
         summary_ru = raw.get("summary_ru") or ""
         summary_en = raw.get("summary_en") or ""
         summary = raw.get("compact_visual_summary") or raw.get("summary_primary") or summary_ru or summary_en
         linked_rules = raw.get("linked_rule_ids") or []
+        related_concepts = raw.get("related_concept_ids") or []
+        concept_labels = [_humanize_identifier(cid) for cid in related_concepts]
+        rule_labels = [_humanize_identifier(rid) for rid in linked_rules]
         ts_start = raw.get("timestamp_start") or ""
         ts_end = raw.get("timestamp_end") or ""
+        evidence_strength = raw.get("evidence_strength")
+        role_detail = raw.get("evidence_role_detail")
 
         parts = [
             f"[{role}]" if role else "",
             summary,
-            f"[Rules] {', '.join(linked_rules[:5])}" if linked_rules else "",
+            f"[Concepts] {', '.join(label for label in concept_labels[:5] if label)}" if concept_labels else "",
+            f"[Rules] {', '.join(label for label in rule_labels[:5] if label)}" if rule_labels else "",
             f"[Time] {ts_start}–{ts_end}" if ts_start else "",
         ]
         if raw.get("evidence_strength"):
@@ -326,17 +366,19 @@ class EvidenceRefDoc(RetrievalDocBase):
             raw.get("visual_type"),
             raw.get("evidence_strength"),
             raw.get("evidence_role_detail"),
-            raw.get("related_concept_ids") or [],
+            related_concepts,
+            concept_labels,
+            rule_labels,
             raw.get("frame_ids") or [],
         )
 
         return EvidenceRefDoc(
-            doc_id=raw.get("global_id", raw.get("evidence_id", "")),
+            doc_id=evidence_id,
             lesson_id=raw.get("lesson_id"),
             lesson_slug=raw.get("lesson_slug"),
             language=raw.get("source_language"),
-            alias_terms=_compact_keywords(role, raw.get("evidence_role_detail")),
-            title=f"Evidence: {role}",
+            alias_terms=_compact_keywords(role, role_detail, raw.get("visual_type"), concept_labels),
+            title=f"Evidence: {role}" + (f" / {concept_labels[0]}" if concept_labels else ""),
             text=text,
             short_text=_trunc(text),
             keywords=keywords,
@@ -345,11 +387,16 @@ class EvidenceRefDoc(RetrievalDocBase):
                 "section": raw.get("section"),
                 "subsection": raw.get("subsection"),
                 "frame_count": len(raw.get("frame_ids") or []),
+                "evidence_strength": evidence_strength,
+                "evidence_role_detail": role_detail,
             },
-            canonical_concept_ids=raw.get("related_concept_ids") or [],
-            confidence_score=None,
+            canonical_concept_ids=related_concepts,
+            confidence_score=_evidence_strength_confidence(evidence_strength),
+            support_basis="transcript_plus_visual",
+            evidence_requirement="required",
+            teaching_mode=_teaching_mode_from_example_role(role),
             timestamps=_timestamp_entries(raw),
-            evidence_ids=[],
+            evidence_ids=[evidence_id] if evidence_id else [],
             source_event_ids=raw.get("source_event_ids") or [],
             source_rule_ids=linked_rules,
             example_role=role,
@@ -363,8 +410,8 @@ class EvidenceRefDoc(RetrievalDocBase):
                 "summary_ru": summary_ru,
                 "summary_en": summary_en,
                 "summary_language": raw.get("summary_language"),
-                "evidence_strength": raw.get("evidence_strength"),
-                "evidence_role_detail": raw.get("evidence_role_detail"),
+                "evidence_strength": evidence_strength,
+                "evidence_role_detail": role_detail,
                 "raw_visual_event_ids": raw.get("raw_visual_event_ids") or [],
             },
         )

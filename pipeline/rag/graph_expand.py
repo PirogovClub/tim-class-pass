@@ -13,9 +13,149 @@ from pipeline.rag.contracts import GraphExpansionResult, GraphExpansionTraceStep
 _NON_WORD_RE = re.compile(r"[^a-zA-Zа-яА-ЯёЁ0-9]+")
 
 
+def _query_mentions_term(query_lower: str, term_lower: str) -> bool:
+    """Tier-1 exact match: short tokens allow substring; longer terms use word-boundary style match."""
+    if not term_lower:
+        return False
+    if len(term_lower) < 4:
+        return term_lower in query_lower
+    try:
+        return (
+            re.search(
+                r"(?<![a-zа-яё0-9])" + re.escape(term_lower) + r"(?![a-zа-яё0-9])",
+                query_lower,
+            )
+            is not None
+        )
+    except re.error:
+        return term_lower in query_lower
+
+
+def _normalized_contains_phrase(normalized_query: str, phrase: str) -> bool:
+    if not phrase:
+        return False
+    return f" {phrase} " in f" {normalized_query} "
+
+
+def _conservative_token_match(normalized_query: str, phrase: str) -> bool:
+    """Fallback for inflected/plural forms: require per-token 4-char prefix agreement."""
+    if not normalized_query or not phrase:
+        return False
+    q_tokens = [tok for tok in normalized_query.split() if tok]
+    p_tokens = [tok for tok in phrase.split() if tok]
+    if not q_tokens or not p_tokens:
+        return False
+
+    def _token_matches(a: str, b: str) -> bool:
+        if a == b:
+            return True
+        if len(a) < 5 or len(b) < 5:
+            return False
+        return a[:4] == b[:4]
+
+    used: set[int] = set()
+    for pt in p_tokens:
+        found = False
+        for idx, qt in enumerate(q_tokens):
+            if idx in used:
+                continue
+            if _token_matches(qt, pt):
+                used.add(idx)
+                found = True
+                break
+        if not found:
+            return False
+    return True
+
+
 def normalize_term(text: str) -> str:
     lowered = text.strip().lower()
     return _NON_WORD_RE.sub(" ", lowered).strip()
+
+
+def _augment_timeframe_aliases(alias_registry: dict[str, Any]) -> dict[str, Any]:
+    """Inject high-value compound timeframe aliases missing from the corpus export."""
+    timeframe_aliases: dict[str, tuple[str, ...]] = {
+        "node:analiz_taymfreymov": (
+            "дневной таймфрейм",
+            "локальный таймфрейм",
+            "старший таймфрейм",
+            "старшие таймфреймы",
+            "младший таймфрейм",
+            "разные таймфреймы",
+            "дневка",
+            "часовик",
+        ),
+        "node:soglasovannost_taymfreymov": (
+            "согласованность таймфреймов",
+        ),
+        "node:vybor_urovney": (
+            "дневной уровень",
+            "уровень с дневки",
+        ),
+        "node:taymfreym": (
+            "таймфрейм",
+        ),
+        "node:taymfreymy": (
+            "таймфреймы",
+        ),
+    }
+    for gid, extra_aliases in timeframe_aliases.items():
+        info = alias_registry.get(gid)
+        if not isinstance(info, dict):
+            continue
+        aliases = list(info.get("aliases") or [])
+        for alias in extra_aliases:
+            if alias not in aliases:
+                aliases.append(alias)
+        info["aliases"] = aliases
+    return alias_registry
+
+
+def _augment_stoploss_aliases(alias_registry: dict[str, Any]) -> dict[str, Any]:
+    """Inject high-value stop-loss phrase aliases missing from the corpus export."""
+    stoploss_aliases: dict[str, tuple[str, ...]] = {
+        "node:stop_loss": (
+            "стоп-лосс",
+            "стоп лосс",
+            "стоп-лосса",
+            "стоп лосса",
+            "стоплосс",
+            "stop-loss",
+            "постановка стоп-лосса",
+            "постановки стоп-лосса",
+            "пример стоп-лосса",
+            "пример постановки стоп-лосса",
+            "где ставить стоп",
+            "куда ставить стоп",
+        ),
+        "node:raschetnyy_stop_loss": (
+            "расчетный стоп",
+            "расчетный стоп-лосс",
+        ),
+        "node:razmer_stop_lossa": (
+            "размер стоп-лосса",
+            "размер стопа",
+        ),
+        "node:tekhnicheskiy_stop_loss": (
+            "технический стоп-лосс",
+            "технический стоп",
+        ),
+        "node:technical_stop_loss": (
+            "technical stop",
+            "technical stop loss",
+        ),
+    }
+    for gid, extra_aliases in stoploss_aliases.items():
+        info = alias_registry.get(gid)
+        if not isinstance(info, dict):
+            continue
+        aliases = list(info.get("aliases") or [])
+        for alias in extra_aliases:
+            if alias not in aliases:
+                aliases.append(alias)
+        info["aliases"] = aliases
+    return alias_registry
 
 
 class ConceptExpander:
@@ -29,6 +169,7 @@ class ConceptExpander:
         max_hops: int = 1,
         max_expanded_per_concept: int = 3,
     ) -> None:
+        alias_registry = _augment_stoploss_aliases(_augment_timeframe_aliases(alias_registry))
         self._max_hops = max_hops
         self._max_expanded = max_expanded_per_concept
         self._concept_rule_map = concept_rule_map
@@ -80,38 +221,67 @@ class ConceptExpander:
     def _detect_concepts(
         self,
         query: str,
-    ) -> tuple[list[str], dict[str, str], dict[str, str]]:
+    ) -> tuple[list[str], dict[str, str], dict[str, str], dict[str, str]]:
         lowered = query.strip().lower()
         normalized = normalize_term(query)
         detected_terms: list[str] = []
         exact_alias_matches: dict[str, str] = {}
         normalized_alias_matches: dict[str, str] = {}
+        token_alias_matches: dict[str, str] = {}
+
+        matched_gids: set[str] = set()
 
         for name, gid in sorted(self._name_to_id.items(), key=lambda x: -len(x[0])):
-            if name in lowered:
+            if _query_mentions_term(lowered, name):
                 exact_alias_matches[name] = gid
+                matched_gids.add(gid)
                 if name not in detected_terms:
                     detected_terms.append(name)
 
         for alias, gid in sorted(self._alias_to_id.items(), key=lambda x: -len(x[0])):
-            if alias in lowered:
+            if _query_mentions_term(lowered, alias):
                 exact_alias_matches[alias] = gid
+                matched_gids.add(gid)
                 if alias not in detected_terms:
                     detected_terms.append(alias)
 
         for name, gid in self._normalized_name_to_id.items():
-            if name and name in normalized and gid not in exact_alias_matches.values():
+            if (
+                name
+                and _normalized_contains_phrase(normalized, name)
+                and gid not in matched_gids
+            ):
                 normalized_alias_matches[name] = gid
+                matched_gids.add(gid)
                 if name not in detected_terms:
                     detected_terms.append(name)
 
         for alias, gid in self._normalized_alias_to_id.items():
-            if alias and alias in normalized and gid not in exact_alias_matches.values():
+            if (
+                alias
+                and _normalized_contains_phrase(normalized, alias)
+                and gid not in matched_gids
+            ):
                 normalized_alias_matches[alias] = gid
+                matched_gids.add(gid)
                 if alias not in detected_terms:
                     detected_terms.append(alias)
 
-        return detected_terms, exact_alias_matches, normalized_alias_matches
+        for name, gid in self._normalized_name_to_id.items():
+            if name and gid not in matched_gids and _conservative_token_match(normalized, name):
+                token_alias_matches[name] = gid
+                matched_gids.add(gid)
+                if name not in detected_terms:
+                    detected_terms.append(name)
+
+        for alias, gid in self._normalized_alias_to_id.items():
+            if alias and gid not in matched_gids and _conservative_token_match(normalized, alias):
+                token_alias_matches[alias] = gid
+                matched_gids.add(gid)
+                if alias not in detected_terms:
+                    detected_terms.append(alias)
+
+        return detected_terms, exact_alias_matches, normalized_alias_matches, token_alias_matches
 
     def _expand_neighbors(self, concept_id: str) -> list[tuple[str, str]]:
         neighbors = self._adjacency.get(concept_id, [])
@@ -132,9 +302,10 @@ class ConceptExpander:
         return list(dict.fromkeys(boosted_rule_ids)), trace
 
     def expand_query(self, query: str) -> GraphExpansionResult:
-        detected_terms, exact_matches, normalized_matches = self._detect_concepts(query)
+        lowered = query.strip().lower()
+        detected_terms, exact_matches, normalized_matches, token_matches = self._detect_concepts(query)
         matched_concept_ids: list[str] = list(dict.fromkeys(
-            list(exact_matches.values()) + list(normalized_matches.values())
+            list(exact_matches.values()) + list(normalized_matches.values()) + list(token_matches.values())
         ))
         all_concept_ids: set[str] = set(matched_concept_ids)
         expanded_concept_ids: list[str] = []
@@ -154,6 +325,13 @@ class ConceptExpander:
                 source=term,
                 target=gid,
                 reason=f"Normalized alias match for '{term}'",
+            ))
+        for term, gid in token_matches.items():
+            trace.append(GraphExpansionTraceStep(
+                step_type="token_alias_match",
+                source=term,
+                target=gid,
+                reason=f"Token-prefix alias match for '{term}'",
             ))
 
         for gid in matched_concept_ids:
@@ -193,6 +371,18 @@ class ConceptExpander:
         boosted_rule_ids = list(dict.fromkeys(boosted_rule_ids + family_boosts))
         trace.extend(family_trace)
 
+        lexical_expansion_terms: list[str] = []
+        for rt in related_terms:
+            if rt and rt not in lexical_expansion_terms:
+                lexical_expansion_terms.append(rt)
+        for cid in all_concept_ids:
+            nm = self._concept_name_by_id.get(cid, "")
+            if nm and nm not in lexical_expansion_terms:
+                lexical_expansion_terms.append(nm)
+        for term in detected_terms:
+            if term and term not in lexical_expansion_terms:
+                lexical_expansion_terms.append(term)
+
         return GraphExpansionResult(
             detected_terms=detected_terms,
             exact_alias_matches=exact_matches,
@@ -202,4 +392,5 @@ class ConceptExpander:
             boosted_rule_ids=boosted_rule_ids,
             related_terms=related_terms,
             expansion_trace=trace,
+            lexical_expansion_terms=list(dict.fromkeys(lexical_expansion_terms)),
         )

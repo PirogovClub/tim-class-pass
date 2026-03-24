@@ -17,7 +17,7 @@ def extract_video_id(url: str) -> str:
         print(f"Error extracting video ID: {e}")
     return None
 
-def download_video_and_transcript(url: str, video_id: str) -> bool:
+def download_video_and_transcript(url: str, video_id: str, *, overwrite: bool = False) -> bool:
     """
     Downloads the best mp4 video and vtt transcripts from a YouTube URL to data/<video_id>/.
     """
@@ -36,6 +36,7 @@ def download_video_and_transcript(url: str, video_id: str) -> bool:
         'subtitleslangs': ['en', 'ru'],
         'subtitlesformat': 'vtt',
         'noplaylist': True,
+        'overwrites': overwrite,
     }
 
     try:

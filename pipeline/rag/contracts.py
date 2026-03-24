@@ -125,6 +125,9 @@ class QueryIntentSignalsModel(BaseModel):
     prefers_visual_evidence: bool = False
     mentions_timeframe: bool = False
     mentions_cross_lesson: bool = False
+    mentions_stoploss: bool = False
+    prefers_actionable_rules: bool = False
+    prefers_explicit_rules: bool = False
     prefers_examples: bool = False
     prefers_theory: bool = False
 

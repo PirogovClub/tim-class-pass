@@ -1,0 +1,836 @@
+{
+  "concept_id": "node:stop_loss",
+  "aliases": [
+    "Stop Loss"
+  ],
+  "top_rules": [
+    {
+      "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_3",
+      "unit_type": "rule_card",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "title": "Trade Management / Stop Loss",
+      "subtitle": "Trade Management",
+      "snippet": "Время в сделке увеличивается из-за того, что стоп достаточно большой.",
+      "concept_ids": [
+        "concept:trade_management",
+        "subconcept:stop_loss"
+      ],
+      "support_basis": "transcript_plus_visual",
+      "evidence_requirement": "optional",
+      "teaching_mode": "mixed",
+      "confidence_score": 1.0,
+      "timestamps": [
+        {
+          "start": "00:53",
+          "end": "00:56"
+        },
+        {
+          "start": "00:36",
+          "end": "00:40"
+        },
+        {
+          "start": "00:58",
+          "end": "00:58"
+        },
+        {
+          "start": "01:42",
+          "end": "01:42"
+        }
+      ],
+      "evidence_count": 3,
+      "related_rule_count": 0,
+      "related_event_count": 2,
+      "score": null,
+      "why_retrieved": []
+    },
+    {
+      "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_4",
+      "unit_type": "rule_card",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "title": "Trade Management / Stop Loss",
+      "subtitle": "Trade Management",
+      "snippet": "Если стоп большой, можно посидеть в сделке подольше.",
+      "concept_ids": [
+        "concept:trade_management",
+        "subconcept:stop_loss"
+      ],
+      "support_basis": "transcript_plus_visual",
+      "evidence_requirement": "optional",
+      "teaching_mode": "mixed",
+      "confidence_score": 1.0,
+      "timestamps": [
+        {
+          "start": "01:58",
+          "end": "01:59"
+        },
+        {
+          "start": "00:53",
+          "end": "00:56"
+        },
+        {
+          "start": "00:36",
+          "end": "00:40"
+        },
+        {
+          "start": "00:58",
+          "end": "00:58"
+        },
+        {
+          "start": "01:42",
+          "end": "01:42"
+        },
+        {
+          "start": "01:58",
+          "end": "01:58"
+        }
+      ],
+      "evidence_count": 4,
+      "related_rule_count": 0,
+      "related_event_count": 2,
+      "score": null,
+      "why_retrieved": []
+    },
+    {
+      "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_27",
+      "unit_type": "rule_card",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "title": "управление позицией / стоп-лосс",
+      "subtitle": "управление позицией",
+      "snippet": "Не старайтесь выскочить из инструмента заранее, либо выставить стоп в без убыток.",
+      "concept_ids": [
+        "concept:upravlenie_pozitsiey",
+        "subconcept:stop_loss"
+      ],
+      "support_basis": "transcript_plus_visual",
+      "evidence_requirement": "optional",
+      "teaching_mode": "mixed",
+      "confidence_score": 1.0,
+      "timestamps": [
+        {
+          "start": "06:36",
+          "end": "06:44"
+        },
+        {
+          "start": "06:21",
+          "end": "06:30"
+        },
+        {
+          "start": "07:07",
+          "end": "07:13"
+        },
+        {
+          "start": "06:16",
+          "end": "06:16"
+        }
+      ],
+      "evidence_count": 1,
+      "related_rule_count": 0,
+      "related_event_count": 3,
+      "score": null,
+      "why_retrieved": []
+    },
+    {
+      "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_40",
+      "unit_type": "rule_card",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "title": "Управление риском / Стоп-лосс",
+      "subtitle": "Управление риском",
+      "snippet": "При подходе к зеркальному уровню лучше всего рассчитывать стандартный стоп 13-15% от ATAR.",
+      "concept_ids": [
+        "concept:risk_management",
+        "subconcept:stop_loss"
+      ],
+      "support_basis": "transcript_plus_visual",
+      "evidence_requirement": "optional",
+      "teaching_mode": "mixed",
+      "confidence_score": 1.0,
+      "timestamps": [
+        {
+          "start": "55:24",
+          "end": "55:29"
+        },
+        {
+          "start": "08:34",
+          "end": "10:36"
+        },
+        {
+          "start": "10:24",
+          "end": "10:32"
+        },
+        {
+          "start": "10:14",
+          "end": "10:34"
+        },
+        {
+          "start": "69:20",
+          "end": "69:20"
+        }
+      ],
+      "evidence_count": 2,
+      "related_rule_count": 0,
+      "related_event_count": 3,
+      "score": null,
+      "why_retrieved": []
+    },
+    {
+      "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_41",
+      "unit_type": "rule_card",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "title": "Управление риском / Стоп-лосс",
+      "subtitle": "Управление риском",
+      "snippet": "Если бы выставили стоп за Дневный уровень, то, скорее всего, даже не получили стоп.",
+      "concept_ids": [
+        "concept:risk_management",
+        "subconcept:stop_loss"
+      ],
+      "support_basis": "transcript_plus_visual",
+      "evidence_requirement": "optional",
+      "teaching_mode": "mixed",
+      "confidence_score": 1.0,
+      "timestamps": [
+        {
+          "start": "68:54",
+          "end": "68:59"
+        },
+        {
+          "start": "08:34",
+          "end": "10:36"
+        },
+        {
+          "start": "10:24",
+          "end": "10:32"
+        },
+        {
+          "start": "10:14",
+          "end": "10:34"
+        },
+        {
+          "start": "69:20",
+          "end": "69:20"
+        }
+      ],
+      "evidence_count": 2,
+      "related_rule_count": 0,
+      "related_event_count": 3,
+      "score": null,
+      "why_retrieved": []
+    },
+    {
+      "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_5",
+      "unit_type": "rule_card",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "title": "Stop Loss / Technical Stop Loss",
+      "subtitle": "Stop Loss",
+      "snippet": "Технические стопы могут быть основаны на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, откате и хвосте ложного пробоя.",
+      "concept_ids": [
+        "concept:stop_loss",
+        "subconcept:technical_stop_loss"
+      ],
+      "support_basis": "transcript_plus_visual",
+      "evidence_requirement": "optional",
+      "teaching_mode": "mixed",
+      "confidence_score": 0.9,
+      "timestamps": [
+        {
+          "start": "01:03",
+          "end": "01:12"
+        },
+        {
+          "start": "00:36",
+          "end": "00:40"
+        },
+        {
+          "start": "00:58",
+          "end": "00:58"
+        },
+        {
+          "start": "01:24",
+          "end": "01:24"
+        }
+      ],
+      "evidence_count": 3,
+      "related_rule_count": 0,
+      "related_event_count": 1,
+      "score": null,
+      "why_retrieved": []
+    },
+    {
+      "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_6",
+      "unit_type": "rule_card",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "title": "Stop Loss / Technical Stop Loss",
+      "subtitle": "Stop Loss",
+      "snippet": "Технический стоп защищает от того, что крупный игрок показал на графике.",
+      "concept_ids": [
+        "concept:stop_loss",
+        "subconcept:technical_stop_loss"
+      ],
+      "support_basis": "transcript_plus_visual",
+      "evidence_requirement": "optional",
+      "teaching_mode": "mixed",
+      "confidence_score": 0.9,
+      "timestamps": [
+        {
+          "start": "01:16",
+          "end": "01:21"
+        },
+        {
+          "start": "00:36",
+          "end": "00:40"
+        },
+        {
+          "start": "00:58",
+          "end": "00:58"
+        },
+        {
+          "start": "01:24",
+          "end": "01:24"
+        },
+        {
+          "start": "01:42",
+          "end": "01:42"
+        }
+      ],
+      "evidence_count": 4,
+      "related_rule_count": 0,
+      "related_event_count": 1,
+      "score": null,
+      "why_retrieved": []
+    },
+    {
+      "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_173",
+      "unit_type": "rule_card",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "title": "управление капиталом / стоп-лосс",
+      "subtitle": "управление капиталом",
+      "snippet": "Если вы часто получаете стоп-аут с меньшим стопом, попробуйте увеличить его и высиживать соотношение риск/прибыль 4 к 1.",
+      "concept_ids": [
+        "concept:upravlenie_kapitalom",
+        "subconcept:stop_loss"
+      ],
+      "support_basis": "transcript_primary",
+      "evidence_requirement": "optional",
+      "teaching_mode": "mixed",
+      "confidence_score": 0.9,
+      "timestamps": [
+        {
+          "start": "39:14",
+          "end": "39:17"
+        },
+        {
+          "start": "40:22",
+          "end": "40:36"
+        },
+        {
+          "start": "41:24",
+          "end": "41:24"
+        }
+      ],
+      "evidence_count": 1,
+      "related_rule_count": 0,
+      "related_event_count": 3,
+      "score": null,
+      "why_retrieved": []
+    },
+    {
+      "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_174",
+      "unit_type": "rule_card",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "title": "управление капиталом / стоп-лосс",
+      "subtitle": "управление капиталом",
+      "snippet": "При увеличении стопа время нахождения в сделке также увеличивается.",
+      "concept_ids": [
+        "concept:upravlenie_kapitalom",
+        "subconcept:stop_loss"
+      ],
+      "support_basis": "transcript_primary",
+      "evidence_requirement": "optional",
+      "teaching_mode": "mixed",
+      "confidence_score": 0.9,
+      "timestamps": [
+        {
+          "start": "39:24",
+          "end": "39:27"
+        },
+        {
+          "start": "39:14",
+          "end": "39:17"
+        },
+        {
+          "start": "40:22",
+          "end": "40:36"
+        },
+        {
+          "start": "41:24",
+          "end": "41:24"
+        }
+      ],
+      "evidence_count": 1,
+      "related_rule_count": 0,
+      "related_event_count": 3,
+      "score": null,
+      "why_retrieved": []
+    },
+    {
+      "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_175",
+      "unit_type": "rule_card",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "title": "управление капиталом / стоп-лосс",
+      "subtitle": "управление капиталом",
+      "snippet": "При увеличении стопа необходимо быть готовым сидеть в инструменте дольше.",
+      "concept_ids": [
+        "concept:upravlenie_kapitalom",
+        "subconcept:stop_loss"
+      ],
+      "support_basis": "transcript_primary",
+      "evidence_requirement": "optional",
+      "teaching_mode": "mixed",
+      "confidence_score": 0.9,
+      "timestamps": [
+        {
+          "start": "39:30",
+          "end": "39:34"
+        },
+        {
+          "start": "39:14",
+          "end": "39:17"
+        },
+        {
+          "start": "40:22",
+          "end": "40:36"
+        },
+        {
+          "start": "41:24",
+          "end": "41:24"
+        }
+      ],
+      "evidence_count": 1,
+      "related_rule_count": 0,
+      "related_event_count": 3,
+      "score": null,
+      "why_retrieved": []
+    }
+  ],
+  "top_events": [
+    {
+      "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_3",
+      "unit_type": "knowledge_event",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "title": "rule_statement / Trade Management",
+      "subtitle": "rule_statement",
+      "snippet": "Время в сделке увеличивается из-за того, что стоп достаточно большой.",
+      "concept_ids": [
+        "concept:trade_management",
+        "subconcept:stop_loss"
+      ],
+      "support_basis": "transcript_plus_visual",
+      "evidence_requirement": "optional",
+      "teaching_mode": "mixed",
+      "confidence_score": 0.95,
+      "timestamps": [
+        {
+          "start": "00:53",
+          "end": "00:56"
+        },
+        {
+          "start": "00:36",
+          "end": "00:40"
+        },
+        {
+          "start": "00:58",
+          "end": "00:58"
+        }
+      ],
+      "evidence_count": 2,
+      "related_rule_count": 0,
+      "related_event_count": 0,
+      "score": null,
+      "why_retrieved": []
+    },
+    {
+      "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_4",
+      "unit_type": "knowledge_event",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "title": "rule_statement / Stop Loss",
+      "subtitle": "rule_statement",
+      "snippet": "Технические стопы могут быть основаны на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, откате и хвосте ложного пробоя.",
+      "concept_ids": [
+        "concept:stop_loss",
+        "subconcept:technical_stop_loss"
+      ],
+      "support_basis": "transcript_plus_visual",
+      "evidence_requirement": "optional",
+      "teaching_mode": "mixed",
+      "confidence_score": 0.95,
+      "timestamps": [
+        {
+          "start": "01:03",
+          "end": "01:12"
+        },
+        {
+          "start": "00:36",
+          "end": "00:40"
+        },
+        {
+          "start": "00:58",
+          "end": "00:58"
+        },
+        {
+          "start": "01:24",
+          "end": "01:24"
+        }
+      ],
+      "evidence_count": 3,
+      "related_rule_count": 0,
+      "related_event_count": 0,
+      "score": null,
+      "why_retrieved": []
+    },
+    {
+      "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_5",
+      "unit_type": "knowledge_event",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "title": "rule_statement / Stop Loss",
+      "subtitle": "rule_statement",
+      "snippet": "Технический стоп защищает от того, что крупный игрок показал на графике.",
+      "concept_ids": [
+        "concept:stop_loss",
+        "subconcept:technical_stop_loss"
+      ],
+      "support_basis": "transcript_plus_visual",
+      "evidence_requirement": "optional",
+      "teaching_mode": "mixed",
+      "confidence_score": 0.95,
+      "timestamps": [
+        {
+          "start": "01:16",
+          "end": "01:21"
+        },
+        {
+          "start": "00:58",
+          "end": "00:58"
+        },
+        {
+          "start": "01:24",
+          "end": "01:24"
+        },
+        {
+          "start": "01:42",
+          "end": "01:42"
+        }
+      ],
+      "evidence_count": 3,
+      "related_rule_count": 0,
+      "related_event_count": 0,
+      "score": null,
+      "why_retrieved": []
+    },
+    {
+      "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_7",
+      "unit_type": "knowledge_event",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "title": "rule_statement / Trade Management",
+      "subtitle": "rule_statement",
+      "snippet": "Если стоп большой, можно посидеть в сделке подольше.",
+      "concept_ids": [
+        "concept:trade_management",
+        "subconcept:stop_loss"
+      ],
+      "support_basis": "transcript_plus_visual",
+      "evidence_requirement": "optional",
+      "teaching_mode": "mixed",
+      "confidence_score": 0.95,
+      "timestamps": [
+        {
+          "start": "01:58",
+          "end": "01:59"
+        },
+        {
+          "start": "01:42",
+          "end": "01:42"
+        },
+        {
+          "start": "01:58",
+          "end": "01:58"
+        }
+      ],
+      "evidence_count": 2,
+      "related_rule_count": 0,
+      "related_event_count": 0,
+      "score": null,
+      "why_retrieved": []
+    },
+    {
+      "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_16_rule_statement_10",
+      "unit_type": "knowledge_event",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "title": "rule_statement / управление капиталом",
+      "subtitle": "rule_statement",
+      "snippet": "Если вы меняете стоп с 10% на 15%, то в инструменте можно посидеть дольше.",
+      "concept_ids": [
+        "concept:upravlenie_kapitalom",
+        "subconcept:stop_loss"
+      ],
+      "support_basis": "transcript_primary",
+      "evidence_requirement": "optional",
+      "teaching_mode": "mixed",
+      "confidence_score": 0.95,
+      "timestamps": [
+        {
+          "start": "39:42",
+          "end": "39:45"
+        }
+      ],
+      "evidence_count": 0,
+      "related_rule_count": 0,
+      "related_event_count": 0,
+      "score": null,
+      "why_retrieved": []
+    },
+    {
+      "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_16_rule_statement_6",
+      "unit_type": "knowledge_event",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "title": "rule_statement / управление капиталом",
+      "subtitle": "rule_statement",
+      "snippet": "Если вы часто получаете стоп-аут с меньшим стопом, попробуйте увеличить его и высиживать соотношение риск/прибыль 4 к 1.",
+      "concept_ids": [
+        "concept:upravlenie_kapitalom",
+        "subconcept:stop_loss"
+      ],
+      "support_basis": "transcript_primary",
+      "evidence_requirement": "optional",
+      "teaching_mode": "mixed",
+      "confidence_score": 0.95,
+      "timestamps": [
+        {
+          "start": "39:14",
+          "end": "39:17"
+        }
+      ],
+      "evidence_count": 0,
+      "related_rule_count": 0,
+      "related_event_count": 0,
+      "score": null,
+      "why_retrieved": []
+    },
+    {
+      "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_16_rule_statement_7",
+      "unit_type": "knowledge_event",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "title": "rule_statement / управление капиталом",
+      "subtitle": "rule_statement",
+      "snippet": "При увеличении стопа время нахождения в сделке также увеличивается.",
+      "concept_ids": [
+        "concept:upravlenie_kapitalom",
+        "subconcept:stop_loss"
+      ],
+      "support_basis": "transcript_primary",
+      "evidence_requirement": "optional",
+      "teaching_mode": "mixed",
+      "confidence_score": 0.95,
+      "timestamps": [
+        {
+          "start": "39:24",
+          "end": "39:27"
+        }
+      ],
+      "evidence_count": 0,
+      "related_rule_count": 0,
+      "related_event_count": 0,
+      "score": null,
+      "why_retrieved": []
+    },
+    {
+      "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_16_rule_statement_8",
+      "unit_type": "knowledge_event",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "title": "rule_statement / управление капиталом",
+      "subtitle": "rule_statement",
+      "snippet": "При увеличении стопа необходимо быть готовым сидеть в инструменте дольше.",
+      "concept_ids": [
+        "concept:upravlenie_kapitalom",
+        "subconcept:stop_loss"
+      ],
+      "support_basis": "transcript_primary",
+      "evidence_requirement": "optional",
+      "teaching_mode": "mixed",
+      "confidence_score": 0.95,
+      "timestamps": [
+        {
+          "start": "39:30",
+          "end": "39:34"
+        }
+      ],
+      "evidence_count": 0,
+      "related_rule_count": 0,
+      "related_event_count": 0,
+      "score": null,
+      "why_retrieved": []
+    },
+    {
+      "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_24_rule_statement_0",
+      "unit_type": "knowledge_event",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "title": "rule_statement / Управление риском",
+      "subtitle": "rule_statement",
+      "snippet": "При подходе к зеркальному уровню лучше всего рассчитывать стандартный стоп 13-15% от ATAR.",
+      "concept_ids": [
+        "concept:risk_management",
+        "subconcept:stop_loss"
+      ],
+      "support_basis": "transcript_primary",
+      "evidence_requirement": "optional",
+      "teaching_mode": "mixed",
+      "confidence_score": 0.95,
+      "timestamps": [
+        {
+          "start": "55:24",
+          "end": "55:29"
+        }
+      ],
+      "evidence_count": 0,
+      "related_rule_count": 0,
+      "related_event_count": 0,
+      "score": null,
+      "why_retrieved": []
+    },
+    {
+      "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_2_rule_statement_0",
+      "unit_type": "knowledge_event",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "title": "rule_statement / Стоп-лосс",
+      "subtitle": "rule_statement",
+      "snippet": "Чем меньше стоп-лосс, тем меньше трейдер будет находиться в сделке по времени и тем больше он сможет забрать в плане своего тейка.",
+      "concept_ids": [
+        "concept:stop_loss",
+        "subconcept:razmer_stop_lossa"
+      ],
+      "support_basis": "transcript_plus_visual",
+      "evidence_requirement": "optional",
+      "teaching_mode": "mixed",
+      "confidence_score": 0.95,
+      "timestamps": [
+        {
+          "start": "04:19",
+          "end": "04:30"
+        },
+        {
+          "start": "04:32",
+          "end": "04:32"
+        }
+      ],
+      "evidence_count": 1,
+      "related_rule_count": 0,
+      "related_event_count": 0,
+      "score": null,
+      "why_retrieved": []
+    }
+  ],
+  "lessons": [
+    "2025-09-29-sviatoslav-chornyi",
+    "2025_09_29_sviatoslav_chornyi",
+    "corpus"
+  ],
+  "neighbors": [
+    {
+      "concept_id": "node:trade_management",
+      "relation": "has_subconcept",
+      "direction": "incoming",
+      "weight": 2.0
+    },
+    {
+      "concept_id": "node:upravlenie_kapitalom",
+      "relation": "has_subconcept",
+      "direction": "incoming",
+      "weight": 5.0
+    },
+    {
+      "concept_id": "node:upravlenie_pozitsiey",
+      "relation": "has_subconcept",
+      "direction": "incoming",
+      "weight": 1.0
+    },
+    {
+      "concept_id": "node:upravlenie_riskom",
+      "relation": "has_subconcept",
+      "direction": "incoming",
+      "weight": 2.0
+    },
+    {
+      "concept_id": "node:technical_stop_loss",
+      "relation": "co_occurs_with",
+      "direction": "outgoing",
+      "weight": 2.0
+    },
+    {
+      "concept_id": "node:trade_management",
+      "relation": "co_occurs_with",
+      "direction": "outgoing",
+      "weight": 2.0
+    },
+    {
+      "concept_id": "node:upravlenie_kapitalom",
+      "relation": "co_occurs_with",
+      "direction": "outgoing",
+      "weight": 5.0
+    },
+    {
+      "concept_id": "node:upravlenie_riskom",
+      "relation": "co_occurs_with",
+      "direction": "outgoing",
+      "weight": 2.0
+    },
+    {
+      "concept_id": "node:byt_gotovym_k_tomu_chto_instrument_libo_ochen_bystro_otstopit_libo_bystro_dast_teyk_pri_ispolzovanii_korotkikh_stopov",
+      "relation": "has_condition",
+      "direction": "outgoing",
+      "weight": 2.0
+    },
+    {
+      "concept_id": "node:dlya_tekh_kto_torguet_s_korotkim_stopom_pri_uvelichenii_stopa_do_10_15_ot_atar_vremya_v_sdelke_u_nego_uvelichivaetsya",
+      "relation": "has_condition",
+      "direction": "outgoing",
+      "weight": 1.0
+    },
+    {
+      "concept_id": "node:esli_stop_dostatochno_bolshoy_vremya_v_sdelke_uvelichivaetsya",
+      "relation": "has_condition",
+      "direction": "outgoing",
+      "weight": 2.0
+    },
+    {
+      "concept_id": "node:esli_stop_loss_dostatochno_bolshoy_vam_tozhe_pridetsya_sidet_krayne_dolgo",
+      "relation": "has_condition",
+      "direction": "outgoing",
+      "weight": 1.0
+    },
+    {
+      "concept_id": "node:ispolzovat_korotkie_stopy",
+      "relation": "has_condition",
+      "direction": "outgoing",
+      "weight": 2.0
+    },
+    {
+      "concept_id": "node:razmer_stop_lossa",
+      "relation": "has_subconcept",
+      "direction": "outgoing",
+      "weight": 1.0
+    },
+    {
+      "concept_id": "node:technical_stop_loss",
+      "relation": "has_subconcept",
+      "direction": "outgoing",
+      "weight": 2.0
+    },
+    {
+      "concept_id": "node:tekhnicheskiy_stop_loss",
+      "relation": "has_subconcept",
+      "direction": "outgoing",
+      "weight": 1.0
+    }
+  ],
+  "rule_count": 14,
+  "event_count": 50,
+  "evidence_count": 4
+}

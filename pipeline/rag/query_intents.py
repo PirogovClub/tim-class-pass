@@ -26,6 +26,9 @@ class QueryIntentSignals:
     prefers_visual_evidence: bool = False
     mentions_timeframe: bool = False
     mentions_cross_lesson: bool = False
+    mentions_stoploss: bool = False
+    prefers_actionable_rules: bool = False
+    prefers_explicit_rules: bool = False
     prefers_examples: bool = False
     prefers_theory: bool = False
 
@@ -36,6 +39,9 @@ class QueryIntentSignals:
             "prefers_visual_evidence": self.prefers_visual_evidence,
             "mentions_timeframe": self.mentions_timeframe,
             "mentions_cross_lesson": self.mentions_cross_lesson,
+            "mentions_stoploss": self.mentions_stoploss,
+            "prefers_actionable_rules": self.prefers_actionable_rules,
+            "prefers_explicit_rules": self.prefers_explicit_rules,
             "prefers_examples": self.prefers_examples,
             "prefers_theory": self.prefers_theory,
         }
@@ -43,7 +49,8 @@ class QueryIntentSignals:
 
 def analyze_query_intents(normalized_query: str) -> QueryIntentSignals:
     """Heuristic multi-label intent detection. Input must be lowercased normalized text."""
-    q = normalized_query
+    q = normalized_query.strip().lower()
+    q_space_normalized = q.replace("-", " ")
     intents: list[str] = []
 
     example_terms = (
@@ -51,7 +58,6 @@ def analyze_query_intents(normalized_query: str) -> QueryIntentSignals:
         "examples",
         "покажи",
         "пример",
-        "визуальн",
         "на графике",
         "chart",
         "screenshot",
@@ -99,15 +105,30 @@ def analyze_query_intents(normalized_query: str) -> QueryIntentSignals:
         "подтверждаются только",
         "только по transcript",
         "требуют визуальн",
+        "только по текст",
+        "только текст",
+        "без график",
+        "без визуал",
+        "без скрин",
     )
     prefers_transcript_only = any(
         t in q
         for t in (
             "only transcript",
+            "only from transcript",
+            "only by transcript",
+            "only by text",
+            "text only",
             "только по transcript",
             "только transcript",
             "подтверждаются только по transcript",
+            "подтверждаются только",
+            "только по текст",
+            "только текст",
+            "без график",
+            "без визуал",
             "transcript only",
+            "transcript primary",
         )
     )
     prefers_visual_evidence = any(
@@ -116,18 +137,73 @@ def analyze_query_intents(normalized_query: str) -> QueryIntentSignals:
     if any(t in q for t in support_policy_terms) or prefers_transcript_only:
         intents.append(INTENT_SUPPORT_POLICY)
 
+    stoploss_terms = (
+        "стоп-лосс",
+        "стоп-лосса",
+        "стоп лосс",
+        "стоп лосса",
+        "стоплосс",
+        "stop loss",
+        "stop-loss",
+        "technical stop",
+        "технический стоп",
+        "постановка стоп-лосса",
+        "постановки стоп-лосса",
+        "пример постановки стоп-лосса",
+        "где ставить стоп",
+        "куда ставить стоп",
+        "размер стопа",
+    )
+    mentions_stoploss = any(t in q for t in stoploss_terms) or any(
+        t in q_space_normalized
+        for t in (
+            "стоп лосс",
+            "стоп лосса",
+            "stop loss",
+            "пример постановки стоп лосса",
+            "постановка стоп лосса",
+            "постановки стоп лосса",
+        )
+    )
+
     timeframe_terms = (
         "timeframe",
         "таймфрейм",
+        "таймфреймов",
         "htf",
         "дневн",
+        "дневка",
         "daily",
         "hour",
         "часов",
+        "часовик",
         "higher timeframe",
         "старш",
+        "младш",
+        "локальн",
     )
     mentions_timeframe = any(t in q for t in timeframe_terms)
+    timeframe_action_terms = (
+        "как определить",
+        "правила",
+        "как торг",
+        "как использовать",
+        "как применять",
+        "где ставить",
+        "когда",
+        "что делать",
+        "на разных таймфреймах",
+        "на каких таймфреймах",
+    )
+    prefers_actionable_rules = mentions_timeframe and any(t in q for t in timeframe_action_terms)
+    explicit_rule_terms = (
+        "какие правила",
+        "правила торговли",
+        "правила для",
+        "rules for",
+        "rule for",
+    )
+    prefers_explicit_rules = q.startswith("правила") or any(t in q for t in explicit_rule_terms)
     if mentions_timeframe:
         intents.append(INTENT_TIMEFRAME)
 
@@ -163,8 +239,6 @@ def analyze_query_intents(normalized_query: str) -> QueryIntentSignals:
         "правил",
         "правило",
         "placement",
-        "стоп-лосс",
-        "stop loss",
         "take profit",
         "тейк",
     )
@@ -185,6 +259,9 @@ def analyze_query_intents(normalized_query: str) -> QueryIntentSignals:
         prefers_visual_evidence=prefers_visual_evidence,
         mentions_timeframe=mentions_timeframe,
         mentions_cross_lesson=mentions_cross_lesson,
+        mentions_stoploss=mentions_stoploss,
+        prefers_actionable_rules=prefers_actionable_rules,
+        prefers_explicit_rules=prefers_explicit_rules,
         prefers_examples=prefers_examples,
         prefers_theory=prefers_theory,
     )
@@ -202,9 +279,13 @@ def unit_bias_from_intents(signals: QueryIntentSignals) -> str:
         signals.prefers_theory and not signals.prefers_examples
     ):
         return "concept"
+    if INTENT_CROSS_LESSON_CONFLICT in signals.detected_intents:
+        return "concept"
     if INTENT_INVALIDATION in signals.detected_intents or INTENT_DIRECT_RULE in signals.detected_intents:
         return "rule"
-    if INTENT_TIMEFRAME in signals.detected_intents or INTENT_CROSS_LESSON_CONFLICT in signals.detected_intents:
+    if INTENT_TIMEFRAME in signals.detected_intents and signals.prefers_actionable_rules:
+        return "rule"
+    if INTENT_TIMEFRAME in signals.detected_intents:
         return "concept"
     return "mixed"
 
@@ -213,4 +294,6 @@ def query_preferences_from_signals(signals: QueryIntentSignals) -> dict[str, boo
     return {
         "prefers_examples": signals.prefers_examples,
         "prefers_theory": signals.prefers_theory,
+        "prefers_actionable_rules": signals.prefers_actionable_rules,
+        "prefers_explicit_rules": signals.prefers_explicit_rules,
     }

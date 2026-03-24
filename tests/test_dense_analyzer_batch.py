@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from pipeline.dense_analyzer import (
+    _resolve_frame_path,
     emit_batch_spool_for_analysis,
     materialize_batch_results_for_analysis,
 )
@@ -81,3 +82,65 @@ def test_dense_analyzer_batch_emit_and_materialize(tmp_path: Path) -> None:
     assert "000001" in analysis
     assert (video_root / "dense_analysis.json").exists()
     assert (frames_dir / "frame_000001.json").exists()
+
+
+def test_resolve_frame_path_accepts_diff_suffixed_images(tmp_path: Path) -> None:
+    frames_dir = tmp_path / "llm_queue"
+    frames_dir.mkdir(parents=True, exist_ok=True)
+    expected = frames_dir / "frame_000002_diff_0.0000.jpg"
+    expected.write_bytes(b"fake-jpeg")
+
+    resolved = _resolve_frame_path(frames_dir, "000002")
+
+    assert resolved == expected
+
+
+def test_dense_analyzer_batch_materialize_marks_stage_failed_on_parse_error(tmp_path: Path) -> None:
+    video_root = tmp_path / "video"
+    frames_dir = video_root / "frames_dense"
+    frames_dir.mkdir(parents=True, exist_ok=True)
+    (frames_dir / "frame_000001.jpg").write_bytes(b"fake-jpeg")
+
+    store = StateStore(tmp_path / "state.db")
+    store.ensure_video(video_id="video1", video_root=video_root)
+    store.ensure_lesson(
+        lesson_id="video1::lesson1",
+        video_id="video1",
+        lesson_name="lesson1",
+        lesson_root=video_root,
+    )
+
+    spool_path = emit_batch_spool_for_analysis(
+        video_root=video_root,
+        lesson_context={"lesson_id": "video1::lesson1", "lesson_name": "lesson1", "video_id": "video1"},
+        queue_keys=["000001"],
+        frames_dir=frames_dir,
+        config={},
+        state_store=store,
+    )
+    rows = [json.loads(line) for line in spool_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+    result_path = tmp_path / "bad-result.jsonl"
+    result_path.write_text(
+        json.dumps(
+            {
+                "key": rows[0]["key"],
+                "response": {"candidates": [{"content": {"parts": [{"text": "not-json"}]}}]},
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    analysis = materialize_batch_results_for_analysis(
+        result_path,
+        video_root=video_root,
+        lesson_context={"lesson_id": "video1::lesson1", "lesson_name": "lesson1", "video_id": "video1"},
+        frames_dir=frames_dir,
+        state_store=store,
+    )
+
+    assert analysis == {}
+    stage_runs = store.list_stage_runs(lesson_id="video1::lesson1", stage_name="vision")
+    assert stage_runs
+    assert stage_runs[-1]["status"] == "FAILED"

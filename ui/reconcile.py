@@ -3,7 +3,7 @@ from __future__ import annotations
 import threading
 import time
 
-from ui.run_launcher import is_process_alive, launch_run_worker
+from ui.run_launcher import is_process_alive, is_remote_reconcile_recoverable, launch_run_worker
 from ui.settings import UISettings
 from ui.storage import UIStateStore
 
@@ -15,7 +15,11 @@ def launch_waiting_remote_runs(
     run_ids: list[str] | None = None,
 ) -> int:
     launched = 0
-    candidates = store.list_waiting_remote_runs()
+    candidates = [
+        run
+        for run in store.list_runs(statuses=["WAITING_REMOTE", "RUNNING"])
+        if is_remote_reconcile_recoverable(run)
+    ]
     if run_ids is not None:
         allowed = set(run_ids)
         candidates = [run for run in candidates if str(run["run_id"]) in allowed]
@@ -24,6 +28,23 @@ def launch_waiting_remote_runs(
         pid = None if pid_value is None else int(pid_value)
         if is_process_alive(pid):
             continue
+        updates = {"pid": None}
+        if str(run.get("status") or "") != "WAITING_REMOTE":
+            updates.update(
+                {
+                    "status": "WAITING_REMOTE",
+                    "finished_at": None,
+                    "exit_code": None,
+                    "error_message": None,
+                }
+            )
+            store.append_run_event(
+                run_id=str(run["run_id"]),
+                event_type="remote_reconcile_recovered",
+                stage=run.get("current_stage"),
+                message="Recovered stale remote reconcile worker; relaunching reconcile.",
+            )
+        store.update_run(str(run["run_id"]), **updates)
         launch_run_worker(store, settings, run_id=str(run["run_id"]), action="continue")
         launched += 1
     return launched

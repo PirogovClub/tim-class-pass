@@ -16,7 +16,7 @@ class UISettings:
     upload_max_video_bytes: int = 512 * 1024 * 1024
     upload_max_transcript_bytes: int = 5 * 1024 * 1024
     page_size: int = 25
-    scheduler_interval_seconds: int = 10
+    scheduler_interval_seconds: int = 30
     enable_periodic_reconcile: bool = True
     test_mode: bool = False
     host: str = "127.0.0.1"
@@ -40,7 +40,7 @@ class UISettings:
             upload_max_video_bytes=int(os.getenv("UI_UPLOAD_MAX_VIDEO_BYTES") or 512 * 1024 * 1024),
             upload_max_transcript_bytes=int(os.getenv("UI_UPLOAD_MAX_TRANSCRIPT_BYTES") or 5 * 1024 * 1024),
             page_size=int(os.getenv("UI_PAGE_SIZE") or 25),
-            scheduler_interval_seconds=int(os.getenv("UI_RECONCILE_INTERVAL_SECONDS") or 10),
+            scheduler_interval_seconds=int(os.getenv("UI_RECONCILE_INTERVAL_SECONDS") or 30),
             enable_periodic_reconcile=(os.getenv("UI_ENABLE_PERIODIC_RECONCILE", "1") != "0"),
             test_mode=(os.getenv("UI_TEST_MODE", "0") == "1"),
             host=os.getenv("UI_HOST") or "127.0.0.1",

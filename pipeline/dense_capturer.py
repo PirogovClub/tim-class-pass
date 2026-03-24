@@ -8,6 +8,8 @@ import math
 import inspect
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+from helpers.ffmpeg_cmd import run_ffmpeg_cmd
+
 
 SEGMENT_SECONDS_TARGET = 60
 
@@ -17,21 +19,6 @@ def _frame_number_to_key(frame_number: int, capture_fps: float) -> str:
         raise ValueError("capture_fps must be greater than 0")
     timestamp_seconds = max(1, int(round(frame_number / capture_fps)))
     return f"{timestamp_seconds:06d}"
-
-
-def _run_ffmpeg_cmd(cmd: list[str]) -> bool:
-    result = subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=None, text=True)
-    if result.returncode == 0:
-        return True
-    result_err = subprocess.run(cmd, capture_output=True, text=True)
-    print(f"FFmpeg error:\n{result_err.stderr or result_err.stdout or 'unknown'}")
-    cmd_uv = ["uv", "run", "ffmpeg"] + cmd[1:]
-    result2 = subprocess.run(cmd_uv, stdout=subprocess.DEVNULL, stderr=None, text=True)
-    if result2.returncode == 0:
-        return True
-    result2_err = subprocess.run(cmd_uv, capture_output=True, text=True)
-    print(f"FFmpeg (uv) error:\n{result2_err.stderr or result2_err.stdout or 'unknown'}")
-    return False
 
 
 def _probe_duration_seconds(video_file: str) -> float | None:
@@ -79,7 +66,7 @@ def _extract_segment(
         "-y",
         output_pattern,
     ]
-    ok = _run_ffmpeg_cmd(cmd)
+    ok = run_ffmpeg_cmd(cmd)
     if not ok:
         print(f"FFmpeg failed for segment {label}")
     return ok
@@ -209,7 +196,7 @@ def extract_dense_frames(
             "-y",
             output_pattern
         ]
-        ok = _run_ffmpeg_cmd(cmd)
+        ok = run_ffmpeg_cmd(cmd)
         if not ok:
             sys.exit(1)
 

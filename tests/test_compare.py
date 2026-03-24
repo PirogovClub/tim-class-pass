@@ -9,6 +9,10 @@ def _write_image(path: Path, color: int) -> None:
     Image.new("L", (32, 32), color=color).save(path)
 
 
+def _write_rgb_image(path: Path, color: tuple[int, int, int]) -> None:
+    Image.new("RGB", (32, 32), color=color).save(path)
+
+
 def test_compare_images_skips_near_identical_frames(tmp_path: Path) -> None:
     baseline = tmp_path / "baseline.png"
     current = tmp_path / "current.png"
@@ -35,6 +39,18 @@ def test_compare_images_detects_significant_change(tmp_path: Path) -> None:
     assert result.is_significant is True
 
 
+def test_compare_images_detects_color_only_change(tmp_path: Path) -> None:
+    baseline = tmp_path / "baseline.png"
+    current = tmp_path / "current.png"
+    _write_rgb_image(baseline, (255, 0, 0))
+    _write_rgb_image(current, (0, 130, 0))
+
+    result = compare.compare_images(baseline, current)
+
+    assert result.score < 0.95
+    assert result.is_significant is True
+
+
 def test_compare_images_writes_structural_artifacts(tmp_path: Path) -> None:
     baseline = tmp_path / "baseline.png"
     current = tmp_path / "current.png"
@@ -52,3 +68,5 @@ def test_compare_images_writes_structural_artifacts(tmp_path: Path) -> None:
     assert result.metadata["blur_radius"] == 1.5
     assert (artifacts_dir / "baseline.png").is_file()
     assert (artifacts_dir / "current.png").is_file()
+    assert Image.open(artifacts_dir / "baseline.png").mode == "RGB"
+    assert Image.open(artifacts_dir / "current.png").mode == "RGB"

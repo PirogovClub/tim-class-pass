@@ -9,8 +9,10 @@ from pathlib import Path
 
 import click
 
+from helpers import config as pipeline_config
 from helpers.clients import gemini_client
 from pipeline.batch_cli import _ensure_lesson_chunks, _load_queue_manifest
+from pipeline import build_llm_prompts, dense_capturer, downloader, select_llm_frames, structural_compare
 from pipeline.component2.main import run_component2_pipeline
 from pipeline.contracts import PipelinePaths
 from pipeline.dense_analyzer import emit_batch_spool_for_analysis, run_analysis
@@ -29,6 +31,17 @@ from ui.services.runs import _safe_run_token
 
 class RunCancelled(RuntimeError):
     pass
+
+
+def _configure_stdio() -> None:
+    for stream_name in ("stdout", "stderr"):
+        stream = getattr(sys, stream_name, None)
+        if stream is None or not hasattr(stream, "reconfigure"):
+            continue
+        try:
+            stream.reconfigure(encoding="utf-8", errors="backslashreplace")
+        except Exception:
+            continue
 
 
 def _effective_settings(project_root: Path, ui_db_path: Path) -> UISettings:
@@ -200,14 +213,19 @@ def _project_state_snapshot(owner_project) -> dict[str, object]:
     project_root = owner_project.project_root
     lesson_name = owner_project.lesson_name
     paths = PipelinePaths(video_root=project_root)
+    prompt_files = sorted((project_root / "llm_queue").glob("*_prompt.txt")) if (project_root / "llm_queue").exists() else []
     return {
         "project_root": str(project_root),
         "title": owner_project.title,
         "lesson_name": lesson_name,
+        "source_mode": owner_project.source_mode,
+        "source_url": owner_project.source_url,
         "transcript_path": None if owner_project.transcript_path is None else str(owner_project.transcript_path),
         "source_video_path": None if owner_project.source_video_path is None else str(owner_project.source_video_path),
         "dense_index_exists": (project_root / "dense_index.json").exists(),
+        "structural_index_exists": (project_root / "structural_index.json").exists(),
         "queue_manifest_exists": (project_root / "llm_queue" / "manifest.json").exists(),
+        "prompt_file_count": len(prompt_files),
         "dense_analysis_exists": (project_root / "dense_analysis.json").exists(),
         "knowledge_events_exists": paths.knowledge_events_path(lesson_name).exists(),
         "rule_cards_exists": paths.rule_cards_path(lesson_name).exists(),
@@ -228,6 +246,329 @@ def _log_prerequisite_snapshot(reporter: RunReporter, stage: str, *, heading: st
         f"{heading}: {json.dumps(values, ensure_ascii=False, sort_keys=True)}",
         stage=stage,
         kind="preflight",
+    )
+
+
+def _project_video_id(owner_project) -> str:
+    return owner_project.project_root.name
+
+
+def _project_config(owner_project) -> dict:
+    return pipeline_config.get_config_for_video(_project_video_id(owner_project))
+
+
+def _resolved_max_workers(cfg: dict) -> int:
+    requested_workers = cfg.get("workers")
+    default_workers = min(max((os.cpu_count() or 1) // 2, 1), 8)
+    if requested_workers is None:
+        return default_workers
+    try:
+        value = int(requested_workers)
+    except (TypeError, ValueError):
+        return default_workers
+    return min(max(value, 1), 8)
+
+
+def _fake_write_json(path: Path, payload: object) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+
+
+def _fake_write_text(path: Path, content: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content, encoding="utf-8")
+
+
+def _run_download_step(
+    owner_project,
+    reporter: RunReporter,
+    settings: UISettings,
+    *,
+    force_overwrite: bool = False,
+) -> None:
+    stage = "download"
+    reporter.log(
+        f"download_only starting with project state: {json.dumps(_project_state_snapshot(owner_project), ensure_ascii=False, sort_keys=True)}",
+        stage=stage,
+        kind="context",
+    )
+    if not owner_project.source_url:
+        raise ValueError("Project does not have a source URL configured for Step 0 download.")
+    resolved_video_id = downloader.extract_video_id(owner_project.source_url)
+    _log_prerequisite_snapshot(
+        reporter,
+        stage,
+        heading="download prerequisites",
+        values={
+            "source_url": owner_project.source_url,
+            "project_root": str(owner_project.project_root),
+            "expected_video_id": _project_video_id(owner_project),
+            "resolved_video_id": resolved_video_id,
+            "force_overwrite": force_overwrite,
+        },
+    )
+    if not resolved_video_id:
+        raise ValueError("Could not extract a video ID from the configured source URL.")
+    if resolved_video_id != _project_video_id(owner_project):
+        raise ValueError(
+            f"Configured source URL resolves to `{resolved_video_id}`, but this project expects `{_project_video_id(owner_project)}`."
+        )
+    reporter.running(stage, "Downloading source video and transcripts.")
+    if _fake_mode(settings):
+        _fake_write_text(owner_project.project_root / f"{resolved_video_id}.mp4", "fake-video")
+        _fake_write_text(
+            owner_project.project_root / f"{resolved_video_id}.vtt",
+            "WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nDownloaded transcript\n",
+        )
+    else:
+        if not downloader.download_video_and_transcript(
+            owner_project.source_url,
+            resolved_video_id,
+            overwrite=force_overwrite,
+        ):
+            raise ValueError("Download step failed. See the worker log for downloader output.")
+    reporter.progress(stage, "Download step completed.")
+
+
+def _run_dense_capture_step(
+    owner_project,
+    reporter: RunReporter,
+    settings: UISettings,
+    *,
+    force_overwrite: bool = False,
+) -> None:
+    stage = "prepare_dense_capture"
+    cfg = _project_config(owner_project)
+    capture_fps = float(cfg.get("capture_fps", 1.0))
+    max_workers = _resolved_max_workers(cfg)
+    video_path = owner_project.source_video_path
+    _log_prerequisite_snapshot(
+        reporter,
+        stage,
+        heading="dense capture prerequisites",
+        values={
+            "video_path": None if video_path is None else str(video_path),
+            "video_exists": bool(video_path and video_path.exists()),
+            "capture_fps": capture_fps,
+            "max_workers": max_workers,
+            "force_overwrite": force_overwrite,
+        },
+    )
+    if video_path is None or not video_path.exists():
+        raise _missing_files_error(
+            context="Step 1 dense capture",
+            missing_paths=[owner_project.project_root],
+            recommendation="Add a source video first, or run Step 0 download for URL-backed projects.",
+        )
+    reporter.running(stage, "Running Step 1 dense capture.")
+    if _fake_mode(settings):
+        frame_rel_path = "frames_dense/frame_000001.jpg"
+        _fake_write_text(owner_project.project_root / frame_rel_path, "fake-jpg")
+        _fake_write_json(owner_project.project_root / "dense_index.json", {"000001": frame_rel_path})
+    else:
+        dense_capturer.extract_dense_frames(
+            _project_video_id(owner_project),
+            video_file_override=video_path.name,
+            max_workers=max_workers,
+            capture_fps=capture_fps,
+        )
+    reporter.progress(stage, "Step 1 dense capture completed.")
+
+
+def _run_structural_compare_step(
+    owner_project,
+    reporter: RunReporter,
+    settings: UISettings,
+    *,
+    force_overwrite: bool = False,
+) -> None:
+    stage = "prepare_structural_compare"
+    cfg = _project_config(owner_project)
+    max_workers = _resolved_max_workers(cfg)
+    dense_index_path = owner_project.project_root / "dense_index.json"
+    _log_prerequisite_snapshot(
+        reporter,
+        stage,
+        heading="structural compare prerequisites",
+        values={
+            "dense_index_path": str(dense_index_path),
+            "dense_index_exists": dense_index_path.exists(),
+            "max_workers": max_workers,
+            "force_overwrite": force_overwrite,
+        },
+    )
+    if not dense_index_path.exists():
+        raise _missing_files_error(
+            context="Step 1.5 structural compare",
+            missing_paths=[dense_index_path],
+            recommendation="Run Step 1 dense capture first.",
+        )
+    reporter.running(stage, "Running Step 1.5 structural compare.")
+    if _fake_mode(settings):
+        _fake_write_json(
+            owner_project.project_root / "structural_index.json",
+            {
+                "video_id": _project_video_id(owner_project),
+                "results": {"000001": {"previous_key": None, "score": 0.5, "is_significant": True}},
+            },
+        )
+    else:
+        structural_compare.run_structural_compare(
+            _project_video_id(owner_project),
+            force=force_overwrite,
+            max_workers=max_workers,
+            progress_callback=lambda message: reporter.progress(stage, message),
+        )
+    reporter.progress(stage, "Step 1.5 structural compare completed.")
+
+
+def _run_llm_queue_step(owner_project, reporter: RunReporter, settings: UISettings) -> None:
+    stage = "prepare_llm_queue"
+    dense_index_path = owner_project.project_root / "dense_index.json"
+    structural_index_path = owner_project.project_root / "structural_index.json"
+    cfg = _project_config(owner_project)
+    threshold = float(cfg.get("llm_queue_diff_threshold", 0.14))
+    _log_prerequisite_snapshot(
+        reporter,
+        stage,
+        heading="llm queue prerequisites",
+        values={
+            "dense_index_path": str(dense_index_path),
+            "dense_index_exists": dense_index_path.exists(),
+            "structural_index_path": str(structural_index_path),
+            "structural_index_exists": structural_index_path.exists(),
+            "threshold": threshold,
+        },
+    )
+    missing_paths = [path for path in [dense_index_path, structural_index_path] if not path.exists()]
+    if missing_paths:
+        raise _missing_files_error(
+            context="Step 1.6 queue build",
+            missing_paths=missing_paths,
+            recommendation="Run Steps 1 and 1.5 first.",
+        )
+    reporter.running(stage, "Running Step 1.6 queue build.")
+    if _fake_mode(settings):
+        queue_dir = owner_project.project_root / "llm_queue"
+        queue_dir.mkdir(parents=True, exist_ok=True)
+        _fake_write_text(queue_dir / "frame_000001.jpg", "fake-jpg")
+        _fake_write_json(
+            queue_dir / "manifest.json",
+            {
+                "video_id": _project_video_id(owner_project),
+                "threshold": threshold,
+                "total_selected": 1,
+                "copied": 1,
+                "items": {
+                    "000001": {
+                        "reason": "above_threshold",
+                        "diff": 0.5,
+                        "source": "frames_dense/frame_000001.jpg",
+                    }
+                },
+            },
+        )
+    else:
+        queue_dir = select_llm_frames.build_llm_queue(_project_video_id(owner_project), threshold=threshold)
+    reporter.progress(stage, f"Step 1.6 queue build completed: {queue_dir}")
+
+
+def _run_prompt_build_step(owner_project, reporter: RunReporter) -> None:
+    stage = "prepare_llm_prompts"
+    manifest_path = owner_project.project_root / "llm_queue" / "manifest.json"
+    _log_prerequisite_snapshot(
+        reporter,
+        stage,
+        heading="prompt build prerequisites",
+        values={
+            "queue_manifest_path": str(manifest_path),
+            "queue_manifest_exists": manifest_path.exists(),
+        },
+    )
+    if not manifest_path.exists():
+        raise _missing_files_error(
+            context="Step 1.7 prompt build",
+            missing_paths=[manifest_path],
+            recommendation="Run Step 1.6 queue build first.",
+        )
+    reporter.running(stage, "Running Step 1.7 prompt build.")
+    queue_dir = build_llm_prompts.build_llm_prompts(_project_video_id(owner_project))
+    reporter.progress(stage, f"Step 1.7 prompt build completed: {queue_dir}")
+
+
+def _run_prepare_project(
+    owner_project,
+    reporter: RunReporter,
+    settings: UISettings,
+    store: UIStateStore,
+    *,
+    force_overwrite: bool = False,
+):
+    project = owner_project
+    snapshot = _project_state_snapshot(project)
+    reporter.log(
+        f"prepare_project starting with project state: {json.dumps(snapshot, ensure_ascii=False, sort_keys=True)}",
+        stage="prepare_dense_capture",
+        kind="context",
+    )
+    if force_overwrite or not snapshot["dense_index_exists"]:
+        _run_dense_capture_step(project, reporter, settings, force_overwrite=force_overwrite)
+        project = refresh_project_record(store, project.project_id)
+    if force_overwrite or not _project_state_snapshot(project)["structural_index_exists"]:
+        _run_structural_compare_step(project, reporter, settings, force_overwrite=force_overwrite)
+        project = refresh_project_record(store, project.project_id)
+    if force_overwrite or not _project_state_snapshot(project)["queue_manifest_exists"]:
+        _run_llm_queue_step(project, reporter, settings)
+        project = refresh_project_record(store, project.project_id)
+    if force_overwrite or not _project_state_snapshot(project)["prompt_file_count"]:
+        _run_prompt_build_step(project, reporter)
+        project = refresh_project_record(store, project.project_id)
+    return project
+
+
+def _run_all_local(
+    owner_project,
+    reporter: RunReporter,
+    settings: UISettings,
+    store: UIStateStore,
+    *,
+    force_overwrite: bool = False,
+) -> None:
+    project = owner_project
+    if project.source_url and (force_overwrite or project.source_video_path is None or project.transcript_path is None):
+        _run_download_step(project, reporter, settings, force_overwrite=force_overwrite)
+        project = refresh_project_record(store, project.project_id)
+    project = _run_prepare_project(project, reporter, settings, store, force_overwrite=force_overwrite)
+    _run_sync_full(project, reporter, settings, force_overwrite=force_overwrite)
+
+
+def _run_all_batch(
+    owner_project,
+    reporter: RunReporter,
+    run: dict,
+    settings: UISettings,
+    store: UIStateStore,
+    *,
+    force_overwrite: bool = False,
+) -> None:
+    project = owner_project
+    if project.source_url and (force_overwrite or project.source_video_path is None or project.transcript_path is None):
+        _run_download_step(project, reporter, settings, force_overwrite=force_overwrite)
+        project = refresh_project_record(store, project.project_id)
+    project = _run_prepare_project(project, reporter, settings, store, force_overwrite=force_overwrite)
+    if not force_overwrite and (project.project_root / "dense_analysis.json").exists():
+        if project.transcript_path is None:
+            raise ValueError("Project is missing transcript after preparation.")
+        paths = PipelinePaths(video_root=project.project_root)
+        if paths.knowledge_events_path(project.lesson_name).exists():
+            _run_postprocess(project, reporter)
+            return
+    _submit_batch_stage(
+        project,
+        reporter,
+        run,
+        stage_name=STAGE_VISION if force_overwrite or not (project.project_root / "dense_analysis.json").exists() else STAGE_KNOWLEDGE_EXTRACT,
+        settings=settings,
     )
 
 
@@ -272,7 +613,13 @@ def _run_postprocess(owner_project, reporter: RunReporter) -> None:
     reporter.progress("postprocess", f"Post-process complete with {len(outputs)} output(s).")
 
 
-def _run_sync_full(owner_project, reporter: RunReporter, settings: UISettings) -> None:
+def _run_sync_full(
+    owner_project,
+    reporter: RunReporter,
+    settings: UISettings,
+    *,
+    force_overwrite: bool = False,
+) -> None:
     project_root, transcript_path = _project_paths(owner_project)
     dense_analysis_path = project_root / "dense_analysis.json"
     reporter.log(
@@ -280,7 +627,7 @@ def _run_sync_full(owner_project, reporter: RunReporter, settings: UISettings) -
         stage="vision_sync",
         kind="context",
     )
-    if not dense_analysis_path.exists():
+    if force_overwrite or not dense_analysis_path.exists():
         queue_manifest = project_root / "llm_queue" / "manifest.json"
         dense_index = project_root / "dense_index.json"
         _log_prerequisite_snapshot(
@@ -294,6 +641,7 @@ def _run_sync_full(owner_project, reporter: RunReporter, settings: UISettings) -
                 "queue_manifest_path": str(queue_manifest),
                 "queue_manifest_exists": queue_manifest.exists(),
                 "transcript_path": str(transcript_path),
+                "force_overwrite": force_overwrite,
             },
         )
         missing_paths = [path for path in [dense_index, queue_manifest] if not path.exists()]
@@ -428,6 +776,8 @@ def _submit_batch_stage(owner_project, reporter: RunReporter, run: dict, *, stag
 def _continue_batch_run(owner_project, reporter: RunReporter, run: dict, *, settings: UISettings) -> None:
     current_stage = str(run.get("current_stage") or "")
     pipeline_store = _prepare_pipeline_store(run)
+    batch_stage_name = STAGE_VISION if current_stage == "vision_remote" else STAGE_KNOWLEDGE_EXTRACT if current_stage == "knowledge_remote" else None
+    stage_jobs = pipeline_store.list_batch_jobs(stage_name=batch_stage_name) if batch_stage_name else []
     reporter.running(current_stage or "reconcile", "Reconciling remote batch state.")
     if _fake_mode(settings):
         status_map = fake_batch_backend.poll_active_batches(pipeline_store)
@@ -436,7 +786,16 @@ def _continue_batch_run(owner_project, reporter: RunReporter, run: dict, *, sett
     reporter.progress(current_stage or "reconcile", json.dumps(status_map, ensure_ascii=False), remote_poll=True)
     if any(status == "FAILED" for status in status_map.values()):
         raise ValueError("Remote batch reported failure.")
-    if not status_map or any(status in {"SUBMITTED", "PROCESSING"} for status in status_map.values()):
+    if any(str(job.get("status") or "") in {"FAILED", "CANCELLED", "EXPIRED"} for job in stage_jobs):
+        raise ValueError("Remote batch reported failure.")
+    if any(status in {"SUBMITTED", "PROCESSING"} for status in status_map.values()):
+        reporter.waiting_remote(
+            current_stage or "reconcile",
+            "Remote batch still processing.",
+            remote_job_name=run.get("remote_job_name"),
+        )
+        return
+    if not status_map and any(str(job.get("status") or "") not in {"SUCCEEDED"} for job in stage_jobs):
         reporter.waiting_remote(
             current_stage or "reconcile",
             "Remote batch still processing.",
@@ -496,6 +855,7 @@ def _run_corpus(owner_targets, reporter: RunReporter, settings: UISettings) -> N
 
 
 def run_worker(*, project_root: Path, ui_db_path: Path, run_id: str, action: str) -> None:
+    _configure_stdio()
     settings = _effective_settings(project_root, ui_db_path)
     store = UIStateStore(settings.state_db_path)
     reporter = RunReporter(store, run_id)
@@ -512,6 +872,7 @@ def run_worker(*, project_root: Path, ui_db_path: Path, run_id: str, action: str
                 "run_id": run.run_id,
                 "run_kind": run.run_kind,
                 "run_mode": run.run_mode,
+                "force_overwrite": run.force_overwrite,
                 "action": action,
                 "pipeline_db_path": None if run.pipeline_db_path is None else str(run.pipeline_db_path),
                 "log_path": None if run.log_path is None else str(run.log_path),
@@ -536,9 +897,41 @@ def run_worker(*, project_root: Path, ui_db_path: Path, run_id: str, action: str
             return
         if owner_project is None:
             raise ValueError("Run owner project not found.")
+        owner_project = refresh_project_record(store, owner_project.project_id)
+        force_overwrite = run.force_overwrite
         if action == "start":
+            if run.run_mode == "download_only":
+                _run_download_step(owner_project, reporter, settings, force_overwrite=force_overwrite)
+                refresh_project_record(store, owner_project.project_id)
+                reporter.succeeded("download", "Download step completed.")
+                return
+            if run.run_mode == "prepare_dense_capture":
+                _run_dense_capture_step(owner_project, reporter, settings, force_overwrite=force_overwrite)
+                refresh_project_record(store, owner_project.project_id)
+                reporter.succeeded("prepare_dense_capture", "Step 1 dense capture completed.")
+                return
+            if run.run_mode == "prepare_structural_compare":
+                _run_structural_compare_step(owner_project, reporter, settings, force_overwrite=force_overwrite)
+                refresh_project_record(store, owner_project.project_id)
+                reporter.succeeded("prepare_structural_compare", "Step 1.5 structural compare completed.")
+                return
+            if run.run_mode == "prepare_llm_queue":
+                _run_llm_queue_step(owner_project, reporter, settings)
+                refresh_project_record(store, owner_project.project_id)
+                reporter.succeeded("prepare_llm_queue", "Step 1.6 queue build completed.")
+                return
+            if run.run_mode == "prepare_llm_prompts":
+                _run_prompt_build_step(owner_project, reporter)
+                refresh_project_record(store, owner_project.project_id)
+                reporter.succeeded("prepare_llm_prompts", "Step 1.7 prompt build completed.")
+                return
+            if run.run_mode == "prepare_project":
+                _run_prepare_project(owner_project, reporter, settings, store, force_overwrite=force_overwrite)
+                refresh_project_record(store, owner_project.project_id)
+                reporter.succeeded("prepare_llm_prompts", "Project preparation completed through Step 1.7.")
+                return
             if run.run_mode == "sync_full":
-                _run_sync_full(owner_project, reporter, settings)
+                _run_sync_full(owner_project, reporter, settings, force_overwrite=force_overwrite)
                 refresh_project_record(store, owner_project.project_id)
                 reporter.succeeded("component2", "Sync pipeline completed.")
                 return
@@ -549,8 +942,24 @@ def run_worker(*, project_root: Path, ui_db_path: Path, run_id: str, action: str
                 _submit_batch_stage(owner_project, reporter, run_row, stage_name=STAGE_KNOWLEDGE_EXTRACT, settings=settings)
                 return
             if run.run_mode == "batch_full":
-                stage_name = STAGE_VISION if not (owner_project.project_root / "dense_analysis.json").exists() else STAGE_KNOWLEDGE_EXTRACT
+                stage_name = (
+                    STAGE_VISION
+                    if force_overwrite or not (owner_project.project_root / "dense_analysis.json").exists()
+                    else STAGE_KNOWLEDGE_EXTRACT
+                )
                 _submit_batch_stage(owner_project, reporter, run_row, stage_name=stage_name, settings=settings)
+                return
+            if run.run_mode == "run_all_local":
+                _run_all_local(owner_project, reporter, settings, store, force_overwrite=force_overwrite)
+                refresh_project_record(store, owner_project.project_id)
+                reporter.succeeded("component2", "Run-all local pipeline completed.")
+                return
+            if run.run_mode == "run_all_batch":
+                _run_all_batch(owner_project, reporter, run_row, settings, store, force_overwrite=force_overwrite)
+                refresh_project_record(store, owner_project.project_id)
+                if store.get_run(run_id).get("status") == "WAITING_REMOTE":
+                    return
+                reporter.succeeded("postprocess", "Run-all batch pipeline completed.")
                 return
             if run.run_mode == "deterministic_postprocess_only":
                 _run_postprocess(owner_project, reporter)

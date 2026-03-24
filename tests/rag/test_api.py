@@ -26,6 +26,8 @@ def test_health_and_search_endpoints_work(rag_config, built_rag_root, patch_fake
     assert response.status_code == 200
     payload = response.json()
     assert "query_analysis" in payload
+    assert "detected_intents" in payload["query_analysis"]
+    assert isinstance(payload["query_analysis"]["detected_intents"], list)
     assert payload["top_hits"]
 
 

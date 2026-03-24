@@ -16,6 +16,7 @@ from helpers.utils.frame_schema import ensure_material_change, key_to_timestamp,
 from pipeline.contracts import PipelinePaths
 from pipeline.io_utils import atomic_write_json
 from pipeline.orchestrator import (
+    STAGE_RUN_STATUS_FAILED,
     STAGE_RUN_STATUS_MATERIALIZING,
     STAGE_RUN_STATUS_READY,
     STAGE_RUN_STATUS_SPOOLING,
@@ -527,6 +528,19 @@ def _resolve_frame_path(frames_dir: str | Path, frame_key: str) -> Path:
         frames_root / f"{frame_key}.png",
     ]
     for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    pattern_candidates = []
+    for pattern in [
+        f"frame_{frame_key}_*.jpg",
+        f"frame_{frame_key}_*.jpeg",
+        f"frame_{frame_key}_*.png",
+        f"{frame_key}_*.jpg",
+        f"{frame_key}_*.jpeg",
+        f"{frame_key}_*.png",
+    ]:
+        pattern_candidates.extend(sorted(frames_root.glob(pattern)))
+    for candidate in pattern_candidates:
         if candidate.exists():
             return candidate
     raise FileNotFoundError(f"Could not resolve frame image for key={frame_key} in {frames_root}")

@@ -36,3 +36,13 @@
 - Comparison queries benefit most from concept aliases plus graph expansion.
 - Lesson coverage queries depend on `lesson_id`, `lesson_slug`, and preserved provenance in the retrieval docs.
 - Support-policy queries rely on indexed `support_basis`, `evidence_requirement`, and `teaching_mode` fields.
+
+### Step 3.1 API fields
+
+`/rag/search` returns `query_analysis.detected_intents` (multi-label tags such as `example_lookup`, `support_policy`, `concept_comparison`) and `query_analysis.intent_signals` (e.g. transcript-only vs visual-evidence preference). Example/chart phrasing should produce `example_lookup` and surface `evidence_ref` units at the top of `top_hits` when the corpus has matching evidence docs.
+
+### Comprehensive audit bundle
+
+To produce a single zip for external review (16 saved searches with full `score_breakdown`, health, doc/concept samples, `output_rag/`, corpus subset, `pytest -v` log, `config_used.env`, `run_commands.txt`, `step3_1.diff`): run `python -m pipeline.rag export-audit-comprehensive` (see `docs/step3_hybrid_rag_notes.md`).
+
+The export commands now fail fast if `output_rag/eval/eval_report.json` is stale or missing required Step 3.1 metrics, so the bundle cannot silently mix newer code with older eval artifacts.

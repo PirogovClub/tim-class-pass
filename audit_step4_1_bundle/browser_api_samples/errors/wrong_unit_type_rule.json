@@ -1,0 +1,8 @@
+{
+  "status_code": 400,
+  "method": "GET",
+  "path": "/browser/rule/evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+  "response": {
+    "detail": "Document is not a rule_card"
+  }
+}

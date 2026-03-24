@@ -4,7 +4,17 @@
         <ul class="detail-list">
             <li>Run ID: <strong>{{ run.run_id }}</strong></li>
             <li>Status: <strong data-testid="run-status">{{ run.status }}</strong></li>
-            <li>Stage: {{ run.current_stage or "-" }}</li>
+            <li>
+                Stage:
+                {{ stage_label or run.current_stage or "-" }}
+                {% if run.current_stage and stage_label and stage_label != run.current_stage %}
+                <span class="muted">({{ run.current_stage }})</span>
+                {% endif %}
+            </li>
+            {% if stage_focus_label %}
+            <li>Processing: {{ stage_focus_label }}</li>
+            {% endif %}
+            <li>Force overwrite: {{ "yes" if run.force_overwrite else "no" }}</li>
             <li>Message: {{ run.progress_message or "-" }}</li>
             <li>PID: {{ run.pid or "-" }}</li>
             <li>Remote job: {{ run.remote_job_name or "-" }}</li>

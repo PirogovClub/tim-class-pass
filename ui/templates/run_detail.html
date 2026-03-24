@@ -33,6 +33,7 @@
 {% block scripts %}
 <script>
 const activeStatuses = new Set(["QUEUED", "RUNNING", "WAITING_REMOTE", "CANCEL_REQUESTED"]);
+const refreshIntervalMs = 30000;
 let currentStatus = "{{ run.status }}";
 async function refreshRunStatus() {
     if (!activeStatuses.has(currentStatus)) {
@@ -47,10 +48,10 @@ async function refreshRunStatus() {
     const statusNode = document.querySelector('[data-testid="run-status"]');
     currentStatus = statusNode ? statusNode.textContent.trim() : currentStatus;
     if (activeStatuses.has(currentStatus)) {
-        window.setTimeout(refreshRunStatus, 2000);
+        window.setTimeout(refreshRunStatus, refreshIntervalMs);
     }
 }
-window.setTimeout(refreshRunStatus, 2000);
+window.setTimeout(refreshRunStatus, refreshIntervalMs);
 </script>
 {% endblock %}
 

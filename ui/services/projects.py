@@ -24,6 +24,8 @@ def _row_to_project(row: dict) -> ProjectRecord:
         title=str(row["title"]),
         lesson_name=str(row["lesson_name"]),
         project_root=Path(str(row["project_root"])),
+        source_mode=str(row.get("source_mode") or "upload"),
+        source_url=None if not row.get("source_url") else str(row["source_url"]),
         source_video_path=None if not row.get("source_video_path") else Path(str(row["source_video_path"])),
         transcript_path=None if not row.get("transcript_path") else Path(str(row["transcript_path"])),
         status=str(row["status"]),
@@ -70,6 +72,13 @@ def detect_video(project_root: Path, requested: Path | None) -> Path | None:
     return None
 
 
+def prompt_files(project_root: Path) -> list[Path]:
+    queue_dir = project_root / "llm_queue"
+    if not queue_dir.exists():
+        return []
+    return sorted(queue_dir.glob("*_prompt.txt"))
+
+
 def inspect_artifacts(
     project_root: Path,
     lesson_name: str,
@@ -80,6 +89,10 @@ def inspect_artifacts(
     return ArtifactSnapshot(
         transcript_exists=bool(transcript_path and transcript_path.exists()),
         video_exists=bool(video_path and video_path.exists()),
+        dense_index_exists=(project_root / "dense_index.json").exists(),
+        structural_index_exists=(project_root / "structural_index.json").exists(),
+        queue_manifest_exists=(project_root / "llm_queue" / "manifest.json").exists(),
+        prompt_files_exist=bool(prompt_files(project_root)),
         filtered_visuals_exists=paths.filtered_visuals_path.exists(),
         dense_analysis_exists=(project_root / "dense_analysis.json").exists(),
         knowledge_events_exists=paths.knowledge_events_path(lesson_name).exists(),
@@ -105,9 +118,12 @@ def inspect_run_prerequisites(project: ProjectRecord) -> dict[str, bool]:
     return {
         "has_transcript": artifacts.transcript_exists,
         "has_video": artifacts.video_exists,
+        "has_dense_index": artifacts.dense_index_exists,
+        "has_structural_index": artifacts.structural_index_exists,
+        "has_queue_manifest": artifacts.queue_manifest_exists,
+        "has_prompt_files": artifacts.prompt_files_exist,
         "has_dense_analysis": artifacts.dense_analysis_exists,
-        "has_queue_manifest": (project.project_root / "llm_queue" / "manifest.json").exists(),
-        "has_dense_index": (project.project_root / "dense_index.json").exists(),
+        "can_download": bool(project.source_url),
         "corpus_ready": artifacts.corpus_ready,
         "exports_ready": artifacts.exports_ready,
     }
@@ -143,8 +159,10 @@ def derive_effective_status(artifacts: ArtifactSnapshot, latest_run) -> str:
     return "new"
 
 
-def derive_next_action(artifacts: ArtifactSnapshot, latest_run, effective_status: str) -> str:
+def derive_next_action(artifacts: ArtifactSnapshot, latest_run, effective_status: str, *, project: ProjectRecord | None = None) -> str:
     if effective_status == "missing_inputs":
+        if project is not None and project.source_url:
+            return "Run download"
         return "Add transcript"
     if effective_status == "waiting_for_remote":
         return "Reconcile remote batch"
@@ -158,12 +176,22 @@ def derive_next_action(artifacts: ArtifactSnapshot, latest_run, effective_status
         return "Build corpus"
     if effective_status == "complete":
         return "Review outputs"
+    if project is not None and project.source_url and (not artifacts.video_exists or not artifacts.transcript_exists):
+        return "Run download"
+    if artifacts.video_exists and not artifacts.dense_index_exists:
+        return "Run dense capture"
+    if artifacts.dense_index_exists and not artifacts.structural_index_exists:
+        return "Run structural compare"
+    if artifacts.structural_index_exists and not artifacts.queue_manifest_exists:
+        return "Build LLM queue"
+    if artifacts.queue_manifest_exists and not artifacts.prompt_files_exist:
+        return "Build prompt files"
     if artifacts.dense_analysis_exists and not artifacts.knowledge_events_exists:
         return "Run knowledge extract"
     if artifacts.transcript_exists and not artifacts.dense_analysis_exists:
-        return "Run sync or batch vision"
+        return "Run Step 2 vision"
     if artifacts.transcript_exists and artifacts.knowledge_events_exists and not artifacts.exports_ready:
-        return "Run post-process"
+        return "Run Step 3 exports"
     return "Inspect project"
 
 
@@ -267,59 +295,79 @@ def import_project(
     *,
     title: str,
     project_root_raw: str | None,
+    source_mode_raw: str | None = None,
+    source_url_raw: str | None = None,
     source_video_raw: str | None,
     transcript_raw: str | None,
     source_video_upload: UploadFile | None = None,
     transcript_upload: UploadFile | None = None,
 ) -> ProjectRecord:
     normalized_title = str(title or "").strip()
-    if not normalized_title and not str(project_root_raw or "").strip():
+    normalized_source_mode = "download" if str(source_mode_raw or "").strip().lower() == "download" else "upload"
+    source_url = str(source_url_raw or "").strip() or None
+    if not normalized_title and not str(project_root_raw or "").strip() and not source_url:
         raise ValueError("Provide a project title or project root.")
 
-    project_root = resolve_path(settings, project_root_raw)
-    if project_root is None:
-        project_root = (settings.data_root / normalized_title).resolve()
+    if normalized_source_mode == "download":
+        if not source_url:
+            raise ValueError("Provide a source URL for download mode.")
+        from pipeline import downloader
+
+        video_id = downloader.extract_video_id(source_url)
+        if not video_id:
+            raise ValueError("Could not extract a video ID from the provided source URL.")
+        expected_root = (settings.data_root / video_id).resolve()
+        requested_root = resolve_path(settings, project_root_raw)
+        if requested_root is not None and requested_root != expected_root:
+            raise ValueError(f"Download projects must use the detected project root `{expected_root}`.")
+        project_root = expected_root
+    else:
+        project_root = resolve_path(settings, project_root_raw)
+        if project_root is None:
+            project_root = (settings.data_root / normalized_title).resolve()
     project_root.mkdir(parents=True, exist_ok=True)
 
     preferred_stem = normalized_title or project_root.name
 
     source_video_path = None
-    manual_video_path = resolve_path(settings, source_video_raw)
-    if source_video_upload is not None and source_video_upload.filename:
-        source_video_path = save_uploaded_file(
-            source_video_upload,
-            destination_root=project_root,
-            preferred_stem=preferred_stem,
-            allowed_extensions=VIDEO_EXTENSIONS,
-            max_bytes=settings.upload_max_video_bytes,
-        )
-    elif manual_video_path is not None:
-        source_video_path = copy_path_into_project(
-            manual_video_path,
-            destination_root=project_root,
-            preferred_stem=preferred_stem,
-            allowed_extensions=VIDEO_EXTENSIONS,
-            max_bytes=settings.upload_max_video_bytes,
-        )
+    if normalized_source_mode != "download":
+        manual_video_path = resolve_path(settings, source_video_raw)
+        if source_video_upload is not None and source_video_upload.filename:
+            source_video_path = save_uploaded_file(
+                source_video_upload,
+                destination_root=project_root,
+                preferred_stem=preferred_stem,
+                allowed_extensions=VIDEO_EXTENSIONS,
+                max_bytes=settings.upload_max_video_bytes,
+            )
+        elif manual_video_path is not None:
+            source_video_path = copy_path_into_project(
+                manual_video_path,
+                destination_root=project_root,
+                preferred_stem=preferred_stem,
+                allowed_extensions=VIDEO_EXTENSIONS,
+                max_bytes=settings.upload_max_video_bytes,
+            )
 
     transcript_path = None
-    manual_transcript_path = resolve_path(settings, transcript_raw)
-    if transcript_upload is not None and transcript_upload.filename:
-        transcript_path = save_uploaded_file(
-            transcript_upload,
-            destination_root=project_root,
-            preferred_stem=preferred_stem,
-            allowed_extensions=TRANSCRIPT_EXTENSIONS,
-            max_bytes=settings.upload_max_transcript_bytes,
-        )
-    elif manual_transcript_path is not None:
-        transcript_path = copy_path_into_project(
-            manual_transcript_path,
-            destination_root=project_root,
-            preferred_stem=preferred_stem,
-            allowed_extensions=TRANSCRIPT_EXTENSIONS,
-            max_bytes=settings.upload_max_transcript_bytes,
-        )
+    if normalized_source_mode != "download":
+        manual_transcript_path = resolve_path(settings, transcript_raw)
+        if transcript_upload is not None and transcript_upload.filename:
+            transcript_path = save_uploaded_file(
+                transcript_upload,
+                destination_root=project_root,
+                preferred_stem=preferred_stem,
+                allowed_extensions=TRANSCRIPT_EXTENSIONS,
+                max_bytes=settings.upload_max_transcript_bytes,
+            )
+        elif manual_transcript_path is not None:
+            transcript_path = copy_path_into_project(
+                manual_transcript_path,
+                destination_root=project_root,
+                preferred_stem=preferred_stem,
+                allowed_extensions=TRANSCRIPT_EXTENSIONS,
+                max_bytes=settings.upload_max_transcript_bytes,
+            )
 
     source_video_path = detect_video(project_root, source_video_path)
     transcript_path = detect_transcript(project_root, transcript_path, preferred_stem)
@@ -333,6 +381,8 @@ def import_project(
         title=final_title,
         lesson_name=lesson_name,
         project_root=project_root,
+        source_mode=normalized_source_mode,
+        source_url=source_url,
         source_video_path=source_video_path,
         transcript_path=transcript_path,
         status=effective_status,
@@ -345,21 +395,26 @@ def refresh_project_record(store: UIStateStore, project_id: str):
     if row is None:
         raise KeyError(project_id)
     project = _row_to_project(row)
+    source_video_path = detect_video(project.project_root, project.source_video_path)
+    transcript_path = detect_transcript(project.project_root, project.transcript_path, project.title or project.lesson_name)
+    lesson_name = transcript_path.stem if transcript_path is not None else project.lesson_name
     artifacts = inspect_artifacts(
         project.project_root,
-        project.lesson_name,
-        project.transcript_path,
-        project.source_video_path,
+        lesson_name,
+        transcript_path,
+        source_video_path,
     )
     effective_status = derive_effective_status(artifacts, None)
     updated = store.upsert_project(
         project_id=project.project_id,
         slug=project.slug,
         title=project.title,
-        lesson_name=project.lesson_name,
+        lesson_name=lesson_name,
         project_root=project.project_root,
-        source_video_path=project.source_video_path,
-        transcript_path=project.transcript_path,
+        source_mode=project.source_mode,
+        source_url=project.source_url,
+        source_video_path=source_video_path,
+        transcript_path=transcript_path,
         status=effective_status,
     )
     return _row_to_project(updated)

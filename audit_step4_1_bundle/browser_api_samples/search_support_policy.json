@@ -1,0 +1,349 @@
+{
+  "query": "Какие примеры требуют визуальных доказательств?",
+  "cards": [
+    {
+      "doc_id": "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_0_8",
+      "unit_type": "evidence_ref",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "title": "Evidence: illustration",
+      "subtitle": "illustrates_rule",
+      "snippet": "New visual example explaining a level formed by a false breakout.. The instructor is visible and pointing, but the core educational content remains the same as the previous frame, focusing on the concept of a false breakout level..…",
+      "concept_ids": [],
+      "support_basis": "transcript_plus_visual",
+      "evidence_requirement": "required",
+      "teaching_mode": "example",
+      "confidence_score": 0.95,
+      "timestamps": [
+        {
+          "start": "01:38",
+          "end": "01:40"
+        }
+      ],
+      "evidence_count": 1,
+      "related_rule_count": 1,
+      "related_event_count": 7,
+      "score": 1.2527,
+      "why_retrieved": [
+        "strong_vector",
+        "unit_bias_match",
+        "example_mode_match",
+        "support_basis_match",
+        "well_grounded",
+        "evidence_requirement_match",
+        "evidence_intent_priority"
+      ]
+    },
+    {
+      "doc_id": "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_0_9",
+      "unit_type": "evidence_ref",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "title": "Evidence: illustration",
+      "subtitle": "illustrates_rule",
+      "snippet": "New visual content displayed, explaining a false breakout concept.. The visual content remains the same as the previous frame, focusing on the concept of a false breakout.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "concept_ids": [],
+      "support_basis": "transcript_plus_visual",
+      "evidence_requirement": "required",
+      "teaching_mode": "example",
+      "confidence_score": 0.8,
+      "timestamps": [
+        {
+          "start": "01:44",
+          "end": "01:46"
+        }
+      ],
+      "evidence_count": 1,
+      "related_rule_count": 1,
+      "related_event_count": 6,
+      "score": 1.2311,
+      "why_retrieved": [
+        "strong_vector",
+        "unit_bias_match",
+        "example_mode_match",
+        "support_basis_match",
+        "well_grounded",
+        "evidence_requirement_match",
+        "evidence_intent_priority"
+      ]
+    },
+    {
+      "doc_id": "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_70",
+      "unit_type": "evidence_ref",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "title": "Evidence: illustration",
+      "subtitle": "illustrates_rule",
+      "snippet": "The visual content has changed to an abstract bar diagram illustrating price action around a liquidity level, with a new annotation box for 'СТОПЫ' and the label 'КОРОТКИЙ СТОП' is now visible above the central line.. concepts:…",
+      "concept_ids": [],
+      "support_basis": "transcript_plus_visual",
+      "evidence_requirement": "required",
+      "teaching_mode": "example",
+      "confidence_score": 0.95,
+      "timestamps": [
+        {
+          "start": "06:00",
+          "end": "06:00"
+        }
+      ],
+      "evidence_count": 1,
+      "related_rule_count": 1,
+      "related_event_count": 11,
+      "score": 1.2196,
+      "why_retrieved": [
+        "strong_vector",
+        "unit_bias_match",
+        "example_mode_match",
+        "support_basis_match",
+        "well_grounded",
+        "evidence_requirement_match",
+        "evidence_intent_priority"
+      ]
+    },
+    {
+      "doc_id": "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_0_1",
+      "unit_type": "evidence_ref",
+      "lesson_id": "Lesson 2. Levels part 1",
+      "title": "Evidence: illustration",
+      "subtitle": "illustrates_rule",
+      "snippet": "The visual representation has changed from a whiteboard explanation to a candlestick sketch. A simplified candlestick chart has appeared below the 'Уровень излома тренда' label. The horizontal line is still present but now serves as a…",
+      "concept_ids": [],
+      "support_basis": "transcript_plus_visual",
+      "evidence_requirement": "required",
+      "teaching_mode": "example",
+      "confidence_score": 0.8,
+      "timestamps": [
+        {
+          "start": "00:10",
+          "end": "00:10"
+        }
+      ],
+      "evidence_count": 1,
+      "related_rule_count": 2,
+      "related_event_count": 4,
+      "score": 1.2123,
+      "why_retrieved": [
+        "strong_vector",
+        "unit_bias_match",
+        "example_mode_match",
+        "support_basis_match",
+        "well_grounded",
+        "evidence_requirement_match",
+        "evidence_intent_priority"
+      ]
+    },
+    {
+      "doc_id": "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_1_5",
+      "unit_type": "evidence_ref",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "title": "Evidence: illustration",
+      "subtitle": "illustrates_rule",
+      "snippet": "New slide displayed with title 'Разновидность SL' and two lists of bullet points.. concepts: abstract_teaching_example, atr_values, entry_values",
+      "concept_ids": [],
+      "support_basis": "transcript_plus_visual",
+      "evidence_requirement": "required",
+      "teaching_mode": "example",
+      "confidence_score": 0.8,
+      "timestamps": [
+        {
+          "start": "02:30",
+          "end": "02:30"
+        }
+      ],
+      "evidence_count": 1,
+      "related_rule_count": 1,
+      "related_event_count": 7,
+      "score": 1.2241,
+      "why_retrieved": [
+        "strong_vector",
+        "unit_bias_match",
+        "example_mode_match",
+        "support_basis_match",
+        "well_grounded",
+        "evidence_requirement_match",
+        "evidence_intent_priority"
+      ]
+    }
+  ],
+  "groups": {
+    "evidence": [
+      {
+        "doc_id": "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_0_8",
+        "unit_type": "evidence_ref",
+        "lesson_id": "Lesson 2. Levels part 1",
+        "title": "Evidence: illustration",
+        "subtitle": "illustrates_rule",
+        "snippet": "New visual example explaining a level formed by a false breakout.. The instructor is visible and pointing, but the core educational content remains the same as the previous frame, focusing on the concept of a false breakout level..…",
+        "concept_ids": [],
+        "support_basis": "transcript_plus_visual",
+        "evidence_requirement": "required",
+        "teaching_mode": "example",
+        "confidence_score": 0.95,
+        "timestamps": [
+          {
+            "start": "01:38",
+            "end": "01:40"
+          }
+        ],
+        "evidence_count": 1,
+        "related_rule_count": 1,
+        "related_event_count": 7,
+        "score": 1.2527,
+        "why_retrieved": [
+          "strong_vector",
+          "unit_bias_match",
+          "example_mode_match",
+          "support_basis_match",
+          "well_grounded",
+          "evidence_requirement_match",
+          "evidence_intent_priority"
+        ]
+      },
+      {
+        "doc_id": "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_0_9",
+        "unit_type": "evidence_ref",
+        "lesson_id": "Lesson 2. Levels part 1",
+        "title": "Evidence: illustration",
+        "subtitle": "illustrates_rule",
+        "snippet": "New visual content displayed, explaining a false breakout concept.. The visual content remains the same as the previous frame, focusing on the concept of a false breakout.. concepts: abstract_teaching_example, atr_values, entry_values",
+        "concept_ids": [],
+        "support_basis": "transcript_plus_visual",
+        "evidence_requirement": "required",
+        "teaching_mode": "example",
+        "confidence_score": 0.8,
+        "timestamps": [
+          {
+            "start": "01:44",
+            "end": "01:46"
+          }
+        ],
+        "evidence_count": 1,
+        "related_rule_count": 1,
+        "related_event_count": 6,
+        "score": 1.2311,
+        "why_retrieved": [
+          "strong_vector",
+          "unit_bias_match",
+          "example_mode_match",
+          "support_basis_match",
+          "well_grounded",
+          "evidence_requirement_match",
+          "evidence_intent_priority"
+        ]
+      },
+      {
+        "doc_id": "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_2_70",
+        "unit_type": "evidence_ref",
+        "lesson_id": "Lesson 2. Levels part 1",
+        "title": "Evidence: illustration",
+        "subtitle": "illustrates_rule",
+        "snippet": "The visual content has changed to an abstract bar diagram illustrating price action around a liquidity level, with a new annotation box for 'СТОПЫ' and the label 'КОРОТКИЙ СТОП' is now visible above the central line.. concepts:…",
+        "concept_ids": [],
+        "support_basis": "transcript_plus_visual",
+        "evidence_requirement": "required",
+        "teaching_mode": "example",
+        "confidence_score": 0.95,
+        "timestamps": [
+          {
+            "start": "06:00",
+            "end": "06:00"
+          }
+        ],
+        "evidence_count": 1,
+        "related_rule_count": 1,
+        "related_event_count": 11,
+        "score": 1.2196,
+        "why_retrieved": [
+          "strong_vector",
+          "unit_bias_match",
+          "example_mode_match",
+          "support_basis_match",
+          "well_grounded",
+          "evidence_requirement_match",
+          "evidence_intent_priority"
+        ]
+      },
+      {
+        "doc_id": "evidence:lesson_2_levels_part_1:evcand_Lesson 2. Levels part 1_0_1",
+        "unit_type": "evidence_ref",
+        "lesson_id": "Lesson 2. Levels part 1",
+        "title": "Evidence: illustration",
+        "subtitle": "illustrates_rule",
+        "snippet": "The visual representation has changed from a whiteboard explanation to a candlestick sketch. A simplified candlestick chart has appeared below the 'Уровень излома тренда' label. The horizontal line is still present but now serves as a…",
+        "concept_ids": [],
+        "support_basis": "transcript_plus_visual",
+        "evidence_requirement": "required",
+        "teaching_mode": "example",
+        "confidence_score": 0.8,
+        "timestamps": [
+          {
+            "start": "00:10",
+            "end": "00:10"
+          }
+        ],
+        "evidence_count": 1,
+        "related_rule_count": 2,
+        "related_event_count": 4,
+        "score": 1.2123,
+        "why_retrieved": [
+          "strong_vector",
+          "unit_bias_match",
+          "example_mode_match",
+          "support_basis_match",
+          "well_grounded",
+          "evidence_requirement_match",
+          "evidence_intent_priority"
+        ]
+      },
+      {
+        "doc_id": "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_1_5",
+        "unit_type": "evidence_ref",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "title": "Evidence: illustration",
+        "subtitle": "illustrates_rule",
+        "snippet": "New slide displayed with title 'Разновидность SL' and two lists of bullet points.. concepts: abstract_teaching_example, atr_values, entry_values",
+        "concept_ids": [],
+        "support_basis": "transcript_plus_visual",
+        "evidence_requirement": "required",
+        "teaching_mode": "example",
+        "confidence_score": 0.8,
+        "timestamps": [
+          {
+            "start": "02:30",
+            "end": "02:30"
+          }
+        ],
+        "evidence_count": 1,
+        "related_rule_count": 1,
+        "related_event_count": 7,
+        "score": 1.2241,
+        "why_retrieved": [
+          "strong_vector",
+          "unit_bias_match",
+          "example_mode_match",
+          "support_basis_match",
+          "well_grounded",
+          "evidence_requirement_match",
+          "evidence_intent_priority"
+        ]
+      }
+    ]
+  },
+  "facets": {
+    "by_unit_type": {
+      "evidence_ref": 5
+    },
+    "by_lesson": {
+      "2025-09-29-sviatoslav-chornyi": 1,
+      "Lesson 2. Levels part 1": 4
+    },
+    "by_concept": {},
+    "by_support_basis": {
+      "transcript_plus_visual": 5
+    },
+    "by_evidence_requirement": {
+      "required": 5
+    },
+    "by_teaching_mode": {
+      "example": 5
+    }
+  },
+  "hit_count": 5
+}

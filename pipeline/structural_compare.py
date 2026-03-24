@@ -123,7 +123,7 @@ def run_structural_compare(
 
     cfg = pipeline_config.get_config_for_video(video_id)
     threshold = float(cfg.get("ssim_threshold", 0.95))
-    blur_radius = float(cfg.get("compare_blur_radius", 1.5))
+    blur_radius = float(cfg.get("compare_blur_radius", 0.0))
     artifacts_dir = video_dir / str(cfg.get("compare_artifacts_dir") or "frames_structural_preprocessed")
     if artifacts_dir.exists():
         shutil.rmtree(artifacts_dir)

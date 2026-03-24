@@ -41,9 +41,9 @@ class RAGConfig(BaseModel):
     embedding_batch_size: int = 256
 
     lexical_backend: str = "bm25"
-    lexical_top_k: int = 30
-    vector_top_k: int = 30
-    merged_top_k: int = 50
+    lexical_top_k: int = 40
+    vector_top_k: int = 40
+    merged_top_k: int = 80
     final_top_k: int = 10
 
     default_unit_weights: dict[str, float] = Field(default_factory=lambda: {
@@ -60,20 +60,34 @@ class RAGConfig(BaseModel):
     lesson_diversity_adjustment: float = 0.05
 
     reranker_weights: dict[str, float] = Field(default_factory=lambda: {
-        "lexical_score": 0.30,
-        "vector_score": 0.30,
-        "concept_exact_match": 0.15,
+        "lexical_score": 0.26,
+        "vector_score": 0.26,
+        "graph_boost": 0.14,
+        "concept_exact_match": 0.12,
         "alias_match": 0.05,
-        "unit_type_relevance": 0.04,
-        "support_basis_relevance": 0.02,
-        "teaching_mode_relevance": 0.02,
-        "confidence_score": 0.05,
-        "evidence_available": 0.05,
+        "unit_type_relevance": 0.06,
+        "support_basis_relevance": 0.04,
+        "teaching_mode_relevance": 0.03,
+        "evidence_requirement_relevance": 0.04,
+        "evidence_strength_relevance": 0.03,
+        "confidence_score": 0.04,
+        "evidence_available": 0.06,
         "timestamp_available": 0.05,
-        "provenance_richness": 0.05,
-        "lesson_diversity_bonus": 0.03,
+        "provenance_richness": 0.04,
+        "lesson_diversity_bonus": 0.02,
         "groundedness": 0.04,
+        "intent_cross_lesson_boost": 0.12,
+        "intent_timeframe_boost": 0.14,
+        "intent_evidence_priority_boost": 0.34,
+        "example_role_relevance": 0.06,
+        "intent_evidence_mismatch_penalty": 0.18,
+        "intent_transcript_policy_signal": 0.28,
+        "intent_concept_priority_signal": 0.38,
     })
+
+    # Scales for applying config.timestamp_boost / evidence_boost inside reranker (Step 3.1)
+    step31_timestamp_scale: float = 1.0
+    step31_evidence_scale: float = 1.0
 
     enable_graph_expand: bool = True
     max_graph_expansion: int = 3

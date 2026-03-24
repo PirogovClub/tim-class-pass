@@ -1,0 +1,8 @@
+GET /browser/concept/{concept_id}
+GET /browser/concept/{concept_id}/neighbors
+GET /browser/evidence/{doc_id}
+GET /browser/facets
+GET /browser/health
+GET /browser/lesson/{lesson_id}
+GET /browser/rule/{doc_id}
+POST /browser/search

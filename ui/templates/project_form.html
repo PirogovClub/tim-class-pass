@@ -4,7 +4,7 @@
 <section class="panel narrow">
     <h2>Create or import project</h2>
     <p class="muted">
-        If `project_root` is left blank, the UI creates the project under the repo `data/` directory.
+        Choose whether the project starts from local files or a download URL. If `project_root` is left blank, the UI creates the project under the repo `data/` directory.
     </p>
 
     {% if error %}
@@ -16,11 +16,27 @@
             Project title
             <input id="project-title-input" type="text" name="title" value="{{ title|default('', true) }}" placeholder="Lesson 2. Levels part 1">
         </label>
+        <fieldset class="source-mode-fieldset">
+            <legend>Project source</legend>
+            {% set selected_source_mode = source_mode|default('upload', true) %}
+            <label class="radio-option">
+                <input type="radio" name="source_mode" value="upload" {% if selected_source_mode != 'download' %}checked{% endif %}>
+                <span>Upload or copy local files</span>
+            </label>
+            <label class="radio-option">
+                <input type="radio" name="source_mode" value="download" {% if selected_source_mode == 'download' %}checked{% endif %}>
+                <span>Download from URL (Step 0)</span>
+            </label>
+        </fieldset>
+        <label id="source-url-field">
+            Source URL
+            <input type="text" name="source_url" value="{{ source_url|default('', true) }}" placeholder="https://www.youtube.com/watch?v=...">
+        </label>
         <label>
             Project root
             <input type="text" name="project_root" value="{{ project_root|default('', true) }}" placeholder="data/Lesson 2. Levels part 1">
         </label>
-        <div class="detail-grid">
+        <div id="local-source-fields" class="detail-grid">
             <label>
                 Source video upload
                 <input id="source-video-upload-input" type="file" name="source_video_upload" accept=".mp4,.mov,.mkv,.webm">
@@ -30,14 +46,14 @@
                 <input type="file" name="transcript_upload" accept=".vtt">
             </label>
         </div>
-        <div class="form-note">
+        <div id="local-source-note" class="form-note">
             Uploaded files are copied into the project directory under `data/`. Use the text paths below only when you want the UI to copy from an existing local file.
         </div>
-        <label>
+        <label id="source-video-path-field">
             Source video path fallback
             <input type="text" name="source_video_path" value="{{ source_video_path|default('', true) }}" placeholder="optional">
         </label>
-        <label>
+        <label id="transcript-path-field">
             Transcript path fallback
             <input type="text" name="transcript_path" value="{{ transcript_path|default('', true) }}" placeholder="optional">
         </label>
@@ -51,6 +67,12 @@
 (() => {
     const titleInput = document.getElementById("project-title-input");
     const videoInput = document.getElementById("source-video-upload-input");
+    const sourceModeInputs = Array.from(document.querySelectorAll('input[name="source_mode"]'));
+    const sourceUrlField = document.getElementById("source-url-field");
+    const localSourceFields = document.getElementById("local-source-fields");
+    const localSourceNote = document.getElementById("local-source-note");
+    const sourceVideoPathField = document.getElementById("source-video-path-field");
+    const transcriptPathField = document.getElementById("transcript-path-field");
     if (!titleInput || !videoInput) {
         return;
     }
@@ -85,6 +107,22 @@
             titleWasManuallyEdited = false;
         }
     });
+
+    const renderSourceMode = () => {
+        const selected = sourceModeInputs.find((node) => node.checked);
+        const isDownload = selected && selected.value === "download";
+        for (const element of [sourceUrlField, localSourceFields, localSourceNote, sourceVideoPathField, transcriptPathField]) {
+            if (!element) {
+                continue;
+            }
+            element.hidden = isDownload ? element !== sourceUrlField : element === sourceUrlField;
+        }
+    };
+
+    for (const input of sourceModeInputs) {
+        input.addEventListener("change", renderSourceMode);
+    }
+    renderSourceMode();
 })();
 </script>
 {% endblock %}

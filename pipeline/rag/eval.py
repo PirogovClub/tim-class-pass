@@ -3,11 +3,30 @@
 from __future__ import annotations
 
 import json
+import re
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 from pipeline.rag.config import RAGConfig
 from pipeline.rag.retriever import HybridRetriever
+
+STEP31_METRICS_SCHEMA_VERSION = "step31-v2"
+STEP31_REQUIRED_METRIC_KEYS: tuple[str, ...] = (
+    "recall_at_5",
+    "recall_at_10",
+    "mrr",
+    "concept_detection_success_proxy",
+    "evidence_presence_rate",
+    "timestamp_presence_rate",
+    "evidence_id_rate",
+    "example_lookup_evidence_top1_rate",
+    "support_policy_evidence_top3_rate",
+    "support_policy_visual_evidence_top3_rate",
+    "transcript_only_transcript_primary_top1_rate",
+    "cross_lesson_concept_top3_rate",
+    "timeframe_concept_top3_rate",
+)
 
 CURATED_QUERIES: list[dict[str, Any]] = [
     {"query_id": "q001", "query_text": "Как определить уровень для стоп-лосса?", "category": "direct_rule_lookup", "expected_unit_types": ["rule_card"], "expected_concepts": ["Stop Loss"], "relevant_doc_ids": [], "notes": "Direct rule lookup."},
@@ -70,16 +89,54 @@ def _mrr(
     return 0.0
 
 
-def _concept_detected(expansion: dict[str, Any], expected_concepts: list[str]) -> bool:
+def _concept_detected(
+    expansion: dict[str, Any],
+    expected_concepts: list[str],
+    normalized_query: str = "",
+) -> bool:
+    """Match expected concept labels against expansion + normalized query (Step 3.1)."""
     if not expected_concepts:
         return True
-    haystack = {
-        *[term.lower() for term in expansion.get("detected_terms", [])],
-        *[concept_id.lower() for concept_id in expansion.get("canonical_concept_ids", [])],
-        *[concept_id.lower() for concept_id in expansion.get("expanded_concept_ids", [])],
-        *[term.lower() for term in expansion.get("related_terms", [])],
-    }
-    return all(any(expected.lower() in item for item in haystack) for expected in expected_concepts)
+    haystack: set[str] = set()
+    for key in ("detected_terms", "related_terms", "lexical_expansion_terms"):
+        for t in expansion.get(key) or []:
+            s = str(t).lower().strip()
+            if s:
+                haystack.add(s)
+    for cid in expansion.get("canonical_concept_ids") or []:
+        s = str(cid).lower()
+        haystack.add(s)
+        if ":" in s:
+            tail = s.split(":", 1)[-1].replace("_", " ")
+            haystack.add(tail)
+    for cid in expansion.get("expanded_concept_ids") or []:
+        s = str(cid).lower()
+        haystack.add(s)
+        if ":" in s:
+            haystack.add(s.split(":", 1)[-1].replace("_", " "))
+    for d in (expansion.get("exact_alias_matches") or {}, expansion.get("normalized_alias_matches") or {}):
+        for k in d:
+            s = str(k).lower().strip()
+            if s:
+                haystack.add(s)
+    nq = (normalized_query or "").lower()
+
+    def matches(expected: str) -> bool:
+        el = expected.lower().strip()
+        if not el:
+            return True
+        if el in nq:
+            return True
+        for h in haystack:
+            if el in h or h in el:
+                return True
+        tokens = [t for t in re.split(r"[^\w\u0400-\u04FF]+", el) if len(t) >= 2]
+        if not tokens:
+            return False
+        blob = " ".join(haystack) + " " + nq
+        return all(tok.lower() in blob for tok in tokens)
+
+    return all(matches(e) for e in expected_concepts)
 
 
 def _presence_rate(hits: list[dict[str, Any]], key: str) -> float:
@@ -128,13 +185,23 @@ def run_eval(
         result = retriever.search(query_text, top_k=max(k_values))
         hits = result["top_hits"]
         expansion = result["expansion"]
+        norm_q = str(result.get("normalized_query") or "")
+        intent_signals = result.get("intent_signals") or {}
 
         r_at_k = {
             k: _recall_at_k(hits, relevant_doc_ids, expected_unit_types, k)
             for k in k_values
         }
         mrr_val = _mrr(hits, relevant_doc_ids, expected_unit_types)
-        cd = _concept_detected(expansion, expected_concepts)
+        cd = _concept_detected(expansion, expected_concepts, normalized_query=norm_q)
+        evidence_ref_in_top3 = any(h.get("unit_type") == "evidence_ref" for h in hits[:3])
+        concept_unit_in_top3 = any(
+            h.get("unit_type") in {"concept_node", "concept_relation"}
+            for h in hits[:3]
+        )
+        transcript_primary_top1 = bool(hits) and (
+            ((hits[0].get("resolved_doc") or {}).get("support_basis") == "transcript_primary")
+        )
         evidence_rate = _presence_rate(hits, "evidence_ids")
         timestamp_rate = _presence_rate(hits, "timestamps")
         evidence_id_rate = _presence_rate(hits, "evidence_ids")
@@ -169,7 +236,29 @@ def run_eval(
             "hit_count": len(hits),
             "top_hit_unit_type": hits[0]["unit_type"] if hits else None,
             "top_hit_score": hits[0]["score"] if hits else None,
+            "detected_intents": result.get("detected_intents") or [],
+            "intent_signals": intent_signals,
+            "top_hit_support_basis": ((hits[0].get("resolved_doc") or {}).get("support_basis") if hits else None),
+            "top3_unit_types": [h.get("unit_type") for h in hits[:3]],
+            "evidence_ref_in_top3": evidence_ref_in_top3,
+            "concept_unit_in_top3": concept_unit_in_top3,
+            "transcript_primary_top1": transcript_primary_top1,
         })
+
+    ex_rows = [r for r in results if r["category"] == "example_lookup"]
+    sp_rows = [r for r in results if r["category"] == "support_policy"]
+    visual_support_rows = [
+        r for r in results
+        if r["category"] == "support_policy"
+        and bool((r.get("intent_signals") or {}).get("prefers_visual_evidence"))
+    ]
+    transcript_rows = [
+        r for r in results
+        if r["category"] == "support_policy"
+        and bool((r.get("intent_signals") or {}).get("prefers_transcript_only"))
+    ]
+    cross_rows = [r for r in results if r["category"] == "cross_lesson_conflict"]
+    timeframe_rows = [r for r in results if r["category"] == "higher_timeframe_dependency"]
 
     metrics = {
         f"recall_at_{k}": round(recall_sums[k] / total, 4) if total else 0
@@ -186,9 +275,45 @@ def run_eval(
     metrics["evidence_id_rate"] = round(
         sum(result["evidence_id_rate"] for result in results) / total, 4
     ) if total else 0
+    metrics["example_lookup_evidence_top1_rate"] = (
+        round(sum(1 for r in ex_rows if r.get("top_hit_unit_type") == "evidence_ref") / len(ex_rows), 4)
+        if ex_rows
+        else 1.0
+    )
+    metrics["support_policy_evidence_top3_rate"] = (
+        round(sum(1 for r in sp_rows if r.get("evidence_ref_in_top3")) / len(sp_rows), 4)
+        if sp_rows
+        else 1.0
+    )
+    metrics["support_policy_visual_evidence_top3_rate"] = (
+        round(
+            sum(1 for r in visual_support_rows if r.get("evidence_ref_in_top3")) / len(visual_support_rows),
+            4,
+        )
+        if visual_support_rows
+        else 1.0
+    )
+    metrics["transcript_only_transcript_primary_top1_rate"] = (
+        round(sum(1 for r in transcript_rows if r.get("transcript_primary_top1")) / len(transcript_rows), 4)
+        if transcript_rows
+        else 1.0
+    )
+    metrics["cross_lesson_concept_top3_rate"] = (
+        round(sum(1 for r in cross_rows if r.get("concept_unit_in_top3")) / len(cross_rows), 4)
+        if cross_rows
+        else 1.0
+    )
+    metrics["timeframe_concept_top3_rate"] = (
+        round(sum(1 for r in timeframe_rows if r.get("concept_unit_in_top3")) / len(timeframe_rows), 4)
+        if timeframe_rows
+        else 1.0
+    )
 
     report = {
         "query_count": total,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "metrics_schema_version": STEP31_METRICS_SCHEMA_VERSION,
+        "queries_source": str(queries_path) if queries_path else "builtin",
         "metrics": metrics,
         "unit_hit_rates": {
             ut: round(unit_hit_counts.get(ut, 0) / (unit_hit_counts.get(ut, 0) + unit_miss_counts.get(ut, 0)), 4)
