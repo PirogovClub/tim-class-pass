@@ -1,0 +1,54 @@
+{
+  "target_type": "rule_card",
+  "target_id": "rule_audit_alpha",
+  "target_summary": "Stop-loss placement near structure highs / lows.",
+  "reviewed_state": {
+    "target_type": "rule_card",
+    "target_id": "rule_audit_alpha",
+    "current_status": "approved",
+    "latest_decision_type": "approve",
+    "last_reviewed_at": "2026-03-24T18:00:00Z",
+    "last_reviewer_id": "audit-reviewer",
+    "canonical_family_id": "fam_audit_1",
+    "summary": "Stop-loss placement near structure",
+    "is_duplicate": false,
+    "duplicate_of_rule_id": null
+  },
+  "history": [
+    {
+      "decision_id": "dec_new",
+      "target_type": "rule_card",
+      "target_id": "rule_audit_alpha",
+      "decision_type": "approve",
+      "reviewer_id": "audit-reviewer",
+      "created_at": "2026-03-24T18:00:00Z",
+      "note": "Looks consistent with lesson",
+      "reason_code": null,
+      "related_target_id": null
+    },
+    {
+      "decision_id": "dec_prev_1",
+      "target_type": "rule_card",
+      "target_id": "rule_audit_alpha",
+      "decision_type": "defer",
+      "reviewer_id": "prior-reviewer",
+      "created_at": "2026-03-20T12:00:00Z",
+      "note": "Needs second look",
+      "reason_code": null,
+      "related_target_id": null
+    }
+  ],
+  "family": {
+    "family_id": "fam_audit_1",
+    "canonical_title": "Structure-based stop loss",
+    "status": "active",
+    "member_count": 3
+  },
+  "family_members_preview": [
+    { "rule_id": "rule_audit_alpha", "membership_role": "member" },
+    { "rule_id": "rule_audit_beta", "membership_role": "member" }
+  ],
+  "optional_context": {
+    "lesson_ids": ["lesson_demo"]
+  }
+}

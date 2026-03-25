@@ -53,6 +53,8 @@ __all__ = [
     "rag_corpus_root",
     "rag_output_root",
     "real_browser_client",
+    "sample_compare_lesson_ids",
+    "sample_compare_rule_ids",
 ]
 
 
@@ -67,7 +69,33 @@ def explorer_service(explorer_repo: ExplorerRepository, hybrid_retriever):
 
 
 @pytest.fixture
-def explorer_client(rag_config: RAGConfig, built_rag_root: Path, patch_fake_sentence_transformer):
+def sample_compare_rule_ids() -> list[str]:
+    return [
+        "rule:lesson_alpha:rule_accumulation_1",
+        "rule:lesson_beta:rule_false_breakout_1",
+    ]
+
+
+@pytest.fixture
+def sample_compare_lesson_ids() -> list[str]:
+    return ["lesson_alpha", "lesson_beta"]
+
+
+@pytest.fixture
+def explorer_assets(rag_config: RAGConfig):
+    lesson_dir = rag_config.asset_root / "lesson_alpha" / "frames_dense"
+    lesson_dir.mkdir(parents=True, exist_ok=True)
+    frame_path = lesson_dir / "frame_000011_diff_0.2500.jpg"
+    frame_path.write_bytes(b"fake-jpeg-bytes")
+    _write_json(
+        rag_config.asset_root / "lesson_alpha" / "dense_index.json",
+        {"000011": "frames_dense/frame_000011_diff_0.2500.jpg"},
+    )
+    return frame_path
+
+
+@pytest.fixture
+def explorer_client(rag_config: RAGConfig, built_rag_root: Path, patch_fake_sentence_transformer, explorer_assets: Path):
     from pipeline.rag.api import app, init_app
 
     init_app(rag_config)

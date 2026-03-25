@@ -1,0 +1,29 @@
+{
+  "source_doc_id": "rule:lesson_alpha:rule_accumulation_1",
+  "groups": {
+    "same_lesson": [
+      {
+        "card": {
+          "doc_id": "rule:lesson_alpha:rule_stop_loss_1",
+          "unit_type": "rule_card",
+          "lesson_id": "lesson_alpha",
+          "title": "Technical stop loss",
+          "subtitle": "Stop Loss",
+          "snippet": "Технический стоп прячется за откат.",
+          "concept_ids": ["node:stop_loss", "node:technical_stop_loss"],
+          "support_basis": "transcript_primary",
+          "evidence_requirement": "optional",
+          "teaching_mode": "theory",
+          "confidence_score": 0.94,
+          "timestamps": [{ "label": "00:11-00:15" }],
+          "evidence_count": 1,
+          "related_rule_count": 0,
+          "related_event_count": 1,
+          "score": null,
+          "why_retrieved": []
+        },
+        "relation_reason": "same_lesson"
+      }
+    ]
+  }
+}

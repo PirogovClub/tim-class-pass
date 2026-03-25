@@ -1,0 +1,72 @@
+{
+  "rules": [
+    {
+      "doc_id": "rule:lesson_alpha:rule_accumulation_1",
+      "lesson_id": "lesson_alpha",
+      "lesson_slug": "lesson_alpha",
+      "title": "Accumulation near levels",
+      "concept": "Price Action",
+      "subconcept": "Accumulation",
+      "canonical_concept_ids": ["node:price_action", "node:accumulation"],
+      "rule_text": "Accumulation near the level often precedes breakout continuation.",
+      "rule_text_ru": "Накопление перед уровнем часто предшествует пробою.",
+      "conditions": ["Look for repeated pullbacks into the level."],
+      "invalidation": ["Avoid weak accumulation without reaction."],
+      "exceptions": [],
+      "comparisons": [],
+      "visual_summary": "Annotated chart highlights accumulation before breakout.",
+      "frame_ids": ["000031"],
+      "support_basis": "transcript_plus_visual",
+      "evidence_requirement": "required",
+      "teaching_mode": "example",
+      "confidence_score": 0.91,
+      "timestamps": [{ "label": "00:31-00:35" }],
+      "linked_evidence_count": 1,
+      "linked_source_event_count": 1,
+      "related_rule_count": 1,
+      "related_rules": []
+    },
+    {
+      "doc_id": "rule:lesson_beta:rule_false_breakout_1",
+      "lesson_id": "lesson_beta",
+      "lesson_slug": "lesson_beta",
+      "title": "False breakout invalidation",
+      "concept": "False Breakout",
+      "subconcept": "Breakout Failure",
+      "canonical_concept_ids": ["node:false_breakout", "node:breakout_failure"],
+      "rule_text": "A false breakout invalidates breakout continuation.",
+      "rule_text_ru": "Ложный пробой часто отменяет продолжение сценария.",
+      "conditions": ["Watch for fast return below the level."],
+      "invalidation": ["Continuation is invalidated once price loses acceptance."],
+      "exceptions": [],
+      "comparisons": ["Acceptance keeps the breakout valid."],
+      "visual_summary": "Example shows a failed breakout and return below level.",
+      "frame_ids": ["000047"],
+      "support_basis": "transcript_plus_visual",
+      "evidence_requirement": "optional",
+      "teaching_mode": "mixed",
+      "confidence_score": 0.9,
+      "timestamps": [{ "label": "00:47-00:50" }],
+      "linked_evidence_count": 1,
+      "linked_source_event_count": 1,
+      "related_rule_count": 1,
+      "related_rules": []
+    }
+  ],
+  "summary": {
+    "shared_concepts": [],
+    "shared_lessons": [],
+    "shared_support_basis": ["transcript_plus_visual"],
+    "differences": [
+      {
+        "field": "lesson_id",
+        "labels": ["lesson_alpha", "lesson_beta"]
+      },
+      {
+        "field": "evidence_requirement",
+        "labels": ["required", "optional"]
+      }
+    ],
+    "possible_relationships": ["same_support_basis", "contrastive"]
+  }
+}

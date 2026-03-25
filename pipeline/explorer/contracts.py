@@ -69,6 +69,7 @@ class RuleDetailResponse(BaseModel):
     exceptions: list[str] = Field(default_factory=list)
     comparisons: list[str] = Field(default_factory=list)
     visual_summary: str | None = None
+    frame_ids: list[str] = Field(default_factory=list)
     support_basis: str | None = None
     evidence_requirement: str | None = None
     teaching_mode: str | None = None
@@ -90,6 +91,7 @@ class EvidenceDetailResponse(BaseModel):
     evidence_strength: str | None = None
     evidence_role_detail: str | None = None
     visual_summary: str | None = None
+    frame_ids: list[str] = Field(default_factory=list)
     source_rules: list[BrowserResultCard] = Field(default_factory=list)
     source_events: list[BrowserResultCard] = Field(default_factory=list)
 
@@ -124,3 +126,109 @@ class LessonDetailResponse(BaseModel):
     top_concepts: list[str] = Field(default_factory=list)
     top_rules: list[BrowserResultCard] = Field(default_factory=list)
     top_evidence: list[BrowserResultCard] = Field(default_factory=list)
+
+
+RelationReason = str
+
+
+class ComparisonDifference(BaseModel):
+    field: str
+    labels: list[str] = Field(default_factory=list)
+
+
+class SharedFieldSummary(BaseModel):
+    field: str
+    values: list[str] = Field(default_factory=list)
+
+
+class ComparisonSummary(BaseModel):
+    shared_concepts: list[str] = Field(default_factory=list)
+    shared_lessons: list[str] = Field(default_factory=list)
+    shared_support_basis: list[str] = Field(default_factory=list)
+    differences: list[ComparisonDifference] = Field(default_factory=list)
+    possible_relationships: list[str] = Field(default_factory=list)
+
+
+class RuleCompareRequest(BaseModel):
+    rule_ids: list[str] = Field(default_factory=list)
+    include_related_context: bool = True
+
+
+class RuleCompareItem(BaseModel):
+    doc_id: str
+    lesson_id: str
+    lesson_slug: str | None = None
+    title: str
+    concept: str | None = None
+    subconcept: str | None = None
+    canonical_concept_ids: list[str] = Field(default_factory=list)
+    rule_text: str = ""
+    rule_text_ru: str = ""
+    conditions: list[str] = Field(default_factory=list)
+    invalidation: list[str] = Field(default_factory=list)
+    exceptions: list[str] = Field(default_factory=list)
+    comparisons: list[str] = Field(default_factory=list)
+    visual_summary: str | None = None
+    frame_ids: list[str] = Field(default_factory=list)
+    support_basis: str | None = None
+    evidence_requirement: str | None = None
+    teaching_mode: str | None = None
+    confidence_score: float | None = None
+    timestamps: list[dict[str, Any]] = Field(default_factory=list)
+    linked_evidence_count: int = 0
+    linked_source_event_count: int = 0
+    related_rule_count: int = 0
+    related_rules: list[BrowserResultCard] = Field(default_factory=list)
+
+
+class RuleCompareResponse(BaseModel):
+    rules: list[RuleCompareItem] = Field(default_factory=list)
+    summary: ComparisonSummary = Field(default_factory=ComparisonSummary)
+
+
+class LessonCompareRequest(BaseModel):
+    lesson_ids: list[str] = Field(default_factory=list)
+
+
+class LessonCompareItem(BaseModel):
+    lesson_id: str
+    lesson_title: str | None = None
+    unit_type_counts: dict[str, int] = Field(default_factory=dict)
+    support_basis_counts: dict[str, int] = Field(default_factory=dict)
+    top_concepts: list[str] = Field(default_factory=list)
+    top_rules: list[BrowserResultCard] = Field(default_factory=list)
+    top_evidence: list[BrowserResultCard] = Field(default_factory=list)
+    rule_count: int = 0
+    event_count: int = 0
+    evidence_count: int = 0
+    concept_count: int = 0
+
+
+class LessonCompareResponse(BaseModel):
+    lessons: list[LessonCompareItem] = Field(default_factory=list)
+    shared_concepts: list[str] = Field(default_factory=list)
+    unique_concepts: dict[str, list[str]] = Field(default_factory=dict)
+    shared_rule_families: list[str] = Field(default_factory=list)
+
+
+class RelatedRuleItem(BaseModel):
+    card: BrowserResultCard
+    relation_reason: RelationReason
+
+
+class RelatedRulesResponse(BaseModel):
+    source_doc_id: str
+    groups: dict[str, list[RelatedRuleItem]] = Field(default_factory=dict)
+
+
+class ConceptRuleListResponse(BaseModel):
+    concept_id: str
+    rules: list[BrowserResultCard] = Field(default_factory=list)
+    total: int = 0
+
+
+class ConceptLessonListResponse(BaseModel):
+    concept_id: str
+    lessons: list[str] = Field(default_factory=list)
+    lesson_details: list[LessonDetailResponse] = Field(default_factory=list)
+    total: int = 0

@@ -6,12 +6,12 @@ This file is meant as a detailed handoff for another chat window. It captures th
 
 ## Starting Context
 
-At the start of this phase, the repo already contained a `pipeline/rag/` implementation. The user asked for a **plan for implementing** `rag creation/01.md`, which defines Roadmap Step 3: Hybrid RAG.
+At the start of this phase, the repo already contained a `pipeline/rag/` implementation. The user asked for a **plan for implementing** [`requirements/rag/01.md`](requirements/rag/01.md), which defines Roadmap Step 3: Hybrid RAG.
 
 Before planning, the repository was explored to answer two questions:
 
 1. what already existed in `pipeline/rag/`
-2. how far the current implementation was from the spec in `rag creation/01.md`
+2. how far the current implementation was from the spec in [`requirements/rag/01.md`](requirements/rag/01.md)
 
 The initial audit found that Step 3 was partially implemented already, but there were several important gaps.
 
@@ -46,7 +46,7 @@ It also already had:
 - a basic evaluation harness
 - existing `output_rag/` artifacts
 
-## Main Gaps Found Against `rag creation/01.md`
+## Main Gaps Found Against [`requirements/rag/01.md`](requirements/rag/01.md)
 
 The gap audit found the following issues:
 

@@ -1,0 +1,21 @@
+{
+  "target_type": "rule_card",
+  "target_id": "rule_audit_beta",
+  "target_summary": "Position sizing note — standalone card.",
+  "reviewed_state": {
+    "target_type": "rule_card",
+    "target_id": "rule_audit_beta",
+    "current_status": "pending_review",
+    "latest_decision_type": null,
+    "last_reviewed_at": null,
+    "last_reviewer_id": null,
+    "canonical_family_id": null,
+    "summary": "Position sizing note",
+    "is_duplicate": false,
+    "duplicate_of_rule_id": null
+  },
+  "history": [],
+  "family": null,
+  "family_members_preview": [],
+  "optional_context": {}
+}

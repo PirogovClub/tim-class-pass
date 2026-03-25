@@ -43,7 +43,8 @@ markers = [
     "integration: slow tests that read or regenerate Lesson 2 pipeline artifacts",
     "e2e: browser end-to-end UI tests",
 ]
-norecursedirs = ["audit_step4_1_bundle"]
+# Frozen audit snapshots live under audit/; never collect tests from there
+norecursedirs = ["audit"]
 
 [dependency-groups]
 dev = [

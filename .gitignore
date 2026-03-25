@@ -24,3 +24,6 @@ htmlcov/
 .ruff_cache/data/
 var/
 data/
+
+# Keep audit bundles out of the repo root (use audit/**/ instead)
+/*.zip

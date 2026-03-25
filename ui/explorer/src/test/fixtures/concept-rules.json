@@ -1,0 +1,44 @@
+{
+  "concept_id": "node:breakout",
+  "rules": [
+    {
+      "doc_id": "rule:lesson_alpha:rule_accumulation_1",
+      "unit_type": "rule_card",
+      "lesson_id": "lesson_alpha",
+      "title": "Accumulation near levels",
+      "subtitle": "Price Action",
+      "snippet": "Накопление перед уровнем часто предшествует пробою.",
+      "concept_ids": ["node:price_action", "node:accumulation"],
+      "support_basis": "transcript_plus_visual",
+      "evidence_requirement": "required",
+      "teaching_mode": "example",
+      "confidence_score": 0.91,
+      "timestamps": [{ "label": "00:31-00:35" }],
+      "evidence_count": 1,
+      "related_rule_count": 0,
+      "related_event_count": 1,
+      "score": null,
+      "why_retrieved": []
+    },
+    {
+      "doc_id": "rule:lesson_beta:rule_false_breakout_1",
+      "unit_type": "rule_card",
+      "lesson_id": "lesson_beta",
+      "title": "False breakout invalidation",
+      "subtitle": "False Breakout",
+      "snippet": "Ложный пробой часто отменяет продолжение сценария.",
+      "concept_ids": ["node:false_breakout", "node:breakout_failure"],
+      "support_basis": "transcript_plus_visual",
+      "evidence_requirement": "optional",
+      "teaching_mode": "mixed",
+      "confidence_score": 0.9,
+      "timestamps": [{ "label": "00:47-00:50" }],
+      "evidence_count": 1,
+      "related_rule_count": 0,
+      "related_event_count": 1,
+      "score": null,
+      "why_retrieved": []
+    }
+  ],
+  "total": 2
+}

@@ -1,0 +1,33 @@
+Stage 5.2 adjudication API bundle (post corpus-inventory re-audit)
+
+AUDIT_HANDOFF.md
+README.md
+FILES_MANIFEST.txt
+STAGE5_2_PYTEST_OUTPUT.txt
+STAGE5_2_IMPORT_NOTE.txt
+STAGE5_2_IMPORT_APP.txt
+
+pipeline/adjudication/api_errors.py
+pipeline/adjudication/api_models.py
+pipeline/adjudication/api_routes.py
+pipeline/adjudication/api_service.py
+pipeline/adjudication/bundle_service.py
+pipeline/adjudication/corpus_inventory.py
+pipeline/adjudication/queue_service.py
+pipeline/adjudication/docs.md
+pipeline/rag/api.py
+pipeline/explorer/api.py
+
+tests/adjudication_api/conftest.py
+tests/adjudication_api/corpus_index_fixtures.py
+tests/adjudication_api/test_api_bundle.py
+tests/adjudication_api/test_api_errors.py
+tests/adjudication_api/test_api_models.py
+tests/adjudication_api/test_api_queues.py
+tests/adjudication_api/test_api_reads.py
+tests/adjudication_api/test_api_routes.py
+tests/adjudication_api/test_api_write.py
+tests/adjudication_api/test_corpus_index_from_explorer.py
+tests/adjudication_api/test_corpus_queue_and_writes.py
+
+Canonical repo: tim-class-pass (paths mirror this tree).

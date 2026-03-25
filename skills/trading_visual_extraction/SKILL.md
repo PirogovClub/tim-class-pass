@@ -7,7 +7,7 @@ description: Structured JSON schema and production prompt for analyzing trading 
 
 This skill defines the **authoritative schema** for frame-by-frame visual analysis of trading education videos. All frame analysis in this project MUST use this schema instead of free-text descriptions.
 
-> **Canonical spec:** [`docs/trading_visual_extraction_spec.md`](file:///h:/GITS/tim-class-pass/docs/trading_visual_extraction_spec.md)
+> **Canonical spec:** [`docs/requirements/trading-visual-extraction-spec.md`](../../../docs/requirements/trading-visual-extraction-spec.md)
 
 ---
 

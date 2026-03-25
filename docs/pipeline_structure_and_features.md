@@ -107,4 +107,4 @@ The pipeline skips a stage with a clear message and hint if a required artifact 
 - **Step-by-step flow:** [pipeline.md](pipeline.md) (main pipeline and Component 2; Step 3 diagram still shows legacy outputs; structured steps are additive).
 - **Module/function reference:** [FRAMEWORK_MODULES.md](FRAMEWORK_MODULES.md).
 - **Path and flag definitions:** `pipeline/contracts.py`, `pipeline/stage_registry.py`.
-- **Task specs and addenda:** `knowlage_refactoring/` (task7–task11, step_3_new_tune, task-1 for inspection).
+- **Task specs and addenda:** [`docs/requirements/knowledge-refactoring/`](requirements/knowledge-refactoring/) (task7–task11, step_3_new_tune, task-1 for inspection).

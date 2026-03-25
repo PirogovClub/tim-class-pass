@@ -1,0 +1,98 @@
+[
+  {
+    "concept_id": "node:trade_management",
+    "relation": "has_subconcept",
+    "direction": "incoming",
+    "weight": 2.0
+  },
+  {
+    "concept_id": "node:upravlenie_kapitalom",
+    "relation": "has_subconcept",
+    "direction": "incoming",
+    "weight": 5.0
+  },
+  {
+    "concept_id": "node:upravlenie_pozitsiey",
+    "relation": "has_subconcept",
+    "direction": "incoming",
+    "weight": 1.0
+  },
+  {
+    "concept_id": "node:upravlenie_riskom",
+    "relation": "has_subconcept",
+    "direction": "incoming",
+    "weight": 2.0
+  },
+  {
+    "concept_id": "node:technical_stop_loss",
+    "relation": "co_occurs_with",
+    "direction": "outgoing",
+    "weight": 2.0
+  },
+  {
+    "concept_id": "node:trade_management",
+    "relation": "co_occurs_with",
+    "direction": "outgoing",
+    "weight": 2.0
+  },
+  {
+    "concept_id": "node:upravlenie_kapitalom",
+    "relation": "co_occurs_with",
+    "direction": "outgoing",
+    "weight": 5.0
+  },
+  {
+    "concept_id": "node:upravlenie_riskom",
+    "relation": "co_occurs_with",
+    "direction": "outgoing",
+    "weight": 2.0
+  },
+  {
+    "concept_id": "node:byt_gotovym_k_tomu_chto_instrument_libo_ochen_bystro_otstopit_libo_bystro_dast_teyk_pri_ispolzovanii_korotkikh_stopov",
+    "relation": "has_condition",
+    "direction": "outgoing",
+    "weight": 2.0
+  },
+  {
+    "concept_id": "node:dlya_tekh_kto_torguet_s_korotkim_stopom_pri_uvelichenii_stopa_do_10_15_ot_atar_vremya_v_sdelke_u_nego_uvelichivaetsya",
+    "relation": "has_condition",
+    "direction": "outgoing",
+    "weight": 1.0
+  },
+  {
+    "concept_id": "node:esli_stop_dostatochno_bolshoy_vremya_v_sdelke_uvelichivaetsya",
+    "relation": "has_condition",
+    "direction": "outgoing",
+    "weight": 2.0
+  },
+  {
+    "concept_id": "node:esli_stop_loss_dostatochno_bolshoy_vam_tozhe_pridetsya_sidet_krayne_dolgo",
+    "relation": "has_condition",
+    "direction": "outgoing",
+    "weight": 1.0
+  },
+  {
+    "concept_id": "node:ispolzovat_korotkie_stopy",
+    "relation": "has_condition",
+    "direction": "outgoing",
+    "weight": 2.0
+  },
+  {
+    "concept_id": "node:razmer_stop_lossa",
+    "relation": "has_subconcept",
+    "direction": "outgoing",
+    "weight": 1.0
+  },
+  {
+    "concept_id": "node:technical_stop_loss",
+    "relation": "has_subconcept",
+    "direction": "outgoing",
+    "weight": 2.0
+  },
+  {
+    "concept_id": "node:tekhnicheskiy_stop_loss",
+    "relation": "has_subconcept",
+    "direction": "outgoing",
+    "weight": 1.0
+  }
+]

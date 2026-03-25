@@ -8,14 +8,14 @@
   "archives": {
     "current_unversioned": {
       "name": "audit_step4_1_bundle.zip",
-      "path": "H:\\GITS\\tim-class-pass\\audit_step4_1_bundle.zip",
+      "path": "H:\\GITS\\tim-class-pass\\audit\\archives\\audit_step4_1_bundle.zip",
       "size_bytes": 118043,
       "last_modified_utc": "2026-03-24T02:36:49.594765+00:00",
       "sha256": "f902624813532502aa8985dde7d13937118f2c5b134996cf0b6b52ebe9ab7413"
     },
     "versioned_resend": {
       "name": "audit_step4_1_bundle_rework2.zip",
-      "path": "H:\\GITS\\tim-class-pass\\audit_step4_1_bundle_rework2.zip",
+      "path": "H:\\GITS\\tim-class-pass\\audit\\archives\\audit_step4_1_bundle_rework2.zip",
       "size_bytes": 121099,
       "last_modified_utc": "2026-03-24T03:01:18.825933+00:00",
       "sha256": "b07e77645a020d1410fcf0d184059509f45363f3e1c75dab81a9774900f390b4"

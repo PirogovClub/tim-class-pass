@@ -11,19 +11,30 @@ from pipeline.explorer.contracts import (
     BrowserSearchRequest,
     BrowserSearchResponse,
     ConceptDetailResponse,
+    ConceptLessonListResponse,
     ConceptNeighbor,
+    ConceptRuleListResponse,
     EvidenceDetailResponse,
+    LessonCompareResponse,
     LessonDetailResponse,
+    RelatedRulesResponse,
+    RuleCompareResponse,
     RuleDetailResponse,
 )
 from pipeline.explorer.loader import ExplorerRepository, _concept_keys
 from pipeline.explorer.views import (
     build_concept_detail,
+    build_concept_lesson_list,
+    build_concept_rule_list,
     build_evidence_detail,
+    build_lesson_compare_response,
     build_lesson_detail,
+    build_related_rules_response,
     build_result_card,
+    build_rule_compare_response,
     build_rule_detail,
 )
+from pipeline.rag.query_intents import analyze_query_intents
 from pipeline.rag.retriever import HybridRetriever
 
 _BROWSE_ORDER: dict[str, int] = {
@@ -162,6 +173,28 @@ class ExplorerService:
     def _facet_candidate_top_k(self) -> int:
         return max(100, min(self._repo.doc_count, _FACET_QUERY_CANDIDATE_LIMIT))
 
+    def _postprocess_query_hit_rows(self, query: str, hit_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        iq = analyze_query_intents(query.strip().lower())
+        if iq.mentions_timeframe and iq.prefers_explicit_rules:
+            return sorted(
+                hit_rows,
+                key=lambda hit: (
+                    0 if hit["resolved_doc"].get("unit_type") == "rule_card" else 1,
+                    -float(hit.get("score") or 0.0),
+                ),
+            )
+        return hit_rows
+
+    def _validate_compare_ids(self, ids: list[str], *, label: str) -> list[str]:
+        cleaned = [str(doc_id) for doc_id in ids if str(doc_id).strip()]
+        if len(cleaned) < 2:
+            raise ValueError(f"{label} comparison requires at least two ids")
+        if len(cleaned) > 4:
+            raise ValueError(f"{label} comparison supports at most four ids")
+        if len(set(cleaned)) != len(cleaned):
+            raise ValueError(f"{label} comparison ids must be unique")
+        return cleaned
+
     def _query_hit_rows(
         self,
         query: str,
@@ -178,7 +211,7 @@ class ExplorerService:
         )
         return [
             hit
-            for hit in result["top_hits"]
+            for hit in self._postprocess_query_hit_rows(query, result["top_hits"])
             if self._matches_filters(hit["resolved_doc"], filters)
         ]
 
@@ -310,3 +343,64 @@ class ExplorerService:
             candidate_top_k=self._facet_candidate_top_k(),
         )
         return self._compute_facets(docs)
+
+    def compare_rules(
+        self,
+        rule_ids: list[str],
+        *,
+        include_related_context: bool = True,
+    ) -> RuleCompareResponse:
+        validated_ids = self._validate_compare_ids(rule_ids, label="Rule")
+        docs: list[dict[str, Any]] = []
+        related_context: dict[str, list[dict[str, Any]]] = {}
+        for rule_id in validated_ids:
+            doc = self._repo.get_doc(rule_id)
+            if doc is None:
+                raise KeyError(rule_id)
+            if doc.get("unit_type") != "rule_card":
+                raise ValueError(f"Document {rule_id!r} is not a rule_card")
+            docs.append(doc)
+            if include_related_context:
+                related_context[rule_id] = self._repo.get_related_rule_docs(doc)
+        return build_rule_compare_response(docs, related_context=related_context)
+
+    def compare_lessons(self, lesson_ids: list[str]) -> LessonCompareResponse:
+        validated_ids = self._validate_compare_ids(lesson_ids, label="Lesson")
+        lesson_docs_map: dict[str, list[dict[str, Any]]] = {}
+        lesson_metas: dict[str, dict[str, Any] | None] = {}
+        for lesson_id in validated_ids:
+            lesson_meta = self._repo.get_lesson_meta(lesson_id)
+            docs = self._repo.get_docs_by_lesson(lesson_id)
+            if lesson_meta is None and not docs:
+                raise KeyError(lesson_id)
+            lesson_metas[lesson_id] = lesson_meta
+            lesson_docs_map[lesson_id] = docs
+
+        overlap = self._repo.get_rule_overlap_between_lessons(validated_ids)
+        return build_lesson_compare_response(
+            lesson_metas,
+            lesson_docs_map,
+            overlap={"rule_families": sorted(overlap.keys())},
+        )
+
+    def get_related_rules(self, doc_id: str) -> RelatedRulesResponse:
+        grouped_docs = self._repo.get_related_rule_docs_grouped(doc_id)
+        return build_related_rules_response(doc_id, grouped_docs)
+
+    def get_concept_rules(self, concept_id: str) -> ConceptRuleListResponse:
+        rule_docs = self._repo.get_rules_for_concept(concept_id)
+        meta = self._repo.get_concept_meta(concept_id) or {}
+        if not rule_docs and not meta:
+            raise KeyError(concept_id)
+        resolved_concept_id = str(meta.get("concept_id") or concept_id)
+        return build_concept_rule_list(resolved_concept_id, rule_docs)
+
+    def get_concept_lessons(self, concept_id: str) -> ConceptLessonListResponse:
+        lesson_ids = self._repo.get_lessons_for_concept(concept_id)
+        meta = self._repo.get_concept_meta(concept_id) or {}
+        if not lesson_ids and not meta:
+            raise KeyError(concept_id)
+        resolved_concept_id = str(meta.get("concept_id") or concept_id)
+        lesson_metas = {lesson_id: self._repo.get_lesson_meta(lesson_id) for lesson_id in lesson_ids}
+        lesson_docs_map = {lesson_id: self._repo.get_docs_by_lesson(lesson_id) for lesson_id in lesson_ids}
+        return build_concept_lesson_list(resolved_concept_id, lesson_ids, lesson_metas, lesson_docs_map)

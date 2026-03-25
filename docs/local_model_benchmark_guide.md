@@ -87,7 +87,7 @@ Before attempting model upgrades, the following improvements were made to the pi
 1. **Gold eval set**: `tests/gold/frame_000591_gemini.json` + acceptance tests in `tests/test_analyze.py`
 2. **Within-batch context carry-forward**: fixed in `pipeline/dense_analyzer.py` so later frames get context from earlier in-progress frames
 3. **Step 3 architecture reset**: the old deduplicator-based Step 3 has been removed; the current pipeline uses the invalidation-filter + markdown-synthesis flow instead
-4. **Schema expansion**: `docs/trading_visual_extraction_spec.md` + `skills/trading_visual_extraction/SKILL.md` now include:
+4. **Schema expansion**: `docs/requirements/trading-visual-extraction-spec.md` + `skills/trading_visual_extraction/SKILL.md` now include:
    - `abstract_bar_diagram` vs `candlestick_sketch` disambiguation rules
    - Structured `visible_annotations` ({text, location, language})
    - Conceptual `level_values` / `stop_values` ({type, label, value_description})

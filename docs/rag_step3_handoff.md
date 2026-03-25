@@ -2,7 +2,7 @@
 
 ## Request
 
-The user asked for a plan and then a full implementation of `rag creation/01.md`, which defines Roadmap Step 3: a hybrid RAG retrieval layer built on top of Step 2 corpus outputs.
+The user asked for a plan and then a full implementation of [`requirements/rag/01.md`](requirements/rag/01.md), which defines Roadmap Step 3: a hybrid RAG retrieval layer built on top of Step 2 corpus outputs.
 
 The user explicitly approved a temporary **in-memory / local-first** implementation instead of Postgres + pgvector, with the condition that:
 

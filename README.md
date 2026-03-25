@@ -7,6 +7,8 @@ This repo now has:
 
 Primary purpose: **information extraction and structured lesson synthesis** from video + transcript + visual state.
 
+**Documentation layout:** [`docs/README.md`](docs/README.md) (as-built) vs [`docs/requirements/README.md`](docs/requirements/README.md) (specs & plans). **Explorer UI audits** (Step 4.x handoffs, zips): [`audit/README.md`](audit/README.md). **Run browser API:** [`docs/RUN_BROWSER_API.md`](docs/RUN_BROWSER_API.md). **Sanitize seminar video/audio filenames** (translit, slug, optional `_1` strip): [`docs/scripts/sanitize_seminar_filenames.md`](docs/scripts/sanitize_seminar_filenames.md).
+
 ---
 
 ## Requirements
@@ -78,7 +80,7 @@ Step 2 uses **only** frames listed in `llm_queue/manifest.json`. Frames not in t
 
 - Writes `batches/dense_batch_prompt_<start>-<end>.txt` and exits (code 10) when agent is **ide**.
 - Agent writes `batches/dense_batch_response_<start>-<end>.json` (one structured JSON object per frame key).
-- After each batch, the pipeline merges into `dense_analysis.json` and writes per-frame `frames_dense/frame_<key>.json`. Schema: [docs/trading_visual_extraction_spec.md](docs/trading_visual_extraction_spec.md) / `skills/trading_visual_extraction/SKILL.md`.
+- After each batch, the pipeline merges into `dense_analysis.json` and writes per-frame `frames_dense/frame_<key>.json`. Schema: [docs/requirements/trading-visual-extraction-spec.md](docs/requirements/trading-visual-extraction-spec.md) / `skills/trading_visual_extraction/SKILL.md`.
 
 ### Step 3 — Markdown synthesis
 

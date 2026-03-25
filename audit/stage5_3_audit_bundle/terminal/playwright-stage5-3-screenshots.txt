@@ -1,0 +1,10 @@
+﻿
+Running 6 tests using 1 worker
+
+[1A[2K[1/6] [chromium] ΓÇ║ tests\e2e\stage5-3-audit-screenshots.spec.ts:30:3 ΓÇ║ Stage 5.3 audit screenshots ΓÇ║ queue: default, filtered, empty, error, loading
+[1A[2K[2/6] [chromium] ΓÇ║ tests\e2e\stage5-3-audit-screenshots.spec.ts:87:3 ΓÇ║ Stage 5.3 audit screenshots ΓÇ║ review item: data, no family, loading, error
+[1A[2K[3/6] [chromium] ΓÇ║ tests\e2e\stage5-3-audit-screenshots.spec.ts:146:3 ΓÇ║ Stage 5.3 audit screenshots ΓÇ║ decision: form, validation disabled, success + refresh, API error
+[1A[2K[4/6] [chromium] ΓÇ║ tests\e2e\stage5-3-audit-screenshots.spec.ts:204:3 ΓÇ║ Stage 5.3 audit screenshots ΓÇ║ compare: two columns, invalid params, mobile queue
+[1A[2K[5/6] [chromium] ΓÇ║ tests\e2e\stage5-3-audit-screenshots.spec.ts:237:3 ΓÇ║ Stage 5.3 audit screenshots ΓÇ║ workflow: next item, return to queue, compare then item link
+[1A[2K[6/6] [chromium] ΓÇ║ tests\e2e\stage5-3-audit-screenshots.spec.ts:271:3 ΓÇ║ Stage 5.3 audit screenshots ΓÇ║ decision submitting pending state
+[1A[2K  6 passed (7.6s)

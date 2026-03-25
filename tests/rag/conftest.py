@@ -559,8 +559,13 @@ def rag_output_root(tmp_path: Path) -> Path:
 
 
 @pytest.fixture
-def rag_config(rag_corpus_root: Path, rag_output_root: Path) -> RAGConfig:
-    return RAGConfig(corpus_root=rag_corpus_root, rag_root=rag_output_root, embedding_model="fake-multilingual")
+def rag_config(rag_corpus_root: Path, rag_output_root: Path, tmp_path: Path) -> RAGConfig:
+    return RAGConfig(
+        corpus_root=rag_corpus_root,
+        rag_root=rag_output_root,
+        asset_root=tmp_path / "data",
+        embedding_model="fake-multilingual",
+    )
 
 
 @pytest.fixture

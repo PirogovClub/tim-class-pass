@@ -1,0 +1,25 @@
+{
+  "queue": "unresolved",
+  "total": 2,
+  "items": [
+    {
+      "target_type": "rule_card",
+      "target_id": "rule_audit_alpha",
+      "current_status": "pending_review",
+      "latest_decision_type": null,
+      "last_reviewed_at": null,
+      "canonical_family_id": "fam_audit_1",
+      "queue_reason": "low_confidence_extraction",
+      "summary": "Stop-loss placement near structure"
+    },
+    {
+      "target_type": "rule_card",
+      "target_id": "rule_audit_beta",
+      "current_status": "pending_review",
+      "latest_decision_type": null,
+      "canonical_family_id": null,
+      "queue_reason": "ambiguous_family",
+      "summary": "Position sizing note"
+    }
+  ]
+}

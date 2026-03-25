@@ -1,0 +1,49 @@
+{
+  "lessons": [
+    {
+      "lesson_id": "lesson_alpha",
+      "lesson_title": "Lesson Alpha",
+      "unit_type_counts": {
+        "rule_card": 2,
+        "knowledge_event": 2,
+        "evidence_ref": 2
+      },
+      "support_basis_counts": {
+        "transcript_primary": 2,
+        "transcript_plus_visual": 4
+      },
+      "top_concepts": ["node:stop_loss", "node:accumulation", "node:breakout"],
+      "top_rules": [],
+      "top_evidence": [],
+      "rule_count": 2,
+      "event_count": 2,
+      "evidence_count": 2,
+      "concept_count": 3
+    },
+    {
+      "lesson_id": "lesson_beta",
+      "lesson_title": "Lesson Beta",
+      "unit_type_counts": {
+        "rule_card": 1,
+        "knowledge_event": 1,
+        "evidence_ref": 1
+      },
+      "support_basis_counts": {
+        "transcript_plus_visual": 3
+      },
+      "top_concepts": ["node:false_breakout", "node:breakout"],
+      "top_rules": [],
+      "top_evidence": [],
+      "rule_count": 1,
+      "event_count": 1,
+      "evidence_count": 1,
+      "concept_count": 2
+    }
+  ],
+  "shared_concepts": ["node:breakout"],
+  "unique_concepts": {
+    "lesson_alpha": ["node:stop_loss", "node:accumulation"],
+    "lesson_beta": ["node:false_breakout"]
+  },
+  "shared_rule_families": []
+}

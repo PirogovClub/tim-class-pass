@@ -122,6 +122,24 @@ def test_repo_get_evidence_docs_for_rule_returns_linked_evidence(explorer_repo):
     assert [doc["doc_id"] for doc in evidence_docs] == ["evidence:lesson_alpha:ev_stop_loss"]
 
 
+def test_repo_related_rule_grouping_and_concept_helpers(explorer_repo):
+    grouped = explorer_repo.get_related_rule_docs_grouped("rule:lesson_alpha:rule_accumulation_1")
+    assert "same_lesson" in grouped
+    assert [doc["doc_id"] for doc in grouped["same_lesson"]] == ["rule:lesson_alpha:rule_stop_loss_1"]
+
+    concept_rules = explorer_repo.get_rules_for_concept("node:breakout")
+    assert [doc["doc_id"] for doc in concept_rules] == [
+        "rule:lesson_alpha:rule_accumulation_1",
+        "rule:lesson_beta:rule_false_breakout_1",
+    ]
+
+    concept_lessons = explorer_repo.get_lessons_for_concept("node:breakout")
+    assert concept_lessons == ["lesson_alpha", "lesson_beta"]
+
+    overlap = explorer_repo.get_concept_overlap_between_lessons(["lesson_alpha", "lesson_beta"])
+    assert overlap == {"node:breakout": ["lesson_alpha", "lesson_beta"]}
+
+
 def test_service_browse_mode_sorts_rule_cards_before_events(explorer_service):
     response = explorer_service.search(BrowserSearchRequest(query="", top_k=10))
     unit_types = [card.unit_type for card in response.cards]
@@ -212,3 +230,43 @@ def test_service_facets_use_full_filtered_set_not_first_page_only():
     assert facets["by_unit_type"]["knowledge_event"] == 5
     assert facets["by_unit_type"]["evidence_ref"] == 3
     assert sum(facets["by_unit_type"].values()) == 128
+
+
+def test_service_compare_and_traversal_methods_work(
+    explorer_service,
+    sample_compare_rule_ids,
+    sample_compare_lesson_ids,
+):
+    compare_rules = explorer_service.compare_rules(sample_compare_rule_ids)
+    assert [item.doc_id for item in compare_rules.rules] == sample_compare_rule_ids
+    assert compare_rules.summary.possible_relationships
+
+    compare_lessons = explorer_service.compare_lessons(sample_compare_lesson_ids)
+    assert [item.lesson_id for item in compare_lessons.lessons] == sample_compare_lesson_ids
+    assert "node:breakout" in compare_lessons.shared_concepts
+
+    related_rules = explorer_service.get_related_rules("rule:lesson_alpha:rule_accumulation_1")
+    assert "same_lesson" in related_rules.groups
+
+    concept_rules = explorer_service.get_concept_rules("node:breakout")
+    assert concept_rules.total == 2
+
+    concept_lessons = explorer_service.get_concept_lessons("node:breakout")
+    assert concept_lessons.total == 2
+    assert concept_lessons.lessons == sample_compare_lesson_ids
+
+
+def test_service_compare_validates_ids(explorer_service):
+    try:
+        explorer_service.compare_rules(["rule:lesson_alpha:rule_stop_loss_1"])
+    except ValueError as exc:
+        assert "at least two ids" in str(exc)
+    else:  # pragma: no cover - defensive
+        raise AssertionError("compare_rules should reject a single id")
+
+    try:
+        explorer_service.compare_lessons(["lesson_alpha"])
+    except ValueError as exc:
+        assert "at least two ids" in str(exc)
+    else:  # pragma: no cover - defensive
+        raise AssertionError("compare_lessons should reject a single id")

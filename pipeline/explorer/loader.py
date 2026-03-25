@@ -65,11 +65,15 @@ class ExplorerRepository:
         self._docs_by_rule_source: dict[str, set[str]] = {}
         self._docs_by_event_source: dict[str, set[str]] = {}
         self._rule_family_by_rule: dict[str, set[str]] = {}
+        self._rule_to_family_names: dict[str, set[str]] = {}
+        self._rule_ids_by_family: dict[str, set[str]] = {}
 
-        for family_rule_ids in rule_family_index.values():
+        for family_name, family_rule_ids in rule_family_index.items():
             family_set = set(family_rule_ids)
+            self._rule_ids_by_family[str(family_name)] = family_set
             for rule_id in family_set:
                 self._rule_family_by_rule.setdefault(rule_id, set()).update(family_set - {rule_id})
+                self._rule_to_family_names.setdefault(rule_id, set()).add(str(family_name))
 
         for doc in store.get_all():
             doc_id = str(doc.get("doc_id") or "")
@@ -250,6 +254,138 @@ class ExplorerRepository:
             if candidate.get("unit_type") == "rule_card"
         ]
         return _sort_docs(docs)[:limit]
+
+    def get_rules_in_family(self, rule_id: str) -> list[dict[str, Any]]:
+        docs = [
+            candidate
+            for candidate in self._store.get_by_ids(sorted(self._rule_family_by_rule.get(rule_id, set())))
+            if candidate.get("unit_type") == "rule_card"
+        ]
+        return _sort_docs(docs)
+
+    def get_rules_for_concept(self, concept_id: str) -> list[dict[str, Any]]:
+        return [
+            doc
+            for doc in self.get_docs_by_concept(concept_id)
+            if doc.get("unit_type") == "rule_card"
+        ]
+
+    def get_lessons_for_concept(self, concept_id: str) -> list[str]:
+        lesson_ids = {
+            str(doc.get("lesson_id") or "")
+            for doc in self.get_rules_for_concept(concept_id)
+            if doc.get("lesson_id")
+        }
+        meta = self.get_concept_meta(concept_id) or {}
+        lesson_ids.update(str(lesson_id) for lesson_id in meta.get("source_lessons") or [] if lesson_id)
+        return sorted(lesson_ids)
+
+    def get_rule_family_names(self, rule_id: str) -> list[str]:
+        return sorted(self._rule_to_family_names.get(rule_id, set()))
+
+    def get_concept_overlap_between_lessons(self, lesson_ids: list[str]) -> dict[str, list[str]]:
+        concept_to_lessons: dict[str, set[str]] = {}
+        lesson_set = {str(lesson_id) for lesson_id in lesson_ids}
+        concept_ids = {
+            str(meta.get("concept_id") or "")
+            for meta in self._concept_meta.values()
+            if str(meta.get("concept_id") or "").startswith("node:")
+        }
+        concept_ids.update(
+            key
+            for key in self._concept_rule_map.keys()
+            if str(key).startswith("node:")
+        )
+        for concept_id in concept_ids:
+            concept_lessons = {
+                str(doc.get("lesson_id") or "")
+                for doc in self.get_rules_for_concept(concept_id)
+                if doc.get("lesson_id") in lesson_set
+            }
+            if concept_lessons:
+                concept_to_lessons[concept_id] = concept_lessons
+        return {
+            concept_id: sorted(overlap_lessons)
+            for concept_id, overlap_lessons in sorted(concept_to_lessons.items())
+            if len(overlap_lessons) > 1
+        }
+
+    def get_rule_overlap_between_lessons(self, lesson_ids: list[str]) -> dict[str, list[str]]:
+        overlap: dict[str, set[str]] = {}
+        lesson_set = {str(lesson_id) for lesson_id in lesson_ids}
+        for family_name, rule_ids in self._rule_ids_by_family.items():
+            family_lessons = {
+                str(doc.get("lesson_id") or "")
+                for doc in self._store.get_by_ids(sorted(rule_ids))
+                if doc.get("unit_type") == "rule_card" and doc.get("lesson_id") in lesson_set
+            }
+            if len(family_lessons) > 1:
+                overlap[family_name] = family_lessons
+        return {family_name: sorted(family_lessons) for family_name, family_lessons in sorted(overlap.items())}
+
+    def get_related_rule_docs_grouped(self, doc_id: str) -> dict[str, list[dict[str, Any]]]:
+        doc = self.get_doc(doc_id)
+        if doc is None:
+            raise KeyError(doc_id)
+        if doc.get("unit_type") != "rule_card":
+            raise ValueError("Document is not a rule_card")
+
+        grouped_ids: dict[str, set[str]] = {
+            "same_concept": set(),
+            "same_family": set(),
+            "same_lesson": set(),
+            "linked_by_evidence": set(),
+            "cross_lesson_overlap": set(),
+        }
+
+        source_lesson_id = str(doc.get("lesson_id") or "")
+
+        for lesson_doc in self.get_docs_by_lesson(source_lesson_id):
+            lesson_doc_id = str(lesson_doc.get("doc_id") or "")
+            if lesson_doc.get("unit_type") == "rule_card" and lesson_doc_id and lesson_doc_id != doc_id:
+                grouped_ids["same_lesson"].add(lesson_doc_id)
+
+        for related_doc in self.get_related_rule_docs(doc, limit=max(self.doc_count, 10)):
+            related_doc_id = str(related_doc.get("doc_id") or "")
+            if not related_doc_id:
+                continue
+            if related_doc.get("lesson_id") != source_lesson_id:
+                grouped_ids["cross_lesson_overlap"].add(related_doc_id)
+
+        for family_doc in self.get_rules_in_family(doc_id):
+            grouped_ids["same_family"].add(str(family_doc.get("doc_id") or ""))
+
+        source_concepts = {
+            key
+            for concept_id in (doc.get("canonical_concept_ids") or []) + (doc.get("canonical_subconcept_ids") or [])
+            for key in _concept_keys(str(concept_id))
+        }
+        for concept_doc in self.get_related_rule_docs(doc, limit=max(self.doc_count, 10)):
+            concept_doc_id = str(concept_doc.get("doc_id") or "")
+            concept_keys = {
+                key
+                for concept_id in (concept_doc.get("canonical_concept_ids") or []) + (concept_doc.get("canonical_subconcept_ids") or [])
+                for key in _concept_keys(str(concept_id))
+            }
+            if source_concepts & concept_keys:
+                grouped_ids["same_concept"].add(concept_doc_id)
+
+        for evidence_doc in self.get_evidence_docs_for_rule(doc):
+            for rule_id in (evidence_doc.get("source_rule_ids") or []) + (evidence_doc.get("linked_rule_ids") or []):
+                if str(rule_id) != doc_id:
+                    grouped_ids["linked_by_evidence"].add(str(rule_id))
+
+        cleaned_groups: dict[str, list[dict[str, Any]]] = {}
+        for reason, ids in grouped_ids.items():
+            ids.discard(doc_id)
+            docs = [
+                candidate
+                for candidate in self._store.get_by_ids(sorted(ids))
+                if candidate.get("unit_type") == "rule_card"
+            ]
+            if docs:
+                cleaned_groups[reason] = _sort_docs(docs)
+        return cleaned_groups
 
     def get_related_event_docs(self, doc: dict[str, Any], limit: int = 10) -> list[dict[str, Any]]:
         related_ids: set[str] = set()

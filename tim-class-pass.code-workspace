@@ -7,5 +7,7 @@
 			"path": "../lmg-ai-chats"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"powershell.cwd": "tim-class-pass"
+	}
 }
