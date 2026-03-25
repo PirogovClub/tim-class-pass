@@ -1,0 +1,24 @@
+{
+  "_comment": "Illustrative resolver outcomes (mirror quality_tier.py); not live API responses",
+  "rule_card": {
+    "gold": { "tier": "gold", "blocker_codes": [], "example_reason": "approved, no duplicate, family active or absent" },
+    "silver_duplicate": { "tier": "silver", "blocker_codes": ["duplicate_not_gold_eligible"] },
+    "silver_merged": { "tier": "silver", "blocker_codes": [] },
+    "bronze_rejected": { "tier": "bronze", "blocker_codes": ["rejected_state"] },
+    "unresolved_ambiguous": { "tier": "unresolved", "blocker_codes": ["ambiguous_state"] },
+    "unresolved_defer": { "tier": "unresolved", "blocker_codes": ["deferred_state"] },
+    "unresolved_invalid_family": { "tier": "unresolved", "blocker_codes": ["invalid_family_link"] }
+  },
+  "evidence_link": {
+    "gold": { "tier": "gold", "blocker_codes": [], "condition": "support_status strong" },
+    "unresolved_unsupported": { "tier": "unresolved", "blocker_codes": ["unsupported_state"] }
+  },
+  "concept_link": {
+    "gold": { "tier": "gold", "blocker_codes": [], "condition": "link_status valid" },
+    "unresolved_unknown": { "tier": "unresolved", "blocker_codes": ["missing_required_review"] }
+  },
+  "related_rule_relation": {
+    "gold": { "tier": "gold", "blocker_codes": [], "condition": "relation_status valid" },
+    "unresolved_invalid": { "tier": "unresolved", "blocker_codes": ["missing_required_review"] }
+  }
+}

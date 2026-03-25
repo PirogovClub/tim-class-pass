@@ -20,6 +20,7 @@ function ruleBundle(id: string, familyId?: string | null): ReviewBundleResponse 
     family: familyId ? { family_id: familyId, canonical_title: 't', status: 'active' } : null,
     family_members_preview: [],
     optional_context: {},
+    open_proposals: [],
   }
 }
 
@@ -103,6 +104,7 @@ describe('canCompareAdjudicateRulePair', () => {
       family: null,
       family_members_preview: [],
       optional_context: {},
+      open_proposals: [],
     } satisfies ReviewBundleResponse
     expect(canCompareAdjudicateRulePair(ruleBundle('a'), evidence)).toBe(false)
   })

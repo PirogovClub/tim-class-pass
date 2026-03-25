@@ -1,0 +1,32 @@
+Stage 5.4 — files included in this audit bundle (paths relative to repo root)
+
+notes/
+  stage5_4_tier_policy.md
+
+pipeline/adjudication/
+  enums.py                    (QualityTier)
+  models.py                     (MaterializedTierRecord)
+  quality_tier.py               (resolver, TIER_POLICY_VERSION, blocker constants)
+  storage.py                    (materialized_tier_state DDL + indexes)
+  repository.py                 (tier upsert/get/list/counts/refresh; refresh on decision)
+  api_models.py                 (TierStateResponse, TierListResponse, TierCountsResponse; bundle/queue fields)
+  api_service.py                (get_tier_for_target, list_tiers_by_tier, get_tier_counts)
+  api_routes.py                 (GET /tier, /tiers/by-tier, /tiers/counts)
+  bundle_service.py             (quality_tier on review bundle)
+  queue_service.py              (quality_tier merged into queue items)
+
+tests/adjudication_api/
+  test_tier_routes.py           (new)
+  test_api_bundle.py            (quality_tier assertion on needs_review bundle)
+
+ui/explorer/src/
+  components/review/QualityTierPanel.tsx
+  pages/ReviewItemPage.tsx
+  pages/ReviewQueuePage.tsx
+  lib/api/adjudication-schemas.ts
+
+requirements/ (copy for auditor context)
+  5-4-audit.md
+
+Not bundled (unchanged or out of scope for 5.4 slice):
+  pipeline/adjudication/docs.md — Stage 5.4 routes not yet appended to route table.

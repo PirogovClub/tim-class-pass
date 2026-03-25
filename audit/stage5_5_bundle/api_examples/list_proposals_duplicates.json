@@ -1,0 +1,29 @@
+{
+  "items": [
+    {
+      "proposal_id": "550e8400-e29b-41d4-a716-446655440000",
+      "proposal_type": "duplicate_candidate",
+      "source_target_type": "rule_card",
+      "source_target_id": "rule:example:a",
+      "related_target_type": "rule_card",
+      "related_target_id": "rule:example:b",
+      "proposal_status": "new",
+      "score": 0.91,
+      "score_breakdown_json": "{\"text_similarity\": 0.95}",
+      "rationale_summary": "High text overlap, same concept, shared evidence refs",
+      "signals_json": "{\"shared_evidence_count\": 2}",
+      "evidence_refs_json": null,
+      "adjudication_snapshot_json": "{}",
+      "tier_snapshot_json": "{\"tier\": \"silver\"}",
+      "queue_priority": 1.05,
+      "dedupe_key": "duplicate|rule_card|rule:example:a|rule_card|rule:example:b",
+      "generator_version": "stage5_5.v1",
+      "created_at": "2026-03-24T12:00:00Z",
+      "updated_at": "2026-03-24T12:00:00Z",
+      "last_generated_at": "2026-03-24T12:00:00Z",
+      "accepted_decision_id": null,
+      "stale_reason": null
+    }
+  ],
+  "total": 1
+}

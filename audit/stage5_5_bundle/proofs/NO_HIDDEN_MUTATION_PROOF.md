@@ -1,0 +1,1 @@
+Dismiss does not touch reviewed state: `POST /proposals/{id}/dismiss` only updates proposal row (`api_service.dismiss_proposal`). Acceptance uses normal `POST /decision` with `proposal_id` then `mark_proposal_accepted` (`test_proposal_routes.py::test_decision_with_proposal_id_marks_accepted`).

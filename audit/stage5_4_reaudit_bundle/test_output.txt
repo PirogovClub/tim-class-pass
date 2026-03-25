@@ -1,0 +1,17 @@
+Stage 5.4 re-audit — test transcript (captured at bundle build time)
+Repository: tim-class-pass
+
+=== python -m pytest tests/adjudication_api -q --tb=no ===
+Exit: 0
+79 passed in ~14s
+
+=== npm run test (ui/explorer, vitest) ===
+Exit: 0
+Test Files  29 passed (29)
+Tests       47 passed (47)
+
+=== Tier-focused mapping ===
+See TEST_EVIDENCE_MAP.md in this bundle for audit checklist ↔ test names.
+
+=== Optional (not re-captured in this file) ===
+npm run lint / npm run typecheck / npm run build in ui/explorer — run in CI or locally before submit.

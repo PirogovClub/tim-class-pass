@@ -1,0 +1,31 @@
+{
+  "description": "Example shape: GET /adjudication/queues/proposals?queue=merge_candidates&limit=2&offset=0 when 5+ open merge proposals exist. total must be the full matching count, not len(items).",
+  "queue": "merge_candidates",
+  "total": 37,
+  "items": [
+    {
+      "target_type": "rule_card",
+      "target_id": "rule:example:a",
+      "proposal_id": "p1",
+      "proposal_type": "merge_candidate",
+      "related_target_type": "rule_card",
+      "related_target_id": "rule:example:b",
+      "proposal_score": 0.78,
+      "proposal_queue_priority": 0.88,
+      "proposal_rationale_summary": "…",
+      "queue_reason": "merge_candidates"
+    },
+    {
+      "target_type": "rule_card",
+      "target_id": "rule:example:c",
+      "proposal_id": "p2",
+      "proposal_type": "merge_candidate",
+      "related_target_type": "rule_card",
+      "related_target_id": "rule:example:d",
+      "proposal_score": 0.75,
+      "proposal_queue_priority": 0.85,
+      "proposal_rationale_summary": "…",
+      "queue_reason": "merge_candidates"
+    }
+  ]
+}

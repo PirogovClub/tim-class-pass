@@ -13,9 +13,11 @@ import {
 type Props = {
   bundle: ReviewBundleResponse
   onSubmitted: () => Promise<void>
+  /** When set, included on decision POST for Stage 5.5 proposal linkage */
+  proposalId?: string | null
 }
 
-export function DecisionPanel({ bundle, onSubmitted }: Props) {
+export function DecisionPanel({ bundle, onSubmitted, proposalId = null }: Props) {
   const targetType = bundle.target_type
   const options = decisionsForTarget(targetType)
   const [decisionType, setDecisionType] = useState(options[0] ?? '')
@@ -42,6 +44,7 @@ export function DecisionPanel({ bundle, onSubmitted }: Props) {
         note: note.trim() || null,
         reason_code: reasonCode.trim() || null,
         related_target_id: needRelated ? relatedTargetId.trim() || null : null,
+        proposal_id: proposalId?.trim() ? proposalId.trim() : null,
       })
       setMessage({ kind: 'ok', text: 'Decision recorded.' })
       await onSubmitted()

@@ -1,0 +1,9 @@
+﻿
+ RUN  v4.1.1 H:/GITS/tim-class-pass/ui/explorer
+
+
+ Test Files  2 passed (2)
+      Tests  3 passed (3)
+   Start at  08:06:17
+   Duration  2.66s (transform 182ms, setup 316ms, import 698ms, tests 97ms, environment 1.15s)
+
