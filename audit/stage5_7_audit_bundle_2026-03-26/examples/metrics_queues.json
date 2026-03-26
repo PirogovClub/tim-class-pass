@@ -1,0 +1,30 @@
+{
+  "computed_at": "2026-03-25T18:15:58.724039+00:00",
+  "deferred_rule_cards": 0,
+  "oldest_unresolved_age_seconds": null,
+  "oldest_unresolved_last_reviewed_at": null,
+  "proposal_queue_open_counts": [
+    {
+      "open_count": 0,
+      "queue_name": "canonical_family_candidates"
+    },
+    {
+      "open_count": 0,
+      "queue_name": "high_confidence_duplicates"
+    },
+    {
+      "open_count": 0,
+      "queue_name": "merge_candidates"
+    }
+  ],
+  "unresolved_backlog_by_tier": {
+    "none": 22
+  },
+  "unresolved_by_target_type": {
+    "concept_link": 1,
+    "evidence_link": 2,
+    "related_rule_relation": 1,
+    "rule_card": 18
+  },
+  "unresolved_queue_size": 22
+}

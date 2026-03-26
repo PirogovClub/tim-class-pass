@@ -59,7 +59,7 @@ from pipeline.component2.exporters import (
     export_rag_markdown,
     load_rule_cards as load_rule_cards_for_export,
 )
-from pipeline.contracts import PipelinePaths
+from pipeline.path_contracts import PipelinePaths
 from pipeline.io_utils import (
     atomic_write_text,
     atomic_write_json,

@@ -6,7 +6,7 @@ import pytest
 
 
 def test_pipeline_paths_deterministic(tmp_path: Path) -> None:
-    from pipeline.contracts import PipelinePaths
+    from pipeline.path_contracts import PipelinePaths
 
     paths = PipelinePaths(video_root=tmp_path)
     lesson = "Lesson 2. Levels part 1"
@@ -20,7 +20,7 @@ def test_pipeline_paths_deterministic(tmp_path: Path) -> None:
 
 
 def test_ensure_output_dirs(tmp_path: Path) -> None:
-    from pipeline.contracts import PipelinePaths
+    from pipeline.path_contracts import PipelinePaths
 
     paths = PipelinePaths(video_root=tmp_path)
     paths.ensure_output_dirs()
@@ -31,7 +31,7 @@ def test_ensure_output_dirs(tmp_path: Path) -> None:
 
 
 def test_legacy_and_new_rag_paths_do_not_conflict(tmp_path: Path) -> None:
-    from pipeline.contracts import PipelinePaths
+    from pipeline.path_contracts import PipelinePaths
 
     paths = PipelinePaths(video_root=tmp_path)
     lesson = "abc"
@@ -45,7 +45,7 @@ def test_legacy_and_new_rag_paths_do_not_conflict(tmp_path: Path) -> None:
 
 
 def test_batch_paths_are_deterministic(tmp_path: Path) -> None:
-    from pipeline.contracts import PipelinePaths
+    from pipeline.path_contracts import PipelinePaths
 
     paths = PipelinePaths(video_root=tmp_path)
 
@@ -59,7 +59,7 @@ def test_batch_paths_are_deterministic(tmp_path: Path) -> None:
 
 
 def test_ensure_batch_dirs(tmp_path: Path) -> None:
-    from pipeline.contracts import PipelinePaths
+    from pipeline.path_contracts import PipelinePaths
 
     paths = PipelinePaths(video_root=tmp_path)
     paths.ensure_batch_dirs("vision", "knowledge_extract")

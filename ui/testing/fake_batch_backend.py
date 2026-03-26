@@ -7,7 +7,7 @@ from pathlib import Path
 from pipeline.component2.llm_processor import materialize_batch_results_for_knowledge_extract, materialize_batch_results_for_markdown_render
 from pipeline.component2.knowledge_builder import adapt_chunks, load_chunks_json
 from pipeline.component2.exporters import load_evidence_index, load_rule_cards
-from pipeline.contracts import PipelinePaths
+from pipeline.path_contracts import PipelinePaths
 from pipeline.dense_analyzer import materialize_batch_results_for_analysis
 from pipeline.orchestrator import (
     BATCH_JOB_STATUS_FAILED,

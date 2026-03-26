@@ -1,0 +1,18 @@
+{
+  "by_decision_type": [
+    {
+      "count": 1,
+      "decision_type": "approve"
+    }
+  ],
+  "by_reviewer_id": [
+    {
+      "count": 1,
+      "reviewer_id": "u1"
+    }
+  ],
+  "computed_at": "2026-03-25T18:15:58.757040+00:00",
+  "decision_count": 1,
+  "window": "30d",
+  "window_start_utc": "2026-02-23T18:15:58.757040+00:00"
+}

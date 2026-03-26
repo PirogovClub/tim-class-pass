@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 
 from tests.conftest import FIXTURES_ROOT, GOLDEN_ROOT, load_json
-from pipeline.contracts import PipelinePaths
+from pipeline.path_contracts import PipelinePaths
 from pipeline.schemas import (
     ConceptGraph,
     EvidenceIndex,

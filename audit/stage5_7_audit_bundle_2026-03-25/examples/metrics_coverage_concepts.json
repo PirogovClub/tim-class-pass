@@ -1,0 +1,19 @@
+{
+  "buckets": [
+    {
+      "bucket_id": "concept:demo",
+      "coverage_ratio": 0.5,
+      "reviewed_not_unresolved": 1,
+      "total_targets": 2
+    },
+    {
+      "bucket_id": "unknown",
+      "coverage_ratio": 0.0,
+      "reviewed_not_unresolved": 0,
+      "total_targets": 21
+    }
+  ],
+  "computed_at": "2026-03-25T18:04:34.180343+00:00",
+  "explorer_available": true,
+  "note": null
+}

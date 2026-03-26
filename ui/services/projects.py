@@ -6,7 +6,7 @@ from typing import BinaryIO
 
 from fastapi import UploadFile
 
-from pipeline.contracts import PipelinePaths
+from pipeline.path_contracts import PipelinePaths
 from pipeline.orchestrator.models import slugify_lesson_name, stable_sha256
 from ui.models import ArtifactSnapshot, ProjectRecord
 from ui.settings import UISettings

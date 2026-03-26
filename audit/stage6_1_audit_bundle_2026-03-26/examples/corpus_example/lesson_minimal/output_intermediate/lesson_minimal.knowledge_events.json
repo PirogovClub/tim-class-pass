@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "lesson_id": "lesson_minimal",
+  "events": [
+    {
+      "event_id": "ke_lesson_minimal_0_rule_statement_0",
+      "lesson_id": "lesson_minimal",
+      "event_type": "rule_statement",
+      "raw_text": "A level is a price zone where the market reacted.",
+      "normalized_text": "A level is a price zone where the market reacted.",
+      "concept": "level",
+      "subconcept": null,
+      "source_event_ids": [],
+      "timestamp_start": "00:00",
+      "timestamp_end": "00:30",
+      "evidence_refs": [],
+      "confidence": "high",
+      "confidence_score": 0.85,
+      "ambiguity_notes": [],
+      "metadata": {"chunk_index": 0}
+    },
+    {
+      "event_id": "ke_lesson_minimal_0_rule_statement_1",
+      "lesson_id": "lesson_minimal",
+      "event_type": "rule_statement",
+      "raw_text": "The more reactions, the stronger the level.",
+      "normalized_text": "The more reactions, the stronger the level.",
+      "concept": "level",
+      "subconcept": null,
+      "source_event_ids": [],
+      "timestamp_start": "00:00",
+      "timestamp_end": "00:30",
+      "evidence_refs": [],
+      "confidence": "medium",
+      "confidence_score": 0.65,
+      "ambiguity_notes": [],
+      "metadata": {"chunk_index": 0}
+    }
+  ]
+}

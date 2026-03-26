@@ -108,3 +108,4 @@ The pipeline skips a stage with a clear message and hint if a required artifact 
 - **Module/function reference:** [FRAMEWORK_MODULES.md](FRAMEWORK_MODULES.md).
 - **Path and flag definitions:** `pipeline/contracts.py`, `pipeline/stage_registry.py`.
 - **Task specs and addenda:** [`docs/requirements/knowledge-refactoring/`](requirements/knowledge-refactoring/) (task7–task11, step_3_new_tune, task-1 for inspection).
+- **Stage 5 adjudication** (SQLite decisions, `/adjudication` API, explorer review UI, export CLI): [`../pipeline/adjudication/docs.md`](../pipeline/adjudication/docs.md) — separate from per-lesson `output_review/` markdown exporters above.

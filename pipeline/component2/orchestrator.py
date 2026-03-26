@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
-from pipeline.contracts import PipelinePaths
+from pipeline.path_contracts import PipelinePaths
 from pipeline.inspection import build_report, write_report
 
 

@@ -16,7 +16,7 @@ from pipeline.component2.llm_processor import (
     materialize_batch_results_for_markdown_render,
 )
 from pipeline.component2.parser import parse_and_sync, write_lesson_chunks
-from pipeline.contracts import PipelinePaths
+from pipeline.path_contracts import PipelinePaths
 from pipeline.dense_analyzer import (
     emit_batch_spool_for_analysis,
     materialize_batch_results_for_analysis,

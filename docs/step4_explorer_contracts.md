@@ -39,6 +39,19 @@ The explorer still reads from the same Step 4.1 data roots:
 | `GET` | `/browser/concept/{concept_id}/rules` | Full concept-linked rule list |
 | `GET` | `/browser/concept/{concept_id}/lessons` | Full concept-linked lesson list |
 
+## Stage 5 review workstation (explorer UI)
+
+The Step 4 explorer **SPA** adds **client-side** routes (React Router) that talk to the **same** RAG host’s **`/adjudication/*`** API. They are not additional `/browser/*` endpoints.
+
+| UI path | Purpose |
+| --- | --- |
+| `/review/queue` | Unresolved and proposal queues; navigation to the next item |
+| `/review/metrics` | Read-only review metrics (calls `/adjudication/metrics/*`) |
+| `/review/item/:targetType/:targetId` | Single-target review (decisions, history, bundle context) |
+| `/review/compare` | Side-by-side review context for compared targets |
+
+**Backend:** `pipeline/rag/api.py` mounts `adjudication_router`; DB path from `ADJUDICATION_DB_PATH`. **As-built:** [`../pipeline/adjudication/docs.md`](../pipeline/adjudication/docs.md).
+
 ## Core shared cards
 
 `BrowserResultCard` remains the common lightweight entity card returned by search results and linked lists. Each card includes:

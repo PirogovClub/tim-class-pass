@@ -1,0 +1,1929 @@
+{
+  "query": "stop loss placement",
+  "query_analysis": {
+    "normalized_query": "stop loss placement",
+    "detected_concepts": [
+      "node:stop_loss"
+    ],
+    "detected_unit_bias": "rule",
+    "detected_intents": [
+      "direct_rule_lookup"
+    ],
+    "intent_signals": {
+      "prefers_transcript_only": false,
+      "prefers_visual_evidence": false,
+      "mentions_timeframe": false,
+      "mentions_cross_lesson": false,
+      "mentions_stoploss": true,
+      "prefers_actionable_rules": false,
+      "prefers_explicit_rules": false,
+      "prefers_examples": false,
+      "prefers_theory": false
+    },
+    "expansion_trace": {
+      "detected_terms": [
+        "stop loss"
+      ],
+      "exact_alias_matches": {
+        "stop loss": "node:stop_loss"
+      },
+      "normalized_alias_matches": {},
+      "canonical_concept_ids": [
+        "node:stop_loss"
+      ],
+      "expanded_concept_ids": [
+        "node:technical_stop_loss",
+        "node:trade_management",
+        "node:upravlenie_kapitalom"
+      ],
+      "boosted_rule_ids": [
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_take_profit_2",
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_3",
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_4",
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_5",
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_6",
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_20",
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_21",
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_173",
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_174",
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_175",
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_176",
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_177",
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_178",
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_179",
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_unknown_unknown_180"
+      ],
+      "related_terms": [],
+      "expansion_trace": [
+        {
+          "step_type": "exact_alias_match",
+          "source": "stop loss",
+          "target": "node:stop_loss",
+          "relation": null,
+          "reason": "Exact alias or concept match for 'stop loss'"
+        },
+        {
+          "step_type": "graph_neighbor",
+          "source": "node:stop_loss",
+          "target": "node:technical_stop_loss",
+          "relation": "co_occurs_with",
+          "reason": "1-hop co_occurs_with from Stop Loss"
+        },
+        {
+          "step_type": "graph_neighbor",
+          "source": "node:stop_loss",
+          "target": "node:trade_management",
+          "relation": "co_occurs_with",
+          "reason": "1-hop co_occurs_with from Stop Loss"
+        },
+        {
+          "step_type": "graph_neighbor",
+          "source": "node:stop_loss",
+          "target": "node:upravlenie_kapitalom",
+          "relation": "co_occurs_with",
+          "reason": "1-hop co_occurs_with from Stop Loss"
+        }
+      ],
+      "lexical_expansion_terms": [
+        "Trade Management",
+        "Technical Stop Loss",
+        "Stop Loss",
+        "управление капиталом",
+        "stop loss"
+      ]
+    }
+  },
+  "top_hits": [
+    {
+      "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_6",
+      "global_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_6",
+      "unit_type": "rule_card",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "concept": "Stop Loss",
+      "subconcept": "Technical Stop Loss",
+      "title": "Stop Loss / Technical Stop Loss",
+      "text_snippet": "[Concept] Stop Loss\n[Subconcept] Technical Stop Loss\n[Rule] Технический стоп защищает от того, что крупный игрок показал на графике.\n[Visual] New slide displayed with title 'Разновидность SL' and two ",
+      "timestamps": [
+        {
+          "start": "01:16",
+          "end": "01:21"
+        },
+        {
+          "start": "00:36",
+          "end": "00:40"
+        },
+        {
+          "start": "00:58",
+          "end": "00:58"
+        },
+        {
+          "start": "01:24",
+          "end": "01:24"
+        },
+        {
+          "start": "01:42",
+          "end": "01:42"
+        }
+      ],
+      "evidence_ids": [
+        "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+        "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1",
+        "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2",
+        "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3"
+      ],
+      "source_event_ids": [
+        "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_5"
+      ],
+      "source_rule_ids": [
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_6"
+      ],
+      "raw_lexical_score": 13.6157,
+      "raw_vector_score": 0.7247,
+      "graph_boost": 1.0,
+      "score": 0.9827,
+      "score_breakdown": {
+        "lexical_score": 0.8114,
+        "vector_score": 0.9662,
+        "graph_boost": 0.15,
+        "concept_exact_match": 0.8,
+        "alias_match": 1.0,
+        "confidence_score": 0.9,
+        "evidence_available": 1.0,
+        "timestamp_available": 1.0,
+        "provenance_richness": 0.6667,
+        "unit_type_relevance": 1.12,
+        "support_basis_relevance": 0.4,
+        "teaching_mode_relevance": 0.4,
+        "evidence_requirement_relevance": 0.2,
+        "evidence_strength_relevance": 0.0,
+        "example_role_relevance": 0.35,
+        "intent_timeframe_boost": 0.0,
+        "intent_cross_lesson_boost": 0.0,
+        "intent_evidence_priority_boost": 0.0,
+        "intent_evidence_mismatch_penalty": 0.0,
+        "intent_transcript_policy_signal": 0.0,
+        "intent_concept_priority_signal": 0.0,
+        "groundedness": 0.9167,
+        "lesson_diversity_bonus": 1.0
+      },
+      "why_retrieved": [
+        "boosted_by_concept_rule_map",
+        "concept_match",
+        "alias_match",
+        "strong_lexical",
+        "strong_vector",
+        "unit_bias_match",
+        "well_grounded"
+      ],
+      "resolved_doc": {
+        "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_6",
+        "unit_type": "rule_card",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+        "language": "ru",
+        "canonical_concept_ids": [
+          "concept:stop_loss"
+        ],
+        "canonical_subconcept_ids": [
+          "subconcept:technical_stop_loss"
+        ],
+        "alias_terms": [
+          "Stop Loss",
+          "Technical Stop Loss"
+        ],
+        "title": "Stop Loss / Technical Stop Loss",
+        "text": "[Concept] Stop Loss\n[Subconcept] Technical Stop Loss\n[Rule] Технический стоп защищает от того, что крупный игрок показал на графике.\n[Visual] New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+        "short_text": "[Concept] Stop Loss\n[Subconcept] Technical Stop Loss\n[Rule] Технический стоп защищает от того, что крупный игрок показал на графике.\n[Visual] New slide displayed with title 'Разновидность SL' and two ",
+        "keywords": [
+          "Stop Loss",
+          "Technical Stop Loss",
+          "Стоп должен быть техническим и прятаться за откат.",
+          "Технические стопы могут быть основаны на различных формациях и временных интервалах: 1/2 пятиминутки, часовик, полчасовика, проторговка, закругление, поджатие, откат, хвост ложного пробоя.",
+          "Использовать закругление или проторговку для установки большего стопа."
+        ],
+        "provenance": {
+          "lesson_title": null,
+          "section": null,
+          "subsection": null,
+          "confidence": "high",
+          "support_basis": "transcript_plus_visual"
+        },
+        "confidence_score": 0.9,
+        "support_basis": "transcript_plus_visual",
+        "evidence_requirement": "optional",
+        "teaching_mode": "mixed",
+        "timestamps": [
+          {
+            "start": "01:16",
+            "end": "01:21"
+          },
+          {
+            "start": "00:36",
+            "end": "00:40"
+          },
+          {
+            "start": "00:58",
+            "end": "00:58"
+          },
+          {
+            "start": "01:24",
+            "end": "01:24"
+          },
+          {
+            "start": "01:42",
+            "end": "01:42"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3"
+        ],
+        "source_event_ids": [
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_5"
+        ],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_6"
+        ],
+        "metadata": {
+          "source_sections": [],
+          "source_subsections": [],
+          "source_chunk_indexes": [
+            0
+          ],
+          "conditions": [],
+          "invalidation": [],
+          "exceptions": [],
+          "comparisons": [],
+          "algorithm_notes": [
+            "Стоп должен быть техническим и прятаться за откат.",
+            "Технические стопы могут быть основаны на различных формациях и временных интервалах: 1/2 пятиминутки, часовик, полчасовика, проторговка, закругление, поджатие, откат, хвост ложного пробоя.",
+            "Использовать закругление или проторговку для установки большего стопа."
+          ],
+          "visual_support_level": "supporting_example",
+          "transcript_support_level": "strong",
+          "transcript_support_score": 0.8,
+          "visual_support_score": 0.4,
+          "has_visual_evidence": true,
+          "transcript_anchor_count": 2,
+          "transcript_repetition_count": 0
+        },
+        "rule_text": "Технический стоп защищает от того, что крупный игрок показал на графике.",
+        "rule_text_ru": "Технический стоп защищает от того, что крупный игрок показал на графике.",
+        "conditions": [],
+        "invalidation": [],
+        "exceptions": [],
+        "comparisons": [],
+        "visual_summary": "New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…",
+        "concept": "Stop Loss",
+        "subconcept": "Technical Stop Loss"
+      }
+    },
+    {
+      "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_5",
+      "global_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_5",
+      "unit_type": "rule_card",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "concept": "Stop Loss",
+      "subconcept": "Technical Stop Loss",
+      "title": "Stop Loss / Technical Stop Loss",
+      "text_snippet": "[Concept] Stop Loss\n[Subconcept] Technical Stop Loss\n[Rule] Технические стопы могут быть основаны на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, от",
+      "timestamps": [
+        {
+          "start": "01:03",
+          "end": "01:12"
+        },
+        {
+          "start": "00:36",
+          "end": "00:40"
+        },
+        {
+          "start": "00:58",
+          "end": "00:58"
+        },
+        {
+          "start": "01:24",
+          "end": "01:24"
+        }
+      ],
+      "evidence_ids": [
+        "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+        "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1",
+        "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2"
+      ],
+      "source_event_ids": [
+        "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_4"
+      ],
+      "source_rule_ids": [
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_5"
+      ],
+      "raw_lexical_score": 13.3537,
+      "raw_vector_score": 0.7247,
+      "graph_boost": 1.0,
+      "score": 0.9587,
+      "score_breakdown": {
+        "lexical_score": 0.7958,
+        "vector_score": 0.9662,
+        "graph_boost": 0.15,
+        "concept_exact_match": 0.8,
+        "alias_match": 1.0,
+        "confidence_score": 0.9,
+        "evidence_available": 1.0,
+        "timestamp_available": 1.0,
+        "provenance_richness": 0.6667,
+        "unit_type_relevance": 1.12,
+        "support_basis_relevance": 0.4,
+        "teaching_mode_relevance": 0.4,
+        "evidence_requirement_relevance": 0.2,
+        "evidence_strength_relevance": 0.0,
+        "example_role_relevance": 0.35,
+        "intent_timeframe_boost": 0.0,
+        "intent_cross_lesson_boost": 0.0,
+        "intent_evidence_priority_boost": 0.0,
+        "intent_evidence_mismatch_penalty": 0.0,
+        "intent_transcript_policy_signal": 0.0,
+        "intent_concept_priority_signal": 0.0,
+        "groundedness": 0.9167,
+        "lesson_diversity_bonus": 0.0
+      },
+      "why_retrieved": [
+        "boosted_by_concept_rule_map",
+        "concept_match",
+        "alias_match",
+        "strong_lexical",
+        "strong_vector",
+        "unit_bias_match",
+        "well_grounded"
+      ],
+      "resolved_doc": {
+        "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_5",
+        "unit_type": "rule_card",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+        "language": "ru",
+        "canonical_concept_ids": [
+          "concept:stop_loss"
+        ],
+        "canonical_subconcept_ids": [
+          "subconcept:technical_stop_loss"
+        ],
+        "alias_terms": [
+          "Stop Loss",
+          "Technical Stop Loss"
+        ],
+        "title": "Stop Loss / Technical Stop Loss",
+        "text": "[Concept] Stop Loss\n[Subconcept] Technical Stop Loss\n[Rule] Технические стопы могут быть основаны на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, откате и хвосте ложного пробоя.\n[Visual] New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+        "short_text": "[Concept] Stop Loss\n[Subconcept] Technical Stop Loss\n[Rule] Технические стопы могут быть основаны на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, от",
+        "keywords": [
+          "Stop Loss",
+          "Technical Stop Loss",
+          "Стоп должен быть техническим и прятаться за откат.",
+          "Технические стопы могут быть основаны на различных формациях и временных интервалах: 1/2 пятиминутки, часовик, полчасовика, проторговка, закругление, поджатие, откат, хвост ложного пробоя.",
+          "Использовать закругление или проторговку для установки большего стопа."
+        ],
+        "provenance": {
+          "lesson_title": null,
+          "section": null,
+          "subsection": null,
+          "confidence": "high",
+          "support_basis": "transcript_plus_visual"
+        },
+        "confidence_score": 0.9,
+        "support_basis": "transcript_plus_visual",
+        "evidence_requirement": "optional",
+        "teaching_mode": "mixed",
+        "timestamps": [
+          {
+            "start": "01:03",
+            "end": "01:12"
+          },
+          {
+            "start": "00:36",
+            "end": "00:40"
+          },
+          {
+            "start": "00:58",
+            "end": "00:58"
+          },
+          {
+            "start": "01:24",
+            "end": "01:24"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2"
+        ],
+        "source_event_ids": [
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_4"
+        ],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_5"
+        ],
+        "metadata": {
+          "source_sections": [],
+          "source_subsections": [],
+          "source_chunk_indexes": [
+            0
+          ],
+          "conditions": [],
+          "invalidation": [],
+          "exceptions": [],
+          "comparisons": [],
+          "algorithm_notes": [
+            "Стоп должен быть техническим и прятаться за откат.",
+            "Технические стопы могут быть основаны на различных формациях и временных интервалах: 1/2 пятиминутки, часовик, полчасовика, проторговка, закругление, поджатие, откат, хвост ложного пробоя.",
+            "Использовать закругление или проторговку для установки большего стопа."
+          ],
+          "visual_support_level": "supporting_example",
+          "transcript_support_level": "strong",
+          "transcript_support_score": 0.85,
+          "visual_support_score": 0.4,
+          "has_visual_evidence": true,
+          "transcript_anchor_count": 3,
+          "transcript_repetition_count": 0
+        },
+        "rule_text": "Технические стопы могут быть основаны на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, откате и хвосте ложного пробоя.",
+        "rule_text_ru": "Технические стопы могут быть основаны на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, откате и хвосте ложного пробоя.",
+        "conditions": [],
+        "invalidation": [],
+        "exceptions": [],
+        "comparisons": [],
+        "visual_summary": "New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…",
+        "concept": "Stop Loss",
+        "subconcept": "Technical Stop Loss"
+      }
+    },
+    {
+      "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_4",
+      "global_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_4",
+      "unit_type": "rule_card",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "concept": "Trade Management",
+      "subconcept": "Stop Loss",
+      "title": "Trade Management / Stop Loss",
+      "text_snippet": "[Concept] Trade Management\n[Subconcept] Stop Loss\n[Rule] Если стоп большой, можно посидеть в сделке подольше.\n[Conditions] Если стоп достаточно большой, время в сделке увеличивается.\n[Visual] New slid",
+      "timestamps": [
+        {
+          "start": "01:58",
+          "end": "01:59"
+        },
+        {
+          "start": "00:53",
+          "end": "00:56"
+        },
+        {
+          "start": "00:36",
+          "end": "00:40"
+        },
+        {
+          "start": "00:58",
+          "end": "00:58"
+        },
+        {
+          "start": "01:42",
+          "end": "01:42"
+        },
+        {
+          "start": "01:58",
+          "end": "01:58"
+        }
+      ],
+      "evidence_ids": [
+        "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+        "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1",
+        "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3",
+        "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_4"
+      ],
+      "source_event_ids": [
+        "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_7",
+        "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_condition_2"
+      ],
+      "source_rule_ids": [
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_4"
+      ],
+      "raw_lexical_score": 11.5402,
+      "raw_vector_score": 0.683,
+      "graph_boost": 1.0,
+      "score": 0.9201,
+      "score_breakdown": {
+        "lexical_score": 0.6877,
+        "vector_score": 0.9106,
+        "graph_boost": 0.15,
+        "concept_exact_match": 0.8,
+        "alias_match": 1.0,
+        "confidence_score": 1.0,
+        "evidence_available": 1.0,
+        "timestamp_available": 1.0,
+        "provenance_richness": 0.6667,
+        "unit_type_relevance": 1.12,
+        "support_basis_relevance": 0.4,
+        "teaching_mode_relevance": 0.4,
+        "evidence_requirement_relevance": 0.2,
+        "evidence_strength_relevance": 0.0,
+        "example_role_relevance": 0.35,
+        "intent_timeframe_boost": 0.0,
+        "intent_cross_lesson_boost": 0.0,
+        "intent_evidence_priority_boost": 0.0,
+        "intent_evidence_mismatch_penalty": 0.0,
+        "intent_transcript_policy_signal": 0.0,
+        "intent_concept_priority_signal": 0.0,
+        "groundedness": 0.9167,
+        "lesson_diversity_bonus": 0.0
+      },
+      "why_retrieved": [
+        "boosted_by_concept_rule_map",
+        "concept_match",
+        "alias_match",
+        "strong_lexical",
+        "strong_vector",
+        "unit_bias_match",
+        "well_grounded"
+      ],
+      "resolved_doc": {
+        "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_4",
+        "unit_type": "rule_card",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+        "language": "ru",
+        "canonical_concept_ids": [
+          "concept:trade_management"
+        ],
+        "canonical_subconcept_ids": [
+          "subconcept:stop_loss"
+        ],
+        "alias_terms": [
+          "Trade Management",
+          "Stop Loss"
+        ],
+        "title": "Trade Management / Stop Loss",
+        "text": "[Concept] Trade Management\n[Subconcept] Stop Loss\n[Rule] Если стоп большой, можно посидеть в сделке подольше.\n[Conditions] Если стоп достаточно большой, время в сделке увеличивается.\n[Visual] New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+        "short_text": "[Concept] Trade Management\n[Subconcept] Stop Loss\n[Rule] Если стоп большой, можно посидеть в сделке подольше.\n[Conditions] Если стоп достаточно большой, время в сделке увеличивается.\n[Visual] New slid",
+        "keywords": [
+          "Trade Management",
+          "Stop Loss",
+          "Если стоп достаточно большой, время в сделке увеличивается.",
+          "Время в сделке увеличивается, если стоп большой."
+        ],
+        "provenance": {
+          "lesson_title": null,
+          "section": null,
+          "subsection": null,
+          "confidence": "high",
+          "support_basis": "transcript_plus_visual"
+        },
+        "confidence_score": 1.0,
+        "support_basis": "transcript_plus_visual",
+        "evidence_requirement": "optional",
+        "teaching_mode": "mixed",
+        "timestamps": [
+          {
+            "start": "01:58",
+            "end": "01:59"
+          },
+          {
+            "start": "00:53",
+            "end": "00:56"
+          },
+          {
+            "start": "00:36",
+            "end": "00:40"
+          },
+          {
+            "start": "00:58",
+            "end": "00:58"
+          },
+          {
+            "start": "01:42",
+            "end": "01:42"
+          },
+          {
+            "start": "01:58",
+            "end": "01:58"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_4"
+        ],
+        "source_event_ids": [
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_7",
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_condition_2"
+        ],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_4"
+        ],
+        "metadata": {
+          "source_sections": [],
+          "source_subsections": [],
+          "source_chunk_indexes": [
+            0
+          ],
+          "conditions": [
+            "Если стоп достаточно большой, время в сделке увеличивается."
+          ],
+          "invalidation": [],
+          "exceptions": [],
+          "comparisons": [],
+          "algorithm_notes": [
+            "Время в сделке увеличивается, если стоп большой."
+          ],
+          "visual_support_level": "supporting_example",
+          "transcript_support_level": "strong",
+          "transcript_support_score": 0.75,
+          "visual_support_score": 0.4,
+          "has_visual_evidence": true,
+          "transcript_anchor_count": 2,
+          "transcript_repetition_count": 0
+        },
+        "rule_text": "Если стоп большой, можно посидеть в сделке подольше.",
+        "rule_text_ru": "Если стоп большой, можно посидеть в сделке подольше.",
+        "conditions": [
+          "Если стоп достаточно большой, время в сделке увеличивается."
+        ],
+        "invalidation": [],
+        "exceptions": [],
+        "comparisons": [],
+        "visual_summary": "New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…",
+        "concept": "Trade Management",
+        "subconcept": "Stop Loss"
+      }
+    },
+    {
+      "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_3",
+      "global_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_3",
+      "unit_type": "rule_card",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "concept": "Trade Management",
+      "subconcept": "Stop Loss",
+      "title": "Trade Management / Stop Loss",
+      "text_snippet": "[Concept] Trade Management\n[Subconcept] Stop Loss\n[Rule] Время в сделке увеличивается из-за того, что стоп достаточно большой.\n[Conditions] Если стоп достаточно большой, время в сделке увеличивается.\n",
+      "timestamps": [
+        {
+          "start": "00:53",
+          "end": "00:56"
+        },
+        {
+          "start": "00:36",
+          "end": "00:40"
+        },
+        {
+          "start": "00:58",
+          "end": "00:58"
+        },
+        {
+          "start": "01:42",
+          "end": "01:42"
+        }
+      ],
+      "evidence_ids": [
+        "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+        "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1",
+        "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3"
+      ],
+      "source_event_ids": [
+        "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_3",
+        "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_condition_2"
+      ],
+      "source_rule_ids": [
+        "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_3"
+      ],
+      "raw_lexical_score": 11.415,
+      "raw_vector_score": 0.668,
+      "graph_boost": 1.0,
+      "score": 0.9129,
+      "score_breakdown": {
+        "lexical_score": 0.6802,
+        "vector_score": 0.8906,
+        "graph_boost": 0.15,
+        "concept_exact_match": 0.8,
+        "alias_match": 1.0,
+        "confidence_score": 1.0,
+        "evidence_available": 1.0,
+        "timestamp_available": 1.0,
+        "provenance_richness": 0.6667,
+        "unit_type_relevance": 1.12,
+        "support_basis_relevance": 0.4,
+        "teaching_mode_relevance": 0.4,
+        "evidence_requirement_relevance": 0.2,
+        "evidence_strength_relevance": 0.0,
+        "example_role_relevance": 0.35,
+        "intent_timeframe_boost": 0.0,
+        "intent_cross_lesson_boost": 0.0,
+        "intent_evidence_priority_boost": 0.0,
+        "intent_evidence_mismatch_penalty": 0.0,
+        "intent_transcript_policy_signal": 0.0,
+        "intent_concept_priority_signal": 0.0,
+        "groundedness": 0.9167,
+        "lesson_diversity_bonus": 0.0
+      },
+      "why_retrieved": [
+        "boosted_by_concept_rule_map",
+        "concept_match",
+        "alias_match",
+        "strong_lexical",
+        "strong_vector",
+        "unit_bias_match",
+        "well_grounded"
+      ],
+      "resolved_doc": {
+        "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_3",
+        "unit_type": "rule_card",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+        "language": "ru",
+        "canonical_concept_ids": [
+          "concept:trade_management"
+        ],
+        "canonical_subconcept_ids": [
+          "subconcept:stop_loss"
+        ],
+        "alias_terms": [
+          "Trade Management",
+          "Stop Loss"
+        ],
+        "title": "Trade Management / Stop Loss",
+        "text": "[Concept] Trade Management\n[Subconcept] Stop Loss\n[Rule] Время в сделке увеличивается из-за того, что стоп достаточно большой.\n[Conditions] Если стоп достаточно большой, время в сделке увеличивается.\n[Visual] New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+        "short_text": "[Concept] Trade Management\n[Subconcept] Stop Loss\n[Rule] Время в сделке увеличивается из-за того, что стоп достаточно большой.\n[Conditions] Если стоп достаточно большой, время в сделке увеличивается.\n",
+        "keywords": [
+          "Trade Management",
+          "Stop Loss",
+          "Если стоп достаточно большой, время в сделке увеличивается.",
+          "Время в сделке увеличивается, если стоп большой."
+        ],
+        "provenance": {
+          "lesson_title": null,
+          "section": null,
+          "subsection": null,
+          "confidence": "high",
+          "support_basis": "transcript_plus_visual"
+        },
+        "confidence_score": 1.0,
+        "support_basis": "transcript_plus_visual",
+        "evidence_requirement": "optional",
+        "teaching_mode": "mixed",
+        "timestamps": [
+          {
+            "start": "00:53",
+            "end": "00:56"
+          },
+          {
+            "start": "00:36",
+            "end": "00:40"
+          },
+          {
+            "start": "00:58",
+            "end": "00:58"
+          },
+          {
+            "start": "01:42",
+            "end": "01:42"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3"
+        ],
+        "source_event_ids": [
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_3",
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_condition_2"
+        ],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_3"
+        ],
+        "metadata": {
+          "source_sections": [],
+          "source_subsections": [],
+          "source_chunk_indexes": [
+            0
+          ],
+          "conditions": [
+            "Если стоп достаточно большой, время в сделке увеличивается."
+          ],
+          "invalidation": [],
+          "exceptions": [],
+          "comparisons": [],
+          "algorithm_notes": [
+            "Время в сделке увеличивается, если стоп большой."
+          ],
+          "visual_support_level": "supporting_example",
+          "transcript_support_level": "strong",
+          "transcript_support_score": 0.75,
+          "visual_support_score": 0.4,
+          "has_visual_evidence": true,
+          "transcript_anchor_count": 2,
+          "transcript_repetition_count": 0
+        },
+        "rule_text": "Время в сделке увеличивается из-за того, что стоп достаточно большой.",
+        "rule_text_ru": "Время в сделке увеличивается из-за того, что стоп достаточно большой.",
+        "conditions": [
+          "Если стоп достаточно большой, время в сделке увеличивается."
+        ],
+        "invalidation": [],
+        "exceptions": [],
+        "comparisons": [],
+        "visual_summary": "New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…",
+        "concept": "Trade Management",
+        "subconcept": "Stop Loss"
+      }
+    },
+    {
+      "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_2",
+      "global_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_2",
+      "unit_type": "knowledge_event",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "concept": "Stop Loss",
+      "subconcept": "Technical Stop Loss",
+      "title": "algorithm_hint / Stop Loss",
+      "text_snippet": "[algorithm_hint] [Concept] Stop Loss Стоп должен быть техническим и прятаться за откат. [Time] 00:19–00:20 [Support Basis] transcript_plus_visual",
+      "timestamps": [
+        {
+          "start": "00:19",
+          "end": "00:20"
+        },
+        {
+          "start": "00:36",
+          "end": "00:40"
+        }
+      ],
+      "evidence_ids": [
+        "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0"
+      ],
+      "source_event_ids": [],
+      "source_rule_ids": [],
+      "raw_lexical_score": 15.6367,
+      "raw_vector_score": 0.7408,
+      "graph_boost": 0.0,
+      "score": 0.9051,
+      "score_breakdown": {
+        "lexical_score": 0.9318,
+        "vector_score": 0.9877,
+        "graph_boost": 0.0,
+        "concept_exact_match": 0.0,
+        "alias_match": 1.0,
+        "confidence_score": 0.85,
+        "evidence_available": 1.0,
+        "timestamp_available": 1.0,
+        "provenance_richness": 1.0,
+        "unit_type_relevance": 1.0,
+        "support_basis_relevance": 0.4,
+        "teaching_mode_relevance": 0.4,
+        "evidence_requirement_relevance": 0.2,
+        "evidence_strength_relevance": 0.0,
+        "example_role_relevance": 0.6,
+        "intent_timeframe_boost": 0.0,
+        "intent_cross_lesson_boost": 0.0,
+        "intent_evidence_priority_boost": 0.0,
+        "intent_evidence_mismatch_penalty": 0.0,
+        "intent_transcript_policy_signal": 0.0,
+        "intent_concept_priority_signal": 0.0,
+        "groundedness": 1.0,
+        "lesson_diversity_bonus": 0.0
+      },
+      "why_retrieved": [
+        "alias_match",
+        "strong_lexical",
+        "strong_vector",
+        "unit_bias_match",
+        "well_grounded"
+      ],
+      "resolved_doc": {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_2",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+        "language": "ru",
+        "canonical_concept_ids": [
+          "concept:stop_loss"
+        ],
+        "canonical_subconcept_ids": [
+          "subconcept:technical_stop_loss"
+        ],
+        "alias_terms": [
+          "Stop Loss",
+          "Technical Stop Loss"
+        ],
+        "title": "algorithm_hint / Stop Loss",
+        "text": "[algorithm_hint] [Concept] Stop Loss Стоп должен быть техническим и прятаться за откат. [Time] 00:19–00:20 [Support Basis] transcript_plus_visual",
+        "short_text": "[algorithm_hint] [Concept] Stop Loss Стоп должен быть техническим и прятаться за откат. [Time] 00:19–00:20 [Support Basis] transcript_plus_visual",
+        "keywords": [
+          "Stop Loss",
+          "Technical Stop Loss",
+          "algorithm_hint"
+        ],
+        "provenance": {
+          "lesson_title": null,
+          "section": null,
+          "subsection": null,
+          "chunk_index": 0,
+          "source_line_start": 8,
+          "source_line_end": 8
+        },
+        "confidence_score": 0.85,
+        "support_basis": "transcript_plus_visual",
+        "evidence_requirement": "optional",
+        "teaching_mode": "theory",
+        "timestamps": [
+          {
+            "start": "00:19",
+            "end": "00:20"
+          },
+          {
+            "start": "00:36",
+            "end": "00:40"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0"
+        ],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "metadata": {
+          "chunk_index": 0,
+          "chunk_start_time_seconds": 0.44,
+          "chunk_end_time_seconds": 122.02,
+          "transcript_line_count": 49,
+          "candidate_visual_frame_keys": [
+            "000036",
+            "000040",
+            "000058",
+            "000084",
+            "000142",
+            "000158"
+          ],
+          "candidate_visual_types": [
+            "hand_drawn_pattern",
+            "text_slide",
+            "mixed_visual"
+          ],
+          "candidate_example_types": [
+            "abstract_teaching_example"
+          ],
+          "rule_type": "algorithm_hint",
+          "pattern_tags": [],
+          "source_quote": "у вас стоп должен быть скорее всего технический, вы прячете его за откат",
+          "transcript_anchors": [
+            {
+              "line_index": 8,
+              "text": "у вас стоп должен быть скорее всего технический,",
+              "timestamp_start": "00:19",
+              "timestamp_end": "00:20",
+              "match_source": "llm_source_quote"
+            }
+          ],
+          "timestamp_confidence": "span",
+          "anchor_match_source": "llm_source_quote",
+          "anchor_line_count": 1,
+          "anchor_span_width": 1,
+          "anchor_density": 1.0,
+          "visual_support_level": "supporting_example",
+          "transcript_support_level": "strong",
+          "transcript_support_score": 0.75,
+          "visual_support_score": 0.4
+        },
+        "event_type": "algorithm_hint",
+        "normalized_text": "Стоп должен быть техническим и прятаться за откат.",
+        "normalized_text_ru": "Стоп должен быть техническим и прятаться за откат.",
+        "concept": "Stop Loss",
+        "subconcept": "Technical Stop Loss"
+      }
+    }
+  ],
+  "grouped_results": {
+    "rule_cards": [
+      {
+        "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_6",
+        "global_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_6",
+        "unit_type": "rule_card",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "concept": "Stop Loss",
+        "subconcept": "Technical Stop Loss",
+        "title": "Stop Loss / Technical Stop Loss",
+        "text_snippet": "[Concept] Stop Loss\n[Subconcept] Technical Stop Loss\n[Rule] Технический стоп защищает от того, что крупный игрок показал на графике.\n[Visual] New slide displayed with title 'Разновидность SL' and two ",
+        "timestamps": [
+          {
+            "start": "01:16",
+            "end": "01:21"
+          },
+          {
+            "start": "00:36",
+            "end": "00:40"
+          },
+          {
+            "start": "00:58",
+            "end": "00:58"
+          },
+          {
+            "start": "01:24",
+            "end": "01:24"
+          },
+          {
+            "start": "01:42",
+            "end": "01:42"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3"
+        ],
+        "source_event_ids": [
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_5"
+        ],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_6"
+        ],
+        "raw_lexical_score": 13.6157,
+        "raw_vector_score": 0.7247,
+        "graph_boost": 1.0,
+        "score": 0.9827,
+        "score_breakdown": {
+          "lexical_score": 0.8114,
+          "vector_score": 0.9662,
+          "graph_boost": 0.15,
+          "concept_exact_match": 0.8,
+          "alias_match": 1.0,
+          "confidence_score": 0.9,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 0.6667,
+          "unit_type_relevance": 1.12,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "evidence_requirement_relevance": 0.2,
+          "evidence_strength_relevance": 0.0,
+          "example_role_relevance": 0.35,
+          "intent_timeframe_boost": 0.0,
+          "intent_cross_lesson_boost": 0.0,
+          "intent_evidence_priority_boost": 0.0,
+          "intent_evidence_mismatch_penalty": 0.0,
+          "intent_transcript_policy_signal": 0.0,
+          "intent_concept_priority_signal": 0.0,
+          "groundedness": 0.9167,
+          "lesson_diversity_bonus": 1.0
+        },
+        "why_retrieved": [
+          "boosted_by_concept_rule_map",
+          "concept_match",
+          "alias_match",
+          "strong_lexical",
+          "strong_vector",
+          "unit_bias_match",
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_6",
+          "unit_type": "rule_card",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:stop_loss"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:technical_stop_loss"
+          ],
+          "alias_terms": [
+            "Stop Loss",
+            "Technical Stop Loss"
+          ],
+          "title": "Stop Loss / Technical Stop Loss",
+          "text": "[Concept] Stop Loss\n[Subconcept] Technical Stop Loss\n[Rule] Технический стоп защищает от того, что крупный игрок показал на графике.\n[Visual] New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+          "short_text": "[Concept] Stop Loss\n[Subconcept] Technical Stop Loss\n[Rule] Технический стоп защищает от того, что крупный игрок показал на графике.\n[Visual] New slide displayed with title 'Разновидность SL' and two ",
+          "keywords": [
+            "Stop Loss",
+            "Technical Stop Loss",
+            "Стоп должен быть техническим и прятаться за откат.",
+            "Технические стопы могут быть основаны на различных формациях и временных интервалах: 1/2 пятиминутки, часовик, полчасовика, проторговка, закругление, поджатие, откат, хвост ложного пробоя.",
+            "Использовать закругление или проторговку для установки большего стопа."
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "confidence": "high",
+            "support_basis": "transcript_plus_visual"
+          },
+          "confidence_score": 0.9,
+          "support_basis": "transcript_plus_visual",
+          "evidence_requirement": "optional",
+          "teaching_mode": "mixed",
+          "timestamps": [
+            {
+              "start": "01:16",
+              "end": "01:21"
+            },
+            {
+              "start": "00:36",
+              "end": "00:40"
+            },
+            {
+              "start": "00:58",
+              "end": "00:58"
+            },
+            {
+              "start": "01:24",
+              "end": "01:24"
+            },
+            {
+              "start": "01:42",
+              "end": "01:42"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3"
+          ],
+          "source_event_ids": [
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_5"
+          ],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_6"
+          ],
+          "metadata": {
+            "source_sections": [],
+            "source_subsections": [],
+            "source_chunk_indexes": [
+              0
+            ],
+            "conditions": [],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "algorithm_notes": [
+              "Стоп должен быть техническим и прятаться за откат.",
+              "Технические стопы могут быть основаны на различных формациях и временных интервалах: 1/2 пятиминутки, часовик, полчасовика, проторговка, закругление, поджатие, откат, хвост ложного пробоя.",
+              "Использовать закругление или проторговку для установки большего стопа."
+            ],
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 0.8,
+            "visual_support_score": 0.4,
+            "has_visual_evidence": true,
+            "transcript_anchor_count": 2,
+            "transcript_repetition_count": 0
+          },
+          "rule_text": "Технический стоп защищает от того, что крупный игрок показал на графике.",
+          "rule_text_ru": "Технический стоп защищает от того, что крупный игрок показал на графике.",
+          "conditions": [],
+          "invalidation": [],
+          "exceptions": [],
+          "comparisons": [],
+          "visual_summary": "New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…",
+          "concept": "Stop Loss",
+          "subconcept": "Technical Stop Loss"
+        }
+      },
+      {
+        "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_5",
+        "global_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_5",
+        "unit_type": "rule_card",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "concept": "Stop Loss",
+        "subconcept": "Technical Stop Loss",
+        "title": "Stop Loss / Technical Stop Loss",
+        "text_snippet": "[Concept] Stop Loss\n[Subconcept] Technical Stop Loss\n[Rule] Технические стопы могут быть основаны на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, от",
+        "timestamps": [
+          {
+            "start": "01:03",
+            "end": "01:12"
+          },
+          {
+            "start": "00:36",
+            "end": "00:40"
+          },
+          {
+            "start": "00:58",
+            "end": "00:58"
+          },
+          {
+            "start": "01:24",
+            "end": "01:24"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2"
+        ],
+        "source_event_ids": [
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_4"
+        ],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_5"
+        ],
+        "raw_lexical_score": 13.3537,
+        "raw_vector_score": 0.7247,
+        "graph_boost": 1.0,
+        "score": 0.9587,
+        "score_breakdown": {
+          "lexical_score": 0.7958,
+          "vector_score": 0.9662,
+          "graph_boost": 0.15,
+          "concept_exact_match": 0.8,
+          "alias_match": 1.0,
+          "confidence_score": 0.9,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 0.6667,
+          "unit_type_relevance": 1.12,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "evidence_requirement_relevance": 0.2,
+          "evidence_strength_relevance": 0.0,
+          "example_role_relevance": 0.35,
+          "intent_timeframe_boost": 0.0,
+          "intent_cross_lesson_boost": 0.0,
+          "intent_evidence_priority_boost": 0.0,
+          "intent_evidence_mismatch_penalty": 0.0,
+          "intent_transcript_policy_signal": 0.0,
+          "intent_concept_priority_signal": 0.0,
+          "groundedness": 0.9167,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "boosted_by_concept_rule_map",
+          "concept_match",
+          "alias_match",
+          "strong_lexical",
+          "strong_vector",
+          "unit_bias_match",
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_5",
+          "unit_type": "rule_card",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:stop_loss"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:technical_stop_loss"
+          ],
+          "alias_terms": [
+            "Stop Loss",
+            "Technical Stop Loss"
+          ],
+          "title": "Stop Loss / Technical Stop Loss",
+          "text": "[Concept] Stop Loss\n[Subconcept] Technical Stop Loss\n[Rule] Технические стопы могут быть основаны на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, откате и хвосте ложного пробоя.\n[Visual] New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+          "short_text": "[Concept] Stop Loss\n[Subconcept] Technical Stop Loss\n[Rule] Технические стопы могут быть основаны на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, от",
+          "keywords": [
+            "Stop Loss",
+            "Technical Stop Loss",
+            "Стоп должен быть техническим и прятаться за откат.",
+            "Технические стопы могут быть основаны на различных формациях и временных интервалах: 1/2 пятиминутки, часовик, полчасовика, проторговка, закругление, поджатие, откат, хвост ложного пробоя.",
+            "Использовать закругление или проторговку для установки большего стопа."
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "confidence": "high",
+            "support_basis": "transcript_plus_visual"
+          },
+          "confidence_score": 0.9,
+          "support_basis": "transcript_plus_visual",
+          "evidence_requirement": "optional",
+          "teaching_mode": "mixed",
+          "timestamps": [
+            {
+              "start": "01:03",
+              "end": "01:12"
+            },
+            {
+              "start": "00:36",
+              "end": "00:40"
+            },
+            {
+              "start": "00:58",
+              "end": "00:58"
+            },
+            {
+              "start": "01:24",
+              "end": "01:24"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_2"
+          ],
+          "source_event_ids": [
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_4"
+          ],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_5"
+          ],
+          "metadata": {
+            "source_sections": [],
+            "source_subsections": [],
+            "source_chunk_indexes": [
+              0
+            ],
+            "conditions": [],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "algorithm_notes": [
+              "Стоп должен быть техническим и прятаться за откат.",
+              "Технические стопы могут быть основаны на различных формациях и временных интервалах: 1/2 пятиминутки, часовик, полчасовика, проторговка, закругление, поджатие, откат, хвост ложного пробоя.",
+              "Использовать закругление или проторговку для установки большего стопа."
+            ],
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 0.85,
+            "visual_support_score": 0.4,
+            "has_visual_evidence": true,
+            "transcript_anchor_count": 3,
+            "transcript_repetition_count": 0
+          },
+          "rule_text": "Технические стопы могут быть основаны на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, откате и хвосте ложного пробоя.",
+          "rule_text_ru": "Технические стопы могут быть основаны на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, откате и хвосте ложного пробоя.",
+          "conditions": [],
+          "invalidation": [],
+          "exceptions": [],
+          "comparisons": [],
+          "visual_summary": "New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…",
+          "concept": "Stop Loss",
+          "subconcept": "Technical Stop Loss"
+        }
+      },
+      {
+        "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_4",
+        "global_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_4",
+        "unit_type": "rule_card",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "concept": "Trade Management",
+        "subconcept": "Stop Loss",
+        "title": "Trade Management / Stop Loss",
+        "text_snippet": "[Concept] Trade Management\n[Subconcept] Stop Loss\n[Rule] Если стоп большой, можно посидеть в сделке подольше.\n[Conditions] Если стоп достаточно большой, время в сделке увеличивается.\n[Visual] New slid",
+        "timestamps": [
+          {
+            "start": "01:58",
+            "end": "01:59"
+          },
+          {
+            "start": "00:53",
+            "end": "00:56"
+          },
+          {
+            "start": "00:36",
+            "end": "00:40"
+          },
+          {
+            "start": "00:58",
+            "end": "00:58"
+          },
+          {
+            "start": "01:42",
+            "end": "01:42"
+          },
+          {
+            "start": "01:58",
+            "end": "01:58"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_4"
+        ],
+        "source_event_ids": [
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_7",
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_condition_2"
+        ],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_4"
+        ],
+        "raw_lexical_score": 11.5402,
+        "raw_vector_score": 0.683,
+        "graph_boost": 1.0,
+        "score": 0.9201,
+        "score_breakdown": {
+          "lexical_score": 0.6877,
+          "vector_score": 0.9106,
+          "graph_boost": 0.15,
+          "concept_exact_match": 0.8,
+          "alias_match": 1.0,
+          "confidence_score": 1.0,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 0.6667,
+          "unit_type_relevance": 1.12,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "evidence_requirement_relevance": 0.2,
+          "evidence_strength_relevance": 0.0,
+          "example_role_relevance": 0.35,
+          "intent_timeframe_boost": 0.0,
+          "intent_cross_lesson_boost": 0.0,
+          "intent_evidence_priority_boost": 0.0,
+          "intent_evidence_mismatch_penalty": 0.0,
+          "intent_transcript_policy_signal": 0.0,
+          "intent_concept_priority_signal": 0.0,
+          "groundedness": 0.9167,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "boosted_by_concept_rule_map",
+          "concept_match",
+          "alias_match",
+          "strong_lexical",
+          "strong_vector",
+          "unit_bias_match",
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_4",
+          "unit_type": "rule_card",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:trade_management"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:stop_loss"
+          ],
+          "alias_terms": [
+            "Trade Management",
+            "Stop Loss"
+          ],
+          "title": "Trade Management / Stop Loss",
+          "text": "[Concept] Trade Management\n[Subconcept] Stop Loss\n[Rule] Если стоп большой, можно посидеть в сделке подольше.\n[Conditions] Если стоп достаточно большой, время в сделке увеличивается.\n[Visual] New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+          "short_text": "[Concept] Trade Management\n[Subconcept] Stop Loss\n[Rule] Если стоп большой, можно посидеть в сделке подольше.\n[Conditions] Если стоп достаточно большой, время в сделке увеличивается.\n[Visual] New slid",
+          "keywords": [
+            "Trade Management",
+            "Stop Loss",
+            "Если стоп достаточно большой, время в сделке увеличивается.",
+            "Время в сделке увеличивается, если стоп большой."
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "confidence": "high",
+            "support_basis": "transcript_plus_visual"
+          },
+          "confidence_score": 1.0,
+          "support_basis": "transcript_plus_visual",
+          "evidence_requirement": "optional",
+          "teaching_mode": "mixed",
+          "timestamps": [
+            {
+              "start": "01:58",
+              "end": "01:59"
+            },
+            {
+              "start": "00:53",
+              "end": "00:56"
+            },
+            {
+              "start": "00:36",
+              "end": "00:40"
+            },
+            {
+              "start": "00:58",
+              "end": "00:58"
+            },
+            {
+              "start": "01:42",
+              "end": "01:42"
+            },
+            {
+              "start": "01:58",
+              "end": "01:58"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_4"
+          ],
+          "source_event_ids": [
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_7",
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_condition_2"
+          ],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_4"
+          ],
+          "metadata": {
+            "source_sections": [],
+            "source_subsections": [],
+            "source_chunk_indexes": [
+              0
+            ],
+            "conditions": [
+              "Если стоп достаточно большой, время в сделке увеличивается."
+            ],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "algorithm_notes": [
+              "Время в сделке увеличивается, если стоп большой."
+            ],
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 0.75,
+            "visual_support_score": 0.4,
+            "has_visual_evidence": true,
+            "transcript_anchor_count": 2,
+            "transcript_repetition_count": 0
+          },
+          "rule_text": "Если стоп большой, можно посидеть в сделке подольше.",
+          "rule_text_ru": "Если стоп большой, можно посидеть в сделке подольше.",
+          "conditions": [
+            "Если стоп достаточно большой, время в сделке увеличивается."
+          ],
+          "invalidation": [],
+          "exceptions": [],
+          "comparisons": [],
+          "visual_summary": "New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…",
+          "concept": "Trade Management",
+          "subconcept": "Stop Loss"
+        }
+      },
+      {
+        "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_3",
+        "global_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_3",
+        "unit_type": "rule_card",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "concept": "Trade Management",
+        "subconcept": "Stop Loss",
+        "title": "Trade Management / Stop Loss",
+        "text_snippet": "[Concept] Trade Management\n[Subconcept] Stop Loss\n[Rule] Время в сделке увеличивается из-за того, что стоп достаточно большой.\n[Conditions] Если стоп достаточно большой, время в сделке увеличивается.\n",
+        "timestamps": [
+          {
+            "start": "00:53",
+            "end": "00:56"
+          },
+          {
+            "start": "00:36",
+            "end": "00:40"
+          },
+          {
+            "start": "00:58",
+            "end": "00:58"
+          },
+          {
+            "start": "01:42",
+            "end": "01:42"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1",
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3"
+        ],
+        "source_event_ids": [
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_3",
+          "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_condition_2"
+        ],
+        "source_rule_ids": [
+          "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_3"
+        ],
+        "raw_lexical_score": 11.415,
+        "raw_vector_score": 0.668,
+        "graph_boost": 1.0,
+        "score": 0.9129,
+        "score_breakdown": {
+          "lexical_score": 0.6802,
+          "vector_score": 0.8906,
+          "graph_boost": 0.15,
+          "concept_exact_match": 0.8,
+          "alias_match": 1.0,
+          "confidence_score": 1.0,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 0.6667,
+          "unit_type_relevance": 1.12,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "evidence_requirement_relevance": 0.2,
+          "evidence_strength_relevance": 0.0,
+          "example_role_relevance": 0.35,
+          "intent_timeframe_boost": 0.0,
+          "intent_cross_lesson_boost": 0.0,
+          "intent_evidence_priority_boost": 0.0,
+          "intent_evidence_mismatch_penalty": 0.0,
+          "intent_transcript_policy_signal": 0.0,
+          "intent_concept_priority_signal": 0.0,
+          "groundedness": 0.9167,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "boosted_by_concept_rule_map",
+          "concept_match",
+          "alias_match",
+          "strong_lexical",
+          "strong_vector",
+          "unit_bias_match",
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_3",
+          "unit_type": "rule_card",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:trade_management"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:stop_loss"
+          ],
+          "alias_terms": [
+            "Trade Management",
+            "Stop Loss"
+          ],
+          "title": "Trade Management / Stop Loss",
+          "text": "[Concept] Trade Management\n[Subconcept] Stop Loss\n[Rule] Время в сделке увеличивается из-за того, что стоп достаточно большой.\n[Conditions] Если стоп достаточно большой, время в сделке увеличивается.\n[Visual] New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…\n[Support Basis] transcript_plus_visual\n[Evidence Requirement] optional\n[Teaching Mode] mixed",
+          "short_text": "[Concept] Trade Management\n[Subconcept] Stop Loss\n[Rule] Время в сделке увеличивается из-за того, что стоп достаточно большой.\n[Conditions] Если стоп достаточно большой, время в сделке увеличивается.\n",
+          "keywords": [
+            "Trade Management",
+            "Stop Loss",
+            "Если стоп достаточно большой, время в сделке увеличивается.",
+            "Время в сделке увеличивается, если стоп большой."
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "confidence": "high",
+            "support_basis": "transcript_plus_visual"
+          },
+          "confidence_score": 1.0,
+          "support_basis": "transcript_plus_visual",
+          "evidence_requirement": "optional",
+          "teaching_mode": "mixed",
+          "timestamps": [
+            {
+              "start": "00:53",
+              "end": "00:56"
+            },
+            {
+              "start": "00:36",
+              "end": "00:40"
+            },
+            {
+              "start": "00:58",
+              "end": "00:58"
+            },
+            {
+              "start": "01:42",
+              "end": "01:42"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_1",
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_3"
+          ],
+          "source_event_ids": [
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_rule_statement_3",
+            "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_condition_2"
+          ],
+          "source_rule_ids": [
+            "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_3"
+          ],
+          "metadata": {
+            "source_sections": [],
+            "source_subsections": [],
+            "source_chunk_indexes": [
+              0
+            ],
+            "conditions": [
+              "Если стоп достаточно большой, время в сделке увеличивается."
+            ],
+            "invalidation": [],
+            "exceptions": [],
+            "comparisons": [],
+            "algorithm_notes": [
+              "Время в сделке увеличивается, если стоп большой."
+            ],
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 0.75,
+            "visual_support_score": 0.4,
+            "has_visual_evidence": true,
+            "transcript_anchor_count": 2,
+            "transcript_repetition_count": 0
+          },
+          "rule_text": "Время в сделке увеличивается из-за того, что стоп достаточно большой.",
+          "rule_text_ru": "Время в сделке увеличивается из-за того, что стоп достаточно большой.",
+          "conditions": [
+            "Если стоп достаточно большой, время в сделке увеличивается."
+          ],
+          "invalidation": [],
+          "exceptions": [],
+          "comparisons": [],
+          "visual_summary": "New slide displayed with title 'Разновидность SL' and two sections: 'Расчетные' and 'Технические'. A hand-drawn chart illustration is present on the right side of the screen..…",
+          "concept": "Trade Management",
+          "subconcept": "Stop Loss"
+        }
+      }
+    ],
+    "knowledge_events": [
+      {
+        "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_2",
+        "global_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_2",
+        "unit_type": "knowledge_event",
+        "lesson_id": "2025-09-29-sviatoslav-chornyi",
+        "concept": "Stop Loss",
+        "subconcept": "Technical Stop Loss",
+        "title": "algorithm_hint / Stop Loss",
+        "text_snippet": "[algorithm_hint] [Concept] Stop Loss Стоп должен быть техническим и прятаться за откат. [Time] 00:19–00:20 [Support Basis] transcript_plus_visual",
+        "timestamps": [
+          {
+            "start": "00:19",
+            "end": "00:20"
+          },
+          {
+            "start": "00:36",
+            "end": "00:40"
+          }
+        ],
+        "evidence_ids": [
+          "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0"
+        ],
+        "source_event_ids": [],
+        "source_rule_ids": [],
+        "raw_lexical_score": 15.6367,
+        "raw_vector_score": 0.7408,
+        "graph_boost": 0.0,
+        "score": 0.9051,
+        "score_breakdown": {
+          "lexical_score": 0.9318,
+          "vector_score": 0.9877,
+          "graph_boost": 0.0,
+          "concept_exact_match": 0.0,
+          "alias_match": 1.0,
+          "confidence_score": 0.85,
+          "evidence_available": 1.0,
+          "timestamp_available": 1.0,
+          "provenance_richness": 1.0,
+          "unit_type_relevance": 1.0,
+          "support_basis_relevance": 0.4,
+          "teaching_mode_relevance": 0.4,
+          "evidence_requirement_relevance": 0.2,
+          "evidence_strength_relevance": 0.0,
+          "example_role_relevance": 0.6,
+          "intent_timeframe_boost": 0.0,
+          "intent_cross_lesson_boost": 0.0,
+          "intent_evidence_priority_boost": 0.0,
+          "intent_evidence_mismatch_penalty": 0.0,
+          "intent_transcript_policy_signal": 0.0,
+          "intent_concept_priority_signal": 0.0,
+          "groundedness": 1.0,
+          "lesson_diversity_bonus": 0.0
+        },
+        "why_retrieved": [
+          "alias_match",
+          "strong_lexical",
+          "strong_vector",
+          "unit_bias_match",
+          "well_grounded"
+        ],
+        "resolved_doc": {
+          "doc_id": "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_2",
+          "unit_type": "knowledge_event",
+          "lesson_id": "2025-09-29-sviatoslav-chornyi",
+          "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+          "language": "ru",
+          "canonical_concept_ids": [
+            "concept:stop_loss"
+          ],
+          "canonical_subconcept_ids": [
+            "subconcept:technical_stop_loss"
+          ],
+          "alias_terms": [
+            "Stop Loss",
+            "Technical Stop Loss"
+          ],
+          "title": "algorithm_hint / Stop Loss",
+          "text": "[algorithm_hint] [Concept] Stop Loss Стоп должен быть техническим и прятаться за откат. [Time] 00:19–00:20 [Support Basis] transcript_plus_visual",
+          "short_text": "[algorithm_hint] [Concept] Stop Loss Стоп должен быть техническим и прятаться за откат. [Time] 00:19–00:20 [Support Basis] transcript_plus_visual",
+          "keywords": [
+            "Stop Loss",
+            "Technical Stop Loss",
+            "algorithm_hint"
+          ],
+          "provenance": {
+            "lesson_title": null,
+            "section": null,
+            "subsection": null,
+            "chunk_index": 0,
+            "source_line_start": 8,
+            "source_line_end": 8
+          },
+          "confidence_score": 0.85,
+          "support_basis": "transcript_plus_visual",
+          "evidence_requirement": "optional",
+          "teaching_mode": "theory",
+          "timestamps": [
+            {
+              "start": "00:19",
+              "end": "00:20"
+            },
+            {
+              "start": "00:36",
+              "end": "00:40"
+            }
+          ],
+          "evidence_ids": [
+            "evidence:2025_09_29_sviatoslav_chornyi:evcand_2025-09-29-sviatoslav-chornyi_0_0"
+          ],
+          "source_event_ids": [],
+          "source_rule_ids": [],
+          "metadata": {
+            "chunk_index": 0,
+            "chunk_start_time_seconds": 0.44,
+            "chunk_end_time_seconds": 122.02,
+            "transcript_line_count": 49,
+            "candidate_visual_frame_keys": [
+              "000036",
+              "000040",
+              "000058",
+              "000084",
+              "000142",
+              "000158"
+            ],
+            "candidate_visual_types": [
+              "hand_drawn_pattern",
+              "text_slide",
+              "mixed_visual"
+            ],
+            "candidate_example_types": [
+              "abstract_teaching_example"
+            ],
+            "rule_type": "algorithm_hint",
+            "pattern_tags": [],
+            "source_quote": "у вас стоп должен быть скорее всего технический, вы прячете его за откат",
+            "transcript_anchors": [
+              {
+                "line_index": 8,
+                "text": "у вас стоп должен быть скорее всего технический,",
+                "timestamp_start": "00:19",
+                "timestamp_end": "00:20",
+                "match_source": "llm_source_quote"
+              }
+            ],
+            "timestamp_confidence": "span",
+            "anchor_match_source": "llm_source_quote",
+            "anchor_line_count": 1,
+            "anchor_span_width": 1,
+            "anchor_density": 1.0,
+            "visual_support_level": "supporting_example",
+            "transcript_support_level": "strong",
+            "transcript_support_score": 0.75,
+            "visual_support_score": 0.4
+          },
+          "event_type": "algorithm_hint",
+          "normalized_text": "Стоп должен быть техническим и прятаться за откат.",
+          "normalized_text_ru": "Стоп должен быть техническим и прятаться за откат.",
+          "concept": "Stop Loss",
+          "subconcept": "Technical Stop Loss"
+        }
+      }
+    ],
+    "evidence_refs": [],
+    "concepts": []
+  },
+  "summary": {
+    "answer_text": "[Concept] Stop Loss\n[Subconcept] Technical Stop Loss\n[Rule] Технический стоп защищает от того, что крупный игрок показал на графике.\n[Visual] New slide displayed with title 'Разновидность SL' and two \n[Concept] Stop Loss\n[Subconcept] Technical Stop Loss\n[Rule] Технические стопы могут быть основаны на одной пятиминутке, двух пятиминутках, часовике, полчасовика, проторговке, закруглении, поджатии, от\n[Concept] Trade Management\n[Subconcept] Stop Loss\n[Rule] Если стоп большой, можно посидеть в сделке подольше.\n[Conditions] Если стоп достаточно большой, время в сделке увеличивается.\n[Visual] New slid\n[Concept] Trade Management\n[Subconcept] Stop Loss\n[Rule] Время в сделке увеличивается из-за того, что стоп достаточно большой.\n[Conditions] Если стоп достаточно большой, время в сделке увеличивается.\n",
+    "limitations": [],
+    "citation_doc_ids": [
+      "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_6",
+      "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_5",
+      "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_4",
+      "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_trade_management_stop_loss_3",
+      "event:2025_09_29_sviatoslav_chornyi:ke_2025_09_29_sviatoslav_chornyi_0_algorithm_hint_2"
+    ]
+  },
+  "facets": {
+    "by_unit_type": {
+      "rule_card": 4,
+      "knowledge_event": 1
+    },
+    "by_lesson": {
+      "2025-09-29-sviatoslav-chornyi": 5
+    },
+    "by_concept": {
+      "concept:stop_loss": 3,
+      "concept:trade_management": 2
+    }
+  },
+  "hit_count": 5
+}

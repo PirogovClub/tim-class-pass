@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from helpers.clients import gemini_batch_client
-from pipeline.contracts import PipelinePaths
+from pipeline.path_contracts import PipelinePaths
 from pipeline.io_utils import atomic_write_json
 from pipeline.orchestrator import (
     BATCH_JOB_STATUS_CANCELLED,

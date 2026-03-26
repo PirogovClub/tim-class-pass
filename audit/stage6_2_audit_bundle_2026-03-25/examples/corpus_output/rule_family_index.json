@@ -1,0 +1,12 @@
+{
+  "level": [
+    "rule:lesson_minimal:rule_minimal_1",
+    "rule:lesson_multi_concept:rule_multi_1"
+  ],
+  "false_breakout": [
+    "rule:lesson_multi_concept:rule_multi_2"
+  ],
+  "level_level_rating": [
+    "rule:lesson_multi_concept:rule_multi_3"
+  ]
+}

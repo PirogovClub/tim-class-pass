@@ -21,7 +21,7 @@
     "evidence_id_rate": 1.0,
     "hit_count": 10,
     "top_hit_unit_type": "rule_card",
-    "top_hit_score": 0.7693,
+    "top_hit_score": 0.7642,
     "detected_intents": [],
     "intent_signals": {
       "detected_intents": [],
@@ -62,12 +62,12 @@
     },
     "mrr": 1.0,
     "concept_detected": false,
-    "evidence_presence_rate": 0.8,
+    "evidence_presence_rate": 0.6,
     "timestamp_presence_rate": 0.9,
-    "evidence_id_rate": 0.8,
+    "evidence_id_rate": 0.6,
     "hit_count": 10,
     "top_hit_unit_type": "rule_card",
-    "top_hit_score": 0.832,
+    "top_hit_score": 0.6751,
     "detected_intents": [
       "direct_rule_lookup"
     ],
@@ -88,7 +88,7 @@
     "top_hit_support_basis": "transcript_primary",
     "top3_unit_types": [
       "rule_card",
-      "rule_card",
+      "knowledge_event",
       "knowledge_event"
     ],
     "evidence_ref_in_top3": false,
@@ -111,14 +111,14 @@
       "5": 1.0,
       "10": 1.0
     },
-    "mrr": 1.0,
+    "mrr": 0.5,
     "concept_detected": true,
     "evidence_presence_rate": 1.0,
     "timestamp_presence_rate": 1.0,
     "evidence_id_rate": 1.0,
     "hit_count": 10,
-    "top_hit_unit_type": "rule_card",
-    "top_hit_score": 0.9738,
+    "top_hit_unit_type": "knowledge_event",
+    "top_hit_score": 0.964,
     "detected_intents": [],
     "intent_signals": {
       "detected_intents": [],
@@ -134,9 +134,9 @@
     },
     "top_hit_support_basis": "transcript_plus_visual",
     "top3_unit_types": [
+      "knowledge_event",
       "rule_card",
-      "rule_card",
-      "knowledge_event"
+      "rule_card"
     ],
     "evidence_ref_in_top3": false,
     "concept_unit_in_top3": false,
@@ -165,7 +165,7 @@
     "evidence_id_rate": 1.0,
     "hit_count": 10,
     "top_hit_unit_type": "knowledge_event",
-    "top_hit_score": 0.8016,
+    "top_hit_score": 0.8019,
     "detected_intents": [],
     "intent_signals": {
       "detected_intents": [],
@@ -211,7 +211,7 @@
     "evidence_id_rate": 1.0,
     "hit_count": 10,
     "top_hit_unit_type": "knowledge_event",
-    "top_hit_score": 0.8695,
+    "top_hit_score": 0.8706,
     "detected_intents": [
       "direct_rule_lookup"
     ],
@@ -233,7 +233,7 @@
     "top3_unit_types": [
       "knowledge_event",
       "rule_card",
-      "rule_card"
+      "knowledge_event"
     ],
     "evidence_ref_in_top3": false,
     "concept_unit_in_top3": false,
@@ -307,9 +307,9 @@
     },
     "mrr": 1.0,
     "concept_detected": false,
-    "evidence_presence_rate": 1.0,
+    "evidence_presence_rate": 0.8,
     "timestamp_presence_rate": 1.0,
-    "evidence_id_rate": 1.0,
+    "evidence_id_rate": 0.8,
     "hit_count": 10,
     "top_hit_unit_type": "rule_card",
     "top_hit_score": 0.7845,
@@ -415,7 +415,7 @@
     "evidence_id_rate": 0.0,
     "hit_count": 10,
     "top_hit_unit_type": "concept_relation",
-    "top_hit_score": 1.0491,
+    "top_hit_score": 1.0512,
     "detected_intents": [
       "concept_comparison"
     ],
@@ -518,7 +518,7 @@
     "evidence_id_rate": 0.0,
     "hit_count": 10,
     "top_hit_unit_type": "concept_relation",
-    "top_hit_score": 0.9808,
+    "top_hit_score": 0.9826,
     "detected_intents": [
       "concept_comparison"
     ],
@@ -669,7 +669,7 @@
     "evidence_id_rate": 1.0,
     "hit_count": 10,
     "top_hit_unit_type": "evidence_ref",
-    "top_hit_score": 1.7036,
+    "top_hit_score": 1.7052,
     "detected_intents": [
       "example_lookup"
     ],
@@ -773,7 +773,7 @@
     "evidence_id_rate": 1.0,
     "hit_count": 10,
     "top_hit_unit_type": "rule_card",
-    "top_hit_score": 0.9779,
+    "top_hit_score": 0.9576,
     "detected_intents": [
       "lesson_coverage"
     ],
@@ -825,7 +825,7 @@
     "evidence_id_rate": 0.4,
     "hit_count": 10,
     "top_hit_unit_type": "concept_relation",
-    "top_hit_score": 1.1376,
+    "top_hit_score": 1.1398,
     "detected_intents": [
       "cross_lesson_conflict_lookup"
     ],
@@ -876,7 +876,7 @@
     "evidence_id_rate": 0.2,
     "hit_count": 10,
     "top_hit_unit_type": "concept_relation",
-    "top_hit_score": 1.5803,
+    "top_hit_score": 1.5805,
     "detected_intents": [
       "timeframe_lookup",
       "cross_lesson_conflict_lookup"
@@ -929,7 +929,7 @@
     "evidence_id_rate": 0.0,
     "hit_count": 10,
     "top_hit_unit_type": "concept_relation",
-    "top_hit_score": 1.1658,
+    "top_hit_score": 1.1623,
     "detected_intents": [
       "cross_lesson_conflict_lookup"
     ],
@@ -980,7 +980,7 @@
     "evidence_id_rate": 0.9,
     "hit_count": 10,
     "top_hit_unit_type": "knowledge_event",
-    "top_hit_score": 1.4568,
+    "top_hit_score": 1.4643,
     "detected_intents": [
       "timeframe_lookup"
     ],
@@ -1025,12 +1025,12 @@
     },
     "mrr": 1.0,
     "concept_detected": true,
-    "evidence_presence_rate": 0.9,
+    "evidence_presence_rate": 0.7,
     "timestamp_presence_rate": 1.0,
-    "evidence_id_rate": 0.9,
+    "evidence_id_rate": 0.7,
     "hit_count": 10,
     "top_hit_unit_type": "rule_card",
-    "top_hit_score": 1.3322,
+    "top_hit_score": 1.3271,
     "detected_intents": [
       "timeframe_lookup"
     ],
@@ -1074,12 +1074,12 @@
     },
     "mrr": 1.0,
     "concept_detected": true,
-    "evidence_presence_rate": 0.8,
+    "evidence_presence_rate": 0.7,
     "timestamp_presence_rate": 1.0,
-    "evidence_id_rate": 0.8,
+    "evidence_id_rate": 0.7,
     "hit_count": 10,
     "top_hit_unit_type": "knowledge_event",
-    "top_hit_score": 1.0973,
+    "top_hit_score": 1.0907,
     "detected_intents": [
       "support_policy"
     ],
@@ -1180,7 +1180,7 @@
     "evidence_id_rate": 1.0,
     "hit_count": 10,
     "top_hit_unit_type": "rule_card",
-    "top_hit_score": 0.9766,
+    "top_hit_score": 0.9745,
     "detected_intents": [
       "direct_rule_lookup"
     ],
@@ -1225,9 +1225,9 @@
     },
     "mrr": 1.0,
     "concept_detected": true,
-    "evidence_presence_rate": 0.9,
-    "timestamp_presence_rate": 0.9,
-    "evidence_id_rate": 0.9,
+    "evidence_presence_rate": 0.8,
+    "timestamp_presence_rate": 0.8,
+    "evidence_id_rate": 0.8,
     "hit_count": 10,
     "top_hit_unit_type": "rule_card",
     "top_hit_score": 0.9585,
@@ -1281,7 +1281,7 @@
     "evidence_id_rate": 0.5,
     "hit_count": 10,
     "top_hit_unit_type": "rule_card",
-    "top_hit_score": 0.9172,
+    "top_hit_score": 0.9176,
     "detected_intents": [],
     "intent_signals": {
       "detected_intents": [],
@@ -1323,12 +1323,12 @@
     },
     "mrr": 1.0,
     "concept_detected": true,
-    "evidence_presence_rate": 0.9,
-    "timestamp_presence_rate": 1.0,
-    "evidence_id_rate": 0.9,
+    "evidence_presence_rate": 0.8,
+    "timestamp_presence_rate": 0.9,
+    "evidence_id_rate": 0.8,
     "hit_count": 10,
     "top_hit_unit_type": "rule_card",
-    "top_hit_score": 0.968,
+    "top_hit_score": 0.9645,
     "detected_intents": [],
     "intent_signals": {
       "detected_intents": [],

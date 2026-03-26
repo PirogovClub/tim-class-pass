@@ -11,7 +11,7 @@ from pipeline.component2.llm_processor import (
     materialize_batch_results_for_knowledge_extract,
     materialize_batch_results_for_markdown_render,
 )
-from pipeline.contracts import PipelinePaths
+from pipeline.path_contracts import PipelinePaths
 from pipeline.orchestrator.state_store import StateStore
 from pipeline.schemas import EvidenceRef, RuleCard
 

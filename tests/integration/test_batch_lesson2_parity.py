@@ -7,7 +7,7 @@ import pytest
 
 from pipeline.component2.knowledge_builder import adapt_chunks, load_chunks_json
 from pipeline.component2.llm_processor import materialize_batch_results_for_knowledge_extract
-from pipeline.contracts import PipelinePaths
+from pipeline.path_contracts import PipelinePaths
 from pipeline.orchestrator.models import make_request_key, slugify_lesson_name
 from pipeline.orchestrator.state_store import StateStore
 from tests.conftest import LESSON2_DATA

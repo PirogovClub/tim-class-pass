@@ -4,7 +4,7 @@ import json
 import time
 from pathlib import Path
 
-from pipeline.contracts import PipelinePaths
+from pipeline.path_contracts import PipelinePaths
 from ui.services import import_project
 from ui.settings import UISettings
 from ui.storage import UIStateStore

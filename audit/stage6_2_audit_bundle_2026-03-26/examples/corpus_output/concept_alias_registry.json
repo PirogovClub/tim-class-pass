@@ -1,0 +1,19 @@
+{
+  "node:false_breakout": {
+    "name": "false_breakout",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_multi_concept"
+    ],
+    "type": "concept"
+  },
+  "node:level": {
+    "name": "level",
+    "aliases": [],
+    "source_lessons": [
+      "lesson_minimal",
+      "lesson_multi_concept"
+    ],
+    "type": "concept"
+  }
+}

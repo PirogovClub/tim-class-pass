@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 from helpers.clients import gemini_batch_client
 from helpers.utils.compare import compare_images
 from helpers.utils.frame_schema import ensure_material_change, key_to_timestamp, minimal_no_change_frame
-from pipeline.contracts import PipelinePaths
+from pipeline.path_contracts import PipelinePaths
 from pipeline.io_utils import atomic_write_json
 from pipeline.orchestrator import (
     STAGE_RUN_STATUS_FAILED,

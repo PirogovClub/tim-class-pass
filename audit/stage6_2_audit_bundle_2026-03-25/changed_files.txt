@@ -1,0 +1,10 @@
+pipeline/contracts/lesson_registry.py
+pipeline/corpus/adapters.py
+pipeline/corpus/corpus_builder.py
+pipeline/corpus/corpus_validation.py
+pipeline/corpus/cli.py
+pipeline/corpus/corpus_contract_v1.md
+pipeline/corpus/corpus_id_policy.py
+tests/corpus/test_corpus_builder.py
+tests/corpus/test_corpus_ids.py
+tests/corpus/test_corpus_validation.py

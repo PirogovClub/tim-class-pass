@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from pipeline.contracts import PipelineFeatureFlags, PipelinePaths
+from pipeline.path_contracts import PipelineFeatureFlags, PipelinePaths
 from pipeline.inspection import build_report, inspect_stages
 from pipeline.component2.orchestrator import Component2RunConfig, prepare_component2_run
 from pipeline.component2.main import run_component2_pipeline

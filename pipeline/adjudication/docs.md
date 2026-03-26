@@ -89,6 +89,8 @@ repo.append_decision_and_refresh_state(
 )
 ```
 
+**Other as-built docs in this package:** proposal behavior → [`proposal_docs.md`](proposal_docs.md); corpus export CLI → [`export_docs.md`](export_docs.md); metric definitions → [`metrics_docs.md`](metrics_docs.md); metric HTTP contract → [`metrics_routes_contract.md`](metrics_routes_contract.md).
+
 ## Stage 5.2 — Adjudication HTTP API
 
 Mounted on the RAG FastAPI app under prefix **`/adjudication`**. Database path: environment variable **`ADJUDICATION_DB_PATH`** (default `var/adjudication.db`). Explorer-backed optional bundle context is wired when the explorer service is initialized; missing explorer data does not fail the bundle.
@@ -107,17 +109,28 @@ Mounted on the RAG FastAPI app under prefix **`/adjudication`**. Database path: 
 | POST | `/adjudication/decision` | JSON `DecisionSubmissionRequest` | `DecisionSubmissionResponse` |
 | GET | `/adjudication/queues/unresolved` | — | `QueueListResponse` (JSON object) |
 | GET | `/adjudication/queues/by-target` | `target_type` | `QueueListResponse` |
-| GET | `/adjudication/queues/next` | `queue` (default `unresolved`), optional `target_type` | `QueueItemResponse` or `null` |
+| GET | `/adjudication/queues/next` | `queue` (see **Queues** below), optional `target_type`, optional `quality_tier` (`gold` \| `silver` \| `bronze` \| `unresolved`) for proposal queues | `QueueItemResponse` or **`null`** |
+| GET | `/adjudication/queues/proposals` | `queue` = `high_confidence_duplicates` \| `merge_candidates` \| `canonical_family_candidates`; optional `limit`, `offset`, `target_type`, `quality_tier` | `QueueListResponse` |
 | GET | `/adjudication/tier` | `target_type`, `target_id` | `TierStateResponse` (requires corpus index; **404** `unknown_corpus_target` if id not in inventory) |
 | GET | `/adjudication/tiers/by-tier` | `tier`, optional `target_type`, `limit` | `TierListResponse` |
 | GET | `/adjudication/tiers/counts` | — | `TierCountsResponse` |
 | POST | `/adjudication/tiers/recompute-all` | — | `TierRecomputeResponse` — upserts tier rows for **all** inventory ids; deletes orphan tier rows |
+| POST | `/adjudication/proposals/generate` | JSON `ProposalGenerateRequest` | `ProposalGenerateResponse` |
+| GET | `/adjudication/proposals` | optional filters: `proposal_type`, `proposal_status`, `source_target_type`, `source_target_id`, `queue_name`, `min_score`, `limit`, `offset` | `ProposalListResponse` |
+| GET | `/adjudication/proposals/{proposal_id}` | — | `ProposalDetailResponse` |
+| POST | `/adjudication/proposals/{proposal_id}/dismiss` | JSON `ProposalDismissRequest` | `ProposalRecordResponse` |
 
 Invalid `target_type` query values return **400** with `error_code: validation_error`.
 
 **Review item (non-family):** If there is no row in the materialized `*_reviewed_state` table, the API returns a minimal `ReviewItemResponse` with only `target_type` and `target_id` (not an error). **`canonical_rule_family`:** missing `family_id` returns **404** `not_found`.
 
-**Queues:** Only the logical queue name **`unresolved`** is implemented. `GET .../queues/next?queue=anything_else` returns **`null`**.
+**Queues**
+
+- **`unresolved`** — corpus inventory ∩ adjudication/tier overlay; same items as `GET /adjudication/queues/unresolved`. `GET .../queues/next` returns the first item after deterministic sort, or **`null`** if empty.
+- **Proposal queues** — `high_confidence_duplicates`, `merge_candidates`, `canonical_family_candidates` (open proposals only). Same names work on `GET .../queues/next` (first item) and `GET .../queues/proposals` (paged list). Optional `quality_tier` filters by materialized tier of the proposal’s source target.
+- **Unknown `queue`** on `.../queues/next` (neither `unresolved` nor a proposal queue name) → **`null`**.
+
+Semantics, staleness, and dedupe keys: **`proposal_docs.md`**.
 
 **Corpus inventory + queues:** Unresolved queues are built from a **`CorpusTargetIndex`** (frozen allow-lists of `target_id` values) **left-joined** to materialized `*_reviewed_state` rows:
 
@@ -179,4 +192,30 @@ Response includes `decision_id` and `updated_state` (`ReviewItemResponse`).
 
    `GET /adjudication/queues/next?queue=unresolved&target_type=rule_card`
 
-Later stages (5.3+): UI, AI proposals, export, and G/S/B should continue to treat `review_decisions` / repository APIs as source of truth.
+6. **Next proposal** (example):
+
+   `GET /adjudication/queues/next?queue=high_confidence_duplicates`
+
+## Stage 5.7 — Review metrics HTTP API
+
+Read-only routes under **`/adjudication/metrics/*`** (nested on the same router). Definitions: **`metrics_docs.md`**. Paths and response models: **`metrics_routes_contract.md`**.
+
+| Method | Path |
+|--------|------|
+| GET | `/adjudication/metrics/summary` |
+| GET | `/adjudication/metrics/queues` |
+| GET | `/adjudication/metrics/proposals` |
+| GET | `/adjudication/metrics/throughput` — query `window`: `7d` (default) or `30d` |
+| GET | `/adjudication/metrics/coverage/lessons` |
+| GET | `/adjudication/metrics/coverage/concepts` |
+| GET | `/adjudication/metrics/flags` |
+
+## Stage 5.6 — Reviewed corpus export
+
+Offline **JSONL** export and validation: **`export_docs.md`** (`python -m pipeline.adjudication.export_cli` / `adjudication-export`). Export does not mutate adjudication tables.
+
+## Explorer UI (Stage 5.3+)
+
+The Vite explorer app adds client routes (same origin as the UI, not FastAPI paths): **`/review/queue`**, **`/review/metrics`**, **`/review/item/:targetType/:targetId`**, **`/review/compare`**. Those pages call **`/adjudication/*`** on the RAG server. As-built explorer notes: **`docs/step4_explorer_notes.md`**, **`docs/step4_explorer_contracts.md`**.
+
+**Source of truth** for curated state remains **`review_decisions`** and repository/materialized state; UI and metrics are consumers.

@@ -1,0 +1,14 @@
+{
+  "lesson_id": "lesson_minimal",
+  "graph_version": "1.0",
+  "nodes": [
+    {
+      "concept_id": "concept_level",
+      "name": "level",
+      "type": "concept",
+      "source_rule_ids": ["rule_minimal_1"]
+    }
+  ],
+  "relations": [],
+  "stats": { "node_count": 1, "edge_count": 0 }
+}

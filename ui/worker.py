@@ -14,7 +14,7 @@ from helpers.clients import gemini_client
 from pipeline.batch_cli import _ensure_lesson_chunks, _load_queue_manifest
 from pipeline import build_llm_prompts, dense_capturer, downloader, select_llm_frames, structural_compare
 from pipeline.component2.main import run_component2_pipeline
-from pipeline.contracts import PipelinePaths
+from pipeline.path_contracts import PipelinePaths
 from pipeline.dense_analyzer import emit_batch_spool_for_analysis, run_analysis
 from pipeline.orchestrator import STAGE_KNOWLEDGE_EXTRACT, STAGE_VISION, StateStore
 from pipeline.orchestrator.batch_assembler import assemble_batch_files

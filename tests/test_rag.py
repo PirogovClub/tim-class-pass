@@ -295,10 +295,9 @@ class TestAPI:
     def test_health_uninitialized(self):
         from fastapi.testclient import TestClient
         from pipeline.rag import api as rag_api
+        from pipeline.rag.rag_routes import clear_rag_runtime
 
-        rag_api._retriever = None
-        rag_api._store = None
-        rag_api._cfg = None
+        clear_rag_runtime()
         client = TestClient(rag_api.app)
         resp = client.get("/health")
         assert resp.status_code == 200
@@ -308,10 +307,9 @@ class TestAPI:
     def test_search_uninitialized_returns_503(self):
         from fastapi.testclient import TestClient
         from pipeline.rag import api as rag_api
+        from pipeline.rag.rag_routes import clear_rag_runtime
 
-        rag_api._retriever = None
-        rag_api._store = None
-        rag_api._cfg = None
+        clear_rag_runtime()
         client = TestClient(rag_api.app)
         resp = client.post("/rag/search", json={"query": "test"})
         assert resp.status_code == 503
@@ -319,10 +317,9 @@ class TestAPI:
     def test_doc_uninitialized_returns_503(self):
         from fastapi.testclient import TestClient
         from pipeline.rag import api as rag_api
+        from pipeline.rag.rag_routes import clear_rag_runtime
 
-        rag_api._retriever = None
-        rag_api._store = None
-        rag_api._cfg = None
+        clear_rag_runtime()
         client = TestClient(rag_api.app)
         resp = client.get("/rag/doc/fake_id")
         assert resp.status_code == 503
@@ -335,7 +332,7 @@ class TestEvalHarness:
     def test_curated_queries_exist(self):
         from pipeline.rag.eval import CURATED_QUERIES
 
-        assert len(CURATED_QUERIES) >= 25
+        assert len(CURATED_QUERIES) >= 34  # includes Stage 6.3 §15.1 representative queries (q028–q034)
 
     def test_query_categories_covered(self):
         from pipeline.rag.eval import CURATED_QUERIES

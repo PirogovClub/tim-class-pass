@@ -8,7 +8,7 @@ from importlib import import_module
 from pathlib import Path
 from typing import Optional
 
-from pipeline.contracts import PipelinePaths
+from pipeline.path_contracts import PipelinePaths
 from pipeline.io_utils import atomic_write_json
 from pipeline.stage_registry import STAGE_REGISTRY
 

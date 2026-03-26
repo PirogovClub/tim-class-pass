@@ -1,0 +1,7 @@
+{
+  "model_name": "paraphrase-multilingual-MiniLM-L12-v2",
+  "dimension": 384,
+  "doc_count": 1591,
+  "embedding_backend": "sentence-transformers",
+  "backend": "numpy_brute_force_cosine"
+}

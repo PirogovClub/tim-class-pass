@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from helpers import config as pipeline_config
-from pipeline.contracts import PipelinePaths
+from pipeline.path_contracts import PipelinePaths
 from pipeline.orchestrator import (
     STAGE_KNOWLEDGE_EXTRACT,
     STAGE_MARKDOWN_RENDER,

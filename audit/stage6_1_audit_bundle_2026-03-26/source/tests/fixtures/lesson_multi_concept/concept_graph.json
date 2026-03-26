@@ -1,0 +1,29 @@
+{
+  "lesson_id": "lesson_multi_concept",
+  "graph_version": "1.0",
+  "nodes": [
+    {
+      "concept_id": "concept_level",
+      "name": "level",
+      "type": "concept",
+      "source_rule_ids": ["rule_multi_1", "rule_multi_3"]
+    },
+    {
+      "concept_id": "concept_false_breakout",
+      "name": "false_breakout",
+      "type": "concept",
+      "source_rule_ids": ["rule_multi_2"]
+    }
+  ],
+  "relations": [
+    {
+      "relation_id": "rel_false_breakout_to_level",
+      "source_id": "concept_false_breakout",
+      "target_id": "concept_level",
+      "relation_type": "related_to",
+      "weight": 1,
+      "source_rule_ids": ["rule_multi_2"]
+    }
+  ],
+  "stats": { "node_count": 2, "edge_count": 1 }
+}

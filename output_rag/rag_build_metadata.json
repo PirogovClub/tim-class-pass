@@ -9,7 +9,7 @@
     "rule_card": 218
   },
   "total_retrieval_docs": 1591,
-  "build_timestamp": "2026-03-24T00:09:03.728421Z",
-  "lexical_manifest_path": "output_rag\\index\\lexical_index_manifest.json",
-  "embedding_manifest_path": "output_rag\\index\\embedding_manifest.json"
+  "build_timestamp": "2026-03-26T01:04:15.517692Z",
+  "lexical_manifest_path": null,
+  "embedding_manifest_path": null
 }

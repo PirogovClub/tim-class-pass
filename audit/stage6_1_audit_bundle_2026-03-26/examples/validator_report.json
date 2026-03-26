@@ -1,0 +1,23 @@
+{
+  "contract": "lesson_contract_v1",
+  "strict": true,
+  "lesson_count": 1,
+  "passed_count": 1,
+  "failed_count": 0,
+  "overall_status": "passed",
+  "lessons": [
+    {
+      "lesson_id": "lesson_minimal",
+      "status": "passed",
+      "error_count": 0,
+      "warning_count": 0,
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "registry_check": {
+    "registry_validation_status": "passed",
+    "issues": [],
+    "strict": true
+  }
+}

@@ -119,6 +119,12 @@ The Step 4.3 UI adds:
 
 The compare launch bar is intentionally lightweight. Selection is capped at four ids and stored locally for the current browser session. The compare page URL remains the shareable canonical source of truth.
 
+## Stage 5 review workstation
+
+The explorer app includes **adjudication** flows (Stage 5.3+): **`/review/queue`**, **`/review/metrics`**, **`/review/item/...`**, **`/review/compare`**. These pages use the browser’s configured API base URL to call **`/adjudication/*`** (same server as `/browser/*` when using `pipeline.rag.cli serve`). They **write** adjudication decisions and read queues, tiers, proposals, and metrics; they do not replace the append-only decision log in SQLite.
+
+Operational notes: set **`ADJUDICATION_DB_PATH`** if you do not want the default `var/adjudication.db`. Queues need the corpus index (explorer + retrieval docs loaded). See [`RUN_BROWSER_API.md`](RUN_BROWSER_API.md) and [`../pipeline/adjudication/docs.md`](../pipeline/adjudication/docs.md).
+
 ## Contract guardrails
 
 - Search returns browser cards, never raw retrieval docs.

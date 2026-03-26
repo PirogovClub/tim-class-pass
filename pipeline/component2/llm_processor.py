@@ -28,7 +28,7 @@ from pipeline.component2.visual_compaction import (
     from_pipeline_config as visual_compaction_from_pipeline_config,
 )
 from pipeline.component2.parser import seconds_to_mmss
-from pipeline.contracts import PipelinePaths
+from pipeline.path_contracts import PipelinePaths
 from pipeline.io_utils import atomic_write_json
 from pipeline.orchestrator import (
     STAGE_KNOWLEDGE_EXTRACT,
