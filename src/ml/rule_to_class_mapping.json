@@ -1,0 +1,54 @@
+{
+  "mapping_id": "rule_to_class_level_interaction_v1",
+  "task_id": "level_interaction_rule_satisfaction_v1",
+  "version": "1.0.0",
+  "description": "Maps knowledge-base concepts and rule families to task classes for Step 6 deterministic labeling. Partial/heuristic mappings are explicit; many corpus rules remain out of scope for v1.",
+  "mappings": [
+    {
+      "canonical_concept_ids": ["concept:stop_loss", "subconcept:technical_stop_loss"],
+      "related_rule_family_hints": ["stop_loss", "level", "breakout"],
+      "task_classes": ["acceptance_above", "acceptance_below", "false_breakout_up", "false_breakout_down", "rejection", "no_setup"],
+      "mapping_type": "partial",
+      "rationale": "Stop/level rules in corpus describe interaction with price levels; multiclass satisfaction is resolved from bars, not rule text.",
+      "notes": "Does not map directly to a single class — narrows eligible pattern families."
+    },
+    {
+      "canonical_concept_ids": ["node:breakout"],
+      "related_rule_family_hints": ["breakout", "retest"],
+      "task_classes": ["false_breakout_up", "false_breakout_down", "acceptance_above", "acceptance_below", "rejection"],
+      "mapping_type": "heuristic",
+      "rationale": "Breakout/retest vocabulary aligns with acceptance vs false-breakout semantics.",
+      "notes": "Directional split (up/down) comes from approach direction + bar path."
+    },
+    {
+      "canonical_concept_ids": ["node:accumulation"],
+      "related_rule_family_hints": ["range", "level"],
+      "task_classes": ["rejection", "no_setup", "ambiguous"],
+      "mapping_type": "partial",
+      "rationale": "Accumulation contexts often imply range boundaries; level interactions may be no_setup or rejection without clean breakout.",
+      "notes": "Lower prior for strong acceptance labels unless Step 6 range-break rules fire."
+    },
+    {
+      "canonical_concept_ids": ["concept:level", "subconcept:level_rating"],
+      "related_rule_family_hints": ["level", "support_resistance"],
+      "task_classes": ["acceptance_above", "acceptance_below", "false_breakout_up", "false_breakout_down", "rejection", "no_setup"],
+      "mapping_type": "direct",
+      "rationale": "Core level-interaction ontology for this task_id.",
+      "notes": "Primary in-scope concept family for v1."
+    }
+  ],
+  "excluded_rule_families": [
+    {
+      "family_hint": "abstract_teaching_example",
+      "reason": "Pedagogical slides without tradeable level anchor — out of scope for bar-based task."
+    },
+    {
+      "family_hint": "psychology_risk_only",
+      "reason": "No level interaction definition — deferred to future tasks."
+    },
+    {
+      "family_hint": "macro_calendar",
+      "reason": "Not a level-interaction pattern — excluded from task_id level_interaction_rule_satisfaction_v1."
+    }
+  ]
+}

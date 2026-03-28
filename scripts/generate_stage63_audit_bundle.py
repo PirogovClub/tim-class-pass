@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Assemble ``audit/stage6_3_audit_bundle_<date>/`` and zip for Stage 6.3 handoff."""
+"""Assemble ``audit/stage6_3_audit_bundle_<UTC-timestamp>/`` and zip for Stage 6.3 handoff.
+
+Each run uses a new timestamped folder and zip; previous bundles are left in place.
+"""
 
 from __future__ import annotations
 
@@ -9,7 +12,7 @@ import shutil
 import subprocess
 import sys
 import zipfile
-from datetime import date
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -46,6 +49,25 @@ def _copy_tests_rag(repo: Path, dest: Path) -> None:
         p = d / name
         if p.exists():
             shutil.copy2(p, dest / "tests" / "rag" / name)
+    root_test = repo / "tests" / "test_rag.py"
+    if root_test.exists():
+        out_root = dest / "tests" / "test_rag.py"
+        out_root.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(root_test, out_root)
+
+
+def _copy_audit_support_files(repo: Path, dest: Path) -> None:
+    """Dependency manifest + project metadata for auditors."""
+    req = repo / "audit" / "requirements-rag-audit.txt"
+    if req.exists():
+        d = dest / "requirements-rag-audit.txt"
+        d.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(req, d)
+    pyproject = repo / "pyproject.toml"
+    if pyproject.exists():
+        out = dest / "pyproject.toml"
+        out.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(pyproject, out)
 
 
 def _copy_ui_snippets(repo: Path, dest: Path) -> None:
@@ -81,7 +103,7 @@ def _run_pytest(repo: Path, out_txt: Path) -> int:
 
 def _zip_dir(src_dir: Path, zip_path: Path) -> None:
     if zip_path.exists():
-        zip_path.unlink()
+        raise FileExistsError(f"Refusing to overwrite existing zip: {zip_path}")
     zip_path.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         for p in sorted(src_dir.rglob("*")):
@@ -95,12 +117,10 @@ def main() -> int:
     root_str = str(repo)
     if root_str not in sys.path:
         sys.path.insert(0, root_str)
-    today = date.today().isoformat()
-    bundle = repo / "audit" / f"stage6_3_audit_bundle_{today}"
+    bundle_ts = datetime.now(timezone.utc).strftime("%Y-%m-%d_%H%M%S_%f")
+    bundle = repo / "audit" / f"stage6_3_audit_bundle_{bundle_ts}"
     examples = bundle / "examples"
     source = bundle / "source"
-    if bundle.exists():
-        shutil.rmtree(bundle)
     bundle.mkdir(parents=True)
     examples.mkdir(parents=True)
 
@@ -108,6 +128,7 @@ def main() -> int:
 
     _copy_rag_package(repo, source)
     _copy_tests_rag(repo, source)
+    _copy_audit_support_files(repo, source)
     _copy_ui_snippets(repo, source)
     for script in ("generate_stage63_audit_bundle.py", "rag_eval_runner.py"):
         sp = repo / "scripts" / script
@@ -140,7 +161,8 @@ def main() -> int:
             cfg = RAGConfig(corpus_root=corpus, rag_root=rag_root)
             if not use_existing:
                 run_build(cfg)
-                run_eval(cfg, None)
+            # Always regenerate eval artifacts so examples/ match current CURATED_QUERIES in source snapshot.
+            run_eval(cfg, None)
             init_app(cfg)
             client = TestClient(app)
 
@@ -230,6 +252,26 @@ def main() -> int:
                 shutil.copy2(eq, examples / "rag_eval_queries.json")
             if er.exists():
                 shutil.copy2(er, examples / "rag_eval_report.json")
+            ev_res = cfg.eval_dir / "eval_results.json"
+            if ev_res.exists():
+                shutil.copy2(ev_res, examples / "rag_eval_results.json")
+
+            eval_sync: dict[str, Any] = {}
+            if er.exists():
+                rep = json.loads(er.read_text(encoding="utf-8"))
+                eq_path = examples / "rag_eval_queries.json"
+                queries_in_examples: list[Any] = []
+                if eq_path.exists():
+                    raw_q = json.loads(eq_path.read_text(encoding="utf-8"))
+                    queries_in_examples = raw_q if isinstance(raw_q, list) else []
+                eval_sync = {
+                    "eval_report_query_count": rep.get("query_count"),
+                    "examples_queries_len": len(queries_in_examples),
+                    "eval_generated_at": rep.get("generated_at"),
+                    "sync_note": "Eval regenerated during bundle build; report query_count must equal len(rag_eval_queries.json).",
+                }
+                if rep.get("query_count") != len(queries_in_examples):
+                    eval_sync["sync_warning"] = "MISMATCH: report query_count != examples query list length"
 
             sample_sqlite = cfg.rag_root / "rag_metadata.sqlite"
             dest_sql = examples / "sample_rag_metadata.sqlite"
@@ -255,7 +297,11 @@ def main() -> int:
                     embedding_model_version=cfg.embedding_model,
                 )
 
-            examples_note = {"generated": True, "rag_root": str(cfg.rag_root)}
+            examples_note = {
+                "generated": True,
+                "rag_root": str(cfg.rag_root),
+                "eval_artifact_sync": eval_sync,
+            }
         except Exception as exc:  # noqa: BLE001
             examples_note = {"generated": False, "error": str(exc)}
     else:
@@ -279,16 +325,61 @@ def main() -> int:
 
     _write(
         bundle / "README.md",
-        f"""# Stage 6.3 audit bundle ({today})
+        f"""# Stage 6.3 audit bundle ({bundle_ts} UTC)
 
 Hybrid RAG database and retrieval API (Stage 6.2 corpus → retrieval units → BM25 + vectors + rerank).
 
-- **Source snapshot**: `source/` (pipeline RAG package, tests, UI snippets, scripts).
-- **Examples**: `examples/` (API JSON samples when generation succeeded).
-- **Tests**: see `test_output.txt`.
+Bundle id suffix is `YYYY-MM-DD_HHMMSS_microseconds` (UTC). Each script run creates a **new** folder and zip; existing bundles are not deleted or overwritten.
 
-Zip: `../stage6_3_audit_bundle_{today}.zip`  
-Duplicate: `../archives/stage6_3_audit_bundle_{today}.zip`
+- **Source snapshot**: `source/` (RAG module, tests including `tests/test_rag.py`, `requirements-rag-audit.txt`, `pyproject.toml`).
+- **Examples**: `examples/` (API JSON + eval artifacts regenerated on each bundle build).
+- **Tests**: see `test_output.txt`.
+- **Reproducibility**: read `REPRODUCIBILITY.md` (tests require full repo + deps, not `source/` alone).
+
+Zip: `../stage6_3_audit_bundle_{bundle_ts}.zip`  
+Duplicate: `../archives/stage6_3_audit_bundle_{bundle_ts}.zip`
+""",
+    )
+
+    _write(
+        bundle / "REPRODUCIBILITY.md",
+        """# Audit bundle reproducibility
+
+## What the zip is for
+
+- `source/pipeline/rag/` is a **code snapshot** for review (diff against your checkout).
+- `examples/` is **evidence** produced by the bundle script from the **same** repo revision (eval is re-run so query counts match `eval.py`).
+- The snapshot is **not** a standalone Python package: `pipeline.rag.api` imports `pipeline.adjudication` and `pipeline.explorer`, which are **not** vendored in this zip.
+
+## How to rerun tests (required path)
+
+Use a **full clone** of `tim-class-pass` at the commit under review.
+
+```bash
+cd /path/to/tim-class-pass
+python -m venv .venv
+.venv\\Scripts\\activate   # Windows
+pip install -r audit/requirements-rag-audit.txt
+# Optional full project:
+pip install -e .
+python -m pytest tests/rag tests/test_rag.py -q
+```
+
+Bundled copies for reference: `source/requirements-rag-audit.txt`, `source/pyproject.toml`, `source/tests/test_rag.py`.
+
+Do **not** run pytest with cwd = `source/` only; imports will fail.
+
+## Eval artifacts vs source
+
+After any change to `pipeline/rag/eval.py` (`CURATED_QUERIES`), regenerate the bundle so `examples/rag_eval_queries.json`, `examples/rag_eval_report.json`, and `examples/rag_eval_results.json` match. The bundle script always runs `run_eval` before copying. Check `examples/examples_manifest.json` → `eval_artifact_sync` for query-count parity.
+
+## Regenerate this bundle
+
+```bash
+python scripts/generate_stage63_audit_bundle.py
+```
+
+Each run creates a **new** UTC-timestamped folder under `audit/` and a matching zip (and archive copy). Older bundles are not removed or overwritten.
 """,
     )
 
@@ -296,51 +387,69 @@ Duplicate: `../archives/stage6_3_audit_bundle_{today}.zip`
         bundle / "RUN_AUDIT_TESTS.md",
         """# Rerun audit checks
 
-Assumptions: Python 3.12+, repo root, optional `uv` or venv with project deps.
+All commands assume the **repository root** of a full `tim-class-pass` checkout (see `REPRODUCIBILITY.md`).
+
+## Install dependencies
+
+```bash
+pip install -r audit/requirements-rag-audit.txt
+# or full project:
+pip install -e .
+```
 
 ## Backend unit tests
+
 ```bash
 python -m pytest tests/rag tests/test_rag.py -q
 ```
 
+The bundle includes `source/tests/test_rag.py` as a mirror of `tests/test_rag.py` for review; pytest must still be run from **repo root** so `pipeline.*` resolves.
+
 ## Build RAG from corpus (6.2 outputs)
+
 ```bash
 python -m pipeline.rag.cli build --corpus-root output_corpus --rag-root output_rag
 ```
 
-## Evaluation harness
+## Evaluation harness (refreshes eval dir)
+
 ```bash
 python scripts/rag_eval_runner.py --rag-root output_rag --corpus-root output_corpus
 ```
-Outputs: `output_rag/eval/eval_report.json`, `rag_eval_report.json`, `rag_eval_queries.json` (34+ curated queries including Stage 6.3 §15.1 representative phrasing).
+
+Outputs under `output_rag/eval/`: `eval_queries.json`, `eval_results.json`, `eval_report.json`, `rag_eval_queries.json`, `rag_eval_report.json` (and `examples/rag_eval_results.json` mirrors `eval_results.json` in the bundle). Query count must match `len(CURATED_QUERIES)` in `pipeline/rag/eval.py`.
 
 ## Explain search (debug trace)
+
 ```bash
 curl -s -X POST http://127.0.0.1:8000/rag/search/explain -H "Content-Type: application/json" -d '{"query":"levels","top_k":5}'
 ```
 
 ## API server
+
 ```bash
 python -m pipeline.rag.cli serve --rag-root output_rag --corpus-root output_corpus
 ```
 
 ## Explorer UI (optional)
+
 ```bash
 cd ui/explorer && npm test && npm run dev
 ```
-Open `/rag` for hybrid search page; Vite proxies `/rag` to the API.
 
-## Regenerate this bundle
+## Regenerate this audit zip
+
 ```bash
 python scripts/generate_stage63_audit_bundle.py
 ```
-Use `STAGE63_USE_EXISTING_RAG=1` to skip rebuild when `output_rag` is already populated.
+
+`STAGE63_USE_EXISTING_RAG=1` (default when `output_rag` exists) skips corpus rebuild but still **re-runs eval** so examples stay aligned with `eval.py`.
 """,
     )
 
     _write(
         bundle / "AUDIT_HANDOFF.md",
-        f"""# Stage 6.3 — Audit handoff ({today})
+        f"""# Stage 6.3 — Audit handoff ({bundle_ts} UTC)
 
 ## 1. What was implemented
 
@@ -349,7 +458,7 @@ Use `STAGE63_USE_EXISTING_RAG=1` to skip rebuild when `output_rag` is already po
 - Hybrid retrieval: BM25 + embeddings + concept expansion + deterministic reranking.
 - FastAPI routes under `/rag` including `POST /rag/search`, `POST /rag/search/explain`, `GET /rag/item/...`, `GET /rag/related/...`, `GET /rag/explore/lesson/...`, eval and facets.
 - Minimal explorer page at `/rag` in `ui/explorer` calling the retrieval API.
-- Evaluation harness with `rag_eval_queries.json` / `rag_eval_report.json` mirrors.
+- Evaluation harness with `rag_eval_queries.json` / `rag_eval_report.json` / `rag_eval_results.json` mirrors.
 - Contract: `pipeline/rag/rag_contract_v1.md`.
 
 ## 2. Definition of done checklist
@@ -402,24 +511,29 @@ See `test_output.txt` in this folder.
 
 ## 11. Example outputs
 
-See `examples/` (`rag_search_response.json`, `rag_search_explain_response.json`, `sample_embedding_manifest.json`, `sample_rag_metadata.sqlite`, etc.) when generation succeeded; else `examples/examples_manifest.json` explains gaps.
+See `examples/` (`rag_search_response.json`, `rag_search_explain_response.json`, `sample_embedding_manifest.json`, `sample_rag_metadata.sqlite`, `rag_eval_results.json`, etc.). Eval files are **regenerated during bundle build** so `rag_eval_queries.json` row count matches `eval.py` `CURATED_QUERIES`. Verify `examples/examples_manifest.json` → `eval_artifact_sync` (no `sync_warning`).
 
-## 12. Known limitations
+## 12. Reproducibility
+
+- `REPRODUCIBILITY.md` and `source/requirements-rag-audit.txt`: minimal deps (`rank-bm25`, `sentence-transformers`, etc.).
+- Rerun pytest only from a **full repo checkout**, not from `source/` alone (`pipeline.rag.api` depends on adjudication + explorer).
+
+## 13. Known limitations
 
 - No Postgres/pgvector in default path; vectors are local numpy archives.
 - Full corpus embedding build requires `sentence-transformers` model download on first run.
 
-## 13. Deferred work
+## 14. Deferred work
 
 - Incremental upsert; pgvector adapter; LLM reranking; richer analyst workflows.
 
-## 14. Zip location
+## 15. Zip location
 
-`audit/stage6_3_audit_bundle_{today}.zip` and `audit/archives/stage6_3_audit_bundle_{today}.zip`.
+`audit/stage6_3_audit_bundle_{bundle_ts}.zip` and `audit/archives/stage6_3_audit_bundle_{bundle_ts}.zip`.
 """,
     )
 
-    zip_path = repo / "audit" / f"stage6_3_audit_bundle_{today}.zip"
+    zip_path = repo / "audit" / f"stage6_3_audit_bundle_{bundle_ts}.zip"
     _zip_dir(bundle, zip_path)
 
     archives = repo / "audit" / "archives"

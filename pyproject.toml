@@ -21,6 +21,7 @@ dependencies = [
     "rank-bm25>=0.2.2",
     "sentence-transformers>=3.0.0",
     "numpy>=1.26.0",
+    "scikit-learn>=1.4.0",
     "jinja2>=3.1.6",
     "python-multipart>=0.0.22",
 ]
@@ -34,7 +35,7 @@ lesson-contract = "pipeline.contracts.cli:main"
 corpus-cli = "pipeline.corpus.cli:cli"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/tim_class_pass", "helpers"]
+packages = ["src/tim_class_pass", "src/helpers", "src/pipeline", "src/ml", "src/ui"]
 
 [build-system]
 requires = ["hatchling"]
@@ -46,11 +47,19 @@ markers = [
     "integration: slow tests that read or regenerate Lesson 2 pipeline artifacts",
     "e2e: browser end-to-end UI tests",
 ]
+# src/ layout: packages are importable via src/ on the path (no editable install required)
+pythonpath = ["src"]
+testpaths = ["tests"]
 # Frozen audit snapshots live under audit/; never collect tests from there
-norecursedirs = ["audit"]
+norecursedirs = ["audit", ".venv", "var", "dist"]
+# importlib mode ensures pythonpath is applied before import even for __init__.py-based sub-packages
+addopts = "--import-mode=importlib"
 
 [dependency-groups]
 dev = [
+    "jsonschema>=4.23.0",
+    "xgboost>=2.0.0",
+    "lightgbm>=4.0.0",
     "playwright>=1.58.0",
     "pytest>=9.0.2",
     "pytest-cov>=6.0.0",
@@ -58,7 +67,7 @@ dev = [
 ]
 
 [tool.coverage.run]
-source = ["pipeline", "helpers", "ui"]
+source = ["src"]
 omit = ["*/tests/*", "*__pycache__*"]
 branch = true
 

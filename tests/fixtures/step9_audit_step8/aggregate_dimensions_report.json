@@ -1,0 +1,22 @@
+{
+  "aggregate_dimensions_report_id": "aggregate_dimensions_v1",
+  "model": "logistic_regression",
+  "by_timeframe": {
+    "5m": {
+      "n_predictions": 2,
+      "accuracy": 0.0
+    }
+  },
+  "by_confidence_tier": {
+    "gold": {
+      "n_predictions": 2,
+      "accuracy": 0.0
+    }
+  },
+  "by_session_bucket": {
+    "utc_08_16": {
+      "n_predictions": 2,
+      "accuracy": 0.0
+    }
+  }
+}

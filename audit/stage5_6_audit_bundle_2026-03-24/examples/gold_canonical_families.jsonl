@@ -1,1 +1,0 @@
-{"artifact_kind":"canonical_rule_family","canonical_title":"Audit family","exporter_version":"stage5_6_exporter.v1","family_id":"fam-audit","family_status":"active","member_rule_ids":["rule:http:1"],"schema_version":"export.v1","tier":"gold","tier_policy_version":"tier_policy.v1"}

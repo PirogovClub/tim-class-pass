@@ -1,0 +1,38 @@
+{
+  "step8_manifest_id": "step8_manifest_v1",
+  "created_at_utc": "2026-03-27T13:47:39Z",
+  "task_id": "level_interaction_rule_satisfaction_v1",
+  "output_dir": "H:\\GITS\\tim-class-pass\\ml_output\\step8_audit_sample",
+  "artifacts": {
+    "root": "H:\\GITS\\tim-class-pass\\ml_output\\step8_audit_sample",
+    "walkforward_folds": "H:\\GITS\\tim-class-pass\\ml_output\\step8_audit_sample\\walkforward_folds.json",
+    "backtest_predictions": "H:\\GITS\\tim-class-pass\\ml_output\\step8_audit_sample\\backtest_predictions.jsonl",
+    "fold_metrics": "H:\\GITS\\tim-class-pass\\ml_output\\step8_audit_sample\\fold_metrics.json",
+    "walkforward_report": "H:\\GITS\\tim-class-pass\\ml_output\\step8_audit_sample\\walkforward_report.json",
+    "model_comparison_report": "H:\\GITS\\tim-class-pass\\ml_output\\step8_audit_sample\\model_comparison_report.json",
+    "calibration_drift_report": "H:\\GITS\\tim-class-pass\\ml_output\\step8_audit_sample\\calibration_drift_report.json",
+    "policy_report": "H:\\GITS\\tim-class-pass\\ml_output\\step8_audit_sample\\policy_report.json",
+    "step8_manifest": "H:\\GITS\\tim-class-pass\\ml_output\\step8_audit_sample\\step8_manifest.json",
+    "threshold_sweep_report": "H:\\GITS\\tim-class-pass\\ml_output\\step8_audit_sample\\threshold_sweep_report.json",
+    "per_class_fold_metrics": "H:\\GITS\\tim-class-pass\\ml_output\\step8_audit_sample\\per_class_fold_metrics.json",
+    "confusion_matrices": "H:\\GITS\\tim-class-pass\\ml_output\\step8_audit_sample\\confusion_matrices.json",
+    "aggregate_dimensions_report": "H:\\GITS\\tim-class-pass\\ml_output\\step8_audit_sample\\aggregate_dimensions_report.json"
+  },
+  "counts": {
+    "folds": 1,
+    "prediction_lines": 4
+  },
+  "inclusion_policy_ref": "walkforward_config.yaml inclusion block",
+  "pit_declaration": "Folds are strictly time-ordered by anchor_timestamp. Preprocessing (scaler, one-hot) is fit only on train rows per fold; calibration fits only on validation rows. Test rows are never used for fitting. Symbolic baseline has no train phase. Policy thresholds are fixed in config and not tuned on test.",
+  "step7_dataset_alignment": {
+    "dataset_path": "H:\\GITS\\tim-class-pass\\ml_output\\step8_audit_prereq\\modeling_dataset.jsonl",
+    "dataset_jsonl_row_count": 15,
+    "dataset_manifest_path": null,
+    "split_manifest_path": null,
+    "dataset_manifest_present": false,
+    "split_manifest_present": false,
+    "critical_issues": [],
+    "warnings": [],
+    "checks_passed": true
+  }
+}

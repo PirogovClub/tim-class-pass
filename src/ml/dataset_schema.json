@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tim-class-pass.local/schemas/modeling_dataset_row.json",
+  "title": "ModelingDatasetRow",
+  "type": "object",
+  "required": [
+    "dataset_row_id",
+    "candidate_id",
+    "task_id",
+    "label",
+    "confidence_tier",
+    "label_status",
+    "split",
+    "timeframe",
+    "anchor_timestamp",
+    "reference_level",
+    "point_in_time_safe",
+    "eligible_for_training",
+    "features",
+    "metadata"
+  ],
+  "properties": {
+    "dataset_row_id": { "type": "string" },
+    "candidate_id": { "type": "string" },
+    "task_id": { "type": "string" },
+    "label": {},
+    "confidence_tier": { "type": "string" },
+    "label_status": { "type": "string" },
+    "split": { "type": "string", "enum": ["train", "validation", "test", "none"] },
+    "timeframe": { "type": "string" },
+    "anchor_timestamp": { "type": "string" },
+    "reference_level": { "type": "number" },
+    "point_in_time_safe": { "type": "boolean" },
+    "eligible_for_training": { "type": "boolean" },
+    "source_refs": { "type": "object" },
+    "features": { "type": "object" },
+    "metadata": { "type": "object" }
+  },
+  "additionalProperties": true
+}

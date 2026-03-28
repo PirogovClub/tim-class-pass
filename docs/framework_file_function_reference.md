@@ -4,10 +4,10 @@ This document lists Python files in the repository with their functions and a sh
 
 Total Python files documented: 168
 
-## helpers/__init__.py
+## src/helpers/__init__.py
 - No functions defined in this file.
 
-## helpers/analyze.py
+## src/helpers/analyze.py
 - _parse_json_from_response() - Parse json from response.
 - _fallback_relevance_decision() - Fallback relevance decision.
 - _stringify_visible_facts() - Stringify visible facts.
@@ -34,10 +34,10 @@ Total Python files documented: 168
 - judge_relevance() - Judge relevance.
 - analyze_frame() - Analyze frame.
 
-## helpers/benchmarking/__init__.py
+## src/helpers/benchmarking/__init__.py
 - No functions defined in this file.
 
-## helpers/benchmarking/benchmark_models.py
+## src/helpers/benchmarking/benchmark_models.py
 - _serialize_results() - Prepare JSON-safe report rows.
 - _write_report() - Write the current benchmark state so finished models are persisted immediately.
 - estimate_gemini_cost() - Estimate Gemini API cost from token counts and current per-model pricing.
@@ -52,10 +52,10 @@ Total Python files documented: 168
 - benchmark_model() - Run one frame through a model and score it. Uses streaming client for live progress.
 - main() - Main.
 
-## helpers/clients/__init__.py
+## src/helpers/clients/__init__.py
 - No functions defined in this file.
 
-## helpers/clients/gemini_client.py
+## src/helpers/clients/gemini_client.py
 - require_gemini_key() - Require gemini key.
 - get_client() - Get client.
 - get_model_for_step() - Get model for step.
@@ -65,7 +65,7 @@ Total Python files documented: 168
 - generate_content_stream_result() - Stream generation; returns structured provider response.
 - generate_with_retry_stream() - Generate with retry stream.
 
-## helpers/clients/gemini_batch_client.py
+## src/helpers/clients/gemini_batch_client.py
 - _system_instruction_content() - Wrap a system instruction string in Gemini batch request shape.
 - build_generate_content_batch_line() - Build one JSONL row for Gemini Batch `generateContent`.
 - write_jsonl_lines() - Write JSONL payload atomically.
@@ -76,7 +76,7 @@ Total Python files documented: 168
 - extract_result_text() - Extract joined text parts from one batch response row.
 - iter_result_jsonl() - Iterate decoded JSONL result rows, skipping blanks.
 
-## helpers/clients/mlx_client.py
+## src/helpers/clients/mlx_client.py
 - normalize_mlx_host() - Return MLX service base URL from env or argument (for display / scripts).
 - _base_url() - Base url.
 - health_check() - GET /health on the MLX service. Returns response JSON on success.
@@ -87,7 +87,7 @@ Total Python files documented: 168
 - chat_image() - Chat image.
 - _chat_image_impl() - Chat image impl.
 
-## helpers/clients/openai_client.py
+## src/helpers/clients/openai_client.py
 - require_openai_key() - Require openai key.
 - get_client() - Return OpenAI client; uses OPENAI_API_KEY from env.
 - get_model_for_step() - Resolve model name. step: images, gaps, vlm. Precedence: config > MODEL_* env > default.
@@ -97,11 +97,11 @@ Total Python files documented: 168
 - chat_completion_with_image_result() - Chat completion with image result.
 - chat_completion_with_image() - Send one user message with text + image (base64); returns assistant content.
 
-## helpers/clients/provider_types.py
+## src/helpers/clients/provider_types.py
 - AIProvider.generate_text() - Generate text.
 - AIProvider.generate_text_with_image() - Generate text with image.
 
-## helpers/clients/providers.py
+## src/helpers/clients/providers.py
 - _response_format_for_request() - Response format for request.
 - GeminiProvider.generate_text() - Generate text.
 - GeminiProvider.generate_text_with_image() - Generate text with image.
@@ -117,7 +117,7 @@ Total Python files documented: 168
 - resolve_provider_for_stage() - Resolve provider for stage.
 - resolve_model_for_stage() - Resolve model for stage.
 
-## helpers/clients/setra_client.py
+## src/helpers/clients/setra_client.py
 - require_setra_config() - Require setra config.
 - get_client() - Get client.
 - get_model_for_step() - Get model for step.
@@ -127,16 +127,16 @@ Total Python files documented: 168
 - chat_completion_with_image_result() - Chat completion with image result.
 - chat_completion_with_image() - Chat completion with image.
 
-## helpers/clients/stream_events.py
+## src/helpers/clients/stream_events.py
 - emit() - Emit one stream event to the callback if provided.
 
-## helpers/clients/usage.py
+## src/helpers/clients/usage.py
 - _get_value() - Get value.
 - _as_int() - As int.
 - normalize_usage_record() - Normalize usage record.
 - summarize_usage_records() - Summarize usage records.
 
-## helpers/config.py
+## src/helpers/config.py
 - _default_pipeline_workers() - Default pipeline workers.
 - _default_step2_chunk_workers() - Default step2 chunk workers.
 - _parse_int() - Parse int.
@@ -145,43 +145,43 @@ Total Python files documented: 168
 - load_pipeline_config_for_video() - Load pipeline.yml from project folder data/<video_id>/pipeline.yml. Returns raw dict or None.
 - get_config_for_video() - Return effective config from the project folder (data/<video_id>/).
 
-## helpers/usage_report.py
+## src/helpers/usage_report.py
 - is_usage_record() - Is usage record.
 - collect_usage_records() - Collect usage records.
 - _load_json() - Load json.
 - build_video_usage_summary() - Build video usage summary.
 - write_video_usage_summary() - Write video usage summary.
 
-## helpers/utils/__init__.py
+## src/helpers/utils/__init__.py
 - No functions defined in this file.
 
-## helpers/utils/compare.py
+## src/helpers/utils/compare.py
 - ComparisonResult.to_dict() - To dict.
 - _load_grayscale() - Load grayscale.
 - save_structural_artifact() - Save structural artifact.
 - compare_images() - Compare two screenshots using SSIM.
 
-## helpers/utils/frame_schema.py
+## src/helpers/utils/frame_schema.py
 - key_to_timestamp() - Convert frame key (zero-padded seconds) to HH:MM:SS.
 - minimal_no_change_frame() - Produce a minimal frame record when SSIM says no meaningful change.
 - minimal_relevance_skip_frame() - Produce a frame record when extraction ran but relevance gate said skip.
 - ensure_material_change() - No-op: do not overwrite material_change from lesson_relevant.
 
-## pipeline/__init__.py
+## src/pipeline/__init__.py
 - No functions defined in this file.
 
-## pipeline/build_llm_prompts.py
+## src/pipeline/build_llm_prompts.py
 - _build_prompt() - Build prompt.
 - build_llm_prompts() - Build llm prompts.
 - main() - Main.
 
-## pipeline/component2/__init__.py
+## src/pipeline/component2/__init__.py
 - No functions defined in this file.
 
-## pipeline/component2/canonical_lexicon.py
+## src/pipeline/component2/canonical_lexicon.py
 - lookup_canonical() - Return canonical slug if text (lowercased, trimmed) matches the CONCEPT_ALIASES registry, else None. Maps known Russian/English trading terms to stable slugs.
 
-## pipeline/component2/canonicalization.py
+## src/pipeline/component2/canonicalization.py
 - _transliterate() - Transliterate Cyrillic characters to Latin equivalents using a character map.
 - normalize_label() - Lowercase, trim, collapse whitespace, strip punctuation noise; NFKC normalize.
 - _slugify() - Convert normalized label to a slug: transliterate, lowercase, underscores only.
@@ -191,7 +191,7 @@ Total Python files documented: 168
 - canonicalize_short_statement() - For conditions/invalidations/exceptions: return a canonical_id slug.
 - classify_rule_type() - Map an event_type to its rule_type classification (e.g. rule_statement -> rule).
 
-## pipeline/component2/concept_graph.py
+## src/pipeline/component2/concept_graph.py
 - normalize_text() - Collapse whitespace and strip; return empty string for None or blank.
 - normalize_concept_id() - Turn a concept/subconcept name into a stable slug (lowercase, alphanumeric + underscore).
 - get_rule_concept() - Return normalized concept text, or None if blank.
@@ -221,7 +221,7 @@ Total Python files documented: 168
 - save_concept_graph() - Write ConceptGraph to JSON atomically.
 - save_concept_graph_debug() - Write concept graph relation debug rows to JSON atomically.
 
-## pipeline/component2/evidence_linker.py
+## src/pipeline/component2/evidence_linker.py
 - load_chunks_json() - Load *.chunks.json as a list of chunk dicts.
 - load_knowledge_events() - Load KnowledgeEventCollection from JSON and return .events.
 - _change_summary_to_str() - Normalize change_summary from list or str to single str.
@@ -250,7 +250,7 @@ Total Python files documented: 168
 - save_evidence_index() - Write EvidenceIndex as JSON.
 - save_evidence_debug() - Write debug rows as JSON array.
 
-## pipeline/component2/exporters.py
+## src/pipeline/component2/exporters.py
 - load_rule_cards() - Load and validate RuleCardCollection from JSON.
 - load_evidence_index() - Load and validate EvidenceIndex from JSON.
 - load_knowledge_events() - Load KnowledgeEventCollection from JSON. Return None if file is missing.
@@ -279,7 +279,7 @@ Total Python files documented: 168
 - export_review_markdown() - Load artifacts, build context, render review markdown, save. Returns (markdown, usage).
 - export_rag_markdown() - Load artifacts, build context, render RAG markdown, save. Returns (markdown, usage).
 
-## pipeline/component2/knowledge_builder.py
+## src/pipeline/component2/knowledge_builder.py
 - _lesson_slug() - Lesson slug.
 - AdaptedChunk.candidate_visual_frame_keys() - Candidate visual frame keys.
 - AdaptedChunk.candidate_visual_types() - Candidate visual types.
@@ -320,7 +320,7 @@ Total Python files documented: 168
 - save_knowledge_events() - Write KnowledgeEventCollection as JSON. Uses full model_dump so Phase 2A and diagnostic fields are preserved.
 - save_knowledge_debug() - Write debug records as JSON array.
 
-## pipeline/component2/llm_processor.py
+## src/pipeline/component2/llm_processor.py
 - _stage_for_llm_mode() - Stage for llm mode.
 - _resolve_model_for_llm_mode() - Resolve model for llm mode.
 - _resolve_provider_for_llm_mode() - Resolve provider for llm mode.
@@ -351,7 +351,7 @@ Total Python files documented: 168
 - _resolve_model() - Resolve model.
 - _resolve_provider() - Resolve provider.
 
-## pipeline/component2/main.py
+## src/pipeline/component2/main.py
 - _default_output_root() - Use VTT file's parent directory as output root when not specified.
 - _derive_lesson_name() - Derive lesson name from VTT filename stem.
 - _format_elapsed() - Format elapsed seconds as MM:SS.
@@ -361,7 +361,7 @@ Total Python files documented: 168
 - run_component2_pipeline() - Run Component 2 pipeline: filter, chunk, optional knowledge/evidence/rule-cards/concept-graph/exporters, legacy markdown. Returns dict of written paths.
 - main() - Click entry point for the standalone Component 2 + Step 3 markdown pipeline.
 
-## pipeline/component2/ml_prep.py
+## src/pipeline/component2/ml_prep.py
 - normalize_text() - Collapse whitespace and strip; return empty string for None or blank.
 - dedupe_preserve_order() - Return unique non-blank strings in original order.
 - normalize_feature_name() - Normalize to lowercase snake_case identifier for feature names.
@@ -391,13 +391,13 @@ Total Python files documented: 168
 - compute_ml_readiness_coverage() - Report how many rules/evidence have ML-ready fields (for QA).
 - save_ml_manifest() - Write ML manifest JSON atomically.
 
-## pipeline/component2/models.py
+## src/pipeline/component2/models.py
 - No functions defined in this file.
 
-## pipeline/component2/orchestrator.py
+## src/pipeline/component2/orchestrator.py
 - prepare_component2_run() - Run preflight inspection, write pipeline_inspection.json, return artifact paths.
 
-## pipeline/batch_cli.py
+## src/pipeline/batch_cli.py
 - _store() - Build `StateStore` from CLI db path.
 - _discover_all() - Discover all videos and lessons under a data root.
 - _lesson_context() - Build lesson context dict for batch spool/materialize helpers.
@@ -416,37 +416,37 @@ Total Python files documented: 168
 - main() - Click group entry point for Gemini Batch orchestration.
 - discover() / plan() / spool() / assemble() / submit() / poll() / download() / materialize() / resume() / status() / retry_failed_command() - Click subcommands; `status` supports optional `--watch` seconds for repeated tables.
 
-## pipeline/orchestrator/__init__.py
+## src/pipeline/orchestrator/__init__.py
 - Re-exports stage/batch status constants, `make_request_key`, `parse_request_key`, `slugify_lesson_name`, `stable_sha256`, `utc_now_iso`, and `StateStore` from `models` / `state_store`.
 
-## pipeline/orchestrator/models.py
+## src/pipeline/orchestrator/models.py
 - Stage and batch status string constants (`STAGE_VISION`, `STAGE_KNOWLEDGE_EXTRACT`, `STAGE_MARKDOWN_RENDER`, `STAGE_RUN_STATUS_*`, `BATCH_JOB_STATUS_*`, `REQUEST_PARSE_STATUS_*`, terminal-status frozensets).
 - utc_now_iso() - Current UTC time as ISO string.
 - slugify_lesson_name() - Lowercase slug for lesson names (safe fallback).
 - make_request_key() / parse_request_key() - Stable five-part batch request keys (`video__lesson__stage__kind__index`).
 - stable_sha256() - Deterministic SHA-256 of str, bytes, or JSON-serializable payload.
 
-## pipeline/orchestrator/discovery.py
+## src/pipeline/orchestrator/discovery.py
 - discover_videos() - Scan data root for video dirs; upsert rows via `state_store.ensure_video`.
 - discover_lessons() - Scan a video root for `*.vtt`; upsert lessons with `ensure_lesson`.
 - plan_stages() - For each lesson, compare artifacts to config; create pending `gemini_batch` stage runs when outputs are missing (optional markdown_render when render flags enabled).
 
-## pipeline/orchestrator/status_service.py
+## src/pipeline/orchestrator/status_service.py
 - format_status_tables() - Human-readable status summary from `state_store.summarize_status()` (videos, lessons, stage runs, batch jobs, requests).
 
-## pipeline/orchestrator/batch_assembler.py
+## src/pipeline/orchestrator/batch_assembler.py
 - assemble_batch_files() - Group READY stage-run spool manifests by provider/model/stage; merge JSONL fragments into `var/batches/<timestamp>/` with size/request limits; register batch jobs in the state store.
 
-## pipeline/orchestrator/run_manager.py
+## src/pipeline/orchestrator/run_manager.py
 - submit_ready_batches() - Upload local JSONL files and create remote Gemini batch jobs.
 - poll_active_batches() - Refresh local job status from remote Gemini state.
 - download_completed_batches() - Download result JSONL for completed jobs.
 - retry_failed_requests() - Re-spool failed requests into a new attempt.
 
-## pipeline/orchestrator/state_store.py
+## src/pipeline/orchestrator/state_store.py
 - StateStore (class) - SQLite-backed orchestration store. Public API: `connect`, `ensure_video`, `ensure_lesson`, `create_or_reuse_stage_run`, `update_stage_run`, `record_spool_request`, `create_batch_job`, `attach_requests_to_batch`, `update_batch_job_status`, `mark_request_parsed`, `mark_request_failed`, `record_artifact`, `summarize_status`, `get_retryable_requests`, `get_unfinished_batches`, `list_videos`, `list_lessons`, `list_stage_runs`, `list_batch_jobs`, `list_batch_requests`, `get_stage_run`, `get_batch_job`.
 
-## pipeline/component2/parser.py
+## src/pipeline/component2/parser.py
 - timestamp_to_seconds() - Timestamp to seconds.
 - seconds_to_timestamp() - Seconds to timestamp.
 - seconds_to_mmss() - Seconds to mmss.
@@ -459,7 +459,7 @@ Total Python files documented: 168
 - parse_and_sync() - Parse and sync.
 - write_lesson_chunks() - Write lesson chunks.
 
-## pipeline/component2/provenance.py
+## src/pipeline/component2/provenance.py
 - dedupe_preserve_order() - Dedupe preserve order.
 - compact_nonempty_strs() - Compact nonempty strs.
 - compact_nonempty_ints() - Compact nonempty ints.
@@ -479,12 +479,12 @@ Total Python files documented: 168
 - compute_provenance_coverage() - Return counts for provenance coverage (QA/manifest).
 - format_compact_provenance() - Format a short provenance block for review markdown (Evidence refs / Source events).
 
-## pipeline/component2/quant_reducer.py
+## src/pipeline/component2/quant_reducer.py
 - _resolve_reducer_model() - Resolve reducer model.
 - _resolve_reducer_provider() - Resolve reducer provider.
 - synthesize_full_document() - Synthesize full document.
 
-## pipeline/component2/rule_compat.py
+## src/pipeline/component2/rule_compat.py
 - _collect_text_fields() - Concatenate textual fields from a rule dict for directional keyword scanning.
 - infer_rule_direction() - Return a directional tag for a rule using deterministic keyword matching (bullish_above, bearish_below, breakout_up/down, reversal_up/down, neutral, unknown).
 - _has_conflict() - True if any pair in a list of directions is in OPPOSITE_PAIRS.
@@ -492,7 +492,7 @@ Total Python files documented: 168
 - is_positive_example_compatible() - Return True only if evidence can safely be a positive example for this rule. Blocks when evidence is linked to multiple rules with conflicting directions.
 - is_evidence_safe_for_ml() - Return True only if evidence has no cross-rule directional conflicts. Single-rule evidence is always safe.
 
-## pipeline/component2/rule_reducer.py
+## src/pipeline/component2/rule_reducer.py
 - load_knowledge_events() - Load and validate KnowledgeEventCollection from JSON.
 - load_evidence_index() - Load and validate EvidenceIndex from JSON.
 - normalize_text_for_match() - Lowercase, normalize whitespace, strip trivial punctuation.
@@ -525,7 +525,7 @@ Total Python files documented: 168
 - save_rule_cards() - Write RuleCardCollection to JSON.
 - save_rule_debug() - Write debug rows to JSON.
 
-## pipeline/component2/support_policy.py
+## src/pipeline/component2/support_policy.py
 - DEFAULT_EVENT_POLICY - Dict mapping event_type to default teaching_mode and evidence_requirement.
 - classify_teaching_mode() - Classify how the concept is taught: theory, example, or mixed.
 - classify_evidence_requirement() - Determine whether visual evidence is required, optional, or unnecessary.
@@ -534,7 +534,7 @@ Total Python files documented: 168
 - classify_visual_support_level() - Classify the strength of visual support for a rule or event.
 - should_require_visual_evidence() - Return True only when the entity actually needs linked visual evidence.
 
-## pipeline/component2/visual_compaction.py
+## src/pipeline/component2/visual_compaction.py
 - _int_default() - Int default.
 - from_pipeline_config() - Build VisualCompactionConfig from pipeline config dict (e.g. get_config_for_video).
 - extract_frame_key() - Extract frame key.
@@ -565,13 +565,13 @@ Total Python files documented: 168
 - detect_visual_spam_lines() - Detect visual spam lines.
 - validate_markdown_visual_compaction() - Validate markdown visual compaction.
 
-## pipeline/component2/visual_policy_debug.py
+## src/pipeline/component2/visual_policy_debug.py
 - collect_candidate_summary_debug() - Build one debug record for a candidate (evidence or chunk).
 - collect_dropped_phrases_from_text() - Split text into phrases and return those that are low-value (for debug).
 - collect_blocked_metadata_keys() - Return keys that would be stripped by strip_raw_visual_blobs_from_metadata.
 - write_visual_compaction_debug() - Write output_intermediate/<lesson>.visual_compaction_debug.json.
 
-## pipeline/contracts.py
+## src/pipeline/contracts.py
 - PipelinePaths.filtered_visuals_path() - Path to filtered visual events JSON after invalidation filter.
 - PipelinePaths.filtered_visuals_debug_path() - Path to filtered visual events debug JSON.
 - PipelinePaths.output_intermediate_dir() - Directory for intermediate pipeline artifacts (chunks, knowledge, evidence, rules).
@@ -600,13 +600,13 @@ Total Python files documented: 168
 - PipelinePaths.inspection_report_path() - Path to pipeline inspection report JSON (preflight).
 - PipelinePaths.ensure_output_dirs() - Create output_intermediate, output_review, output_rag_ready if needed.
 
-## pipeline/corpus/__init__.py
+## src/pipeline/corpus/__init__.py
 - No functions defined in this file. Package init for corpus-level export layer (Step 2).
 
-## pipeline/corpus/__main__.py
+## src/pipeline/corpus/__main__.py
 - Invokes `pipeline.corpus.cli.main()` to allow running as `python -m pipeline.corpus`.
 
-## pipeline/corpus/adapters.py
+## src/pipeline/corpus/adapters.py
 - _load_json() - Load JSON from a file path.
 - find_artifact() - Find an artifact file by suffix pattern in the intermediate dir.
 - load_lesson_knowledge_events() - Load and validate KnowledgeEventCollection from JSON.
@@ -619,15 +619,15 @@ Total Python files documented: 168
 - globalize_concept_node() - Return a copy of a ConceptNode dict with global IDs (concept_id via node slug, source_rule_ids, parent_id).
 - globalize_concept_relation() - Return a copy of a ConceptRelation dict with global IDs using a node_id_map for endpoint resolution.
 
-## pipeline/corpus/cli.py
+## src/pipeline/corpus/cli.py
 - main() - Click CLI entry point: `python -m pipeline.corpus --input-root <path> --output-root <path> [--strict]`. Runs build_corpus and prints summary.
 
-## pipeline/corpus/contracts.py
+## src/pipeline/corpus/contracts.py
 - load_schema_versions() - Load schema version strings from schema_versions.json.
 - LessonRecord (Pydantic model) - Per-lesson metadata: lesson_id, slug, available artifacts, counts, content hashes, status, warnings.
 - CorpusMetadata (Pydantic model) - Aggregate corpus info: version, timestamp, entity counts, validation status. Re-exports KnowledgeEvent, RuleCard, EvidenceRef, ConceptNode, ConceptRelation, ConceptGraph as frozen v1 contract.
 
-## pipeline/corpus/corpus_builder.py
+## src/pipeline/corpus/corpus_builder.py
 - _write_jsonl() - Write a list of dicts as JSONL (one JSON object per line).
 - _write_json() - Write data as pretty-printed JSON.
 - _merge_concept_graphs() - Deduplicate concept nodes by global_id, merge aliases/source_rule_ids/source_lessons. Deduplicate relations by relation_id, merge weights and provenance.
@@ -638,7 +638,7 @@ Total Python files documented: 168
 - _build_concept_overlap_report() - List concepts appearing in multiple lessons, sorted by overlap degree.
 - build_corpus() - Main orchestrator: discover lessons, validate, load/globalize artifacts, merge JSONL exports, merge concept graph, build enrichments, write metadata and validation report. Returns summary dict.
 
-## pipeline/corpus/id_utils.py
+## src/pipeline/corpus/id_utils.py
 - _transliterate_char() - Map a single character from Cyrillic to Latin equivalent.
 - _slugify() - Lowercase, transliterate Cyrillic, collapse non-alnum to underscores.
 - slugify_lesson_id() - Convert a human-readable lesson ID into a stable slug.
@@ -646,21 +646,21 @@ Total Python files documented: 168
 - make_global_node_id() - Build cross-lesson concept node ID like 'node:slugified_concept'. Keyed by normalized name.
 - make_global_relation_id() - Build deterministic relation ID from source, type, and target: 'rel:src:type:dst'.
 
-## pipeline/corpus/lesson_registry.py
+## src/pipeline/corpus/lesson_registry.py
 - _sha256_file() - Compute SHA-256 hash of a file for change detection.
 - _count_entities() - Count entities in a JSON file by looking at len(data[list_key]).
 - discover_lessons() - Scan input_root for directories with output_intermediate/ containing artifacts. Returns sorted list of LessonRecord.
 - build_registry() - Convert lesson records to serializable dicts for lesson_registry.json.
 - save_registry() - Write registry as pretty-printed JSON.
 
-## pipeline/corpus/validator.py
+## src/pipeline/corpus/validator.py
 - ValidationResult (class) - Accumulates errors and warnings with add_error/add_warning. Properties: has_errors, status. Serializable via to_dict().
 - validate_lesson() - Validate a single lesson's artifacts: file existence, JSON parse, Pydantic schema, non-empty IDs, intra-lesson referential integrity. Supports strict mode.
 - _check_intra_lesson_integrity() - Check referential integrity within a single lesson: rule->event, rule->evidence, evidence->rule.
 - validate_cross_lesson() - Check cross-lesson constraints: no global ID collisions, no duplicate lessons, all relation endpoints exist, referential integrity across merged artifacts.
 - save_validation_report() - Write validation report as pretty-printed JSON.
 
-## pipeline/dense_analyzer.py
+## src/pipeline/dense_analyzer.py
 - _normalize_agent() - Accept 'antigravity' as alias for 'ide'.
 - _parse_json_from_response() - Extract JSON from API response, handling markdown code blocks.
 - _encode_image() - Encode image.
@@ -692,22 +692,22 @@ Total Python files documented: 168
 - run_analysis() - Run analysis.
 - cli() - Analyze dense frames with full description + delta.
 
-## pipeline/dense_capturer.py
+## src/pipeline/dense_capturer.py
 - _frame_number_to_key() - Frame number to key.
 - _run_ffmpeg_cmd() - Run ffmpeg cmd.
 - _probe_duration_seconds() - Probe duration seconds.
 - _extract_segment() - Extract segment.
 - extract_dense_frames() - Extract dense frames. video_file_override: optional filename (e.g. from pipeline.yml)
 
-## pipeline/downloader.py
+## src/pipeline/downloader.py
 - extract_video_id() - Uses yt-dlp to just extract the video id without downloading.
 - download_video_and_transcript() - Downloads the best mp4 video and vtt transcripts from a YouTube URL to data/<video_id>/.
 
-## pipeline/frame_extractor.py
+## src/pipeline/frame_extractor.py
 - _extract_single_frame() - Extract single frame.
 - extract_frames() - Extract frames.
 
-## pipeline/gap_detector.py
+## src/pipeline/gap_detector.py
 - GapTarget.validate_timestamp() - Validate timestamp.
 - get_system_prompt() - Get system prompt.
 - _extract_gaps_with_provider() - Extract gaps with provider.
@@ -718,14 +718,14 @@ Total Python files documented: 168
 - read_response_file() - Read the agent-filled JSON response.
 - process_video() - Process video.
 
-## pipeline/inspection.py
+## src/pipeline/inspection.py
 - resolve_callable() - Resolve a dotted path to a callable (e.g. 'pipeline.main.main').
 - inspect_stages() - Verify each stage in the registry can be imported and is callable.
 - inspect_artifacts() - Check presence of known artifacts under video_root (and optionally for a lesson).
 - build_report() - Build a full inspection report for the given video root and optional lesson.
 - write_report() - Write the inspection report as JSON to output_path.
 
-## pipeline/invalidation_filter.py
+## src/pipeline/invalidation_filter.py
 - _sort_key() - Sort key.
 - _timestamp_to_seconds() - Timestamp to seconds.
 - _entry_timestamp_seconds() - Entry timestamp seconds.
@@ -743,7 +743,7 @@ Total Python files documented: 168
 - write_debug_report() - Write debug report.
 - run_invalidation_filter() - Run invalidation filter.
 
-## pipeline/io_utils.py
+## src/pipeline/io_utils.py
 - atomic_write_text() - Write text to path atomically (temp file + os.replace).
 - atomic_write_json() - Write JSON to path atomically.
 - write_text_file() - Convenience wrapper for atomic_write_text.
@@ -751,10 +751,10 @@ Total Python files documented: 168
 - write_artifact_manifest() - Write artifact manifest JSON atomically.
 - build_export_manifest() - Build export manifest with only existing artifacts.
 
-## pipeline/main.py
+## src/pipeline/main.py
 - main() - Multimodal YouTube Video Transcript Enrichment Pipeline (Dense Mode).
 
-## pipeline/schemas.py
+## src/pipeline/schemas.py
 - normalize_text() - Single-line normalized text (strip, collapse whitespace).
 - is_placeholder_text() - True if value is empty or a known placeholder after normalization.
 - is_compact_summary() - True if value is None or normalized length <= max_len.
@@ -772,22 +772,22 @@ Total Python files documented: 168
 - validate_evidence_ref_for_export() - Validate evidence ref for export.
 - validate_evidence_index_for_export() - Validate evidence index for export.
 
-## pipeline/select_llm_frames.py
+## src/pipeline/select_llm_frames.py
 - _parse_diff_from_name() - Parse diff from name.
 - build_llm_queue() - Build llm queue.
 - main() - Main.
 
-## pipeline/stage_registry.py
+## src/pipeline/stage_registry.py
 - StageSpec (dataclass) - Machine-readable stage metadata: `stage_id`, `description`, `callable_path`, `required_inputs`, `outputs`, `enabled_by_default`, `legacy_stage`.
 - STAGE_REGISTRY - Ordered list of `StageSpec` entries for the full dense pipeline (download through exporters).
 
-## pipeline/stitcher.py
+## src/pipeline/stitcher.py
 - parse_vtt_timestamps() - Parse vtt timestamps.
 - is_time_between() - Is time between.
 - stitch_transcript() - Stitch transcript.
 - run_stitcher() - Run stitcher.
 
-## pipeline/structural_compare.py
+## src/pipeline/structural_compare.py
 - _base_stem() - Base stem.
 - _rename_frames_with_diff() - Rename frames with diff.
 - _compare_pair() - Compare pair.
@@ -795,10 +795,10 @@ Total Python files documented: 168
 - run_structural_compare() - Run structural compare.
 - main() - Main.
 
-## pipeline/usage_report.py
+## src/pipeline/usage_report.py
 - main() - Main.
 
-## pipeline/validation.py
+## src/pipeline/validation.py
 - _walk_forbidden_keys() - Walk forbidden keys.
 - validate_no_visual_blob_leakage() - Recursively check for forbidden raw visual blob keys. Returns list of error messages.
 - validate_knowledge_event_collection_integrity() - Validate knowledge event collection: ids, confidence, no forbidden keys.
@@ -809,7 +809,7 @@ Total Python files documented: 168
 - validate_export_quality() - Validate review vs RAG export: both non-empty, not identical, RAG more compact.
 - validate_cross_artifact_references() - Validate that all cross-references between knowledge_events, evidence_index, and rule_cards resolve.
 
-## pipeline/vlm_translator.py
+## src/pipeline/vlm_translator.py
 - get_vlm_prompt() - Get vlm prompt.
 - encode_image() - Encode image.
 - _translate_with_provider() - Translate with provider.
@@ -1449,20 +1449,20 @@ Total Python files documented: 168
 
 # pipeline/rag/ — Hybrid RAG Retrieval System (Step 3)
 
-## pipeline/rag/__init__.py
+## src/pipeline/rag/__init__.py
 - Package init.
 
-## pipeline/rag/__main__.py
+## src/pipeline/rag/__main__.py
 - Entrypoint for `python -m pipeline.rag`, delegates to `cli.main()`.
 
-## pipeline/rag/config.py
+## src/pipeline/rag/config.py
 - UnitType — Literal type for the 5 retrieval unit types.
 - ALL_UNIT_TYPES — List of all valid unit types.
 - RAGConfig — Pydantic BaseModel with all RAG settings: paths, model names, top-k defaults, reranker weights.
 - RAGConfig.index_dir — Property returning `rag_root / "index"`.
 - RAGConfig.eval_dir — Property returning `rag_root / "eval"`.
 
-## pipeline/rag/retrieval_docs.py
+## src/pipeline/rag/retrieval_docs.py
 - RetrievalDocBase — Base Pydantic model for all retrieval documents: doc_id, unit_type, lesson_id, text, provenance, etc.
 - RuleCardDoc — Retrieval doc for rule cards. `from_corpus(raw)` builds from corpus JSONL.
 - KnowledgeEventDoc — Retrieval doc for knowledge events. `from_corpus(raw)` builds from corpus JSONL.
@@ -1470,11 +1470,11 @@ Total Python files documented: 168
 - ConceptNodeDoc — Retrieval doc for concept graph nodes. `from_corpus(raw, frequencies)` builds from graph JSON.
 - ConceptRelationDoc — Retrieval doc for concept graph relations. `from_corpus(raw, node_name_map)` builds from graph JSON.
 
-## pipeline/rag/corpus_loader.py
+## src/pipeline/rag/corpus_loader.py
 - load_corpus_and_build_docs(cfg) — Load all Step 2 corpus exports, transform to typed retrieval docs, return DocStore.
 - build_and_persist(cfg) — Build retrieval docs and persist to `output_rag/` as JSONL + metadata.
 
-## pipeline/rag/store.py
+## src/pipeline/rag/store.py
 - DocStore — In-memory document store backed by JSONL persistence. Indexes by doc_id, unit_type, lesson_id, concept_id.
 - DocStore.add(doc) — Add a RetrievalDocBase to the store.
 - DocStore.get(doc_id) — Retrieve single doc by ID.
@@ -1487,52 +1487,52 @@ Total Python files documented: 168
 - DocStore.facets(doc_ids) — Compute faceted counts by unit_type, lesson, concept.
 - DocStore.save(path) / DocStore.load(path) — JSONL persistence.
 
-## pipeline/rag/asset_resolver.py
+## src/pipeline/rag/asset_resolver.py
 - AssetResolver — Resolve screenshot/frame paths on local filesystem. Methods: resolve_screenshot, resolve_lesson_dir.
 
-## pipeline/rag/lexical_index.py
+## src/pipeline/rag/lexical_index.py
 - tokenize(text) — Whitespace + lowercase + Cyrillic-aware regex tokenizer.
 - LexicalIndex — BM25Okapi index over retrieval docs with unit-type masking.
 - LexicalIndex.build(docs) — Build index from list of doc dicts.
 - LexicalIndex.search(query, top_k, unit_types, allowed_ids) — BM25 search returning scored doc_ids.
 - LexicalIndex.save(index_dir) / LexicalIndex.load_from_store(docs) — Persistence.
 
-## pipeline/rag/embedding_index.py
+## src/pipeline/rag/embedding_index.py
 - EmbeddingIndex — Sentence-transformer embedding index with numpy brute-force cosine search.
 - EmbeddingIndex.build(docs, model_name, batch_size) — Encode all docs, build index.
 - EmbeddingIndex.encode_query(query) — Encode a single query string.
 - EmbeddingIndex.search(query_embedding, top_k, unit_types, allowed_ids) — Cosine search returning scored doc_ids.
 - EmbeddingIndex.save(index_dir) / EmbeddingIndex.load(index_dir) — npy + JSON persistence.
 
-## pipeline/rag/graph_expand.py
+## src/pipeline/rag/graph_expand.py
 - ConceptExpander — Concept graph expansion: alias registry, adjacency list, 1-hop expansion.
 - ConceptExpander.from_corpus(corpus_root) — Build from corpus JSON files.
 - ConceptExpander.expand_query(query) — Detect concepts, resolve aliases, expand neighbors, return boosted IDs.
 
-## pipeline/rag/reranker.py
+## src/pipeline/rag/reranker.py
 - RerankerCandidate — Container for a candidate doc with lexical/vector scores and signal breakdown.
 - rerank(candidates, query_concept_ids, query_alias_terms, boosted_rule_ids, weights) — Deterministic weighted reranking with min-max normalization.
 
-## pipeline/rag/retriever.py
+## src/pipeline/rag/retriever.py
 - HybridRetriever — Orchestrator combining lexical + vector + graph expansion + reranking.
 - HybridRetriever.search(query, top_k, unit_types, lesson_ids, concept_ids, min_confidence) — Full hybrid search pipeline.
 
-## pipeline/rag/answer_builder.py
+## src/pipeline/rag/answer_builder.py
 - build_answer(retrieval_result, return_summary) — Structure hits into grounded response payload with groups, citations, extractive summary.
 
-## pipeline/rag/api.py
+## src/pipeline/rag/api.py
 - FastAPI app with endpoints: GET /health, POST /rag/search, GET /rag/doc/{doc_id}, GET /rag/concept/{id}, GET /rag/lesson/{id}, POST /rag/eval/run.
 - init_app(cfg) — Load all indexes into memory and wire up the retriever.
 - SearchRequest / SearchResponse — Pydantic request/response models.
 
-## pipeline/rag/cli.py
+## src/pipeline/rag/cli.py
 - Click CLI group with subcommands: build, search, serve, eval.
 - build — Build retrieval docs and indexes from corpus.
 - search — One-shot search against the RAG index.
 - serve — Start the FastAPI RAG server.
 - eval — Run the evaluation harness.
 
-## pipeline/rag/eval.py
+## src/pipeline/rag/eval.py
 - CURATED_QUERIES — 25 curated evaluation queries across 7 categories.
 - run_eval(retriever, cfg, queries_path, k_values) — Run eval queries, compute Recall@k, MRR, concept detection accuracy, per-unit hit rates. Writes eval_results.json and eval_report.json.
 

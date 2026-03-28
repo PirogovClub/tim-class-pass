@@ -1,1 +1,0 @@
-http://127.0.0.1:4173/compare/rules?ids=rule%3Alesson_alpha%3Arule_accumulation_1%2Crule%3Alesson_beta%3Arule_false_breakout_1

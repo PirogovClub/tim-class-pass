@@ -1,8 +1,0 @@
-{
-  "status_code": 404,
-  "method": "GET",
-  "path": "/browser/concept/node:does-not-exist",
-  "response": {
-    "detail": "Concept 'node:does-not-exist' not found"
-  }
-}

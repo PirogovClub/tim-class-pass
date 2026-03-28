@@ -1,9 +1,0 @@
-{
-  "knowledge_schema_version": "1.0.0",
-  "rule_schema_version": "1.0.0",
-  "evidence_schema_version": "1.0.0",
-  "concept_graph_version": "1.0.0",
-  "corpus_contract_version": "1.0.0",
-  "lesson_contract_version": "1.0.0",
-  "registry_version": "1.0.0"
-}

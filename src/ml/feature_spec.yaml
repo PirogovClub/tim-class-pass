@@ -1,0 +1,312 @@
+# ML Step 7 — machine-readable feature specification (source of truth).
+# All features use only OHLCV from bars with index <= anchor_bar_index (PIT at anchor; no label-horizon leakage).
+
+spec_id: level_interaction_feature_spec_v1
+task_id: level_interaction_rule_satisfaction_v1
+version: "1.0.0"
+observation_window:
+  description: >
+    Features may use bars[0] through bars[anchor_bar_index] inclusive only.
+    Bars after the anchor are reserved for Step 6 label assignment and MUST NOT feed model inputs.
+  max_lookback_bars: 20
+
+features:
+  - feature_name: close_distance_pct
+    feature_family: level_relative_position
+    dtype: float
+    description: (close at anchor - reference_level) / reference_level
+    required_inputs: [bars, anchor_bar_index, reference_level]
+    optional_inputs: []
+    formula_summary: (close[a]-L)/L
+    point_in_time_safe: true
+    null_policy: drop_row_if_missing
+    default_behavior: none
+    linked_rule_concepts: [concept:level]
+    notes: Signed distance; positive = above level at anchor close.
+
+  - feature_name: high_distance_pct
+    feature_family: level_relative_position
+    dtype: float
+    description: (high at anchor - L) / L
+    required_inputs: [bars, anchor_bar_index, reference_level]
+    optional_inputs: []
+    formula_summary: (high[a]-L)/L
+    point_in_time_safe: true
+    null_policy: drop_row_if_missing
+    default_behavior: none
+    linked_rule_concepts: [concept:level]
+    notes: Upside penetration potential at anchor bar.
+
+  - feature_name: low_distance_pct
+    feature_family: level_relative_position
+    dtype: float
+    description: (low at anchor - L) / L
+    required_inputs: [bars, anchor_bar_index, reference_level]
+    optional_inputs: []
+    formula_summary: (low[a]-L)/L
+    point_in_time_safe: true
+    null_policy: drop_row_if_missing
+    default_behavior: none
+    linked_rule_concepts: [concept:level]
+    notes: Downside penetration at anchor bar.
+
+  - feature_name: atr_pct_14
+    feature_family: volatility_scale
+    dtype: float
+    description: Mean true range over up to 14 pre-anchor bars, divided by L
+    required_inputs: [bars, anchor_bar_index, reference_level]
+    optional_inputs: []
+    formula_summary: mean(TR)/L over window ending at anchor
+    point_in_time_safe: true
+    null_policy: use_zero_if_insufficient_bars
+    default_behavior: "0.0"
+    linked_rule_concepts: [node:breakout]
+    notes: ATR-like scale proxy for normalization.
+
+  - feature_name: range_pct_lookback
+    feature_family: volatility_scale
+    dtype: float
+    description: (max_high - min_low) / L over lookback through anchor
+    required_inputs: [bars, anchor_bar_index, reference_level]
+    optional_inputs: []
+    formula_summary: range/L
+    point_in_time_safe: true
+    null_policy: drop_row_if_missing
+    default_behavior: none
+    linked_rule_concepts: [concept:level]
+    notes: Local volatility envelope.
+
+  - feature_name: vol_regime_high
+    feature_family: volatility_scale
+    dtype: bool
+    description: True if atr_pct_14 above median of its distribution in-batch (computed offline); here raw flag atr_pct_14 > 0.002
+    required_inputs: [bars, anchor_bar_index, reference_level]
+    optional_inputs: []
+    formula_summary: atr_pct_14 > 0.002
+    point_in_time_safe: true
+    null_policy: coerce_false
+    default_behavior: "false"
+    linked_rule_concepts: []
+    notes: Simplified regime bucket for v1.
+
+  - feature_name: body_pct_anchor
+    feature_family: candle_structure
+    dtype: float
+    description: abs(close-open)/(high-low+eps) at anchor
+    required_inputs: [bars, anchor_bar_index]
+    optional_inputs: []
+    formula_summary: body/range
+    point_in_time_safe: true
+    null_policy: use_zero_if_degenerate_range
+    default_behavior: "0.0"
+    linked_rule_concepts: [node:breakout]
+    notes: Body strength at anchor.
+
+  - feature_name: upper_wick_ratio_anchor
+    feature_family: candle_structure
+    dtype: float
+    description: Upper wick / range at anchor bar
+    required_inputs: [bars, anchor_bar_index]
+    optional_inputs: []
+    formula_summary: (high-max(o,c))/range
+    point_in_time_safe: true
+    null_policy: use_zero_if_degenerate_range
+    default_behavior: "0.0"
+    linked_rule_concepts: [subconcept:level_rating]
+    notes: Rejection / probe shape hint.
+
+  - feature_name: lower_wick_ratio_anchor
+    feature_family: candle_structure
+    dtype: float
+    description: Lower wick / range at anchor
+    required_inputs: [bars, anchor_bar_index]
+    optional_inputs: []
+    formula_summary: (min(o,c)-low)/range
+    point_in_time_safe: true
+    null_policy: use_zero_if_degenerate_range
+    default_behavior: "0.0"
+    linked_rule_concepts: [subconcept:level_rating]
+    notes: Support probe shape.
+
+  - feature_name: close_location_anchor
+    feature_family: candle_structure
+    dtype: float
+    description: (close-low)/(high-low+eps) at anchor; 0..1
+    required_inputs: [bars, anchor_bar_index]
+    optional_inputs: []
+    formula_summary: (c-l)/(h-l)
+    point_in_time_safe: true
+    null_policy: use_mid_if_degenerate
+    default_behavior: "0.5"
+    linked_rule_concepts: []
+    notes: Where close sits in bar.
+
+  - feature_name: n_closes_above_level_pre
+    feature_family: interaction_persistence
+    dtype: int
+    description: Count of closes strictly above L+eps in lookback through anchor inclusive
+    required_inputs: [bars, anchor_bar_index, reference_level]
+    optional_inputs: [tick_size]
+    formula_summary: count(close > L+eps) for i in [a-W..a]
+    point_in_time_safe: true
+    null_policy: use_zero
+    default_behavior: "0"
+    linked_rule_concepts: [concept:level, node:breakout]
+    notes: Pre-anchor persistence above; ties to acceptance semantics.
+
+  - feature_name: n_closes_below_level_pre
+    feature_family: interaction_persistence
+    dtype: int
+    description: Count of closes strictly below L-eps in lookback through anchor
+    required_inputs: [bars, anchor_bar_index, reference_level]
+    optional_inputs: [tick_size]
+    formula_summary: count(close < L-eps)
+    point_in_time_safe: true
+    null_policy: use_zero
+    default_behavior: "0"
+    linked_rule_concepts: [concept:level]
+    notes: Pre-anchor persistence below.
+
+  - feature_name: persistence_ratio_above_pre
+    feature_family: interaction_persistence
+    dtype: float
+    description: n_closes_above_level_pre / lookback_len
+    required_inputs: [bars, anchor_bar_index, reference_level]
+    optional_inputs: []
+    formula_summary: ratio
+    point_in_time_safe: true
+    null_policy: use_zero
+    default_behavior: "0.0"
+    linked_rule_concepts: [node:breakout]
+    notes: Normalized acceptance pressure before anchor.
+
+  - feature_name: reentry_through_level_pre
+    feature_family: interaction_persistence
+    dtype: int
+    description: Count of sign changes of (close-L) between consecutive bars in lookback
+    required_inputs: [bars, anchor_bar_index, reference_level]
+    optional_inputs: [tick_size]
+    formula_summary: zero-crossings of excess vs level
+    point_in_time_safe: true
+    null_policy: use_zero
+    default_behavior: "0"
+    linked_rule_concepts: [node:breakout]
+    notes: Churn / failed hold proxy pre-anchor.
+
+  - feature_name: consolidation_width_pct
+    feature_family: pre_break_context
+    dtype: float
+    description: Std dev of closes in lookback / L
+    required_inputs: [bars, anchor_bar_index, reference_level]
+    optional_inputs: []
+    formula_summary: std(close)/L
+    point_in_time_safe: true
+    null_policy: use_zero_if_single_bar
+    default_behavior: "0.0"
+    linked_rule_concepts: [node:accumulation]
+    notes: Tight range before interaction.
+
+  - feature_name: pre_anchor_trend_slope
+    feature_family: pre_break_context
+    dtype: float
+    description: OLS slope of close vs bar index over lookback, normalized by L
+    required_inputs: [bars, anchor_bar_index, reference_level]
+    optional_inputs: []
+    formula_summary: polyfit slope / L
+    point_in_time_safe: true
+    null_policy: use_zero_if_insufficient_points
+    default_behavior: "0.0"
+    linked_rule_concepts: []
+    notes: Momentum proxy pre-anchor.
+
+  - feature_name: volume_ratio_anchor
+    feature_family: volume_context
+    dtype: float
+    description: volume[anchor] / mean(volume lookback); 1.0 if mean zero
+    required_inputs: [bars, anchor_bar_index]
+    optional_inputs: []
+    formula_summary: v_a / mean(v)
+    point_in_time_safe: true
+    null_policy: use_one_if_missing_volume
+    default_behavior: "1.0"
+    linked_rule_concepts: [node:breakout]
+    notes: Breakout participation hint.
+
+  - feature_name: volume_zscore_anchor
+    feature_family: volume_context
+    dtype: float
+    description: Z-score of anchor volume vs lookback mean (0 if std=0)
+    required_inputs: [bars, anchor_bar_index]
+    optional_inputs: []
+    formula_summary: (v-mu)/sigma
+    point_in_time_safe: true
+    null_policy: use_zero
+    default_behavior: "0.0"
+    linked_rule_concepts: []
+    notes: Abnormal volume flag input.
+
+  - feature_name: session_hour_bucket
+    feature_family: time_session_context
+    dtype: categorical
+    description: Hour-of-day bucket from anchor_timestamp ISO string (UTC)
+    required_inputs: [anchor_timestamp]
+    optional_inputs: []
+    formula_summary: parse hour -> bucket morning|mid|afternoon|evening
+    point_in_time_safe: true
+    null_policy: use_unknown
+    default_behavior: unknown
+    linked_rule_concepts: []
+    notes: Session phase proxy when calendar known at T0.
+
+  - feature_name: day_of_week
+    feature_family: time_session_context
+    dtype: categorical
+    description: Weekday name from anchor_timestamp if parseable
+    required_inputs: [anchor_timestamp]
+    optional_inputs: []
+    formula_summary: strftime %A
+    point_in_time_safe: true
+    null_policy: use_unknown
+    default_behavior: unknown
+    linked_rule_concepts: []
+    notes: Optional seasonality.
+
+  - feature_name: htf_alignment_placeholder
+    feature_family: higher_timeframe_alignment
+    dtype: float
+    description: Reserved; 0.0 when no HTF series provided
+    required_inputs: []
+    optional_inputs: [higher_timeframe_context]
+    formula_summary: "0.0"
+    point_in_time_safe: true
+    null_policy: always_zero
+    default_behavior: "0.0"
+    linked_rule_concepts: []
+    notes: HTF not mandatory in v1 fixtures.
+
+modeling_feature_columns:
+  # Columns passed to tabular models (numeric + one-hot cats handled in trainer)
+  numeric:
+    - close_distance_pct
+    - high_distance_pct
+    - low_distance_pct
+    - atr_pct_14
+    - range_pct_lookback
+    - body_pct_anchor
+    - upper_wick_ratio_anchor
+    - lower_wick_ratio_anchor
+    - close_location_anchor
+    - n_closes_above_level_pre
+    - n_closes_below_level_pre
+    - persistence_ratio_above_pre
+    - reentry_through_level_pre
+    - consolidation_width_pct
+    - pre_anchor_trend_slope
+    - volume_ratio_anchor
+    - volume_zscore_anchor
+    - htf_alignment_placeholder
+  categorical:
+    - session_hour_bucket
+    - day_of_week
+  boolean:
+    - vol_regime_high

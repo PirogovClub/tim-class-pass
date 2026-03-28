@@ -10,7 +10,7 @@ from pipeline.contracts.versioning import (
 
 
 def test_schema_versions_file_exists() -> None:
-    p = Path(__file__).resolve().parents[2] / "pipeline" / "contracts" / "schema_versions.json"
+    p = Path(__file__).resolve().parents[2] / "src" / "pipeline" / "contracts" / "schema_versions.json"
     assert p.is_file()
 
 

@@ -1,0 +1,137 @@
+{
+  "ontology_id": "level_interaction_multiclass_v1",
+  "task_id": "level_interaction_rule_satisfaction_v1",
+  "version": "1.0.0",
+  "classes": [
+    {
+      "class_name": "acceptance_above",
+      "description": "After interaction with level L from below or at L, price establishes meaningfully above L within the decision horizon: sustained closes or structural holds above L per Step 6 numeric rules; immediate collapse back below without persistence invalidates.",
+      "semantic_intent": "Bullish acceptance of resistance-turned-support or breakout hold above L.",
+      "positive_conditions": [
+        "Price clears L to the upside with minimum persistence (e.g. N closes above L within horizon).",
+        "Retest holds above L rather than full round-trip failure."
+      ],
+      "negative_conditions": [
+        "Price returns and holds below L before horizon end without prior persistence.",
+        "Only a wick pierce with no close-based acceptance."
+      ],
+      "common_confusions": [
+        "false_breakout_up when price pierces L then fails back below within horizon",
+        "rejection when price never establishes above L"
+      ],
+      "invalidated_by": [
+        "pit_001",
+        "pit_002",
+        "ambiguous anchor or undefined L at T0"
+      ],
+      "allowed_confidence_tiers": ["gold", "silver", "weak"],
+      "notes": "Mirror semantics for below-level acceptance is acceptance_below."
+    },
+    {
+      "class_name": "acceptance_below",
+      "description": "Mirror of acceptance_above: price establishes meaningfully below L within horizon when approach is from above or at L, with persistence; quick reclaim above L invalidates.",
+      "semantic_intent": "Bearish acceptance / breakdown hold below L.",
+      "positive_conditions": [
+        "Sustained closes below L within horizon per Step 6 thresholds."
+      ],
+      "negative_conditions": [
+        "Immediate reclaim and hold above L without persistence below."
+      ],
+      "common_confusions": [
+        "false_breakout_down",
+        "rejection"
+      ],
+      "invalidated_by": ["pit_001", "pit_002", "ambiguous anchor"],
+      "allowed_confidence_tiers": ["gold", "silver", "weak"],
+      "notes": ""
+    },
+    {
+      "class_name": "false_breakout_up",
+      "description": "Price breaks above L (pierce or close) but fails acceptance: within decision_horizon returns and holds below L without meeting acceptance_above persistence rules.",
+      "semantic_intent": "Liquidity grab or stop-run above L that fails.",
+      "positive_conditions": [
+        "Pierce or short-lived trade above L followed by failure back below L within horizon."
+      ],
+      "negative_conditions": [
+        "Meets acceptance_above persistence — then label acceptance_above, not false breakout."
+      ],
+      "common_confusions": [
+        "acceptance_above",
+        "rejection if no meaningful pierce occurred"
+      ],
+      "invalidated_by": ["pit_001", "ambiguous anchor"],
+      "allowed_confidence_tiers": ["gold", "silver", "weak"],
+      "notes": "Evaluated before acceptance in class_decision_order when both could be argued; order resolves to false_breakout first."
+    },
+    {
+      "class_name": "false_breakout_down",
+      "description": "Mirror of false_breakout_up for downside pierce below L that fails and reclaims above L within horizon.",
+      "semantic_intent": "Failed breakdown / bear trap.",
+      "positive_conditions": [
+        "Pierce below L then failure back above L within horizon without acceptance_below persistence."
+      ],
+      "negative_conditions": [
+        "Meets acceptance_below — label acceptance_below."
+      ],
+      "common_confusions": ["acceptance_below", "rejection"],
+      "invalidated_by": ["pit_001", "ambiguous anchor"],
+      "allowed_confidence_tiers": ["gold", "silver", "weak"],
+      "notes": ""
+    },
+    {
+      "class_name": "rejection",
+      "description": "Price tests L (touches or near-touch within tolerance) and moves away without satisfying false_breakout or acceptance classes: classic bounce or fade without breakout hold or failed-breakout structure.",
+      "semantic_intent": "Level holds; counter-move without setup completion in other classes.",
+      "positive_conditions": [
+        "Clear test of L and directional move away within horizon without persistence through L."
+      ],
+      "negative_conditions": [
+        "Qualifies as acceptance_* or false_breakout_* under Step 6 thresholds."
+      ],
+      "common_confusions": [
+        "no_setup when interaction is too weak to call a test",
+        "ambiguous when noise prevents telling test from chop"
+      ],
+      "invalidated_by": ["pit_001", "ambiguous anchor"],
+      "allowed_confidence_tiers": ["gold", "silver", "weak"],
+      "notes": ""
+    },
+    {
+      "class_name": "no_setup",
+      "description": "The window is valid for the task (preconditions met) but no defined pattern for acceptance, false breakout, or rejection is present: chop inside band, no meaningful test, or structure outside v1 pattern catalog.",
+      "semantic_intent": "Negative space — task applicable, label negative for target patterns.",
+      "positive_conditions": [
+        "OHLCV valid; anchor exists; none of the other classes' definitions are met."
+      ],
+      "negative_conditions": [
+        "Another class is clearly satisfied — must not use no_setup.",
+        "Do not use no_setup when the correct withhold is ambiguous (use ambiguous)."
+      ],
+      "common_confusions": [
+        "ambiguous — ambiguous is for epistemic uncertainty, not mere absence of pattern"
+      ],
+      "invalidated_by": [],
+      "allowed_confidence_tiers": ["gold", "silver", "weak"],
+      "notes": "Fallback last in class_decision_order after all pattern checks fail."
+    },
+    {
+      "class_name": "ambiguous",
+      "description": "Withhold deterministic class: multiple classes remain plausible under written rules, evidence is insufficient, anchor/level geometry is unclear at T0, or microstructure noise exceeds Step 6 denoise limits. Not a catch-all for 'hard examples' when one class actually fits.",
+      "semantic_intent": "Explicit non-decision for training gold targets.",
+      "positive_conditions": [
+        "Documented ambiguity_reason from enumerated codes in Step 6 (e.g. MULTIPLE_PLAUSIBLE, ANCHOR_UNCLEAR, INSUFFICIENT_BARS, EXCESSIVE_NOISE)."
+      ],
+      "negative_conditions": [
+        "Single clear class assignment possible — must assign that class or no_setup as appropriate.",
+        "Simply no pattern matched — use no_setup, not ambiguous."
+      ],
+      "common_confusions": [
+        "no_setup",
+        "weak confidence tier — tier is orthogonal; ambiguous is a class"
+      ],
+      "invalidated_by": [],
+      "allowed_confidence_tiers": ["silver", "weak"],
+      "notes": "gold is disallowed for ambiguous: withholding cannot be highest deterministic confidence."
+    }
+  ]
+}

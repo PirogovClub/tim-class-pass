@@ -14,7 +14,7 @@ For Python CLI applications in this repository, use `click` for argument parsing
 - Do not introduce new `argparse`-based parsers
 - If touching an `argparse` CLI, prefer migrating it to `click` instead of expanding it
 
-Use `pipeline/main.py` and `pipeline/component2/main.py` as the local style references.
+Use `src/pipeline/main.py` and `src/pipeline/component2/main.py` as the local style references.
 
 ## Implementation pattern
 

@@ -1,2 +1,0 @@
-validate_export_dir (default): OK
-validate_export_dir (--db equivalent): OK

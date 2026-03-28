@@ -1,0 +1,41 @@
+# Intentionally invalid for validator tests — duplicate entries in class_decision_order.
+task_id: level_interaction_rule_satisfaction_v1
+task_name: broken
+task_type: multiclass_classification
+version: "0.0.0-bad"
+status: defined_not_generated
+description: "bad"
+target_unit: candidate_level_interaction_window
+label_set:
+  - acceptance_above
+  - acceptance_below
+  - false_breakout_up
+  - false_breakout_down
+  - rejection
+  - no_setup
+  - ambiguous
+preconditions: []
+exclusions: []
+ambiguity_policy: "x"
+confidence_tiers:
+  gold: { meaning: "a" }
+  silver: { meaning: "b" }
+  weak: { meaning: "c" }
+input_window: {}
+required_inputs: []
+optional_inputs: []
+rule_sources: {}
+canonical_concepts: {}
+class_decision_order:
+  - ambiguous
+  - ambiguous
+  - false_breakout_up
+  - false_breakout_down
+  - acceptance_above
+  - acceptance_below
+  - rejection
+  - no_setup
+notes: ""
+downstream_dependencies: {}
+point_in_time_safety:
+  summary: "bad duplicate order above"

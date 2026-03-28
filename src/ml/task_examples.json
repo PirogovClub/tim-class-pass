@@ -1,0 +1,160 @@
+{
+  "task_id": "level_interaction_rule_satisfaction_v1",
+  "version": "1.0.0",
+  "examples": [
+    {
+      "example_id": "ex_accept_above_01",
+      "class_label": "acceptance_above",
+      "anchor_description": "T0 at last closed 5m bar; L=100.50 resistance from prior swing; approach from below.",
+      "market_window_summary": "20 bars context; within 12 forward bars two consecutive closes at 100.62 and 100.70; shallow retest holds 100.55+.",
+      "rule_concepts": ["concept:level", "node:breakout"],
+      "expected_label": "acceptance_above",
+      "confidence_tier": "gold",
+      "ambiguity_reason": null,
+      "notes": "Synthetic fixture — persistence above L unambiguous."
+    },
+    {
+      "example_id": "ex_accept_above_02",
+      "class_label": "acceptance_above",
+      "anchor_description": "L=2048.00 daily pivot; T0 15m bar close; approach from below.",
+      "market_window_summary": "30 bars lookback; price closes above 2048.25 for 3 bars after touch; no full round-trip below 2048.00 within horizon.",
+      "rule_concepts": ["subconcept:level_rating"],
+      "expected_label": "acceptance_above",
+      "confidence_tier": "silver",
+      "ambiguity_reason": null,
+      "notes": "Silver: single heuristic on touch tolerance."
+    },
+    {
+      "example_id": "ex_accept_below_01",
+      "class_label": "acceptance_below",
+      "anchor_description": "L=50.00 support; T0 with approach from above.",
+      "market_window_summary": "Closes at 49.85, 49.78, 49.70 over 6 bars; no reclaim above 50.00 for remainder of 24-bar horizon.",
+      "rule_concepts": ["concept:stop_loss"],
+      "expected_label": "acceptance_below",
+      "confidence_tier": "gold",
+      "ambiguity_reason": null,
+      "notes": ""
+    },
+    {
+      "example_id": "ex_accept_below_02",
+      "class_label": "acceptance_below",
+      "anchor_description": "L=1.0950; approach from above on 5m.",
+      "market_window_summary": "Breakdown close sequence; volume spike on acceptance bars per optional context.",
+      "rule_concepts": ["concept:level"],
+      "expected_label": "acceptance_below",
+      "confidence_tier": "weak",
+      "ambiguity_reason": null,
+      "notes": "weak: borderline hold duration."
+    },
+    {
+      "example_id": "ex_fb_up_01",
+      "class_label": "false_breakout_up",
+      "anchor_description": "L=75.40; wick to 75.55 then failure.",
+      "market_window_summary": "Single close above L at bar+2 then three closes back below 75.35 within horizon.",
+      "rule_concepts": ["node:breakout"],
+      "expected_label": "false_breakout_up",
+      "confidence_tier": "gold",
+      "ambiguity_reason": null,
+      "notes": "Classic stop-run pattern."
+    },
+    {
+      "example_id": "ex_fb_up_02",
+      "class_label": "false_breakout_up",
+      "anchor_description": "L=3000 round; liquidity sweep.",
+      "market_window_summary": "Intrabar pierce 3004; session closes back 2995-2998 for rest of horizon.",
+      "rule_concepts": ["node:breakout", "concept:level"],
+      "expected_label": "false_breakout_up",
+      "confidence_tier": "silver",
+      "ambiguity_reason": null,
+      "notes": ""
+    },
+    {
+      "example_id": "ex_fb_dn_01",
+      "class_label": "false_breakout_down",
+      "anchor_description": "L=4200 support; brief pierce below.",
+      "market_window_summary": "Low prints 4188; closes reclaim 4205+ within 8 bars and hold.",
+      "rule_concepts": ["node:breakout"],
+      "expected_label": "false_breakout_down",
+      "confidence_tier": "gold",
+      "ambiguity_reason": null,
+      "notes": ""
+    },
+    {
+      "example_id": "ex_fb_dn_02",
+      "class_label": "false_breakout_down",
+      "anchor_description": "L=0.6520; approach from above.",
+      "market_window_summary": "Spike low 0.6480; full close back above L within 6 bars.",
+      "rule_concepts": ["concept:level"],
+      "expected_label": "false_breakout_down",
+      "confidence_tier": "weak",
+      "ambiguity_reason": null,
+      "notes": ""
+    },
+    {
+      "example_id": "ex_reject_01",
+      "class_label": "rejection",
+      "anchor_description": "L=150.00; touch and bounce without pierce persistence.",
+      "market_window_summary": "Wick to 149.98-150.05; closes retreat to 151+ without holding below or above L.",
+      "rule_concepts": ["subconcept:level_rating"],
+      "expected_label": "rejection",
+      "confidence_tier": "gold",
+      "ambiguity_reason": null,
+      "notes": "Resistance rejection away from level."
+    },
+    {
+      "example_id": "ex_reject_02",
+      "class_label": "rejection",
+      "anchor_description": "L=2.50 floor; multiple taps, no breakdown.",
+      "market_window_summary": "Price oscillates 2.52-2.58; no acceptance_below within horizon.",
+      "rule_concepts": ["node:accumulation"],
+      "expected_label": "rejection",
+      "confidence_tier": "silver",
+      "ambiguity_reason": null,
+      "notes": ""
+    },
+    {
+      "example_id": "ex_no_setup_01",
+      "class_label": "no_setup",
+      "anchor_description": "L=100; price remains inside 99.8-100.2 band entire horizon.",
+      "market_window_summary": "No decisive test or breakout structure; chop inside noise band.",
+      "rule_concepts": ["concept:level"],
+      "expected_label": "no_setup",
+      "confidence_tier": "gold",
+      "ambiguity_reason": null,
+      "notes": "Not ambiguous — structure is clear that no v1 pattern applies."
+    },
+    {
+      "example_id": "ex_no_setup_02",
+      "class_label": "no_setup",
+      "anchor_description": "L defined but session is flat single-bar range after holiday gap.",
+      "market_window_summary": "Insufficient directional movement to classify false breakout or acceptance.",
+      "rule_concepts": [],
+      "expected_label": "no_setup",
+      "confidence_tier": "silver",
+      "ambiguity_reason": null,
+      "notes": ""
+    },
+    {
+      "example_id": "ex_ambig_01",
+      "class_label": "ambiguous",
+      "anchor_description": "Claimed L=50.00 but alternate swing at 49.95 equally valid at T0.",
+      "market_window_summary": "Price action could be read as false_breakout_up or rejection depending on L choice.",
+      "rule_concepts": ["concept:level"],
+      "expected_label": "ambiguous",
+      "confidence_tier": "silver",
+      "ambiguity_reason": "MULTIPLE_PLAUSIBLE",
+      "notes": "Anchor geometry unclear between two structural levels."
+    },
+    {
+      "example_id": "ex_ambig_02",
+      "class_label": "ambiguous",
+      "anchor_description": "L valid but 80% of horizon bars are missing due to feed gap.",
+      "market_window_summary": "Cannot verify persistence rules; pattern might be acceptance or false breakout.",
+      "rule_concepts": ["node:breakout"],
+      "expected_label": "ambiguous",
+      "confidence_tier": "weak",
+      "ambiguity_reason": "INSUFFICIENT_BARS",
+      "notes": ""
+    }
+  ]
+}

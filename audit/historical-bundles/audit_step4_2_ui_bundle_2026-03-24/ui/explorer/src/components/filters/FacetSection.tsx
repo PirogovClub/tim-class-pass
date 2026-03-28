@@ -1,6 +1,0 @@
-import { Badge } from '@/components/ui/badge';
-interface FacetSectionProps { label: string; facets: Record<string, number>; selected: string[]; onToggle: (value: string) => void; }
-export function FacetSection({ label, facets, selected, onToggle }: FacetSectionProps) {
-  const entries = Object.entries(facets).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
-  return <section role="region" aria-label={label} className="space-y-3"><div className="flex items-center justify-between"><h3 className="text-sm font-semibold text-slate-800">{label}</h3><Badge className="border-slate-200 bg-slate-100 text-slate-700">{entries.length}</Badge></div>{entries.length ? <div className="space-y-2" role="group" aria-label={label}>{entries.map(([value, count]) => <label key={value} className="flex cursor-pointer items-start gap-3 rounded-lg px-2 py-1 hover:bg-slate-50"><input checked={selected.includes(value)} onChange={() => onToggle(value)} type="checkbox" aria-label={`${value} (${count})`} className="mt-1 h-4 w-4 rounded border-slate-300" /><span className="flex-1 text-sm text-slate-700">{value}</span><Badge className="border-slate-200 bg-white text-slate-600">{count}</Badge></label>)}</div> : <p className="text-sm text-slate-500">No facet values</p>}</section>;
-}

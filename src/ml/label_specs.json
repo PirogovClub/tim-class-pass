@@ -1,0 +1,276 @@
+{
+  "compiled_at_utc": "2026-03-26T21:03:51Z",
+  "generator_version": "1.0.0",
+  "task_id": "level_interaction_rule_satisfaction_v1",
+  "task_definition_version": "1.0.0",
+  "window_contract_id": "level_interaction_window_v1",
+  "window_contract_version": "1.0.0",
+  "ontology_id": "level_interaction_multiclass_v1",
+  "ontology_version": "1.0.0",
+  "mapping_id": "rule_to_class_level_interaction_v1",
+  "mapping_version": "1.0.0",
+  "label_set": [
+    "acceptance_above",
+    "acceptance_below",
+    "false_breakout_up",
+    "false_breakout_down",
+    "rejection",
+    "no_setup",
+    "ambiguous"
+  ],
+  "class_decision_order": [
+    "ambiguous",
+    "false_breakout_up",
+    "false_breakout_down",
+    "acceptance_above",
+    "acceptance_below",
+    "rejection",
+    "no_setup"
+  ],
+  "numeric_thresholds": {
+    "persistence_closes_acceptance": 2,
+    "persistence_closes_failure": 2,
+    "max_forward_bars": 48,
+    "touch_tolerance_ticks_default": 1,
+    "chop_band_relative": 0.0005,
+    "level_relative_epsilon": 0.0002,
+    "chop_close_band_relative": 0.00018,
+    "min_context_bars_inclusive_anchor": 20
+  },
+  "confidence_tier_meanings": {
+    "gold": {
+      "meaning": "Deterministic assignment from bars + explicit level + unambiguous class boundaries; no conflicting evidence from linked rule hints; anchor time and horizon fully observed.\n"
+    },
+    "silver": {
+      "meaning": "Mostly deterministic; at most one documented heuristic (e.g. touch count threshold) from Step 6 spec; acceptable for training with metadata flag.\n"
+    },
+    "weak": {
+      "meaning": "Partially heuristic, incomplete context, or borderline geometry; useful for weak supervision or analysis — not primary high-trust training rows.\n"
+    }
+  },
+  "ambiguity_policy_text": "Use class \"ambiguous\" only when the anchor or level geometry is uncertain, multiple mutually exclusive classes are plausible under the written rules, or bar quality / microstructure noise prevents a deterministic assignment. Do not use \"ambiguous\" when the correct outcome is simply \"no_setup\" (no pattern matched). Document reason in ambiguity_reason when assigning ambiguous in generated labels (Step 6).",
+  "task_exclusions": [
+    "Windows where the anchor level L cannot be defined within tick/size precision at T0.",
+    "Windows with missing required OHLCV in the closed-bar sense defined in window_contract.yaml.",
+    "Instruments or sessions explicitly listed as unsupported in rule_to_class_mapping.json (excluded_rule_families / notes).",
+    "Windows where only narrative (lesson text) is available without structured bars — RAG text is not the training signal."
+  ],
+  "pit_rule_ids": [
+    "pit_001",
+    "pit_002",
+    "pit_003",
+    "pit_004",
+    "pit_005"
+  ],
+  "pit_rules_full": [
+    {
+      "id": "pit_001",
+      "text": "No bar with timestamp strictly after T0 + decision_horizon end may inform the assigned class.\n"
+    },
+    {
+      "id": "pit_002",
+      "text": "Global extrema (session high/low) occurring after the horizon must not be used.\n"
+    },
+    {
+      "id": "pit_003",
+      "text": "Human annotations or outcomes from later sessions must not influence the label.\n"
+    },
+    {
+      "id": "pit_004",
+      "text": "RAG retrieval text or rule_card prose must not substitute for OHLCV when assigning class; prose may only constrain eligible mappings offline.\n"
+    },
+    {
+      "id": "pit_005",
+      "text": "Features for Step 7 must be computable from information available at T0 + horizon end, not from walk-forward parameter refits using future data.\n"
+    }
+  ],
+  "ambiguity_codes": [
+    "MULTIPLE_PLAUSIBLE",
+    "ANCHOR_UNCLEAR",
+    "INSUFFICIENT_BARS",
+    "EXCESSIVE_NOISE",
+    "APPROACH_CONFLICT",
+    "PIT_VIOLATION"
+  ],
+  "exclusion_codes": [
+    "MISSING_REQUIRED_FIELD",
+    "MISSING_REFERENCE_LEVEL",
+    "MALFORMED_BARS",
+    "NON_MONOTONIC_TIME",
+    "ANCHOR_OUT_OF_RANGE",
+    "HORIZON_EXCEEDED",
+    "INSUFFICIENT_CONTEXT",
+    "UNSUPPORTED_TIMEFRAME",
+    "EXCLUDED_RULE_FAMILY",
+    "FUTURE_DATA_LEAK"
+  ],
+  "mapping_entries": [
+    {
+      "canonical_concept_ids": [
+        "concept:stop_loss",
+        "subconcept:technical_stop_loss"
+      ],
+      "related_rule_family_hints": [
+        "stop_loss",
+        "level",
+        "breakout"
+      ],
+      "task_classes": [
+        "acceptance_above",
+        "acceptance_below",
+        "false_breakout_up",
+        "false_breakout_down",
+        "rejection",
+        "no_setup"
+      ],
+      "mapping_type": "partial",
+      "rationale": "Stop/level rules in corpus describe interaction with price levels; multiclass satisfaction is resolved from bars, not rule text.",
+      "notes": "Does not map directly to a single class — narrows eligible pattern families."
+    },
+    {
+      "canonical_concept_ids": [
+        "node:breakout"
+      ],
+      "related_rule_family_hints": [
+        "breakout",
+        "retest"
+      ],
+      "task_classes": [
+        "false_breakout_up",
+        "false_breakout_down",
+        "acceptance_above",
+        "acceptance_below",
+        "rejection"
+      ],
+      "mapping_type": "heuristic",
+      "rationale": "Breakout/retest vocabulary aligns with acceptance vs false-breakout semantics.",
+      "notes": "Directional split (up/down) comes from approach direction + bar path."
+    },
+    {
+      "canonical_concept_ids": [
+        "node:accumulation"
+      ],
+      "related_rule_family_hints": [
+        "range",
+        "level"
+      ],
+      "task_classes": [
+        "rejection",
+        "no_setup",
+        "ambiguous"
+      ],
+      "mapping_type": "partial",
+      "rationale": "Accumulation contexts often imply range boundaries; level interactions may be no_setup or rejection without clean breakout.",
+      "notes": "Lower prior for strong acceptance labels unless Step 6 range-break rules fire."
+    },
+    {
+      "canonical_concept_ids": [
+        "concept:level",
+        "subconcept:level_rating"
+      ],
+      "related_rule_family_hints": [
+        "level",
+        "support_resistance"
+      ],
+      "task_classes": [
+        "acceptance_above",
+        "acceptance_below",
+        "false_breakout_up",
+        "false_breakout_down",
+        "rejection",
+        "no_setup"
+      ],
+      "mapping_type": "direct",
+      "rationale": "Core level-interaction ontology for this task_id.",
+      "notes": "Primary in-scope concept family for v1."
+    }
+  ],
+  "excluded_rule_families": [
+    {
+      "family_hint": "abstract_teaching_example",
+      "reason": "Pedagogical slides without tradeable level anchor — out of scope for bar-based task."
+    },
+    {
+      "family_hint": "psychology_risk_only",
+      "reason": "No level interaction definition — deferred to future tasks."
+    },
+    {
+      "family_hint": "macro_calendar",
+      "reason": "Not a level-interaction pattern — excluded from task_id level_interaction_rule_satisfaction_v1."
+    }
+  ],
+  "task_examples_version": "1.0.0",
+  "task_examples_count": 14,
+  "task_examples_digest": [
+    {
+      "example_id": "ex_accept_above_01",
+      "expected_label": "acceptance_above",
+      "confidence_tier": "gold"
+    },
+    {
+      "example_id": "ex_accept_above_02",
+      "expected_label": "acceptance_above",
+      "confidence_tier": "silver"
+    },
+    {
+      "example_id": "ex_accept_below_01",
+      "expected_label": "acceptance_below",
+      "confidence_tier": "gold"
+    },
+    {
+      "example_id": "ex_accept_below_02",
+      "expected_label": "acceptance_below",
+      "confidence_tier": "weak"
+    },
+    {
+      "example_id": "ex_fb_up_01",
+      "expected_label": "false_breakout_up",
+      "confidence_tier": "gold"
+    },
+    {
+      "example_id": "ex_fb_up_02",
+      "expected_label": "false_breakout_up",
+      "confidence_tier": "silver"
+    },
+    {
+      "example_id": "ex_fb_dn_01",
+      "expected_label": "false_breakout_down",
+      "confidence_tier": "gold"
+    },
+    {
+      "example_id": "ex_fb_dn_02",
+      "expected_label": "false_breakout_down",
+      "confidence_tier": "weak"
+    },
+    {
+      "example_id": "ex_reject_01",
+      "expected_label": "rejection",
+      "confidence_tier": "gold"
+    },
+    {
+      "example_id": "ex_reject_02",
+      "expected_label": "rejection",
+      "confidence_tier": "silver"
+    },
+    {
+      "example_id": "ex_no_setup_01",
+      "expected_label": "no_setup",
+      "confidence_tier": "gold"
+    },
+    {
+      "example_id": "ex_no_setup_02",
+      "expected_label": "no_setup",
+      "confidence_tier": "silver"
+    },
+    {
+      "example_id": "ex_ambig_01",
+      "expected_label": "ambiguous",
+      "confidence_tier": "silver"
+    },
+    {
+      "example_id": "ex_ambig_02",
+      "expected_label": "ambiguous",
+      "confidence_tier": "weak"
+    }
+  ]
+}

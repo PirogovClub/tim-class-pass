@@ -1,0 +1,38 @@
+{
+  "model_comparison_report_id": "model_comparison_v1",
+  "symbolic": {
+    "n_folds": 1,
+    "accuracy_mean": 0.0,
+    "accuracy_pstdev": 0.0,
+    "macro_f1_mean": 0.0,
+    "macro_f1_pstdev": 0.0
+  },
+  "logistic_regression": {
+    "n_folds": 1,
+    "accuracy_mean": 0.0,
+    "accuracy_pstdev": 0.0,
+    "macro_f1_mean": 0.0,
+    "macro_f1_pstdev": 0.0
+  },
+  "logistic_regression_calibrated": {
+    "n_folds": 0,
+    "accuracy_mean": null,
+    "accuracy_pstdev": 0.0,
+    "macro_f1_mean": null,
+    "macro_f1_pstdev": 0.0
+  },
+  "xgboost": {
+    "n_folds": 0,
+    "accuracy_mean": null,
+    "accuracy_pstdev": 0.0,
+    "macro_f1_mean": null,
+    "macro_f1_pstdev": 0.0
+  },
+  "lightgbm": {
+    "n_folds": 0,
+    "accuracy_mean": null,
+    "accuracy_pstdev": 0.0,
+    "macro_f1_mean": null,
+    "macro_f1_pstdev": 0.0
+  }
+}

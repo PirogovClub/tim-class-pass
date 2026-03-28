@@ -1,4 +1,0 @@
-112 passed in 33.32s
-
-Command: python -m pytest tests/adjudication_api/ -q --tb=line
-(Regenerated for Stage 5.5 re-audit bundle.)

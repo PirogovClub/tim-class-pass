@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tim-class-pass.local/schemas/generated_labels_row.json",
+  "title": "GeneratedLabelRow",
+  "type": "object",
+  "required": [
+    "generated_label_id",
+    "task_id",
+    "candidate_id",
+    "confidence_tier",
+    "status",
+    "decision_order_path",
+    "matched_rule_refs",
+    "matched_concept_ids",
+    "matched_conditions",
+    "invalidation_hits",
+    "ambiguity_reason",
+    "exclusion_reason",
+    "market_window_ref",
+    "anchor_timestamp",
+    "timeframe",
+    "label_horizon",
+    "point_in_time_safe",
+    "metadata"
+  ],
+  "properties": {
+    "generated_label_id": { "type": "string", "minLength": 1 },
+    "task_id": { "type": "string" },
+    "candidate_id": { "type": "string" },
+    "label": {
+      "type": ["string", "null"]
+    },
+    "confidence_tier": { "type": "string", "enum": ["gold", "silver", "weak"] },
+    "status": {
+      "type": "string",
+      "enum": ["assigned", "excluded", "ambiguous", "skipped_invalid_input"]
+    },
+    "decision_order_path": { "type": "array", "items": { "type": "string" } },
+    "matched_rule_refs": { "type": "array", "items": { "type": "string" } },
+    "matched_concept_ids": { "type": "array", "items": { "type": "string" } },
+    "matched_conditions": { "type": "array", "items": { "type": "string" } },
+    "invalidation_hits": { "type": "array", "items": { "type": "string" } },
+    "ambiguity_reason": { "type": ["string", "null"] },
+    "exclusion_reason": { "type": ["string", "null"] },
+    "market_window_ref": { "type": "string" },
+    "anchor_timestamp": { "type": "string" },
+    "timeframe": { "type": "string" },
+    "label_horizon": { "type": "integer", "minimum": 0 },
+    "point_in_time_safe": { "type": "boolean" },
+    "metadata": { "type": "object" }
+  },
+  "additionalProperties": true
+}

@@ -1,7 +1,0 @@
-﻿python : H:\Python312\python.exe: No module named mypy
-At C:\Users\pirog\AppData\Local\Temp\ps-script-d577d8c5-d4e6-46a1-9391-b2fbe29b2f28.ps1:87 char:38
-+ ... class-pass; python -m mypy pipeline/adjudication --no-error-summary 2 ...
-+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: (H:\Python312\py...dule named mypy:String) [], RemoteException
-    + FullyQualifiedErrorId : NativeCommandError
- 

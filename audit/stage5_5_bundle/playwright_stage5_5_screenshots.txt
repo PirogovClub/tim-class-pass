@@ -1,8 +1,0 @@
-Stage 5.5 audit screenshots (Playwright)
-
-Command (from ui/explorer):
-  npx playwright test stage5-5-audit-screenshots.spec.ts
-
-Last run: 1 passed (~20s after build; webServer runs npm run build && vite preview).
-
-Output: audit/stage5_5_bundle/screenshots/*.png

@@ -1,0 +1,80 @@
+{
+  "threshold_sweep_report_id": "threshold_sweep_v1",
+  "rows": [
+    {
+      "fold_id": "fold_000",
+      "policy": "symbolic__top_class",
+      "eligible_count": 2,
+      "abstain_count": 0,
+      "hit_rate": 0.0,
+      "class_mix_predicted": {
+        "acceptance_below": 2
+      }
+    },
+    {
+      "fold_id": "fold_000",
+      "policy": "logistic_regression__top_class",
+      "eligible_count": 2,
+      "abstain_count": 0,
+      "hit_rate": 0.0,
+      "class_mix_predicted": {
+        "acceptance_above": 2
+      }
+    },
+    {
+      "fold_id": "fold_000",
+      "policy": "logistic_regression__prob_ge_0.25",
+      "threshold": 0.25,
+      "eligible_count": 2,
+      "abstain_count": 0,
+      "hit_rate": 0.0,
+      "confidence_mean": 0.7499815646364163,
+      "class_mix_predicted": {
+        "acceptance_above": 2
+      }
+    },
+    {
+      "fold_id": "fold_000",
+      "policy": "logistic_regression__prob_ge_0.35",
+      "threshold": 0.35,
+      "eligible_count": 2,
+      "abstain_count": 0,
+      "hit_rate": 0.0,
+      "confidence_mean": 0.7499815646364163,
+      "class_mix_predicted": {
+        "acceptance_above": 2
+      }
+    },
+    {
+      "fold_id": "fold_000",
+      "policy": "logistic_regression__prob_ge_0.5",
+      "threshold": 0.5,
+      "eligible_count": 2,
+      "abstain_count": 0,
+      "hit_rate": 0.0,
+      "confidence_mean": 0.7499815646364163,
+      "class_mix_predicted": {
+        "acceptance_above": 2
+      }
+    },
+    {
+      "fold_id": "fold_000",
+      "policy": "symbolic_agree_logreg_prob_ge_threshold",
+      "threshold": 0.35,
+      "eligible_count": 0,
+      "abstain_count": 2,
+      "hit_rate": 0.0,
+      "description": "Abstain unless max(raw prob) >= tau AND symbolic top class == model top class."
+    },
+    {
+      "fold_id": "fold_000",
+      "policy": "symbolic_only",
+      "eligible_count": 2,
+      "abstain_count": 0,
+      "hit_rate": 0.0,
+      "class_mix_predicted": {
+        "acceptance_below": 2
+      }
+    }
+  ]
+}

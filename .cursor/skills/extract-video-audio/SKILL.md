@@ -24,9 +24,9 @@ Run `uv run extract-video-audio --help` for full option text.
 
 | Piece | Location |
 | --- | --- |
-| Click entry | `helpers/utils/video_audio_cli.py` → `main` |
-| Core API | `helpers/utils/video_audio.py` → `extract_audio`, `extract_audio_from_folder` |
-| FFmpeg / ffprobe runner | `helpers/ffmpeg_cmd.py` → `run_ffmpeg_cmd`, `probe_media_duration_seconds` |
+| Click entry | `src/helpers/utils/video_audio_cli.py` → `main` |
+| Core API | `src/helpers/utils/video_audio.py` → `extract_audio`, `extract_audio_from_folder` |
+| FFmpeg / ffprobe runner | `src/helpers/ffmpeg_cmd.py` → `run_ffmpeg_cmd`, `probe_media_duration_seconds` |
 | Script entry | `pyproject.toml` → `[project.scripts]` `extract-video-audio` |
 | Tests | `tests/test_video_audio.py` |
 

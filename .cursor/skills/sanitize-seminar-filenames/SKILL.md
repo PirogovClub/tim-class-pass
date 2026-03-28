@@ -47,7 +47,7 @@ python scripts/sanitize_seminar_filenames.py "Z:\path\to\folder" --no-strip-trai
 
 ## Rules (short)
 
-- **Slugify:** `pipeline/corpus/id_utils._slugify` — NFKC, lowercase, Cyrillic transliteration, non-alphanumeric → `_`, collapse/trim.
+- **Slugify:** `src/pipeline/corpus/id_utils._slugify` — NFKC, lowercase, Cyrillic transliteration, non-alphanumeric → `_`, collapse/trim.
 - **Trailing copy tails:** strip `(?:_1)+` at end of stem unless `--no-strip-trailing-one`.
 - **Collisions** in the same directory: basename already correct keeps name; others get `stem__2.ext`, etc.
 - **Extensions:** default video + audio sets; override with `--extensions .mp4,.m4a`.

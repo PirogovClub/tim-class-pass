@@ -1,4 +1,0 @@
-- **Regeneration stale:** `tests/adjudication_api/test_proposal_repository.py::test_mark_missing_stale`
-- **Decision stale:** `test_append_decision_marks_touching_proposals_stale`, `test_append_decision_stale_excludes_accepted_proposal_id`
-- **Inventory / missing family:** `test_mark_inventory_stale_for_rule_not_in_corpus` — `target_not_in_inventory` on each persisted generate (rule ids not in `CorpusTargetIndex`, or canonical family id missing from DB)
-- **Reason codes:** `no_longer_generated`, `adjudication_decision_on_target`, `target_not_in_inventory`

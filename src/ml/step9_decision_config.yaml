@@ -1,0 +1,119 @@
+# Step 9 model-family decision gate — thresholds and evidence paths (source of truth for scoring parameters).
+task_id: level_interaction_rule_satisfaction_v1
+seed: 42
+reproducibility_note: "Decision scores are deterministic given the same Step 8 artifact payloads and this file."
+
+pit_declaration: >-
+  Step 9 consumes only artifacts produced by the approved Step 6–8 pipeline (walk-forward, manifests, optional Step 7 QA JSON).
+  No external benchmarks or ad-hoc hindsight examples are used as evidence. Limits: sparse folds, missing optional manifests,
+  and fixture-scale data reduce confidence; the decider may recommend improve_upstream_first or tabular_only_for_now accordingly.
+
+evidence:
+  # Relative to repository root when using the CLI default; override with --repo-root.
+  step8_root: ml_output/step8_audit_sample
+  required_files:
+    walkforward_report: walkforward_report.json
+    fold_metrics: fold_metrics.json
+    model_comparison_report: model_comparison_report.json
+    calibration_drift_report: calibration_drift_report.json
+    policy_report: policy_report.json
+    backtest_predictions: backtest_predictions.jsonl
+    step8_manifest: step8_manifest.json
+  optional_files:
+    dataset_manifest: null
+    feature_quality_report: null
+    label_dataset_manifest: null
+
+minimum_evidence:
+  min_folds_evaluated: 2
+  min_prediction_lines: 10
+
+baseline_comparison:
+  tabular_model_key: logistic_regression
+  symbolic_model_key: symbolic
+  material_beat_min_delta_macro_f1: 0.05
+  stable_macro_f1_pstdev_max: 0.15
+
+calibration_stability:
+  use_walkforward_calibration_narrative: true
+  use_drift_heuristic_json: true
+
+class_weakness:
+  weak_mean_f1_max: 0.35
+  weak_class_count_upstream_trigger: 5
+  min_class_support_low: 2
+
+fold_instability:
+  macro_f1_range_upstream_trigger: 0.5
+
+policy_utility:
+  max_hit_rate_considered_poor: 0.15
+
+sequence_justification:
+  min_folds: 3
+  min_weak_classes_for_temporal_hypothesis: 2
+  timeframe_accuracy_spread_min: 0.18
+  session_accuracy_spread_min: 0.15
+  tabular_must_beat_symbolic: true
+
+vision_justification:
+  min_folds: 5
+  timeframe_accuracy_spread_min: 0.35
+  session_accuracy_spread_min: 0.30
+  require_chart_geometry_hypothesis: true
+  sequence_must_not_outscore_vision: true
+
+tabular_only:
+  max_weak_classes: 2
+  min_mean_tabular_macro_f1: 0.55
+
+improve_upstream_first:
+  insufficient_folds_weight: 6
+  calibration_drift_weight: 4
+  many_weak_classes_weight: 3
+  low_class_support_weight: 3
+  fold_instability_weight: 3
+  policy_useless_weight: 2
+  feature_quality_concern_weight: 3
+  label_manifest_concern_weight: 2
+  tiny_dataset_weight: 4
+
+scoring:
+  # Base weights added when rule fires (multiplied by improve_upstream weights above where noted).
+  sequence_temporal_spread_bonus: 4
+  sequence_weak_class_bonus: 2
+  tabular_stable_beat_bonus: 5
+  tabular_low_weak_bonus: 2
+  vision_gate_bonus: 8
+
+tie_break_order:
+  - improve_upstream_first
+  - tabular_only_for_now
+  - sequence_model_next
+  - vision_model_next
+
+# Formal no-go for advanced models (sequence/vision): same decision outcome as improve_upstream_first.
+no_go:
+  outcome: improve_upstream_first
+  meaning: >-
+    No-go for advanced model families until upstream evidence and fold stability support them.
+    The decider realizes this outcome via improve_upstream_first scores (see improve_upstream_first weights).
+  uses_weights_from: improve_upstream_first
+  documented_triggers:
+    - below minimum_evidence folds or prediction_lines
+    - calibration drift (walkforward narrative or calibration_drift_report heuristic)
+    - weak_class_count_upstream_trigger or low per-class support
+    - fold macro-F1 instability (fold_instability.macro_f1_range_upstream_trigger)
+    - poor policy hit rates (policy_utility)
+    - optional feature_quality_report / label_dataset_manifest concerns when paths are set
+
+outputs:
+  root: ml_output/step9
+  evidence_summary: step9_evidence_summary.json
+  failure_mode_report: failure_mode_report.json
+  model_family_decision: model_family_decision.json
+  step10_architecture_brief: step10_architecture_brief.json
+  step9_manifest: step9_manifest.json
+  readiness_scorecard: advanced_model_readiness_scorecard.json
+  regime_breakdown_report: regime_breakdown_report.json
+  class_stability_report: class_stability_report.json

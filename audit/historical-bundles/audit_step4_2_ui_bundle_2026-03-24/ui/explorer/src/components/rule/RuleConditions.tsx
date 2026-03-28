@@ -1,2 +1,0 @@
-interface RuleConditionsProps { title: string; items: string[]; }
-export function RuleConditions({ title, items }: RuleConditionsProps) { if (!items.length) return null; return <details className="rounded-xl border border-slate-200 bg-white p-4"><summary className="cursor-pointer font-medium text-slate-900">{title}</summary><ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700">{items.map((item) => <li key={item}>{item}</li>)}</ul></details>; }

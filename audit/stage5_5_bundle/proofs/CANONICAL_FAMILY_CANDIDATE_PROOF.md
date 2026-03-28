@@ -1,1 +1,0 @@
-Canonical family candidate path is covered by proposal generation tests in `test_proposal_generation.py` (family-scoped scenarios). See `proposal_generation.py` canonical scoring and `ProposalType.CANONICAL_FAMILY_CANDIDATE`.

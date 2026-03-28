@@ -1,0 +1,118 @@
+# Machine-readable source of truth — ML roadmap Step 5 (first narrow task).
+# RAG / rule cards inform semantics; labels are defined in market-data terms, not lesson prose.
+
+task_id: level_interaction_rule_satisfaction_v1
+task_name: Level interaction rule satisfaction (multiclass)
+task_type: multiclass_classification
+version: "1.0.0"
+status: defined_not_generated
+
+description: >
+  Given a point-in-time-safe market window anchored on a candidate level interaction,
+  assign exactly one class describing whether a defined level-interaction pattern
+  (acceptance, false breakout, rejection, or absence of setup) is satisfied relative
+  to that level, or whether the instance must be withheld as ambiguous.
+
+target_unit: candidate_level_interaction_window
+
+label_set:
+  - acceptance_above
+  - acceptance_below
+  - false_breakout_up
+  - false_breakout_down
+  - rejection
+  - no_setup
+  - ambiguous
+
+preconditions:
+  - A candidate level interaction anchor is identified at decision time T0 with documented price level L and direction of approach (from below / from above / unclear).
+  - OHLCV bars are available for all required timeframes from T0 - context_before through T0 + decision_horizon inclusive, per window_contract.yaml.
+  - Session / instrument identity is fixed for the window (no mixed symbols).
+  - The task is not run when exclusion rules in window_contract.yaml or exclusions below apply (label as out-of-task or drop sample — policy for Step 6).
+
+exclusions:
+  - Windows where the anchor level L cannot be defined within tick/size precision at T0.
+  - Windows with missing required OHLCV in the closed-bar sense defined in window_contract.yaml.
+  - Instruments or sessions explicitly listed as unsupported in rule_to_class_mapping.json (excluded_rule_families / notes).
+  - Windows where only narrative (lesson text) is available without structured bars — RAG text is not the training signal.
+
+ambiguity_policy: >
+  Use class "ambiguous" only when the anchor or level geometry is uncertain, multiple
+  mutually exclusive classes are plausible under the written rules, or bar quality /
+  microstructure noise prevents a deterministic assignment. Do not use "ambiguous"
+  when the correct outcome is simply "no_setup" (no pattern matched). Document reason
+  in ambiguity_reason when assigning ambiguous in generated labels (Step 6).
+
+confidence_tiers:
+  gold:
+    meaning: >
+      Deterministic assignment from bars + explicit level + unambiguous class boundaries;
+      no conflicting evidence from linked rule hints; anchor time and horizon fully observed.
+  silver:
+    meaning: >
+      Mostly deterministic; at most one documented heuristic (e.g. touch count threshold)
+      from Step 6 spec; acceptable for training with metadata flag.
+  weak:
+    meaning: >
+      Partially heuristic, incomplete context, or borderline geometry; useful for weak
+      supervision or analysis — not primary high-trust training rows.
+
+input_window:
+  $ref: window_contract.yaml
+  summary:
+    anchor_event: candidate_level_interaction
+    context_before: see window_contract.yaml
+    decision_horizon: see window_contract.yaml
+
+required_inputs:
+  - ohlcv_primary_tf
+  - anchor_level_price
+  - anchor_timestamp_utc
+  - approach_direction  # from_below | from_above | unknown
+
+optional_inputs:
+  - ohlcv_higher_tf_context
+  - session_phase
+  - tick_size
+  - linked_rule_card_ids
+  - linked_concept_ids
+
+rule_sources:
+  description: >
+    Rule cards and concept graph in the knowledge base constrain vocabulary and invalidations;
+    they do not replace bar-based definitions. See rule_to_class_mapping.json.
+  manifest_style: pipeline.component2.ml_prep labeling_manifest (future link only)
+
+canonical_concepts:
+  description: >
+    Concept ids (e.g. concept:stop_loss, subconcept:technical_stop_loss) map to task
+    classes heuristically in rule_to_class_mapping.json; Step 6 resolves per rule family.
+
+class_decision_order:
+  # Conflict resolution: first matching class wins when multiple pattern definitions could apply.
+  - ambiguous
+  - false_breakout_up
+  - false_breakout_down
+  - acceptance_above
+  - acceptance_below
+  - rejection
+  - no_setup
+
+notes: >
+  PnL and raw return prediction are explicitly out of scope for this task_id.
+  Outcome prediction for trading is deferred to later roadmap steps.
+
+downstream_dependencies:
+  step_6_label_generation:
+    produces: deterministic multiclass label per window + confidence_tier + ambiguity_reason nullable
+    consumes: task_definition.yaml, class_ontology.json, window_contract.yaml, rule_to_class_mapping.json
+  step_7_dataset_features:
+    produces: tabular features aligned to same window contract + provenance to rule/concept ids
+    consumes: Step 6 labels, OHLCV feature store (not implemented in Step 5)
+
+point_in_time_safety:
+  $ref: window_contract.yaml#point_in_time_safety
+  summary: >
+    No features or labels may use bars strictly after T0 + decision_horizon for the assigned class.
+    No future session outcomes, no human labels created after the horizon, no extremum beyond
+    the contract's lookforward cap.

@@ -1,0 +1,18 @@
+{
+  "calibration_drift_report_id": "calibration_drift_v1",
+  "n_folds_with_metrics": 1,
+  "brier_raw": {
+    "per_fold": [
+      0.6249815653161415
+    ],
+    "mean": 0.6249815653161415,
+    "pstdev": 0.0
+  },
+  "brier_calibrated": {
+    "per_fold": [],
+    "mean": null,
+    "pstdev": 0.0
+  },
+  "drift_heuristic": null,
+  "notes": "Large increase in brier variance across forward folds suggests calibration drift."
+}

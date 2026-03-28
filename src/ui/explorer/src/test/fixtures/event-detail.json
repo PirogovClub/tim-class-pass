@@ -1,0 +1,16 @@
+{
+  "doc_id": "event:2025-09-29-sviatoslav-chornyi:ke_sample_1",
+  "lesson_id": "2025-09-29-sviatoslav-chornyi",
+  "lesson_slug": "2025_09_29_sviatoslav_chornyi",
+  "title": "example",
+  "event_type": "example",
+  "snippet": "Sample knowledge event text for fixtures.",
+  "provenance": { "fixture": true },
+  "timestamps": [{ "start": "00:10", "end": "00:20" }],
+  "support_basis": "transcript_primary",
+  "confidence_score": 0.85,
+  "canonical_concept_ids": ["concept:stop_loss"],
+  "linked_evidence": [],
+  "linked_rules": [],
+  "linked_events": []
+}

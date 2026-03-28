@@ -30,4 +30,5 @@ def test_eval_report_contains_metric_keys(hybrid_retriever, rag_config):
     assert "category_avg_recall" in report
     assert report["category_avg_recall"]["higher_timeframe_dependency"] >= 0.9
     assert report["metrics_schema_version"] == STEP31_METRICS_SCHEMA_VERSION
+    assert report.get("eval_harness") == "stage63_rag"
     assert report["generated_at"]

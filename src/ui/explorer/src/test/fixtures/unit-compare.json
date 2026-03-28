@@ -1,0 +1,38 @@
+{
+  "items": [
+    {
+      "doc_id": "rule:2025_09_29_sviatoslav_chornyi:rule_2025_09_29_sviatoslav_chornyi_stop_loss_technical_stop_loss_5",
+      "unit_type": "rule_card",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "title": "Stop Loss / Technical Stop Loss",
+      "summary": "Технические стопы могут быть основаны на одной пятиминутке",
+      "timestamps": [],
+      "canonical_concept_ids": ["concept:stop_loss"],
+      "evidence_ids": [],
+      "source_event_ids": [],
+      "source_rule_ids": [],
+      "event_type": null,
+      "support_basis": "transcript_plus_visual",
+      "teaching_mode": "mixed",
+      "evidence_requirement": "optional",
+      "provenance": { "fixture": true }
+    },
+    {
+      "doc_id": "event:2025-09-29-sviatoslav-chornyi:ke_sample_1",
+      "unit_type": "knowledge_event",
+      "lesson_id": "2025-09-29-sviatoslav-chornyi",
+      "title": "example",
+      "summary": "Sample knowledge event text for fixtures.",
+      "timestamps": [{ "start": "00:10", "end": "00:20" }],
+      "canonical_concept_ids": ["concept:stop_loss"],
+      "evidence_ids": [],
+      "source_event_ids": [],
+      "source_rule_ids": [],
+      "event_type": "example",
+      "support_basis": "transcript_primary",
+      "teaching_mode": "theory",
+      "evidence_requirement": "optional",
+      "provenance": { "fixture": true }
+    }
+  ]
+}

@@ -45,6 +45,21 @@ def test_browser_health_and_search_endpoints_work(explorer_client):
     assert payload["hit_count"] >= 1
 
 
+def test_browser_detail_responses_include_provenance_field(explorer_client):
+    """Regression: Stage 6.4 display models must keep provenance (dict, possibly empty)."""
+    rule = explorer_client.get("/browser/rule/rule:lesson_alpha:rule_stop_loss_1").json()
+    assert "provenance" in rule
+    assert isinstance(rule["provenance"], dict)
+
+    evidence = explorer_client.get("/browser/evidence/evidence:lesson_alpha:ev_stop_loss").json()
+    assert "provenance" in evidence
+    assert isinstance(evidence["provenance"], dict)
+
+    event = explorer_client.get("/browser/event/event:lesson_alpha:ke_stop_loss_1").json()
+    assert "provenance" in event
+    assert isinstance(event["provenance"], dict)
+
+
 def test_browser_detail_endpoints_and_facets_work(explorer_client):
     rule_response = explorer_client.get("/browser/rule/rule:lesson_alpha:rule_stop_loss_1")
     assert rule_response.status_code == 200
@@ -81,6 +96,25 @@ def test_browser_detail_endpoints_and_facets_work(explorer_client):
     assert lesson_payload["rule_count"] == 2
     assert lesson_payload["event_count"] == 2
     assert lesson_payload["evidence_count"] == 2
+    assert len(lesson_payload["top_events"]) >= 1
+
+    event_response = explorer_client.get("/browser/event/event:lesson_alpha:ke_stop_loss_1")
+    assert event_response.status_code == 200
+    assert event_response.json()["doc_id"] == "event:lesson_alpha:ke_stop_loss_1"
+
+    unit_compare = explorer_client.post(
+        "/browser/compare/units",
+        json={
+            "items": [
+                {"unit_type": "rule_card", "doc_id": "rule:lesson_alpha:rule_stop_loss_1"},
+                {"unit_type": "knowledge_event", "doc_id": "event:lesson_alpha:ke_stop_loss_1"},
+            ]
+        },
+    )
+    assert unit_compare.status_code == 200
+    uc = unit_compare.json()
+    assert len(uc["items"]) == 2
+    assert {row["unit_type"] for row in uc["items"]} == {"rule_card", "knowledge_event"}
 
     facets_response = explorer_client.get("/browser/facets")
     assert facets_response.status_code == 200
@@ -152,6 +186,18 @@ def test_browser_detail_error_and_validation_paths_work(explorer_client):
 
     unknown_lesson = explorer_client.get("/browser/lesson/lesson_missing")
     assert unknown_lesson.status_code == 404
+
+    wrong_event = explorer_client.get("/browser/event/rule:lesson_alpha:rule_stop_loss_1")
+    assert wrong_event.status_code == 400
+
+    unknown_event = explorer_client.get("/browser/event/event:missing")
+    assert unknown_event.status_code == 404
+
+    bad_unit_compare = explorer_client.post(
+        "/browser/compare/units",
+        json={"items": [{"unit_type": "rule_card", "doc_id": "rule:lesson_alpha:rule_stop_loss_1"}]},
+    )
+    assert bad_unit_compare.status_code == 400
 
     bad_search = explorer_client.post(
         "/browser/search",

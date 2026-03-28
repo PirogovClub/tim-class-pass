@@ -1,0 +1,69 @@
+{
+  "walkforward_report_id": "walkforward_report_v1",
+  "created_at_utc": "2026-03-27T13:47:39Z",
+  "task_id": "level_interaction_rule_satisfaction_v1",
+  "n_folds_evaluated": 1,
+  "skipped_fold_reasons": [],
+  "answers": {
+    "how_many_folds": 1,
+    "which_folds_skipped": [],
+    "best_model_by_mean_macro_f1": "symbolic",
+    "most_stable_by_macro_f1_std": "insufficient_folds_for_stability",
+    "symbolic_vs_logreg_macro_f1_means": {
+      "symbolic": 0.0,
+      "logistic_regression": 0.0
+    },
+    "which_classes_remain_weak": [
+      {
+        "class": "acceptance_above",
+        "mean_f1_across_folds": 0.0,
+        "n_folds": 1
+      },
+      {
+        "class": "acceptance_below",
+        "mean_f1_across_folds": 0.0,
+        "n_folds": 1
+      },
+      {
+        "class": "false_breakout_down",
+        "mean_f1_across_folds": 0.0,
+        "n_folds": 1
+      },
+      {
+        "class": "false_breakout_up",
+        "mean_f1_across_folds": 0.0,
+        "n_folds": 1
+      },
+      {
+        "class": "no_setup",
+        "mean_f1_across_folds": 0.0,
+        "n_folds": 1
+      },
+      {
+        "class": "rejection",
+        "mean_f1_across_folds": 0.0,
+        "n_folds": 1
+      }
+    ],
+    "calibration_forward_behavior": {
+      "flag_potential_drift_raw_brier": false,
+      "brier_raw_mean": 0.6249815653161415,
+      "brier_raw_pstdev": 0.0,
+      "brier_cal_mean": null,
+      "brier_cal_pstdev": 0.0,
+      "n_folds_in_drift_report": 1,
+      "plain_language": "No drift heuristic triggered, or too few folds for variance estimate."
+    },
+    "calibration_drift_detail_file": "calibration_drift_report.json",
+    "aggregate_dimensions_file": "aggregate_dimensions_report.json",
+    "aggregate_dimensions_headline": "tf:5m acc=0.000; tier:gold acc=0.000",
+    "promising_policies": [
+      "fold_000: best policy key=symbolic__top_class hit_rate=0.0"
+    ],
+    "limitations": [
+      "Fixture-scale data; fold counts and class balance are limited.",
+      "Policies use fixed thresholds from config (no test-set tuning)."
+    ]
+  },
+  "pit_declaration": "Folds are strictly time-ordered by anchor_timestamp. Preprocessing (scaler, one-hot) is fit only on train rows per fold; calibration fits only on validation rows. Test rows are never used for fitting. Symbolic baseline has no train phase. Policy thresholds are fixed in config and not tuned on test."
+}

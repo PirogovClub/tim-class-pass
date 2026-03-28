@@ -1,8 +1,0 @@
-{
-  "status_code": 404,
-  "method": "GET",
-  "path": "/browser/lesson/lesson_does_not_exist",
-  "response": {
-    "detail": "Lesson 'lesson_does_not_exist' not found"
-  }
-}

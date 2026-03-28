@@ -1,0 +1,67 @@
+{
+  "walkforward_folds_id": "walkforward_folds_v1",
+  "task_id": "level_interaction_rule_satisfaction_v1",
+  "dataset_path": "H:\\GITS\\tim-class-pass\\ml_output\\step8_audit_prereq\\modeling_dataset.jsonl",
+  "exclusion_log": {
+    "input_rows": 15,
+    "excluded_not_eligible": 6,
+    "excluded_tier": 1,
+    "excluded_label_status": 0,
+    "excluded_lesson_id": 0,
+    "included_primary": 8
+  },
+  "pool_size_after_filter": 8,
+  "folds": [
+    {
+      "fold_id": "fold_000",
+      "train_anchor_start": "2025-01-01T14:19:00Z",
+      "train_anchor_end": "2025-01-01T14:19:00Z",
+      "val_anchor_start": "2025-01-01T14:19:00Z",
+      "val_anchor_end": "2025-01-01T14:19:00Z",
+      "test_anchor_start": "2025-01-01T14:19:00Z",
+      "test_anchor_end": "2025-01-01T14:19:00Z",
+      "train_start": "2025-01-01T14:19:00Z",
+      "train_end": "2025-01-01T14:19:00Z",
+      "val_start": "2025-01-01T14:19:00Z",
+      "val_end": "2025-01-01T14:19:00Z",
+      "test_start": "2025-01-01T14:19:00Z",
+      "test_end": "2025-01-01T14:19:00Z",
+      "row_counts": {
+        "train": 4,
+        "validation": 2,
+        "test": 2
+      },
+      "label_counts": {
+        "train": {
+          "acceptance_above": 3,
+          "acceptance_below": 1
+        },
+        "validation": {
+          "false_breakout_down": 1,
+          "false_breakout_up": 1
+        },
+        "test": {
+          "no_setup": 1,
+          "rejection": 1
+        }
+      },
+      "train_row_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "val_row_indices": [
+        4,
+        5
+      ],
+      "test_row_indices": [
+        6,
+        7
+      ],
+      "step_size_rows": 2
+    }
+  ],
+  "skipped_fold_reasons": [],
+  "pit_note": "Folds are strictly time-ordered by anchor_timestamp. Preprocessing (scaler, one-hot) is fit only on train rows per fold; calibration fits only on validation rows. Test rows are never used for fitting. Symbolic baseline has no train phase. Policy thresholds are fixed in config and not tuned on test."
+}

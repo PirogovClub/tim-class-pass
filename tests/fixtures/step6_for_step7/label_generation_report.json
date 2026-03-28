@@ -1,0 +1,33 @@
+{
+  "report_id": "label_generation_report_v1",
+  "generated_at_utc": "2026-03-27T00:55:11Z",
+  "row_count": 15,
+  "counts_by_class": {
+    "acceptance_above": 5,
+    "acceptance_below": 1,
+    "ambiguous": 1,
+    "false_breakout_down": 1,
+    "false_breakout_up": 1,
+    "no_setup": 1,
+    "rejection": 1
+  },
+  "counts_by_confidence_tier": {
+    "gold": 8,
+    "silver": 2,
+    "weak": 1
+  },
+  "counts_by_status": {
+    "assigned": 10,
+    "ambiguous": 1,
+    "excluded": 1,
+    "skipped_invalid_input": 3
+  },
+  "excluded_or_skipped": 4,
+  "ambiguous_rows": 1,
+  "counts_by_lesson_id": {
+    "audit_fixture_cal": 1
+  },
+  "counts_by_rule_family_hint": {
+    "macro_calendar": 1
+  }
+}

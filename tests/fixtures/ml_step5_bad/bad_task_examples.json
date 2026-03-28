@@ -1,0 +1,17 @@
+{
+  "task_id": "level_interaction_rule_satisfaction_v1",
+  "version": "0.0.0-bad",
+  "examples": [
+    {
+      "example_id": "bad_no_setup_with_reason",
+      "class_label": "no_setup",
+      "anchor_description": "x",
+      "market_window_summary": "x",
+      "rule_concepts": [],
+      "expected_label": "no_setup",
+      "confidence_tier": "gold",
+      "ambiguity_reason": "SHOULD_NOT_BE_HERE",
+      "notes": "invalid: no_setup must not carry ambiguity_reason"
+    }
+  ]
+}

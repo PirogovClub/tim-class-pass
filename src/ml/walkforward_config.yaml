@@ -1,0 +1,102 @@
+# Step 8 walk-forward backtest — machine-readable source of truth.
+# Paths are relative to repository root unless absolute.
+
+task_id: level_interaction_rule_satisfaction_v1
+
+dataset:
+  path: ml_output/step7/modeling_dataset.jsonl
+  manifest_path: ml_output/step7/dataset_manifest.json  # optional integrity reference
+  split_manifest_path: ml_output/step7/split_manifest.json  # optional Step 7 static split (reference only)
+
+ml_root: src/ml
+feature_spec_path: src/ml/feature_spec.yaml
+
+# Rows must pass these filters to enter the walk-forward pool (primary evaluation).
+inclusion:
+  require_eligible_for_training: true
+  confidence_tiers_primary:
+    - gold
+    - silver
+  include_weak_sensitivity_track: false
+  exclude_lesson_ids: [] # optional: drop rows with source_refs.lesson_id in this list
+  exclude_label_status:
+    - ambiguous
+    - excluded
+    - skipped_invalid_input
+
+# Forward-looking fold layout: train [0:val_start), val [val_start:test_start), test [test_start:test_end).
+# Each subsequent fold advances val_start/test_start/test_end; train absorbs prior val (expanding).
+fold_policy:
+  mode: expanding_absorb_val_into_train
+  min_train_rows: 4
+  min_val_rows: 2
+  test_window_rows: 2
+  max_folds: 16
+  skip_fold_if_insufficient_classes: true
+  min_classes_in_train: 2
+
+# Reserved for future lesson-level folds; v1 uses time-sorted rows only.
+grouping_constraints:
+  mode: none
+  note: "lesson_id grouping for folds is not implemented; use Step 7 split_manifest for static split reference."
+
+# Reproducibility
+reproducibility:
+  random_seed: 42
+  sklearn_random_state: 42
+
+models:
+  symbolic: true
+  logistic_regression: true
+  # Tree models import heavy native libs; enable for full comparison runs.
+  xgboost: false
+  lightgbm: false
+
+calibration:
+  method: platt_sigmoid_prefit
+  min_val_rows_for_calibration: 2
+  min_distinct_classes_in_val: 2
+  n_probability_bins: 4
+
+policy:
+  probability_thresholds:
+    - 0.25
+    - 0.35
+    - 0.5
+  symbolic_and_model_threshold: 0.35
+
+metrics:
+  per_fold:
+    - accuracy
+    - macro_f1
+    - weighted_f1
+    - per_class_prf
+    - confusion_matrix
+    - calibration_bucket_summary
+  aggregate:
+    - mean_std_across_folds
+    - symbolic_vs_logreg
+    - per_class_over_folds
+    - per_timeframe
+    - per_confidence_tier
+
+outputs:
+  root: ml_output/step8
+  walkforward_folds: walkforward_folds.json
+  backtest_predictions: backtest_predictions.jsonl
+  fold_metrics: fold_metrics.json
+  walkforward_report: walkforward_report.json
+  model_comparison_report: model_comparison_report.json
+  calibration_drift_report: calibration_drift_report.json
+  policy_report: policy_report.json
+  step8_manifest: step8_manifest.json
+  threshold_sweep_report: threshold_sweep_report.json
+  per_class_fold_metrics: per_class_fold_metrics.json
+  confusion_matrices: confusion_matrices.json
+  aggregate_dimensions_report: aggregate_dimensions_report.json
+
+pit_declaration: >-
+  Folds are strictly time-ordered by anchor_timestamp. Preprocessing (scaler, one-hot)
+  is fit only on train rows per fold; calibration fits only on validation rows.
+  Test rows are never used for fitting. Symbolic baseline has no train phase.
+  Policy thresholds are fixed in config and not tuned on test.

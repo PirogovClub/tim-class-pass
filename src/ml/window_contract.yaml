@@ -1,0 +1,105 @@
+# Input market-window contract — point-in-time safe labeling boundary.
+# All times are exchange-session-aware in implementation (Step 6); here expressed in bar-index semantics.
+
+contract_id: level_interaction_window_v1
+task_id: level_interaction_rule_satisfaction_v1
+version: "1.0.0"
+
+anchor_event: candidate_level_interaction
+anchor_definition: >
+  A discrete event at decision time T0 where a trading system proposes that price is
+  interacting with a reference level L (support/resistance / zone midpoint). L and T0
+  must be known without using any bar whose close is strictly after T0 for identification
+  of L (level may come from prior structure only using information available at T0).
+
+# Bar indexing: i=0 is the last fully closed bar at or before T0 on the primary timeframe unless noted.
+context_before:
+  description: Historical bars strictly before the decision / anchor used for pattern context.
+  primary_timeframe:
+    min_bars: 20
+    max_bars: 200
+    inclusive_of_anchor_bar: true
+  note: >
+    Exact bar counts are implementation parameters in Step 6; min/max bound the contract.
+
+decision_horizon:
+  description: >
+    Forward extension from T0 for observing acceptance, failure, false breakout, or rejection
+    without peeking beyond the labeling window.
+  primary_timeframe:
+    max_bars_forward_for_label: 48
+  note: >
+    48 is a default cap; prod may tighten per instrument liquidity. Labels must not use
+    bars beyond this horizon for class assignment.
+
+allowed_timeframes:
+  primary:
+    - "1m"
+    - "5m"
+    - "15m"
+  optional_higher:
+    - "1h"
+    - "4h"
+    - "1d"
+
+multi_timeframe_context:
+  required: false
+  description: >
+    Higher-TF context is optional for v1; if present, only bars fully closed at or before
+    aligned T0 on that TF may inform features. No future higher-TF closes past alignment.
+
+pre_detected_level:
+  assumed: true
+  description: >
+    The task assumes a candidate level L is supplied; discovering L from future data is forbidden.
+
+required_ohlcv_fields:
+  - open
+  - high
+  - low
+  - close
+  - volume
+
+optional_context_fields:
+  - bid_ask_spread_proxy
+  - session_id
+  - minutes_since_session_open
+
+lookback_policy:
+  max_lookback_calendar_hours: 168
+  description: >
+    Wall-clock cap to prevent unbounded history; Step 6 aligns bars to sessions.
+
+lookforward_for_labeling:
+  max_forward_bars: 48
+  description: Must match decision_horizon.primary_timeframe.max_bars_forward_for_label.
+
+point_in_time_safety:
+  rules:
+    - id: pit_001
+      text: >
+        No bar with timestamp strictly after T0 + decision_horizon end may inform the assigned class.
+    - id: pit_002
+      text: >
+        Global extrema (session high/low) occurring after the horizon must not be used.
+    - id: pit_003
+      text: >
+        Human annotations or outcomes from later sessions must not influence the label.
+    - id: pit_004
+      text: >
+        RAG retrieval text or rule_card prose must not substitute for OHLCV when assigning class;
+        prose may only constrain eligible mappings offline.
+    - id: pit_005
+      text: >
+        Features for Step 7 must be computable from information available at T0 + horizon end,
+        not from walk-forward parameter refits using future data.
+
+forbidden_leakage_examples:
+  - Using closes beyond max_bars_forward_for_label to decide false breakout vs acceptance.
+  - Revising anchor level L using wicks that print after horizon end.
+  - Training-time normalization stats computed including future windows of the same series.
+
+session_time_of_day_context:
+  optional: true
+  description: >
+    Session bucket (e.g. open, mid, close) may be used if defined from calendar known at T0.

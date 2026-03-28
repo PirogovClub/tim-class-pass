@@ -73,6 +73,6 @@ def test_export_audit_bundle_rejects_stale_eval_metrics(
     try:
         export_audit_bundle(rag_config, audit_root=rag_config.rag_root / "audit_should_fail")
     except click.ClickException as exc:
-        assert "missing required Step 3.1 metrics" in str(exc)
+        assert "missing required Stage 6.3 RAG eval metrics" in str(exc)
     else:
         raise AssertionError("Expected export_audit_bundle to reject stale eval artifacts")

@@ -1,3 +1,0 @@
-Command attempted: ruff check pipeline/adjudication tests/adjudication_api
-Result: ruff not installed / not on PATH (Windows PowerShell: command not found).
-Project pyproject.toml does not declare ruff or mypy as dev dependencies.

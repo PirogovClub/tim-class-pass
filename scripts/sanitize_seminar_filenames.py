@@ -49,6 +49,51 @@ DEFAULT_MEDIA_EXTENSIONS = frozenset(VIDEO_EXTENSIONS | AUDIO_EXTENSIONS)
 
 _TRAILING_ONES = re.compile(r"(?:_1)+$")
 
+# ---------------------------------------------------------------------------
+# Post-slug rules applied after _slugify
+# ---------------------------------------------------------------------------
+
+# Substrings to remove entirely (after slugification). Applied left-to-right,
+# then underscores are collapsed.
+_SLUG_REMOVE: list[str] = [
+    "_ot_mentora",
+    "_ot_mentorа",  # Cyrillic а variant, just in case
+    "_s_mentorom",
+    "_vebinar",
+]
+
+# Exact slug-segment substitutions: slugified name variant -> preferred form.
+# Longer / more specific patterns should come first.
+_SLUG_NAME_MAP: dict[str, str] = {
+    "pavla_noskova": "pavel_noskov",
+    "pavlom_noskovym": "pavel_noskov",
+    "svyatoslava_chornogo": "svyatoslav_chorni",
+    "svyatoslavom_chornym": "svyatoslav_chorni",
+    "romana_shcheglova": "roman_shcheglov",
+    "romanom_shcheglovym": "roman_shcheglov",
+    "yuriya_kirsh": "yuriy_kirsh",
+    "yuriem_kirsh": "yuriy_kirsh",
+    "igorya_kravchenko": "igor_kravchenko",
+    "igorem_kravchenko": "igor_kravchenko",
+    "georgiya_stepchenko": "georgi_stepchenko",
+    "georgiem_stepchenko": "georgi_stepchenko",
+    "aleksandrom_gerchikom": "aleksandr_gerchik",
+}
+
+
+def _apply_slug_rules(stem: str) -> str:
+    """Apply post-slugify cleanup rules: remove noise phrases, normalize names."""
+    for fragment in _SLUG_REMOVE:
+        stem = stem.replace(fragment, "")
+    for old, new in _SLUG_NAME_MAP.items():
+        stem = stem.replace(old, new)
+    # Replace standalone "_s_" connector with single underscore (not deletion,
+    # to avoid concatenating words like "studentov_s_aleksandr" -> "studentovaleksandr")
+    stem = stem.replace("_s_", "_")
+    # Collapse any double underscores left behind
+    stem = re.sub(r"_+", "_", stem).strip("_")
+    return stem
+
 
 def _strip_trailing_copy_ones(stem: str) -> str:
     s = _TRAILING_ONES.sub("", stem)
@@ -63,6 +108,7 @@ def _fallback_stem(original_stem: str) -> str:
 
 def sanitize_stem(raw_stem: str, *, strip_trailing_one: bool) -> str:
     stem = _slugify(raw_stem)
+    stem = _apply_slug_rules(stem)
     if strip_trailing_one:
         stem = _strip_trailing_copy_ones(stem)
     if not stem:

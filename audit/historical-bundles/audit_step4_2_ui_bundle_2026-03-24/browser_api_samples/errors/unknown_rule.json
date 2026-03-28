@@ -1,8 +1,0 @@
-{
-  "status_code": 404,
-  "method": "GET",
-  "path": "/browser/rule/rule:does-not-exist",
-  "response": {
-    "detail": "Document 'rule:does-not-exist' not found"
-  }
-}

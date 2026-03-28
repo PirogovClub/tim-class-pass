@@ -1,1 +1,0 @@
-Deterministic duplicate candidates: `tests/adjudication_api/test_proposal_generation.py::test_duplicate_precedence_suppresses_merge` (high-overlap pair yields `duplicate_candidate`, no merge for same pair).

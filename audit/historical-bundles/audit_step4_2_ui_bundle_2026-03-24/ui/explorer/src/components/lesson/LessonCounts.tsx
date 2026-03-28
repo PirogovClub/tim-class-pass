@@ -1,4 +1,0 @@
-import { CountPills } from '@/components/detail/CountPills';
-export function LessonCounts({ ruleCount, eventCount, evidenceCount, conceptCount, supportBasisCounts }: { ruleCount: number; eventCount: number; evidenceCount: number; conceptCount: number; supportBasisCounts: Record<string, number> }) {
-  return <div className="space-y-4"><CountPills counts={[{ label: 'rules', value: ruleCount }, { label: 'events', value: eventCount }, { label: 'evidence', value: evidenceCount }, { label: 'concepts', value: conceptCount }]} /><div className="rounded-xl border border-slate-200 bg-white p-4"><h2 className="text-lg font-semibold text-slate-900">Support Basis Distribution</h2><div className="mt-3 space-y-2 text-sm text-slate-700">{Object.entries(supportBasisCounts).map(([key, value]) => <div key={key} className="flex items-center justify-between"><span>{key}</span><span>{value}</span></div>)}</div></div></div>;
-}

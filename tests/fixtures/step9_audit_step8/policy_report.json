@@ -1,0 +1,9 @@
+{
+  "policy_report_id": "policy_report_v1",
+  "per_fold_bullets": [
+    "fold_000: best policy key=symbolic__top_class hit_rate=0.0"
+  ],
+  "summary_bullets": [
+    "fold_000: best policy key=symbolic__top_class hit_rate=0.0"
+  ]
+}
