@@ -1,5 +1,12 @@
 # MDRT 05 — Window Builder
 
+> **Revision note (req-review-01):** `WindowRequest` now carries `use_rth` and `what_to_show`.
+> The catalog query filters by these values so windows are always semantically coherent.
+>
+> **Revision note (combined-review):** JSONL output example updated to schema v3 / IB Phase 1.
+> Added `asset_class`, `use_rth`, `what_to_show`, `session_date`, `session_close_ts_utc`,
+> `source_tz`, `request_spec_id`. Changed `provider` from `alpaca` to `ib`.
+
 ## Overview
 
 The Window Builder cuts a fixed-length slice of bars around an anchor timestamp
@@ -22,6 +29,10 @@ A **market window** is:
 ```
 
 The anchor bar is **included** in the output. Total bar count = `bars_before + 1 + bars_after`.
+
+`use_rth` and `what_to_show` are **mandatory** on every `WindowRequest`. They are used as catalog
+filters so that the window never mixes bars from different session configurations.
+A window built on `TRADES/RTH` bars must only draw from `TRADES/RTH` archive partitions.
 
 ---
 
@@ -57,8 +68,10 @@ class WindowBuilder:
    - The `2.5×` overread accounts for market gaps (weekends, holidays) without loading the entire archive
 
 2. **Query catalog for partition paths**
-   - `paths = catalog.get_coverage_paths(symbol, timeframe, search_lo, search_hi, provider)`
-   - If `paths` is empty → raise `WindowAnchorNotFoundError` (no coverage for this time range)
+   - `paths = catalog.get_coverage_paths(symbol, timeframe, search_lo, search_hi, provider, use_rth, what_to_show)`
+   - The catalog query applies `use_rth` and `what_to_show` filters — only `archive_coverage` rows with matching session semantics are returned
+   - If `paths` is empty → raise `WindowAnchorNotFoundError` (no coverage for `symbol/timeframe/use_rth/what_to_show` in this time range)
+   - The error message MUST include what IS available: call `catalog.list_available_symbols()` filtered by symbol and include the available `use_rth`/`what_to_show` combos in the error detail
 
 3. **Read Parquet with predicate pushdown**
    ```python
@@ -108,10 +121,13 @@ class WindowBuilder:
 - Write `json.dumps(row) + "\n"` for each row
 - Create parent directories if needed
 
-**Output format per bar:**
+**Output format per bar (schema v3 / IB Phase 1 example):**
 ```json
-{"provider": "alpaca", "symbol": "SPY", "timeframe": "1m", "ts_utc": "2024-03-04T10:35:00+00:00", "open": 510.23, "high": 510.45, "low": 510.10, "close": 510.38, "volume": 12340.0, "trade_count": 234, "vwap": 510.31, "session_code": "R", "ingested_at": "2026-03-27T20:00:00+00:00", "source_batch_id": "..."}
+{"provider": "ib", "asset_class": "equity", "symbol": "SPY", "timeframe": "1m", "use_rth": true, "what_to_show": "TRADES", "ts_utc": "2024-01-03T14:35:00+00:00", "session_date": "2024-01-03", "session_close_ts_utc": null, "open": 474.92, "high": 475.01, "low": 474.88, "close": 474.95, "volume": 15234.0, "trade_count": 312, "vwap": 474.96, "session_code": "R", "source_tz": "America/New_York", "request_spec_id": "a1b2c3d4-...", "ingested_at": "2026-03-27T22:00:00+00:00", "source_batch_id": "..."}
 ```
+
+> **Note:** `session_date` is always populated (never null) for all bar types.
+> `session_close_ts_utc` is `null` for intraday bars and non-null for `1D` and `1M` bars.
 
 ---
 
@@ -216,8 +232,12 @@ Collects all results; does not fail fast — collects errors per window and repo
 - [ ] The anchor bar is at index 60 (0-based) in the output
 - [ ] `ts_utc` values are strictly ascending in the output
 - [ ] Requesting an anchor that is not in the archive raises `WindowAnchorNotFoundError`
+- [ ] Requesting `use_rth=False` when only `use_rth=True` data is in the archive → `WindowAnchorNotFoundError` with message listing what is available
+- [ ] Requesting `what_to_show=MIDPOINT` when only `what_to_show=TRADES` is in the archive → `WindowAnchorNotFoundError`
+- [ ] Two windows on same anchor but different `use_rth` values produce different bar counts (extended hours has more bars)
 - [ ] Requesting more bars before the anchor than exist raises `InsufficientBarsError`
-- [ ] JSONL output contains valid JSON on every line with all required fields
+- [ ] JSONL output contains `use_rth`, `what_to_show`, `session_date`, `source_tz`, `asset_class` fields in every bar object
+- [ ] JSONL output uses `provider="ib"` for Phase 1 IB-sourced data
 - [ ] Parquet output contains exactly one row group
-- [ ] `window_log` in DuckDB has a row for every executed window export
+- [ ] `window_log` in DuckDB has a row with correct `use_rth` and `what_to_show` for every executed export
 - [ ] `catalog.log_window_export` is called even if export fails (for partial-failure auditing)

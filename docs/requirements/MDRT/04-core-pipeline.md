@@ -1,29 +1,43 @@
 # MDRT 04 — Core Pipeline
 
+> **Revision note (req-review-01):** Raw Store revised to store provider-native transcripts.
+> Normalizer now receives native records, applies source-timezone → UTC conversion, handles IB-specific field names.
+> Validator receives `RequestSpec` for session-aware gap classification. Archive Writer enforces
+> overlap policy. Orchestrator wires three-component provider layer.
+>
+> **Revision note (req-review-02):** Daily bar convention updated: `ts_utc` = session CLOSE (not open);
+> Normalizer must populate `session_date` and `session_close_ts_utc`. Phase 1 calendar limitation
+> prominently labeled. Pacing language updated to reference §3.3a.
+>
+> **Revision note (combined-review):** `session_date` is now **mandatory for ALL bars** (not just
+> daily). This is the exchange-local trading date — always populated, never null. Phase 1 calendar
+> limitation made fully explicit with quantified impact and upgrade path.
+
 ## Overview
 
-The core pipeline transforms raw provider data into a validated, partitioned Parquet archive
-and a DuckDB metadata catalog. It has five components:
+The core pipeline transforms provider-native transcripts into a validated, partitioned Parquet
+archive and DuckDB metadata catalog. Five components in strict order:
 
-1. **Raw Store** — persists the raw provider payload before any transformation
-2. **Normalizer** — maps vendor fields to the internal schema
-3. **Validator** — enforces data quality gates (hard errors + soft warnings)
-4. **Archive Writer** — writes validated bars to partitioned Parquet
-5. **Catalog Manager** — maintains the DuckDB metadata tables
+```
+Raw Store → Normalizer → Validator → Archive Writer → Catalog Manager
+```
 
-Each component is a class with no cross-dependencies at the instance level.
-The **Orchestrator** wires them together and drives the full pipeline.
+The Orchestrator drives the full sequence after the Provider Layer has resolved the contract
+and collected the native records.
 
 ---
 
-## 4.1 Raw Store
+## 4.1 Raw Store (revised)
 
 **File:** `src/market_data/core/raw_store.py`
 
 ### Purpose
 
-Persist the raw provider response exactly as received, before normalization.
+Persist the **provider-native request/response transcript** before any transformation.
 This enables debugging, replay, provider migration verification, and audit.
+
+The raw store no longer receives pre-normalized tables. It receives provider-native records
+as returned by the `HistoricalDataCollector`.
 
 ### Class: `RawStore`
 
@@ -31,339 +45,379 @@ This enables debugging, replay, provider migration verification, and audit.
 class RawStore:
     def __init__(self, raw_root: Path): ...
 
-    def save_raw_payload(
+    def save_chunk_transcript(
         self,
         batch: IngestionBatch,
-        page_index: int,
-        table: pa.Table,
+        chunk_index: int,
+        request_params: dict,
+        native_records: list[dict],
     ) -> Path: ...
+
+    def load_chunk_transcripts(
+        self,
+        batch_id: str,
+    ) -> list[dict]: ...
 
     def compute_checksum(self, path: Path) -> str: ...
 ```
 
-### `save_raw_payload`
+### `save_chunk_transcript`
 
-**Inputs:** `IngestionBatch`, page sequence number, raw `pa.Table` from adapter
+**Input:** batch metadata, chunk index, IB request parameters dict, native bar records list
 
 **Output:** `Path` to the saved file
 
-**Internal logic:**
-1. Build path: `raw_root/provider=<p>/symbol=<s>/batch_id=<b>/page_<NNNN>.json.gz`
-2. Convert `pa.Table` → `list[dict]` via `table.to_pylist()`
-3. Serialize to JSON bytes; encode with `gzip.compress()`
-4. Write atomically: write to `<path>.tmp`, then `os.replace()` to final path
-5. Return final `Path`
-6. Raise `ArchiveWriteError` if any step fails
+**Path pattern:**
+`raw_root/provider=<p>/symbol=<s>/batch_id=<b>/chunk_<NNNN>_transcript.jsonl.gz`
 
-**Why gzip JSON (not raw Parquet):**
-- Human-readable for debugging
-- No schema dependency — the exact vendor payload is preserved even if our schema changes
-- Gzip achieves ~70-80% compression on repetitive JSON
+**File format (JSONL, one JSON object per line):**
+```
+{"type": "request", "chunk_index": 0, "end_datetime": "...", "duration_str": "30 D", "bar_size": "1 min", "what_to_show": "TRADES", "use_rth": 1, "format_date": 2, "req_id": 1}
+{"type": "bar", "date": 1704205800, "open": 474.92, "high": 475.01, "low": 474.88, "close": 474.95, "volume": 15234, "barCount": 312, "WAP": 474.96}
+{"type": "bar", ...}
+{"type": "end", "req_id": 1, "start": "20240102 09:30:00 US/Eastern", "end": "20240102 16:00:00 US/Eastern"}
+```
 
-### `compute_checksum`
+**Rules:**
+- Always write `{"type": "request", ...}` as first line (captures full request params for replay)
+- Write one `{"type": "bar", ...}` line per native bar record
+- Write `{"type": "end", ...}` as final line with IB's reported date range
+- Atomic write: temp file → `os.replace()`
+- Compress with gzip
+- Raise `ArchiveWriteError` on failure
 
-Streams the file in 1 MB chunks; returns SHA-256 hex digest.
-Used by `IngestionBatch.checksum` after all pages are written.
+### `load_chunk_transcripts`
+
+Reads all chunk transcript files for a batch and returns the concatenated list of native bar
+dicts (only `{"type": "bar"}` records). Used for normalizer replay in tests.
 
 ---
 
-## 4.2 Normalizer
+## 4.2 Normalizer (revised)
 
 **File:** `src/market_data/core/normalizer.py`
 
 ### Purpose
 
-Convert a raw table (already in canonical column names, as returned by the adapter)
-into a table that exactly conforms to `NORMALIZED_BAR_SCHEMA`, including:
-- Correct column types
-- Provenance columns
-- Ascending time sort
+Convert provider-native records (as loaded from raw store transcripts) into a table conforming
+to `NORMALIZED_BAR_SCHEMA`. The normalizer is provider-aware for field mapping but provider-agnostic
+for the output schema.
 
 ### Class: `Normalizer`
 
 ```python
 class Normalizer:
 
-    REQUIRED_FIELDS = {
+    REQUIRED_OUTPUT_FIELDS = {
         "provider", "asset_class", "symbol", "timeframe",
-        "ts_utc", "open", "high", "low", "close", "volume",
-        "ingested_at", "source_batch_id",
+        "use_rth", "what_to_show",
+        "ts_utc", "session_date",           # session_date required for all bars
+        "open", "high", "low", "close", "volume",
+        "source_tz", "ingested_at", "source_batch_id",
+        # session_close_ts_utc required for 1D and 1M bars (nullable for intraday)
     }
 
     def normalize(
         self,
-        raw_table: pa.Table,
-        provider: str,
-        symbol: str,
-        timeframe: str,
-        asset_class: str,
+        native_records: list[dict],
+        spec: RequestSpec,
+        instrument: Instrument,
+        session_info: ProviderSessionInfo,
         batch_id: str,
     ) -> pa.Table: ...
 
-    def _cast_column(
+    def _normalize_ib(
         self,
-        table: pa.Table,
-        field: pa.Field,
-    ) -> pa.ChunkedArray: ...
+        native_records: list[dict],
+        spec: RequestSpec,
+        instrument: Instrument,
+        session_info: ProviderSessionInfo,
+        batch_id: str,
+    ) -> pa.Table: ...
+
+    def _normalize_alpaca(self, ...) -> pa.Table: ...
+    def _normalize_databento(self, ...) -> pa.Table: ...
+
+    def _convert_timestamp_to_utc(
+        self,
+        raw_ts: Any,
+        source_tz: str,
+        timeframe: str,
+    ) -> datetime: ...
+
+    def _cast_column(self, table: pa.Table, field: pa.Field) -> pa.ChunkedArray: ...
 ```
 
-### `normalize`
+### `normalize` — dispatch logic
 
-**Inputs:** raw `pa.Table`, provenance metadata
+1. Route to provider-specific normalizer based on `spec.provider`
+2. All provider normalizers must return a `pa.Table` conforming to `NORMALIZED_BAR_SCHEMA`
+3. Sort output by `ts_utc` ascending
+4. Raise `MissingRequiredFieldError` if any required output field is missing
+5. Raise `SchemaConformanceError` if any column cannot be cast
 
-**Output:** `pa.Table` conforming exactly to `NORMALIZED_BAR_SCHEMA`, sorted by `ts_utc` ASC
+### `_normalize_ib` — IB-specific logic
 
-**Internal logic:**
-1. Check that all `REQUIRED_FIELDS` are present in the table; raise `MissingRequiredFieldError` listing missing columns
-2. Add `ingested_at` column (current UTC timestamp) if not present
-3. Add `source_batch_id` column if not present
-4. For each field in `NORMALIZED_BAR_SCHEMA`: call `_cast_column()` to ensure correct Arrow type
-5. Force `ts_utc` to `pa.timestamp("us", tz="UTC")` — if incoming is naive, raise `SchemaConformanceError` (do not silently assume UTC)
-6. Sort by `ts_utc` using `pc.sort_indices(table, sort_keys=[("ts_utc", "ascending")])`
-7. Return `table.cast(NORMALIZED_BAR_SCHEMA)`
+1. Filter `native_records` to only `{"type": "bar"}` entries
+2. Map IB native fields:
 
-### `_cast_column`
+| IB native field | MDRT field | Transform |
+|----------------|------------|-----------|
+| `date` | `ts_utc` | Epoch seconds → UTC datetime; see timestamp rule below |
+| `open` | `open` | float as-is |
+| `high` | `high` | float as-is |
+| `low` | `low` | float as-is |
+| `close` | `close` | float as-is |
+| `volume` | `volume` | int → float64 |
+| `barCount` | `trade_count` | int |
+| `WAP` | `vwap` | float |
 
-Uses `pc.cast(col, target_type, safe=False)` for numeric types.
-On `ArrowInvalid`: wrap and raise `SchemaConformanceError` with column name and source/target types.
+3. **IB timestamp conversion (revised for schema v3):**
+   - For intraday bars (`formatDate=2`): `date` is epoch seconds in UTC.
+     `ts_utc = datetime.fromtimestamp(int(date), tz=timezone.utc)` (bar open time in UTC)
+     `session_date = ts_utc.astimezone(instrument.timezone).date()`
+     `session_close_ts_utc = None`
+   - For daily bars (`"1D"`): `date` is typically a date string from IB.
+     `ts_utc = session_close_time_utc(date, instrument.timezone, calendar)` — the session CLOSE time in UTC
+     `session_date = parsed date`
+     `session_close_ts_utc = ts_utc` (same value; explicit copy for clarity)
+   - For monthly bars (`"1M"`): `date` is typically a YYYYMM or YYYYMMDD string.
+     `session_date = last_trading_day_of_month(parsed_date, calendar)`
+     `ts_utc = session_close_time_utc(session_date, instrument.timezone, calendar)`
+     `session_close_ts_utc = ts_utc`
+4. Set `source_tz = session_info.tws_login_timezone`
+5. Set `use_rth = spec.use_rth`, `what_to_show = spec.what_to_show`
+6. Add provenance: `ingested_at`, `source_batch_id`, `request_spec_id`
+
+### `_convert_timestamp_to_utc` / `session_close_time_utc`
+
+For **intraday bars** from IB (`formatDate=2`): timestamp is epoch seconds in UTC. No conversion needed.
+
+For **daily bars**: given a raw date string (e.g., IB may return `"20240103"` or similar),
+compute the session CLOSE time in UTC using `instrument.timezone` and a trading calendar lookup:
+1. Parse the date → `date(2024, 1, 3)`
+2. Look up session close time from `TradingCalendar` → e.g., 16:00 ET
+3. Convert to UTC → `2024-01-03T21:00:00Z`
+4. Set `ts_utc = session_close_ts_utc = 2024-01-03T21:00:00Z`
+5. Set `session_date = date(2024, 1, 3)`
+
+> ⚠️ **Phase 1 Calendar:** The Phase 1 `TradingCalendar` hardcodes the NYSE/Nasdaq
+> U.S. equity regular-hours schedule (09:30–16:00 ET on normal days, 09:30–13:00 ET on
+> known early-close days). Early closes are handled **exactly** — the calendar returns
+> 13:00 ET (not 16:00 ET) for day-after-Thanksgiving, Christmas Eve, etc.
+> Only unscheduled closures (e.g., national mourning) produce `CALENDAR_APPROXIMATION`.
+> Full exchange calendar support is a Phase 3 requirement.
+
+> ⚠️ **TRAP 1 note (Normalizer responsibility):** When the IB `date` field in a native bar dict
+> is a YYYYMMDD string (IB ignored `formatDate=2`), the Normalizer's `_parse_ib_date()` helper
+> MUST handle both types. See §3.2 for the required defensive parse pattern.
+> The collector stores whatever IB returned; the Normalizer repairs it.
 
 ---
 
-## 4.3 Validator
+## 4.3 Validator (session-aware, revised)
 
 **File:** `src/market_data/core/validator.py`
 
 ### Purpose
 
-Enforce data quality gates. Hard failures immediately stop the pipeline and mark the batch as failed.
-Soft warnings are recorded to the catalog but the pipeline continues.
+Enforce data quality gates. Now session-aware: gap classification uses `RequestSpec` context
+to distinguish expected market closures from real data gaps.
 
-### Class: `Validator`
+### Extended `ValidationReport`
 
 ```python
-class Validator:
-
-    IMPOSSIBLE_PRICE_THRESHOLD = 1_000_000.0
-    LOW_VOLUME_PERCENTILE = 5
-
-    def validate(
-        self,
-        table: pa.Table,
-        timeframe: str,
-        expected_gap_tolerance: float = 1.5,
-    ) -> ValidationReport: ...
-
-    def _parse_timeframe_to_seconds(self, timeframe: str) -> int: ...
-    def _check_duplicates(self, ts: pa.ChunkedArray) -> None: ...
-    def _check_monotonic(self, ts: pa.ChunkedArray) -> None: ...
-    def _check_ohlc_relationships(self, table: pa.Table) -> None: ...
-    def _check_negative_prices(self, table: pa.Table) -> None: ...
-    def _check_negative_volume(self, table: pa.Table) -> None: ...
-    def _check_gaps(self, ts: pa.ChunkedArray, timeframe: str, tolerance: float) -> list[str]: ...
+@dataclass
+class ValidationReport:
+    symbol: str
+    timeframe: str
+    use_rth: bool
+    what_to_show: str
+    total_bars: int
+    hard_errors: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+    info: list[str] = field(default_factory=list)  # market-closed gaps, RTH boundaries
+    passed: bool = True
 ```
 
-### `validate`
+### `validate` (revised signature)
 
-**Inputs:** normalized `pa.Table`, `timeframe` string, gap tolerance multiplier
-
-**Output:** `ValidationReport` (contains `passed: bool`, `hard_errors: list[str]`, `warnings: list[str]`)
-
-**Execution order (HARD checks — any failure raises immediately):**
-1. `_check_duplicates` → `DuplicateTimestampError`
-2. `_check_monotonic` → `NonMonotonicTimeError`
-3. `_check_ohlc_relationships` → `InvalidOHLCError`
-4. `_check_negative_prices` → `NegativePriceError`
-5. `_check_negative_volume` → `NegativeVolumeError`
-
-**Execution order (SOFT checks — collect, do not raise):**
-6. `_check_gaps` → emit `DataGapWarning` per gap; append to `ValidationReport.warnings`
-7. Low-volume check: compute `pc.quantile(table["volume"], 0.05)`; flag bars below threshold
-
-### Check Specifications
-
-| Check | Method | Logic | Exception |
-|-------|--------|-------|-----------|
-| Duplicate timestamps | `_check_duplicates` | `pc.value_counts(ts)` → any count > 1 | `DuplicateTimestampError` |
-| Monotonic timestamps | `_check_monotonic` | `pc.sort_indices(ts)` → compare to `range(len)` | `NonMonotonicTimeError` |
-| `high >= low` | `_check_ohlc_relationships` | `pc.greater_equal(high_col, low_col)` → any False | `InvalidOHLCError` |
-| Open/close in [low, high] | `_check_ohlc_relationships` | Same method | `InvalidOHLCError` |
-| Prices > 0 | `_check_negative_prices` | `pc.less_equal(col, 0)` on each price column | `NegativePriceError` |
-| Volume >= 0 | `_check_negative_volume` | `pc.less(volume_col, 0)` | `NegativeVolumeError` |
-| Gaps | `_check_gaps` | Compute consecutive ts diffs; flag diffs > `bar_secs * tolerance` | `DataGapWarning` (soft) |
-| Low volume | inline in `validate` | `pc.quantile(volume, 0.05)` | `LowVolumeWarning` (soft) |
-
-### `_parse_timeframe_to_seconds`
-
-```
-"1m"  → 60
-"5m"  → 300
-"15m" → 900
-"1h"  → 3600
-"1d"  → 86400
+```python
+def validate(
+    self,
+    table: pa.Table,
+    spec: RequestSpec,
+    session_calendar: Optional[TradingCalendar] = None,
+    expected_gap_tolerance: float = 1.5,
+) -> ValidationReport:
 ```
 
-Raise `ValueError` for unrecognized format.
+**Gap classification logic:**
+
+When a gap is detected between two consecutive bars:
+1. Compute gap duration
+2. If `session_calendar` is provided: check if the gap falls entirely within a known market closure (weekend, holiday, overnight when `use_rth=True`) → classify as `MARKET_CLOSED_GAP` (INFO, not WARNING)
+3. If gap falls at an RTH boundary (e.g., 16:00 → next day 09:30) → classify as `RTH_BOUNDARY` (INFO)
+4. Otherwise → classify as `UNEXPECTED_GAP` (WARNING)
+
+> ⚠️ **TRAP 4 — Early-Close Session Handling:**
+> The Phase 1 `TradingCalendar` hardcodes known NYSE early-close sessions (13:00 ET).
+> On these days, the calendar returns the **correct** close time (13:00 ET, not 16:00 ET).
+>
+> **Rules:**
+> - If `timeframe = '1D'` or `'1M'`, the Normalizer already sets `session_close_ts_utc`
+>   using the calendar's close time, which is exact for known early closes.
+> - If `timeframe` is intraday and `use_rth=True` and a gap occurs between **13:00 ET and
+>   16:00 ET** on a known early-close day, classify it as `MARKET_CLOSED_GAP` (INFO).
+> - On **unscheduled** closures (not in the hardcoded calendar), gaps may be classified
+>   as `UNEXPECTED_GAP` (WARNING) with a `CALENDAR_APPROXIMATION` INFO event.
+
+All other hard checks remain unchanged (see v1 spec §4.3).
+
+### `TradingCalendar` (new dependency)
+
+A simple trading calendar object for gap classification:
+```python
+class TradingCalendar:
+    def is_market_closed(self, ts_start: datetime, ts_end: datetime,
+                          timezone: str, use_rth: bool) -> bool: ...
+```
+
+Phase 1 implementation: hardcode NYSE/Nasdaq regular hours (09:30–16:00 ET on normal days,
+09:30–13:00 ET on known early-close days), NYSE-observed full closures (including Good Friday;
+excluding Veterans Day and Columbus Day). Early closes are handled **exactly**.
+Do NOT use U.S. federal holidays as a proxy calendar.
+
+> ⚠️ **Known Phase 1 Limitation:** This hardcoded calendar does NOT recognize:
+> - Unscheduled closures (e.g., national mourning days)
+> - Non-NYSE/Nasdaq exchange schedules
+>
+> **Impact:** On unscheduled closure days, gaps will be classified as `UNEXPECTED_GAP`,
+> with a `CALENDAR_APPROXIMATION` INFO event emitted.
+> Full exchange calendar support (`exchange_calendars` library) is a Phase 3 requirement.
 
 ---
 
-## 4.4 Archive Writer
+## 4.4 Archive Writer (overlap-aware, revised)
 
 **File:** `src/market_data/core/archive_writer.py`
 
 ### Purpose
 
-Write validated normalized bars into the partitioned Parquet archive.
+Write validated normalized bars to the partitioned Parquet archive, enforcing the
+overlap and deduplication policy defined in §11.
 
-### Class: `ArchiveWriter`
+### Updated partition hierarchy
 
-```python
-class ArchiveWriter:
-
-    COMPRESSION = "zstd"
-    ROW_GROUP_SIZE = 100_000
-
-    def __init__(self, archive_root: Path): ...
-
-    def write(
-        self,
-        table: pa.Table,
-        batch: IngestionBatch,
-    ) -> list[Path]: ...
-
-    def _add_partition_columns(self, table: pa.Table) -> pa.Table: ...
-    def _build_partition_path(self, provider, asset_class, symbol, timeframe) -> Path: ...
+```
+provider / asset_class / symbol / timeframe / use_rth / what_to_show / year / month
 ```
 
-### `write`
+`use_rth` and `what_to_show` are partition columns.
 
-**Inputs:** validated `pa.Table`, `IngestionBatch`
+### Overlap detection before write
 
-**Output:** `list[Path]` of Parquet files written
+Before writing, the archive writer MUST query the catalog:
 
-**Internal logic:**
-1. Call `_add_partition_columns()` to add integer `year` (int16) and `month` (int8) columns derived from `ts_utc`
-2. Call `_build_partition_path()` and validate characters; raise `PartitionPathError` if any value contains `/`, `\`, `..`, or is empty
-3. Call `pq.write_to_dataset(table, root_path=archive_root, partition_cols=["provider", "asset_class", "symbol", "timeframe", "year", "month"], compression=COMPRESSION, row_group_size=ROW_GROUP_SIZE, existing_data_behavior="overwrite_or_ignore")`
-4. Collect and return paths of written files
-5. Raise `ArchiveWriteError` on any `IOError`
+```python
+def _detect_overlap(
+    self,
+    catalog: CatalogManager,
+    batch: IngestionBatch,
+    spec: RequestSpec,
+    first_ts: datetime,
+    last_ts: datetime,
+) -> list[ArchiveFileRecord]:
+    """
+    Return list of existing ArchiveFileRecords whose time range overlaps
+    with [first_ts, last_ts] for the same (symbol, timeframe, use_rth, what_to_show).
+    """
+    ...
+```
 
-### `_add_partition_columns`
+### Overlap policy (Phase 1: replace)
 
-Extracts year and month from the `ts_utc` column using `pc.year()` / `pc.month()`.
-These columns are used only for Hive partitioning; they are **redundant** (derivable from `ts_utc`) but required for directory-level filter pushdown.
+If overlap is detected, Phase 1 uses **replace** semantics:
+1. Delete overlapping rows from the affected Parquet partition(s) using DuckDB DELETE + rewrite
+2. Append the new rows
+3. Mark superseded `ArchiveFileRecord` rows: set `superseded_by = new_file_id`
+4. Insert new `ArchiveFileRecord` row
+5. Update `archive_coverage` to reflect the new time range
+
+See §11 (Overlap & Deduplication Policy) for full policy specification.
+
+### Revised `write` signature
+
+```python
+def write(
+    self,
+    table: pa.Table,
+    batch: IngestionBatch,
+    spec: RequestSpec,
+    catalog: CatalogManager,
+) -> list[ArchiveFileRecord]:
+```
+
+Returns list of `ArchiveFileRecord` (one per month partition written).
 
 ---
 
-## 4.5 Catalog Manager
+## 4.5 Catalog Manager (revised)
 
 **File:** `src/market_data/core/catalog.py`
 
-### Purpose
+Extended to support all new DDL tables and IB-specific operations.
 
-Maintain the DuckDB metadata catalog. The catalog stores no market data — only metadata
-about what has been ingested and where it lives.
-
-### Class: `CatalogManager`
+### New methods
 
 ```python
-class CatalogManager:
+# Instrument registry
+def register_instrument(self, instrument: Instrument) -> None: ...
+def get_instrument(self, symbol: str, provider: str) -> Optional[Instrument]: ...
+def get_instrument_by_con_id(self, con_id: int) -> Optional[Instrument]: ...
 
-    def __init__(self, db_path: Path): ...
-    def connect(self) -> None: ...   # idempotent; runs CATALOG_DDL
-    def close(self) -> None: ...
-    def __enter__(self) -> "CatalogManager": ...
-    def __exit__(self, *_) -> None: ...
+# Session tracking
+def register_session(self, session_info: ProviderSessionInfo) -> None: ...
+def close_session(self, session_id: str, disconnected_at: datetime) -> None: ...
 
-    # Batch lifecycle
-    def register_batch_start(self, batch: IngestionBatch) -> None: ...
-    def register_batch_complete(self, batch: IngestionBatch) -> None: ...
-    def register_batch_failed(self, batch_id: str, error_message: str) -> None: ...
+# Request spec management
+def register_request_spec(self, spec: RequestSpec) -> None: ...
+def get_request_spec_by_hash(self, request_hash: str) -> Optional[RequestSpec]: ...
 
-    # Coverage
-    def register_coverage(self, provider, asset_class, symbol, timeframe,
-                          partition_path, first_ts, last_ts, row_count, batch_id) -> None: ...
-    def get_coverage_paths(self, symbol, timeframe, start_ts, end_ts, provider=None) -> list[str]: ...
-
-    # Quality & audit
-    def log_data_quality_event(self, batch_id, symbol, timeframe, severity,
-                                error_code, detail=None, ts_context=None) -> None: ...
-    def log_window_export(self, request: WindowRequest, actual_bar_count: int) -> None: ...
-
-    # Reporting
-    def get_integrity_report(self, symbol: str, timeframe: str) -> dict: ...
-    def list_available_symbols(self) -> list[dict]: ...
+# Archive file records (for overlap detection)
+def register_archive_file(self, record: ArchiveFileRecord) -> None: ...
+def find_overlapping_files(
+    self,
+    symbol: str,
+    timeframe: str,
+    use_rth: bool,
+    what_to_show: str,
+    first_ts: datetime,
+    last_ts: datetime,
+) -> list[ArchiveFileRecord]: ...
+def mark_file_superseded(self, file_id: str, superseded_by: str) -> None: ...
 ```
 
-### Method Specifications
-
-**`register_batch_start`**
-- INSERT into `ingestion_batches` with `status='running'`
-- Raise `CatalogError` on failure
-
-**`register_batch_complete`**
-- UPDATE `status='completed'`, set `completed_at`, `row_count`, `checksum`
-- Raise `CatalogError` if `batch_id` not found
-
-**`register_batch_failed`**
-- UPDATE `status='failed'`, set `error_message`
-
-**`register_coverage`**
-- `coverage_id` = `uuid4()`
-- `written_at` = `datetime.now(UTC)`
-- INSERT OR REPLACE to handle re-ingestion of same partition
-
-**`get_coverage_paths`**
-```sql
-SELECT DISTINCT partition_path
-FROM archive_coverage
-WHERE symbol = ?
-  AND timeframe = ?
-  AND first_ts <= ?   -- last_ts of coverage overlaps query start
-  AND last_ts >= ?    -- first_ts of coverage overlaps query end
-  [AND provider = ?]
-ORDER BY partition_path
-```
-
-**`get_integrity_report`**
-Returns dict:
-```json
-{
-  "symbol": "SPY",
-  "timeframe": "1m",
-  "total_batches": 3,
-  "total_rows": 24000,
-  "first_ts": "2024-01-02T09:30:00Z",
-  "last_ts": "2024-01-31T16:00:00Z",
-  "error_count": 0,
-  "warning_count": 2,
-  "coverage_gaps": []
-}
-```
-
-**`list_available_symbols`**
-```sql
-SELECT symbol, asset_class, timeframe, provider,
-       MIN(first_ts) AS first_ts, MAX(last_ts) AS last_ts,
-       SUM(row_count) AS row_count
-FROM archive_coverage
-GROUP BY symbol, asset_class, timeframe, provider
-ORDER BY symbol, timeframe
-```
+All existing methods from v1 (`register_batch_start`, `register_batch_complete`,
+`register_coverage`, `get_coverage_paths`, `log_data_quality_event`, etc.) are retained
+with updated signatures that include `use_rth` and `what_to_show` where relevant.
 
 ---
 
-## 4.6 Orchestrator
+## 4.6 Orchestrator (revised)
 
 **File:** `src/market_data/core/orchestrator.py`
 
-### Class: `IngestionOrchestrator`
+### Updated `IngestionOrchestrator`
 
 ```python
 class IngestionOrchestrator:
 
     def __init__(
         self,
-        adapter: MarketDataProvider,
+        session: ProviderSession,
+        resolver: ContractResolver,
+        collector: HistoricalDataCollector,
         raw_store: RawStore,
         normalizer: Normalizer,
         validator: Validator,
@@ -379,71 +433,92 @@ class IngestionOrchestrator:
         start: datetime,
         end: datetime,
         asset_class: str = "equity",
+        exchange: str = "SMART",
+        currency: str = "USD",
+        what_to_show: str = "TRADES",
+        use_rth: bool = True,
+        adjustment_policy: str = "raw",
         fail_on_warning: bool = False,
     ) -> IngestionBatch: ...
-
-    def _write_manifest(self, batch: IngestionBatch, written_paths: list[Path]) -> None: ...
 ```
 
-### `run` — Pipeline Steps
+### Revised pipeline steps
 
 ```
-1.  Create IngestionBatch
-2.  catalog.register_batch_start(batch)
-3.  raw_table  = adapter.fetch_historical_bars(...)
-4.  raw_store.save_raw_payload(batch, page_index=0, table=raw_table)
-5.  norm_table = normalizer.normalize(raw_table, provider, symbol, timeframe, asset_class, batch_id)
-6.  report     = validator.validate(norm_table, timeframe)
-    6a. if not report.passed:
-          catalog.register_batch_failed(batch_id, report.hard_errors)
-          raise (first hard error)
-    6b. for each warning: catalog.log_data_quality_event(..., severity="WARNING", ...)
-    6c. if fail_on_warning and report.warnings:
-          catalog.register_batch_failed(...)
-          raise ValidationError
-7.  written_paths = archive_writer.write(norm_table, batch)
-8.  for each partition path:
-        catalog.register_coverage(provider, asset_class, symbol, timeframe, path, first_ts, last_ts, row_count, batch_id)
-9.  batch.row_count = len(norm_table)
-    batch.raw_file_count = 1   (extend for multi-page)
-    batch.checksum = raw_store.compute_checksum(raw_path)
-    batch.completed_at = datetime.now(UTC)
-    batch.status = "completed"
+1.  session.connect() → session_info
+    catalog.register_session(session_info)
+
+2.  session.ensure_ready()
+
+3.  instrument, resolution_record = resolver.resolve(symbol, asset_class, exchange, currency)
+    catalog.register_instrument(instrument)
+
+4.  request_hash = compute_request_hash(...)
+    existing_spec = catalog.get_request_spec_by_hash(request_hash)
+    if existing_spec AND not force_re_fetch:
+        log("Request already completed, skipping fetch"); return existing batch
+    spec = RequestSpec(..., request_hash=request_hash)
+    catalog.register_request_spec(spec)
+
+5.  batch = IngestionBatch(request_spec_id=spec.request_spec_id, session_id=session_info.session_id, ...)
+    catalog.register_batch_start(batch)
+
+6.  chunk_requests = ChunkPlanner().plan(spec)
+    all_native_records = []
+    for i, chunk in enumerate(chunk_requests):
+        try:
+            native_records = collector.fetch_chunk(instrument, spec, chunk.chunk_end, chunk.duration_str)
+        except ProviderSessionError:
+            # TRAP 3: IB mid-batch disconnect (error 1100/1102).
+            # Phase 1 policy: fail fast. Do NOT attempt state-machine resume.
+            # Mark batch failed; write partial manifest; let operator re-run.
+            # The request_hash guard ensures re-runs skip already-completed chunks
+            # IF per-chunk completion is tracked (Phase 2). In Phase 1, the full
+            # batch is re-fetched from the start. Accept this trade-off.
+            batch.status = "failed"
+            batch.error_message = "IB session dropped mid-batch"
+            catalog.register_batch_complete(batch)  # record failure
+            raise  # propagate ProviderSessionError to CLI (exit code 2)
+        raw_store.save_chunk_transcript(batch, i, chunk_params_dict, native_records)
+        all_native_records.extend(native_records)
+
+7.  norm_table = normalizer.normalize(all_native_records, spec, instrument, session_info, batch.batch_id)
+
+8.  report = validator.validate(norm_table, spec, session_calendar)
+    [handle hard errors / soft warnings as before]
+
+9.  archive_records = archive_writer.write(norm_table, batch, spec, catalog)
+       [overlap detection + replace policy inside archive_writer]
+
+10. for record in archive_records:
+        catalog.register_archive_file(record)
+        catalog.register_coverage(...)
+
+11. batch.row_count, batch.chunk_count, batch.status, batch.completed_at = ...
     catalog.register_batch_complete(batch)
-10. _write_manifest(batch, written_paths)
-11. return batch
-```
 
-### `_write_manifest`
+12. _write_manifest(batch, spec, archive_records)
 
-Writes `outputs/manifests/ingestion_manifest_<batch_id>.json`:
+13. session.disconnect()
+    catalog.close_session(session_info.session_id, datetime.now(UTC))
 
-```json
-{
-  "batch_id": "...",
-  "provider": "alpaca",
-  "symbol": "SPY",
-  "timeframe": "1m",
-  "start_date": "2024-01-02T00:00:00Z",
-  "end_date": "2024-02-01T00:00:00Z",
-  "status": "completed",
-  "row_count": 8580,
-  "checksum": "sha256:...",
-  "written_paths": ["data/archive/provider=alpaca/..."],
-  "completed_at": "2026-03-27T20:00:00Z"
-}
+14. return batch
 ```
 
 ---
 
 ## 4.7 Acceptance Criteria — Core Pipeline
 
-- [ ] A full ingest run with the Alpaca adapter and `SPY 1m 2024-01-02→2024-01-05` produces Parquet files in the correct partition path
-- [ ] The written Parquet schema exactly matches `NORMALIZED_BAR_SCHEMA`
-- [ ] `catalog.duckdb` contains one row in `ingestion_batches` with `status='completed'`
-- [ ] `catalog.duckdb` contains one or more rows in `archive_coverage` pointing to the written files
-- [ ] Injecting a duplicate timestamp into the table causes `DuplicateTimestampError` before any write
-- [ ] Injecting `high < low` causes `InvalidOHLCError` before any write
-- [ ] A soft-warning gap triggers a row in `data_quality_events` with `severity='WARNING'`
-- [ ] The manifest JSON is written to `outputs/manifests/` and contains all required fields
-- [ ] The raw landing file exists at `data/raw/provider=alpaca/symbol=SPY/batch_id=<uuid>/page_0000.json.gz`
+- [ ] Full IB ingest run for `SPY 1m useRTH=1 whatToShow=TRADES 2024-01-02→2024-01-05` produces Parquet files in `data/archive/provider=ib/.../use_rth=1/what_to_show=TRADES/...`
+- [ ] Written Parquet schema exactly matches `NORMALIZED_BAR_SCHEMA` v3 (includes `use_rth`, `what_to_show`, `source_tz`, `session_date`, `session_close_ts_utc`)
+- [ ] Raw transcript `.jsonl.gz` files exist with `{"type": "request"}`, `{"type": "bar"}`, `{"type": "end"}` structure
+- [ ] IB daily bar with `date` returned as `"20240103"` string (YYYYMMDD) is correctly re-parsed to `2024-01-03T21:00:00Z` by the Normalizer
+- [ ] IB daily bar with `date` returned as epoch int is correctly parsed to the same result
+- [ ] `catalog.duckdb` contains rows in `instruments`, `provider_sessions`, `request_specs`, `ingestion_batches`, `archive_coverage`, `archive_file_records`
+- [ ] Re-running the same ingest with the same `request_hash` → no re-fetch (idempotent)
+- [ ] Weekend/holiday gaps classified as `MARKET_CLOSED_GAP` (INFO), not `UNEXPECTED_GAP` (WARNING)
+- [ ] Intraday gap between 13:00–16:00 ET on a trading weekday classified as `MARKET_CLOSED_GAP` (INFO), not `UNEXPECTED_GAP` (WARNING)
+- [ ] Overlapping re-ingest (same symbol, overlapping date range) → old file marked `superseded_by`; new data wins; no duplicate bars visible to window builder
+- [ ] IB session drop (error 1100) mid-batch → `ProviderSessionError` raised; batch marked `failed`; CLI exits 2
+- [ ] Missing `nextValidId` within timeout → `ProviderSessionError` raised before any data fetch
+- [ ] Manifest JSON written with all new fields (`request_spec_id`, `session_id`, `what_to_show`, `use_rth`)

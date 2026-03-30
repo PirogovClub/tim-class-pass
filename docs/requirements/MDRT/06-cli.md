@@ -1,22 +1,38 @@
 # MDRT 06 — CLI Commands
 
+> **Revision note (req-review-01):** `ingest-bars` gains IB-specific flags.
+> `build-window` gains `--what-to-show` and `--use-rth`.
+>
+> **Revision note (combined-review):** CLI signatures annotated with Phase 1/2/3 scope markers.
+> Non-Phase-1 provider values, asset classes, timeframes, and modes clearly labeled so
+> a coding agent does not overbuild. ES futures example labeled Phase 3.
+
 ## Overview
 
 The CLI is the primary operator interface for MDRT v1.
-It is built with **Typer** and exposed as the `mdrt` entry point.
+Built with **Typer**, exposed as the `mdrt` entry point.
 
-All commands follow these conventions:
-- `--data-dir` defaults to `./data` (archive root + catalog)
+> ⚠️ **Phase 1 Scope Reminder:** In Phase 1, only the following CLI modes are implemented:
+> - `--provider ib` (Alpaca/Databento are Phase 2)
+> - `--asset-class equity` (futures/crypto are Phase 2/3)
+> - `--timeframe` one of: `1m`, `5m`, `15m`, `1h`, `4h`, `1D`, `1M`
+> - `--use-rth true` (extended hours are Phase 2)
+> - `--what-to-show TRADES` (other modes are Phase 2)
+> - `--adjustment raw` (adjusted/split_only are Phase 3)
+>
+> All broader options are documented below for completeness but annotated with their target phase.
+> A Phase 1 implementation MUST reject unsupported values with a clear error message.
+
+**Conventions:**
+- `--data-dir` defaults to `./data`
 - `--output-dir` defaults to `./outputs`
 - `--verbose` enables `DEBUG` logging
-- Non-zero exit codes always print a human-readable error message before exiting
-- Dry-run modes print the plan and exit 0 without side effects
+- Non-zero exit codes always print a human-readable error before exiting
+- `--dry-run` prints the plan and exits 0 without side effects
 
 ---
 
 ## App Entry Point
-
-**File:** `src/market_data/cli/main.py`
 
 ```python
 app = typer.Typer(
@@ -26,7 +42,6 @@ app = typer.Typer(
 )
 ```
 
-Registered via `pyproject.toml`:
 ```toml
 [project.scripts]
 mdrt = "market_data.cli.main:app"
@@ -36,66 +51,71 @@ mdrt = "market_data.cli.main:app"
 
 ## 6.1 `ingest-bars`
 
-Download, normalize, validate, and archive OHLCV bars for a symbol.
+Download, validate, and archive OHLCV bars for a symbol.
 
 ### Signature
 
 ```
 mdrt ingest-bars
-    --provider      TEXT    [required]   Provider slug: "alpaca" or "databento"
-    --symbol        TEXT    [required]   Canonical symbol, e.g. "SPY"
-    --timeframe     TEXT    [required]   "1m" | "5m" | "15m" | "1h" | "1d"
-    --start         TEXT    [required]   ISO 8601: "2024-01-01" or "2024-01-01T00:00:00Z"
-    --end           TEXT    [required]   ISO 8601 (exclusive end)
-    --asset-class   TEXT    [default: "equity"]   "equity" | "crypto" | "future"
-    --data-dir      PATH    [default: ./data]
-    --output-dir    PATH    [default: ./outputs]
-    --fail-on-warning FLAG               Treat soft warnings as hard failures
-    --dry-run       FLAG               Validate credentials + print plan; do NOT fetch
-    --verbose       FLAG               Enable DEBUG logging
+  # ── Core request ────────────────────────────────────────────────────
+  --provider      TEXT    [required]   "ib" | "alpaca" *(Phase 2)* | "databento" *(Phase 2)*
+  --symbol        TEXT    [required]   Canonical symbol, e.g. "SPY" or "ES"
+  --timeframe     TEXT    [required]   "1m" | "5m" | "15m" | "1h" | "4h" | "1D" | "1M"
+  --start         TEXT    [required]   ISO 8601: "2024-01-01"
+  --end           TEXT    [required]   ISO 8601 (exclusive end): "2024-02-01"
+  --asset-class   TEXT    [default: "equity"]   "equity" | "future" *(Phase 3)* | "crypto" *(Phase 3)*
+
+  # ── Session semantics (important: change meaning of data) ───────────
+  --what-to-show  TEXT    [default: "TRADES"]   IB whatToShow:
+                                    "TRADES" | "MIDPOINT" *(Phase 2)* | "BID_ASK" *(Phase 2)* | "ADJUSTED_LAST" *(Phase 3)*
+  --use-rth       BOOL    [default: True]    True = regular trading hours only; False = extended hours *(Phase 2)*
+  --adjustment    TEXT    [default: "raw"]   "raw" | "adjusted" *(Phase 3)* | "split_only" *(Phase 3)*
+
+  # ── IB connection flags (required when --provider ib) ───────────────
+  --host          TEXT    [default: from IB_HOST env or "127.0.0.1"]
+  --port          INT     [default: from IB_PORT env or 7497]
+  --client-id     INT     [default: from IB_CLIENT_ID env or 1]
+
+  # ── IB contract flags ───────────────────────────────────────────────
+  --sec-type      TEXT    [default: inferred from --asset-class]
+                           "STK" | "FUT" *(Phase 3)* | "CASH" *(Phase 3)* | "CRYPTO" *(Phase 3)*
+  --exchange      TEXT    [default: "SMART"]   IB routing exchange
+  --primary-exchange TEXT [optional]   IB primaryExch (e.g. "NASDAQ", "CME")
+  --currency      TEXT    [default: "USD"]
+  --expiry        TEXT    [optional]   YYYYMM for futures (e.g. "202412")
+  --local-symbol  TEXT    [optional]   IB localSymbol (e.g. "ESZ4")
+
+  # ── Paths and behavior ──────────────────────────────────────────────
+  --data-dir      PATH    [default: ./data]
+  --output-dir    PATH    [default: ./outputs]
+  --fail-on-warning FLAG
+  --force         FLAG    Re-fetch even if identical request_hash already completed
+  --dry-run       FLAG    Validate connection + resolve contract; do NOT fetch data
+  --verbose       FLAG
 ```
 
 ### Execution Flow
 
 ```
 1. Parse and validate all args
-   - Parse --start / --end to UTC-aware datetimes (raise UsageError if unparseable)
-   - Validate --timeframe is in {"1m","5m","15m","1h","1d"}
-   - Validate --asset-class is in {"equity","crypto","future"}
+   - Parse --start / --end to UTC-aware datetimes
+   - Validate --timeframe, --asset-class, --what-to-show
+   - Validate --port in valid range
 
 2. If --dry-run:
-   - Instantiate adapter
-   - Call adapter.validate_credentials()
-   - Print ingestion plan table (provider, symbol, timeframe, start, end, asset_class)
+   - Build provider components (session, resolver, collector)
+   - session.connect() → test session_info
+   - resolver.resolve(symbol, ...) → print resolved contract (conId, localSymbol, etc.)
+   - Print ingestion plan: symbol, timeframe, start, end, what_to_show, use_rth, chunk count
+   - session.disconnect()
    - Exit 0
 
-3. Instantiate adapter via build_adapter(provider)
-4. Instantiate RawStore, Normalizer, Validator, ArchiveWriter, CatalogManager
-5. Open CatalogManager connection
-6. Call IngestionOrchestrator.run(...)
-7. On success:
-   - Print summary table (batch_id, row_count, status, archive_path, manifest_path)
-   - Exit 0
-8. On ValidationError:
-   - Print error details
-   - Exit 1
-9. On ProviderAuthError:
-   - Print credential error
-   - Exit 2
-10. On any other exception:
-    - Print traceback (if --verbose) or short message
-    - Exit 3
-```
-
-### Example
-
-```bash
-mdrt ingest-bars \
-  --provider alpaca \
-  --symbol SPY \
-  --timeframe 1m \
-  --start 2024-01-02 \
-  --end 2024-02-01
+3. Build provider components
+4. Open catalog
+5. Run IngestionOrchestrator.run(...)
+6. On success: print summary table
+   (batch_id, row_count, chunk_count, status, archive_path, manifest_path)
+7. Exit codes: 0=success, 1=validation error, 2=provider/session error, 3=internal error
 ```
 
 ### Exit Codes
@@ -104,50 +124,88 @@ mdrt ingest-bars \
 |------|---------|
 | 0 | Success |
 | 1 | Data validation failure |
-| 2 | Provider auth / API error |
-| 3 | Unexpected internal error |
+| 2 | Provider/session/auth error |
+| 3 | Internal error |
+
+### Example
+
+```bash
+# IB: ingest SPY 1m for Jan 2024 (RTH only, trade data)
+mdrt ingest-bars \
+  --provider ib \
+  --symbol SPY \
+  --timeframe 1m \
+  --start 2024-01-02 \
+  --end 2024-02-01 \
+  --what-to-show TRADES \
+  --use-rth true \
+  --host 127.0.0.1 \
+  --port 7497 \
+  --client-id 1
+
+# IB: ES continuous futures 1D bars (PHASE 3 — not in Phase 1 scope)
+# Including for reference to show how futures will work.
+mdrt ingest-bars \
+  --provider ib \
+  --symbol ES \
+  --timeframe 1D \
+  --start 2023-01-01 \
+  --end 2024-01-01 \
+  --asset-class future \
+  --local-symbol ESZ4 \
+  --exchange CME \
+  --use-rth false
+
+# Dry run to verify IB connection + contract resolution
+mdrt ingest-bars \
+  --provider ib \
+  --symbol SPY \
+  --timeframe 1m \
+  --start 2024-01-02 \
+  --end 2024-01-05 \
+  --dry-run
+```
 
 ---
 
 ## 6.2 `build-window`
 
-Extract a single market window around an anchor timestamp and export it.
+Extract a single market window around an anchor timestamp.
 
 ### Signature
 
 ```
 mdrt build-window
-    --symbol        TEXT    [required]   e.g. "SPY"
-    --timeframe     TEXT    [required]   e.g. "1m"
-    --anchor        TEXT    [required]   ISO 8601 UTC: "2024-03-04T10:35:00Z"
-    --bars-before   INT     [required]   Bars to include before anchor
-    --bars-after    INT     [required]   Bars to include after anchor
-    --provider      TEXT    [optional]   Prefer specific provider (default: any)
-    --ref-level     FLOAT   [optional]   Reference price level stored in window metadata
-    --format        TEXT    [default: "jsonl"]   "jsonl" | "parquet" | "both"
-    --data-dir      PATH    [default: ./data]
-    --output-dir    PATH    [default: ./outputs/windows]
-    --verbose       FLAG
+  --symbol        TEXT    [required]
+  --timeframe     TEXT    [required]
+  --anchor        TEXT    [required]   ISO 8601 UTC: "2024-03-04T14:35:00Z"
+  --bars-before   INT     [required]
+  --bars-after    INT     [required]
+  --what-to-show  TEXT    [default: "TRADES"]   Must match archive partition
+  --use-rth       BOOL    [default: True]        Must match archive partition
+  --provider      TEXT    [optional]
+  --ref-level     FLOAT   [optional]
+  --format        TEXT    [default: "jsonl"]   "jsonl" | "parquet" | "both"
+  --data-dir      PATH    [default: ./data]
+  --output-dir    PATH    [default: ./outputs/windows]
+  --verbose       FLAG
 ```
+
+> **Important:** `--what-to-show` and `--use-rth` must match the values used during ingestion.
+> The catalog query filters by these values. A mismatch results in `WindowAnchorNotFoundError`.
 
 ### Execution Flow
 
 ```
 1. Parse --anchor to UTC-aware datetime
-2. Build WindowRequest from arguments
+2. Build WindowRequest (include what_to_show, use_rth)
 3. Instantiate CatalogManager, WindowBuilder, WindowOrchestrator
-4. Open CatalogManager connection
-5. Call WindowOrchestrator.execute(request)
-6. On success:
-   - Print: window_id, actual_bar_count, export_path(s)
-   - Exit 0
-7. On WindowAnchorNotFoundError:
-   - Print: anchor timestamp not found in archive + which symbol/timeframe/provider is covered
+4. Call WindowOrchestrator.execute(request)
+5. On success: print window_id, actual_bar_count, export_path(s)
+6. On WindowAnchorNotFoundError:
+   - Print: anchor not found; show what (symbol, timeframe, use_rth, what_to_show) IS in archive
    - Exit 1
-8. On InsufficientBarsError:
-   - Print: how many bars are actually available before/after the anchor
-   - Exit 1
-9. On other error: Exit 3
+7. On InsufficientBarsError: Exit 1
 ```
 
 ### Example
@@ -156,144 +214,105 @@ mdrt build-window
 mdrt build-window \
   --symbol SPY \
   --timeframe 1m \
-  --anchor 2024-03-04T14:35:00Z \
+  --anchor 2024-01-03T14:35:00Z \
   --bars-before 60 \
-  --bars-after 20
+  --bars-after 20 \
+  --what-to-show TRADES \
+  --use-rth true
 ```
-
-### Exit Codes
-
-| Code | Meaning |
-|------|---------|
-| 0 | Success |
-| 1 | Anchor not found or insufficient bars |
-| 3 | Internal error |
 
 ---
 
 ## 6.3 `validate-archive`
 
-Run integrity checks on the catalog and report data quality issues.
+Run integrity checks on the catalog.
 
 ### Signature
 
 ```
 mdrt validate-archive
-    --symbol        TEXT    [optional]   Filter to specific symbol; omit = check all
-    --timeframe     TEXT    [optional]   Filter to specific timeframe
-    --data-dir      PATH    [default: ./data]
-    --output-dir    PATH    [default: ./outputs/integrity_reports]
-    --verbose       FLAG
-```
-
-### Execution Flow
-
-```
-1. Open CatalogManager
-2. If --symbol/--timeframe specified: query that pair
-   Otherwise: list_available_symbols() to get all (symbol, timeframe) pairs
-3. For each (symbol, timeframe):
-   - catalog.get_integrity_report(symbol, timeframe) → dict
-4. Write integrity_report_<timestamp>.json to output_dir
-5. Print rich summary table:
-   symbol | timeframe | row_count | error_count | warning_count | gap_count | first_ts | last_ts
-6. If any symbol has error_count > 0: exit 1
-   Otherwise: exit 0
-```
-
-### Example
-
-```bash
-mdrt validate-archive --symbol SPY
+  --symbol        TEXT    [optional]
+  --timeframe     TEXT    [optional]
+  --what-to-show  TEXT    [optional]   Filter by session semantics
+  --use-rth       BOOL    [optional]
+  --data-dir      PATH    [default: ./data]
+  --output-dir    PATH    [default: ./outputs/integrity_reports]
+  --verbose       FLAG
 ```
 
 ---
 
 ## 6.4 `list-symbols`
 
-List all symbols and timeframes currently in the archive.
-
-### Signature
-
 ```
 mdrt list-symbols
-    --data-dir      PATH    [default: ./data]
-    --provider      TEXT    [optional]   Filter by provider
-    --format        TEXT    [default: "table"]   "table" | "json"
-    --verbose       FLAG
+  --data-dir      PATH    [default: ./data]
+  --provider      TEXT    [optional]
+  --what-to-show  TEXT    [optional]
+  --use-rth       BOOL    [optional]
+  --format        TEXT    [default: "table"]   "table" | "json"
 ```
 
-### Execution Flow
-
-```
-1. Open CatalogManager
-2. catalog.list_available_symbols() → list[dict]
-3. If --provider: filter results
-4. If --format=table:
-   Print: symbol | asset_class | timeframe | provider | first_ts | last_ts | row_count
-5. If --format=json:
-   Print JSON array to stdout
-6. Exit 0
-```
-
-### Example
-
-```bash
-mdrt list-symbols
-mdrt list-symbols --format json
-```
+**Output columns:** symbol | asset_class | timeframe | provider | use_rth | what_to_show | first_ts | last_ts | row_count
 
 ---
 
-## 6.5 `build-window-batch` *(Phase 2)*
+## 6.5 `resolve-contract`
 
-Run multiple window extractions from a manifest file in parallel.
+**New command.** Resolves a symbol to its full IB contract identity without fetching data.
+Useful for verifying contract details and populating the instrument registry.
 
-### Signature
+```
+mdrt resolve-contract
+  --provider      TEXT    [required]   "ib" (IB only for now)
+  --symbol        TEXT    [required]
+  --asset-class   TEXT    [default: "equity"]
+  --exchange      TEXT    [default: "SMART"]
+  --currency      TEXT    [default: "USD"]
+  --expiry        TEXT    [optional]
+  --host          TEXT    [default: from IB_HOST env]
+  --port          INT     [default: from IB_PORT env]
+  --client-id     INT     [default: from IB_CLIENT_ID env]
+  --data-dir      PATH    [default: ./data]
+  --verbose       FLAG
+```
+
+**Execution flow:**
+1. Connect IbSession
+2. Call `IbContractResolver.resolve(...)`
+3. Print resolved contract: `conId`, `localSymbol`, `primaryExchange`, `tradingClass`, `multiplier`, `expiry`, `currency`
+4. Persist to `instruments` catalog table
+5. Disconnect
+6. Exit 0
+
+---
+
+## 6.6 `build-window-batch` *(Phase 2)*
 
 ```
 mdrt build-window-batch
-    --manifest      PATH    [required]   JSONL file; one WindowRequest JSON per line
-    --data-dir      PATH    [default: ./data]
-    --output-dir    PATH    [default: ./outputs/windows]
-    --workers       INT     [default: 4]   Parallel worker threads
-    --format        TEXT    [default: "jsonl"]   "jsonl" | "parquet" | "both"
-    --verbose       FLAG
-```
-
-### Execution Flow
-
-```
-1. Load manifest JSONL → list[WindowRequest]
-2. Instantiate CatalogManager, WindowBuilder, WindowOrchestrator, BatchWindowOrchestrator
-3. Call BatchWindowOrchestrator.execute_batch(requests, progress_callback=tqdm_callback)
-4. Collect results (success) and errors (per-window failures)
-5. Write batch_summary_<timestamp>.json to output_dir
-6. Print: total_requested, succeeded, failed
-7. If any failures: exit 1
-   Otherwise: exit 0
+  --manifest      PATH    [required]   JSONL; one WindowRequest JSON per line
+  --data-dir      PATH    [default: ./data]
+  --output-dir    PATH    [default: ./outputs/windows]
+  --workers       INT     [default: 4]
+  --format        TEXT    [default: "jsonl"]
+  --verbose       FLAG
 ```
 
 ---
 
-## 6.6 `show-integrity-report` *(Phase 2)*
-
-Print the most recent saved integrity report to the terminal.
-
-### Signature
+## 6.7 `show-integrity-report` *(Phase 2)*
 
 ```
 mdrt show-integrity-report
-    --output-dir    PATH    [default: ./outputs/integrity_reports]
-    --symbol        TEXT    [optional]   Filter output to one symbol
-    --verbose       FLAG
+  --output-dir    PATH    [default: ./outputs/integrity_reports]
+  --symbol        TEXT    [optional]
+  --verbose       FLAG
 ```
 
 ---
 
-## 6.7 Global Options
-
-Available on all commands:
+## 6.8 Global Options
 
 | Flag | Default | Description |
 |------|---------|-------------|
@@ -304,15 +323,13 @@ Available on all commands:
 
 ---
 
-## 6.8 Acceptance Criteria — CLI
+## 6.9 Acceptance Criteria — CLI
 
-- [ ] `mdrt --help` shows all commands with descriptions
-- [ ] `mdrt ingest-bars --help` shows all flags with defaults
-- [ ] `mdrt ingest-bars --dry-run ...` prints plan and exits 0 without creating any files
-- [ ] `mdrt ingest-bars` with missing required flag exits non-zero with a helpful message
-- [ ] `mdrt ingest-bars --start notadate ...` exits with a clear parse error
-- [ ] `mdrt list-symbols` shows a table after a successful ingest
-- [ ] `mdrt list-symbols --format json` outputs valid JSON
-- [ ] `mdrt build-window` with a bad anchor exits 1 and prints the covered date range
-- [ ] `mdrt validate-archive` exits 0 on a clean archive and 1 when errors exist
-- [ ] All commands respect `--data-dir` to support pointing at a non-default data location
+- [ ] `mdrt ingest-bars --help` shows all flags including IB-specific ones with defaults
+- [ ] `mdrt ingest-bars --provider ib --dry-run ...` resolves contract and prints plan; exits 0 with no data written
+- [ ] `mdrt ingest-bars --provider ib` with no TWS running → exits 2 with session error message
+- [ ] `mdrt resolve-contract --provider ib --symbol SPY` prints conId, primaryExchange, tradingClass
+- [ ] `mdrt list-symbols` shows `use_rth` and `what_to_show` columns
+- [ ] `mdrt build-window --use-rth false` when only `use_rth=true` data exists → exits 1 with helpful message listing what is available
+- [ ] `mdrt validate-archive --use-rth true --what-to-show TRADES` filters correctly
+- [ ] All commands respect `--data-dir`

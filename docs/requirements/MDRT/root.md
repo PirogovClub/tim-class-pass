@@ -1,6 +1,18 @@
+> ⚠️ **THIS DOCUMENT IS SUPERSEDED — DO NOT USE AS IMPLEMENTATION REFERENCE**
+>
+> This is the original pre-IB concept document. It has been fully superseded by the
+> numbered requirements files (`01-architecture.md` through `11-overlap-policy.md`).
+>
+> **Key conflicts with current spec:**
+> - This document assumes Databento/Alpaca as first provider → current spec is **IB-first**
+> - This document uses generic `fetch_bars()` signatures → current spec uses **Session + ContractResolver + Collector**
+> - This document predates schema v3, pacing rules, daily bar close convention, and overlap policy
+>
+> **Retain for historical context only.** For the normative spec, see [`index.md`](index.md).
+
 Below is a design doc you can use as the handoff for the next phase.
 
-# Market Data Retrieval Tool — Design Doc
+# Market Data Retrieval Tool — Design Doc (HISTORICAL — SUPERSEDED)
 
 ## 1. Purpose
 
