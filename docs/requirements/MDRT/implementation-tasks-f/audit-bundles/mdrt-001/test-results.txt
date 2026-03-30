@@ -1,0 +1,42 @@
+========================================
+MDRT-001 Validation Results
+========================================
+
+--- python --version ---
+Python 3.12.8
+
+--- uv sync ---
+Built ibapi==9.81.1.post1
+Built tim-class-pass @ file:///H:/GITS/tim-class-pass
+Prepared 6 packages in 3.93s
+Uninstalled 1 package in 9ms
+Installed 6 packages in 1.45s
+ + duckdb==1.5.1
+ + ibapi==9.81.1.post1
+ + pyarrow==23.0.1
+ + pydantic-settings==2.13.1
+ + ruff==0.15.8
+ ~ tim-class-pass==0.1.0 (from file:///H:/GITS/tim-class-pass)
+Exit code: 0
+
+--- python -c "import market_data" ---
+OK: Market Data Retrieval Tool (MDRT) — historical OHLCV archive and window builder.
+Exit code: 0
+
+--- uv run mdrt --help ---
+
+ Usage: mdrt [OPTIONS] COMMAND [ARGS]...
+
+ Market Data Retrieval Tool — historical OHLCV archive and window builder.
+
+╭─ Options ─────────────────────────────────────────────────╮
+│ --version          Print version and exit.                │
+│ --install-completion                                      │
+│ --show-completion                                         │
+│ --help             Show this message and exit.            │
+╰───────────────────────────────────────────────────────────╯
+Exit code: 0
+
+========================================
+ALL 4 VALIDATION COMMANDS PASSED
+========================================

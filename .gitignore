@@ -24,6 +24,8 @@ htmlcov/
 .ruff_cache/data/
 var/
 data/
+outputs/
+*.duckdb
 
 # Keep audit bundles out of the repo root (use audit/**/ instead)
 /*.zip

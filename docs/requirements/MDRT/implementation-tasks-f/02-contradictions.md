@@ -40,7 +40,7 @@ The docs define 4h as an **intraday** bar, so `session_close_ts_utc = null`. How
 
 `01-architecture.md` notes that `ibapi` is on PyPI but "may also require manual installation from IBKR's download page."
 
-**Resolution:** `pyproject.toml` should list `ibapi >= 10.19` as a dependency. Installation instructions should note the potential manual step in `.env.example` or a README section. This is an operational concern, not a code architecture decision.
+**Resolution:** `pyproject.toml` should list `ibapi >= 9.81` as the **PyPI-installable baseline** (newer API builds may require manual install from IBKR per `01-architecture.md`). Installation instructions should note the potential manual step in `src/market_data/.env.example` or `src/market_data/README.md`. This is an operational concern, not a code architecture decision.
 
 ---
 

@@ -5,15 +5,24 @@
 The directory structure below is defined by the normative architecture doc.
 All implementation tickets MUST place code in these exact locations.
 
+**Monorepo note:** In `tim-class-pass`, the git repository root is the monorepo root. MDRT package code lives under `src/market_data/` as below. Package-local documentation and the environment template live **under** `src/market_data/` (not at the repository root). The repository may also have its own root-level `README.md` for the wider project; that is separate from MDRT’s `src/market_data/README.md`.
+
+### Monorepo layout rules (Option B)
+
+- **Docs / env template:** MDRT package-local documentation and environment example files live under `src/market_data/`, not at the repository root. Repository-root docs/config belong to the monorepo as a whole unless a ticket explicitly says otherwise.
+- **Tests:** Test support files for MDRT (e.g. shared `conftest.py`) live under `tests/market_data/` unless a ticket explicitly requires repository-wide test scaffolding.
+
+### Normative tree (MDRT in monorepo)
+
 ```
-market_data/                              # Project root
-├── pyproject.toml                        # Package definition, deps, entry point
-├── README.md                             # Project overview + operational prereqs
-├── .env.example                          # IB connection config template
+<repo-root>/                             # Git / monorepo root (e.g. tim-class-pass)
+├── pyproject.toml                        # Package definition, deps, entry point (MDRT + workspace)
 │
 ├── src/                                  # SOURCE CODE
 │   └── market_data/                      # Python package root
 │       ├── __init__.py
+│       ├── .env.example                  # IB connection config template (package-local)
+│       ├── README.md                     # MDRT overview + operational prereqs (package-local)
 │       ├── cli/                          # CLI commands
 │       │   ├── __init__.py
 │       │   └── main.py                   # Typer app: ingest-bars, build-window, etc.
@@ -59,7 +68,9 @@ market_data/                              # Project root
 │   └── manifests/                       # Ingestion manifests
 │
 ├── tests/                                # TEST CODE
-│   ├── conftest.py                      # mock_settings autouse fixture
+│   ├── market_data/                     # MDRT test package (shared fixtures)
+│   │   ├── __init__.py                  # optional package marker
+│   │   └── conftest.py                  # mock_settings autouse fixture (MDRT-004)
 │   ├── unit/                            # Unit tests per module
 │   │   ├── test_domain.py
 │   │   ├── test_schemas.py
@@ -101,6 +112,7 @@ market_data/                              # Project root
 |------|---------|
 | `src/market_data/` | All production Python code. Every module has a defined file in `01-architecture.md` |
 | `tests/` | All test code. Mirrors code structure with `unit/`, `integration/`, `adapters/` |
+| `tests/market_data/` | MDRT-scoped shared fixtures (`conftest.py`); see Option B monorepo rules above |
 | `tests/adapters/transcripts/` | IB callback replay fixtures (JSONL) for `CallbackReplaySession` |
 | `data/` | Runtime-generated data (gitignored). Parquet archive, raw transcripts, DuckDB catalog |
 | `outputs/` | Runtime-generated exports (gitignored). Windows, reports, manifests |

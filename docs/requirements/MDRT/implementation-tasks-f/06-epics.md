@@ -13,7 +13,7 @@
 - **Source docs:** `01-architecture.md` (directory structure, pyproject.toml), `02-data-models.md` (models, schema), `07-exceptions.md` (exception hierarchy), `08-configuration.md` (settings)
 - **Dependencies:** None
 - **Risks:** Low. These are pure data structures with no provider interaction
-- **Exit criteria:** `pyproject.toml` installable, all dataclasses importable, schema validates sample data, settings load from env, all exceptions importable, trading calendar passes regression tests
+- **Exit criteria:** `uv sync` succeeds; all dataclasses importable; schema validates sample data; settings load from env; all exceptions importable; trading calendar passes regression tests
 
 **Tickets:** MDRT-001, MDRT-002, MDRT-003, MDRT-004, MDRT-005, MDRT-006
 
@@ -58,7 +58,7 @@
 - **Source docs:** `04-core-pipeline.md` (orchestrator), `05-window-builder.md` (window builder), `06-cli.md` (all commands), `08-configuration.md` (operational docs)
 - **Dependencies:** EPIC-B (provider), EPIC-C (pipeline), EPIC-A (all foundation)
 - **Risks:** Medium. Orchestrator must wire error handling correctly (try/except for ProviderSessionError). CLI must enforce Phase 1 scope restrictions
-- **Exit criteria:** All 5 CLI commands work. `ingest-bars` completes full pipeline. `build-window` exports correct windows. `resolve-contract` prints conId. `list-symbols` queries catalog. `validate-archive` runs checks. `.env.example` finalized. README has operational prerequisites
+- **Exit criteria:** All 5 CLI commands work (`uv run mdrt …` in this monorepo). `ingest-bars` completes full pipeline. `build-window` exports correct windows. `resolve-contract` prints conId. `list-symbols` queries catalog. `validate-archive` runs checks. `src/market_data/.env.example` finalized. `src/market_data/README.md` has operational prerequisites
 
 **Tickets:** MDRT-016, MDRT-017, MDRT-018, MDRT-019, MDRT-020
 

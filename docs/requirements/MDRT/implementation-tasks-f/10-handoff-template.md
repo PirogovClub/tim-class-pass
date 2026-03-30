@@ -28,6 +28,21 @@ Use this template for every ticket work order handed to a coding agent.
 | Fixtures | `tests/adapters/transcripts/...` |
 | Audit bundle | `docs/requirements/MDRT/implementation-tasks-f/audit-bundles/mdrt-NNN/` |
 
+## Package manager and CLI (this monorepo)
+
+Use **`uv`** as the package manager. Standard validation after scaffold or env changes:
+
+```bash
+python --version
+uv sync
+python -c "import market_data"
+uv run mdrt --help
+```
+
+- Install/sync deps: `uv sync`
+- Run tests: `uv run pytest …`
+- Run the CLI: `uv run mdrt …` (subcommands as implemented)
+
 ## Files to Create or Modify
 [Exact file paths]
 
@@ -41,14 +56,14 @@ Use this template for every ticket work order handed to a coding agent.
 [List test names and what they verify — pulled from 09-testing.md where applicable]
 
 ## Required Documentation Changes
-[If any — usually "None" for code tickets. README updates only when needed]
+[If any — usually "None" for code tickets. MDRT README updates use `src/market_data/README.md` when a ticket requires them]
 
 ## Output Bundle
 After completing this ticket, produce:
 
 ### Test Results
 ```bash
-pytest tests/unit/test_<module>.py -v --tb=short > docs/requirements/MDRT/implementation-tasks-f/audit-bundles/mdrt-NNN/test-results.txt 2>&1
+uv run pytest tests/unit/test_<module>.py -v --tb=short > docs/requirements/MDRT/implementation-tasks-f/audit-bundles/mdrt-NNN/test-results.txt 2>&1
 ```
 
 ### Audit Bundle

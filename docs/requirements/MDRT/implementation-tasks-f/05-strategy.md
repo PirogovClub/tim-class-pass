@@ -86,7 +86,7 @@ The **only parallelism** is between foundation tickets MDRT-002, MDRT-003, and M
 
 After each audit gate ticket, the coding agent must:
 
-1. Run `pytest --cov` for all modules completed so far
+1. Run `uv run pytest --cov` for all modules completed so far
 2. Verify changed files match the ticket's expected scope
 3. Produce audit bundle with test results at the canonical path
 4. NOT proceed to the next ticket until the audit gate passes

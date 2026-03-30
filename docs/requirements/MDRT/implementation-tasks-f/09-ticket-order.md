@@ -55,7 +55,7 @@
 
 At each audit gate, the coding agent must:
 
-1. Run `pytest --cov` and confirm all tests pass
+1. Run `uv run pytest --cov` and confirm all tests pass
 2. Produce audit bundle in `docs/requirements/MDRT/implementation-tasks-f/audit-bundles/mdrt-NNN/`
 3. Confirm changed files match ticket scope
 4. **STOP AND WAIT** for reviewer approval before starting next ticket

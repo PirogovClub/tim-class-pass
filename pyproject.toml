@@ -3,7 +3,7 @@ name = "tim-class-pass"
 version = "0.1.0"
 description = "A Python project for Tim Class Pass"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">= 3.11"
 dependencies = [
     "click>=8.0.0",
     "ffmpeg-python>=0.2.0",
@@ -24,6 +24,12 @@ dependencies = [
     "scikit-learn>=1.4.0",
     "jinja2>=3.1.6",
     "python-multipart>=0.0.22",
+    # ── MDRT (Market Data Retrieval Tool) ─────────────────────────────
+    "ibapi>=9.81",  # PyPI has 9.81.1.post1; IBKR v10.19+ requires manual install from IBKR site
+    "pyarrow>=14.0",
+    "duckdb>=0.10",
+    "typer>=0.9",
+    "pydantic-settings>=2.0",
 ]
 
 [project.scripts]
@@ -33,9 +39,10 @@ extract-video-audio = "helpers.utils.video_audio_cli:main"
 adjudication-export = "pipeline.adjudication.export_cli:main"
 lesson-contract = "pipeline.contracts.cli:main"
 corpus-cli = "pipeline.corpus.cli:cli"
+mdrt = "market_data.cli.main:app"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/tim_class_pass", "src/helpers", "src/pipeline", "src/ml", "src/ui"]
+packages = ["src/tim_class_pass", "src/helpers", "src/pipeline", "src/ml", "src/ui", "src/market_data"]
 
 [build-system]
 requires = ["hatchling"]
@@ -64,6 +71,7 @@ dev = [
     "pytest>=9.0.2",
     "pytest-cov>=6.0.0",
     "pytest-playwright>=0.7.2",
+    "ruff>=0.3",
 ]
 
 [tool.coverage.run]

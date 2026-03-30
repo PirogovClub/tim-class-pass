@@ -2,6 +2,10 @@
 
 > **Revision note:** Updated for review feedback. Normalizer split (012A/B), ArchiveWriter split (015A/B),
 > late tickets expanded to full template quality, total tickets: 22.
+>
+> **Revision note (Option B — monorepo):** Tickets and planning docs now match package-local
+> `src/market_data/.env.example` and `src/market_data/README.md`, `tests/market_data/conftest.py`,
+> **`uv`** / `uv run` for sync, pytest, and CLI, and **`ibapi>=9.81`** as the PyPI baseline in MDRT-001.
 
 This folder contains the complete implementation plan for the Market Data Retrieval Tool (MDRT) Phase 1.
 
@@ -24,7 +28,7 @@ This folder contains the complete implementation plan for the Market Data Retrie
 | [`08-tickets-011-020.md`](08-tickets-011-020.md) | §8 cont. | Tickets 011–022: pipeline, CLI, integration, DoD — all at full template quality |
 | [`09-ticket-order.md`](09-ticket-order.md) | §9 | Exact execution order with dependency graph (22 tickets) |
 | [`10-handoff-template.md`](10-handoff-template.md) | §10 | Reusable work-order template for coding agent tickets |
-| [`11-anti-drift-rules.md`](11-anti-drift-rules.md) | §11 | 30 anti-drift rules to prevent scope creep and spec divergence |
+| [`11-anti-drift-rules.md`](11-anti-drift-rules.md) | §11 | 31 anti-drift rules to prevent scope creep and spec divergence |
 
 ## Ticket Summary
 
@@ -61,5 +65,5 @@ This folder contains the complete implementation plan for the Market Data Retrie
 2. **Read the strategy** (`05-strategy.md`) for the critical path and audit gates
 3. **Execute tickets in order** from `09-ticket-order.md`
 4. **Use the handoff template** (`10-handoff-template.md`) for each coding agent work order
-5. **Follow anti-drift rules** (`11-anti-drift-rules.md`) on every ticket
+5. **Follow anti-drift rules** (`11-anti-drift-rules.md`, 31 rules) on every ticket
 6. **STOP at audit gates** (7 total) and wait for review before continuing
